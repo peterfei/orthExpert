@@ -1,5 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
+// project.ext.react = [
+//         nodeExecutableAndArgs: ["node", "--max_old_space_size=8192"]
+// ]
 buildscript {
     ext {
         buildToolsVersion = "27.0.3"
@@ -29,11 +31,27 @@ allprojects {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url "$rootDir/../node_modules/react-native/android"
         }
+        flatDir {
+            dirs project(':UnityExport').file('libs')
+        }
     }
 }
+
 
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.4'
     distributionUrl = distributionUrl.replace("bin", "all")
+}
+subprojects {
+    project.configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'com.android.support'
+                    && !details.requested.name.contains('multidex') ) {
+
+                //统一版本号
+                details.useVersion "24.2.0"
+            }
+        }
+    }
 }
