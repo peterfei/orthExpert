@@ -142,6 +142,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-unity-view')
     implementation project(':react-native-unity-view')
     // implementation project(':UnityExport')
     // implementation files('libs/SSDKU3D.jar')
