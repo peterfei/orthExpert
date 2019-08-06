@@ -6,77 +6,68 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,
-  Dimensions
-} from 'react-native';
-import {screen, system} from "./View/common";
+import React, { Component } from 'react';
+import { createStackNavigator,createAppContainer} from 'react-navigation';
 
-import UnityView, {UnityViewMessageEventData, MessageHandler} from 'react-native-unity-view';
-let unity = UnityView;
+import HomeScreen from "./View/scene/Home/HomeScreen";
+import MyScreen from "./View/scene/My/MyScreen";
+import MyOrder from "./View/scene/Order/MyOrder";
+import OrderDetail from "./View/scene/Order/OrderDetail";
+import MessageBoard from "./View/scene/My/MessageBoard";
+import showMessages from "./View/scene/My/showMessages";
+import Help from "./View/scene/Help/help";
+import problemDetails from "./View/scene/Help/problemDetails";
+import EditMember from "./View/scene/My/EditMember";
+import MemberComplete from "./View/scene/Register/MemberComplete";
+import RegisterPage from "./View/scene/Register/RegisterPage";
+import ForgetPasswordPage from "./View/scene/Register/ForgetPasswordPage";
+import ChangePassword from "./View/scene/Register/ChangePassword";
+import SelectIdentity from "./View/scene/Register/SelectIdentity";
+import LoginPage from "./View/scene/Login/LoginPage";
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+/**消息通知页面 */
+import MessageNotice from './View/scene/Search/MessageNotice';
+import MessageDetails from './View/scene/Search/MessageDetails';
 
-// type Props = {};
+const RootStack =createAppContainer( createStackNavigator( //跟路由
+  {//定义模块
+    HomeScreen: {screen: HomeScreen},
+    MyScreen: {screen: MyScreen},
+    MyOrder:{screen:MyOrder},
+    OrderDetail:{screen:OrderDetail},
+    MessageBoard:{screen:MessageBoard},
+    showMessages:{screen:showMessages},
+    Help:{screen:Help},
+    problemDetails:{screen:problemDetails},
+    EditMember:{screen:EditMember},
+    MemberComplete:{screen:MemberComplete},
+    RegisterPage:{screen:RegisterPage},
+    ForgetPasswordPage:{screen:ForgetPasswordPage},
+    ChangePassword:{screen:ChangePassword},
+    SelectIdentity:{screen:SelectIdentity},
+    LoginPage:{screen:LoginPage},
+    MessageNotice:{screen:MessageNotice},
+    MessageDetails:{screen:MessageDetails},
+  },
+  {
+    initialRouteName: 'LoginPage',     //设置初始路由为Home
+    mode:'modal',
+    navigationOptions:{
+      header:null,
+      headerStyle:{
+        //background:'red'
+      },
+      headerBackTitle:null,
+      headerTintColor:'#333333',
+      showIcon:true,
+      animationEnabled:false,
+      gesturesEnabled:false
+    }
+  }
+))
+
 export default class App extends Component {
-  constructor(props) {
-    super(props);
-    // this.state = {
-    //     styles: {width:screen.width,height:screen.width},
-    //     /*    info:this.navigation.state.params.info*/
-    // };
-
-
-}
-  onUnityMessage(handler) {
-      console.log(handler.name); // the message name
-      console.log(handler.data); // the message data
-      setTimeout(() => {
-        // You can also create a callback to Unity.
-        handler.send('I am callback!');
-      }, 2000);
-  }
-  render() {
-    return (
-      <View style={styles.container}>
-        <UnityView
-                    ref={(ref) => this.unity = ref}
-
-                    onUnityMessage={this.onUnityMessage.bind(this)}
-
-                    style={{
-                        width:screen.width,
-                        height: screen.height
-                    }}
-                />
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
-    );
+  render() {                            //将Navigation作为根路径导出
+    return <RootStack />;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});

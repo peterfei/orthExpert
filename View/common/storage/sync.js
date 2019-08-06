@@ -2,7 +2,7 @@
  * Created by guangqiang on 2017/11/15.
  */
 import { storage } from './index'
-import api from '../../api'
+//import api from '../../api'///////
 import { NavigationActions } from 'react-navigation'
 
 /**
@@ -36,9 +36,9 @@ const sync = {
           reject({ name:"ExpiredError"})
         // setTimeout(
         //   function () {
-        //     const resetAction = NavigationActions.reset({
+        //     const resetAction = StackActions.reset({
         //       index: 0,
-        //       actions: [NavigationActions.navigate({ routeName: 'Login' })]
+        //       actions: [NavigationActions.navigate({ routeName: 'LoginPage' })]
         //     })
         //     this.props.navigation.dispatch(resetAction)
         //   }.bind(this),
