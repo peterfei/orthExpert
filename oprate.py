@@ -9,6 +9,8 @@ def bash_shell(bash_command):
 
 if __name__ == '__main__':
   print('****正在注备环境****')
+  print("***拉取相关代码***")
+  bash_shell('git pull origin dev')
   print("***执行yarn安装相关package***")
   bash_shell('yarn')
   print("***拷贝补丁文件***")
@@ -24,7 +26,6 @@ if __name__ == '__main__':
   # bash_shell('cp ./android/app/src/main/java/com/orghexpert/MainApplication.java.bak ./android/app/src/main/java/com/orghexpert/MainApplication.java')
   bash_shell('react-native link')
   print("***Unity相关资源拷贝***")
-  print("***拉取相关代码***")
-  bash_shell('git pull origin dev')
+  
   print("******打包******")
   bash_shell("react-native run-android")
