@@ -24,6 +24,7 @@ import ForgetPasswordPage from "./View/scene/Register/ForgetPasswordPage";
 import ChangePassword from "./View/scene/Register/ChangePassword";
 import SelectIdentity from "./View/scene/Register/SelectIdentity";
 import LoginPage from "./View/scene/Login/LoginPage";
+import Find from "./View/scene/Search/Find";
 
 /**消息通知页面 */
 import MessageNotice from './View/scene/Search/MessageNotice';
@@ -48,6 +49,7 @@ const RootStack =createAppContainer( createStackNavigator( //跟路由
     LoginPage:{screen:LoginPage},
     MessageNotice:{screen:MessageNotice},
     MessageDetails:{screen:MessageDetails},
+    Find:{screen:Find},
   },
   {
     initialRouteName: 'LoginPage',     //设置初始路由为Home

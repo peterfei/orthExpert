@@ -666,6 +666,7 @@ export default class BonesScene extends Component {
         return (
             <View style={{width: '100%'}}>
 
+
                 {this.isShowSource('html') ? this._renderHtmlSource() : null}
                 {this.isShowSource('text') ? this._renderTextSource() : null}
                 {(this.isShowSource('pic') || this.isShowSource('gif')) ? this._renderGifOrPicSource() : null}

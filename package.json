@@ -13,6 +13,7 @@
     "react": "16.6.3",
     "react-native": "0.57",
     "react-native-actionsheet": "^2.4.2",
+    "react-native-af-video-player": "^0.2.1",
     "react-native-device-info": "^2.3.2",
     "react-native-easy-toast": "^1.2.0",
     "react-native-flexi-radio-button": "^0.2.2",
