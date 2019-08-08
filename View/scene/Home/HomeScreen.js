@@ -37,6 +37,7 @@ export default class HomeScreen extends Component {
   state = {
     name: '',
     data: '',
+    getData:'',
     rightMenu: false,
     details: false,
     video: false,
@@ -80,12 +81,19 @@ export default class HomeScreen extends Component {
           onUnityMessage={this.onUnityMessage.bind(this)}
           style={{
             width: screen.width,
-            height: screen.height
+            height: screen.height-30
           }} />
         {/* 顶部/搜索 */}
-        <SearchComponent/>
+        <SearchComponent navigation={this.props.navigation} pushRightMune={(pat_no)=>this.pushDetails(pat_no)}/>
         {/* 右侧菜单及关闭按钮 */}
-        {this.state.rightMenu ? [this.rightMenu(), this.rightMenuClose()] : null}
+        {this.state.rightMenu ? [this.rightMenu(), this.rightMenuClose()] : <View style={{
+          position: 'absolute',
+         
+          right: 0,
+          top: screen.height * 0.5,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+        
+          width:size(20),height:size(20),}}></View>}
         {/* 底部详情 */}
         {this.state.details ? this.details() : null}
         {/* 提示组件 */}
@@ -100,6 +108,21 @@ export default class HomeScreen extends Component {
           fadeOutDuration={1000} />
       </View>
     );
+  }
+  async pushDetails(pat_no){
+    //获取搜索后数据
+    let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo="+pat_no;
+    await fetch(url, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(resp => resp.json())
+      .then(result => {
+        this.setState({
+          getData: result
+        },()=>alert(JSON.stringify(this.state.getData)))
+      })
   }
   details() {
     return (
@@ -129,7 +152,9 @@ export default class HomeScreen extends Component {
   rightMenu() {
     return (
       <View style={styles.rightMenu}>
-        <Text style={styles.boneName}>{this.state.name}</Text>
+        {/* <Text style={styles.boneName}>{this.state.name}</Text>
+        <Text style={styles.boneDisease} onPress={() => this.showDetails()}>{this.state.data}</Text> */}
+        <Text style={styles.boneName}>xxx</Text>
         <Text style={styles.boneDisease} onPress={() => this.showDetails()}>{this.state.data}</Text>
       </View>
     )

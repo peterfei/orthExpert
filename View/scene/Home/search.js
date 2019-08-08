@@ -350,6 +350,13 @@ export default class SearchComponent extends Component {
         this.saveHistory(data,"key"),
         this.getHistory()
       }
+      searchChicks(pat_no,pat_name,pat_id){
+        let data={"keyName":pat_name,"ketId":pat_id}
+        this.saveHistory(data,"key")
+        this.getHistory()
+        this.props.pushRightMune(pat_no)
+        this.closeSearch()
+      }
       saveHistory(data, type) {
         if ("key" == type) {
           let temp = {
@@ -365,7 +372,7 @@ export default class SearchComponent extends Component {
         let arr = []
         for (let i = 0; i < this.state.hotData.length; i++) {
           arr.push(
-            <Text style={styles.histortBody} onPress={() => alert(this.state.hotData[i].pat_No)}>{this.state.hotData[i].pat_name}</Text>
+            <Text style={styles.histortBody} onPress={() => this.searchChicks(this.state.hotData[i].pat_no,this.state.hotData[i].pat_name,this.state.hotData[i].pat_id)}>{this.state.hotData[i].pat_name}</Text>
           )
         }
         return arr
