@@ -174,7 +174,7 @@ export {
     // getVideoByIds,
     // getStructByIds,
     // getRelationByName,
-    queryHistoryAll,
+    //queryHistoryAll,
     
 
     //历史搜索
