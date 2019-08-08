@@ -89,9 +89,9 @@ export default class HomeScreen extends Component {
         {this.state.rightMenu ? [this.rightMenu(), this.rightMenuClose()] : <View style={{
           position: 'absolute',
           right: 0,
-          top: screen.height*0.9,
-          backgroundColor: 'rgba(0,0,0,0.1)',
-          width:size(2),height:size(2),}}></View>}
+          bottom:0,
+          backgroundColor: 'rgba(0,0,0,1)',
+          width:size(1),height:size(1),}}></View>}
         {/* 底部详情 */}
         {this.state.details ? this.details() : null}
         {/* 提示组件 */}
