@@ -81,18 +81,16 @@ export default class HomeScreen extends Component {
           onUnityMessage={this.onUnityMessage.bind(this)}
           style={{
             width: screen.width,
-            height: screen.height-30
+            height: screen.height
           }} />
         {/* 顶部/搜索 */}
         <SearchComponent navigation={this.props.navigation} pushRightMune={(pat_no)=>this.pushDetails(pat_no)}/>
         {/* 右侧菜单及关闭按钮 */}
         {this.state.rightMenu ? [this.rightMenu(), this.rightMenuClose()] : <View style={{
           position: 'absolute',
-         
           right: 0,
-          top: screen.height * 0.5,
+          top: screen.height,
           backgroundColor: 'rgba(0,0,0,0.5)',
-        
           width:size(20),height:size(20),}}></View>}
         {/* 底部详情 */}
         {this.state.details ? this.details() : null}
