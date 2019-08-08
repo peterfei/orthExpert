@@ -9,15 +9,23 @@
 import React, { Component } from 'react';
 import {
   Platform, StyleSheet, Text, View,
-  Dimensions, TouchableHighlight, TextInput, Image,TouchableOpacity
+  Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity
 } from 'react-native';
 import { screen, system } from "../../common";
-
+import SearchComponent from "./search";
 import UnityView, { UnityViewMessageEventData, MessageHandler } from 'react-native-unity-view';
 import { size } from '../../common/ScreenUtil';
-import {VoiceUtils} from "../../common/VoiceUtils";
+import { VoiceUtils } from "../../common/VoiceUtils";
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
+import { NavigationActions, StackActions } from "react-navigation";
+import { groupBy, changeArr } from "../../common/fun";
+import { queryHistoryAll, insertHistory, deleteHistories, queryRecentlyUse } from "../../realm/RealmManager";
 import { values, set } from 'mobx';
+import Loading from "../../common/Loading";
+import Toast from "react-native-easy-toast";
+import api from "../../api";
+import historyData from "./History.json";
+import styles from './styles';
 let unity = UnityView;
 let index = 0;
 
@@ -29,9 +37,9 @@ export default class HomeScreen extends Component {
   state = {
     name: '',
     data: '',
-    search: false,
     rightMenu: false,
     details: false,
+    video: false,
     bottomIcon: [
       { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
       { img: require('../../img/home/tab1.png'), title: '成因' },
@@ -74,92 +82,112 @@ export default class HomeScreen extends Component {
             width: screen.width,
             height: screen.height
           }} />
-
-        {!this.state.search ?
-          <View style={styles.body}>
-            <View style={styles.top}>
-              <TouchableHighlight
-                onPress={() => this.My()}>
-                <View style={[styles.button, { marginLeft: 10 }]}>
-                  <Image style={styles.icon}
-                    source={require('../../img/home/left.png')} />
-                  <Text style={styles.iconTitle}>我的</Text>
-                </View>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.input}
-                onPress={() => this.showSearch()}>
-                <TextInput
-                  style={{ width: '100%', height: '100%' }}
-                  placeholder="请输入病症名称"
-                  placeholderTextColor='#757575'
-                  editable={false} />
-              </TouchableHighlight>
-              <TouchableHighlight
-                onPress={() => this.Message()}>
-                <View style={[styles.button, { marginRight: 10 }]}>
-                  <Image style={styles.icon}
-                    source={require('../../img/home/right.png')} />
-                  <Text style={styles.iconTitle}>消息</Text>
-                </View>
-              </TouchableHighlight>
-            </View>
-          </View>
-          :
-          <View style={styles.searchBackground}>
-            <View style={[styles.top, { justifyContent: 'flex-start' }]}>
-              <TouchableHighlight style={[styles.icon, { marginLeft: 10, marginRight: 10 }]}
-                onPress={() => this.closeSearch()}>
-                <Image style={styles.icon}
-                  source={require('../../img/public/left.png')} />
-              </TouchableHighlight>
-              <TextInput
-                style={[styles.input, { width: "80%" }]}
-                placeholder="请输入病症名称"
-                placeholderTextColor='#757575' />
-            </View>
-          </View>
-        }
-        {this.state.rightMenu ?
-          <View style={styles.rightMenu}>
-            <Text style={styles.boneName}>{this.state.name}</Text>
-            <Text style={styles.boneDisease} onPress={() => this.showDetails()}>{this.state.data}</Text>
-          </View>
-          : null
-        }
-        {this.state.rightMenu ?
-          <TouchableHighlight
-            style={[styles.closeRightMenuStyle]}
-            onPress={() => this.closeRightMenu()}>
-            <Image style={styles.closeRightMenuImg} resizeMode="contain"
-              source={require('../../img/public/right1.png')} />
-          </TouchableHighlight>
-          : null
-        }
-        {this.state.details ?
-          <View style={styles.details}>
-            <View style={[styles.detailsRow,{marginTop:5}]}>
-              <View>
-              <Text style={{ color: 'white', fontWeight: 'bold', paddingLeft:15 }}>{this.state.name}</Text>
-              </View>
-              <MyTouchableOpacity
-                    onPress={() => {
-                        this.fayin(this.state.name + "。" + this.state.name)
-                    }}
-                    style={{position:'absolute',left:'50%',transform: [{ translateX: -40}], alignItems: 'center', justifyContent: 'center',flexDirection: 'row'}}>
-                    <Image
-                        style={{width: size(30), height: size(30), marginRight: size(10)}}
-                        source={require('../../img/unity/laba.png')}/>
-                    <Text style={{color: "white",}}>{this.state.name}</Text>
-                </MyTouchableOpacity>
-            </View>
-            <View style={styles.detailsRow}>
-              {this.renderBottomIcon()}
-            </View>
-          </View>
-          : null
-        }
+        {/* 顶部/搜索 */}
+        <SearchComponent/>
+        {/* 右侧菜单及关闭按钮 */}
+        {this.state.rightMenu ? [this.rightMenu(), this.rightMenuClose()] : null}
+        {/* 底部详情 */}
+        {this.state.details ? this.details() : null}
+        {/* 提示组件 */}
+        <Loading
+          ref={r => {
+            this.Loading = r;
+          }}
+          hudHidden={false}
+        />
+        <Toast style={{ backgroundColor: '#343434' }} ref="toast" opacity={1} position='top'
+          positionValue={size(100)} fadeInDuration={750} textStyle={{ color: '#FFF' }}
+          fadeOutDuration={1000} />
       </View>
     );
+  }
+  details() {
+    return (
+      <View style={styles.details}>
+        {this.state.video ? this.renderVideo() : null}
+        <View style={[styles.detailsRow, { marginTop: 5 }]}>
+          <View>
+            <Text style={{ color: 'white', fontWeight: 'bold', paddingLeft: 15 }}>{this.state.name}</Text>
+          </View>
+          <MyTouchableOpacity
+            onPress={() => {
+              this.fayin(this.state.name + "。" + this.state.name)
+            }}
+            style={{ position: 'absolute', left: '50%', transform: [{ translateX: -40 }], alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+            <Image
+              style={{ width: size(30), height: size(30), marginRight: size(10) }}
+              source={require('../../img/unity/laba.png')} />
+            <Text style={{ color: "white", }}>{this.state.name}</Text>
+          </MyTouchableOpacity>
+        </View>
+        <View style={styles.detailsRow}>
+          {this.renderBottomIcon()}
+        </View>
+      </View>
+    )
+  }
+  rightMenu() {
+    return (
+      <View style={styles.rightMenu}>
+        <Text style={styles.boneName}>{this.state.name}</Text>
+        <Text style={styles.boneDisease} onPress={() => this.showDetails()}>{this.state.data}</Text>
+      </View>
+    )
+  }
+  rightMenuClose() {
+    return (
+      <TouchableHighlight
+        style={[styles.closeRightMenuStyle]}
+        onPress={() => this.closeRightMenu()}>
+        <Image style={styles.closeRightMenuImg} resizeMode="contain"
+          source={require('../../img/public/right1.png')} />
+      </TouchableHighlight>
+    )
+  }
+  renderVideo() {
+    return (
+      <View style={[styles.videoSourceStyle]}>
+        <View style={{
+          height: size(60),
+          width: '100%',
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
+          alignItems: 'center'
+        }}>
+
+          <MyTouchableOpacity onPress={() => {
+            alert('关闭')
+          }}>
+            <Image source={require('../../img/unity/close.png')} style={{
+              width: size(36),
+              height: size(36),
+              marginRight: size(20),
+              resizeMode: 'contain'
+            }} />
+          </MyTouchableOpacity>
+
+        </View>
+        <Video
+          rotateToFullScreen
+          lockPortraitOnFsExit
+          scrollBounce
+
+          url={this.state.currentShowSource.content}
+          ref={(ref) => {
+            this.video = ref
+          }}
+          onError={(msg) => {
+            this.playVideoError(msg)
+          }}
+          onFullScreen={(status) => {
+            status ? this.sendMsgToUnity('landscape', '', '') : this.sendMsgToUnity('portrait', '', '');
+            this.setState({
+              isPro: !status
+            })
+          }}
+        />
+      </View>
+    )
   }
   renderBottomIcon() {
     let Arr = [];
@@ -175,22 +203,45 @@ export default class HomeScreen extends Component {
       )
     }
     return Arr
+    //   let arr = [];
+    //   arr.push(
+    //     <TouchableOpacity style={styles.btnStyle} onPress={() => {
+    //         this.clickBack()
+    //     }}>
+    //         <Image style={styles.btnImgStyle} source={require('../../img/unity/fanhuiyuan.png')}/>
+    //         <Text style={styles.btnTextStyle}>返回</Text>
+    //     </TouchableOpacity>
+    // )
+    // this.state.sourceData.forEach((item, index) => {
+    //     let icon = item.res_fy_icon_url;
+    //     let rwId = this.state.currentShowSource.rw_id == undefined ? '' : this.state.currentShowSource.rw_id;
+    //     let color = rwId == item.rw_id ? '#60ccff' : '#fff';
+    //     let data =
+    //         arr.push(
+    //             <MyTouchableOpacity style={styles.btnStyle} onPress={() => {
+    //                 this.handleActionSource(item)
+    //             }} key={index}>
+    //                 <Image style={[styles.btnImgStyle, {tintColor: color}]} source={{uri: icon}}/>
+    //                 <Text style={[styles.btnTextStyle, {color: color}]}>{item.secondFyName}</Text>
+    //             </MyTouchableOpacity>
+    //         )
+    // })
+    // return (
+    //     <View style={{
+    //         flexDirection: 'row',
+    //         height: size(90),
+    //         alignItems: 'center',
+    //         backgroundColor: 'rgba(0,0,0,0.8)',
+    //     }}>
+    //         {arr}
+    //     </View>
+    // )
   }
   clickBack() {
     // this.setState({
 
     // })
     alert('返回')
-  }
-  showSearch() {
-    this.setState({
-      search: true
-    })
-  }
-  closeSearch() {
-    this.setState({
-      search: false
-    })
   }
   showDetails() {
     this.setState({
@@ -199,153 +250,23 @@ export default class HomeScreen extends Component {
   }
   closeRightMenu() {
     this.setState({
-      rightMenu: false
+      rightMenu: false,
+      details: false
     })
   }
   fayin(name) {
     name = name.replace("_L", "").replace("_R", "").replace("_左", "").replace("_右", "");
     if (Platform.OS != "ios") {
-        this.initVoice();
+      this.initVoice();
     }
     VoiceUtils.speak(name);
-}
-initVoice() {
-  if (index == 0) {
+  }
+  initVoice() {
+    if (index == 0) {
       VoiceUtils.init(0);
       index++
-  }
-}
-  My() {
-    this.props.navigation.navigate('MyScreen');
-  }
-  Message() {
-    this.props.navigation.navigate('MessageNotice');
+    }
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  rightMenu: {
-    position: 'absolute',
-    height: screen.height * 0.7,
-    right: 0,
-    top: screen.height * 0.5,
-    backgroundColor: '#262626',
-    width: 175,
-    transform: [{ translateY: -screen.height * 0.7 * 0.5 }],
-    alignItems: 'center',
-    borderRadius: 5,
-    zIndex: 999
-  },
-  btnStyle: {
-    width: size(90),
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom:5,
-    marginTop:15
-  },
-  btnTextStyle: {
-    textAlign: "center",
-    fontSize: size(16),
-    color: "#FFF",
-    marginTop: size(8),
-    alignSelf: "center",
-  },
-  details: {
-    position: 'absolute',
-    width: screen.width,
-    bottom: 0,
-    backgroundColor: '#262626',
-  },
-  btnImgStyle: {
-    width: size(28),
-    height: size(28),
-    resizeMode: 'contain',
-  },
-  detailsRow: {
-    width: '100%',
-    alignItems: 'center',
-    flexDirection:'row',
-  },
-  boneName: {
-    height: 45,
-    borderBottomWidth: 1,
-    borderBottomColor: '#343434',
-    width: '100%',
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: 'white',
-    textAlign: 'center',
-    lineHeight: 40,
-  },
-  boneDisease: {
-    height: 40,
-    width: '100%',
-    fontSize: 20,
-    color: 'white',
-    textAlign: 'center',
-    lineHeight: 40,
-  },
-  closeRightMenuStyle: {
-    height: 56,
-    width: 56,
-    backgroundColor: '#262626',
-    borderRadius: 28,
-    position: 'absolute',
-    top: screen.height * 0.5,
-    right: 147,
-    transform: [{ translateY: -28 }],
-    paddingLeft: 5,
-    justifyContent: 'center',
-  },
-  closeRightMenuImg: {
-    height: 20,
-  },
-  searchBackground: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    position: "absolute",
-    width: screen.width,
-    height: screen.height
-  },
-  icon: {
-    width: 20,
-    height: 20,
-  },
-  body: {
-    position: "absolute",
-    width: screen.width,
-    //height: 20,
-    backgroundColor: 'rgba(250,250,250,0)',
-  },
-  top: {
-    marginTop: 30,
-    width: screen.width,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  input: {
-    height: 35,
-    width: '70%',
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 3,
-    margin: 0, padding: 0,
-    paddingLeft: 20
-  },
-  button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 25,
-    height: 35,
-    borderRadius: 3
-  },
-  iconTitle: {
-    fontSize: size(20),
-    color: "#C8C8C8"
-  }
-});
+

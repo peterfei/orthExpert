@@ -183,7 +183,6 @@ export default class Find extends React.Component {
                 type: type,
                 addTime: new Date().getTime()
             }
-
             insertHistory(temp)
         }
     }
