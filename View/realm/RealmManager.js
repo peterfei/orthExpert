@@ -178,6 +178,7 @@ export {
     
 
     //历史搜索
+    insertHistory,
     queryHistoryAll,
     deleteHistories,
 
