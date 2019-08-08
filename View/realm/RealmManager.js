@@ -175,9 +175,10 @@ export {
     // getStructByIds,
     // getRelationByName,
     queryHistoryAll,
+    
 
     //历史搜索
-    insertHistory,
+    queryHistoryAll,
     deleteHistories,
 
     //首页推荐最近使用
@@ -205,4 +206,7 @@ export {
     // insertTriggerSubmodel,
     // queryTriggerByPifuNo,
     // queryTriggerInfo
+    // insertRecentlyUse,
+    queryRecentlyUse,
+    
 };
