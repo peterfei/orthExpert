@@ -62,35 +62,47 @@ export default class SearchComponent extends Component {
       async getHotKey() {
     
         //获取热门搜索数据
-        let tokens = await storage.get("userTokens");
-        if (tokens != -1 && tokens) {
-          let url = api.base_uri + "v1/app/struct/selectHotProduct?token=1";
+        let url = api.base_uri + "v1/app/pathology/getSearchHot?size=6";
           await fetch(url, {
             method: "get",
             headers: {
-              "Content-Type": "application/json",
-              token: tokens.token
+              "Content-Type": "application/json"
             }
           }).then(resp => resp.json())
             .then(result => {
-    
               this.setState({
-                hotData: result.hotList
+                hotData: result.pathologyList
               })
-    
             })
-        } else {
-          Alert.alert("会话过期,请重新登录");
-          setTimeout(
-            function () {
-              const resetAction = StackActions.reset({
-                index: 0,
-                actions: [NavigationActions.navigate({ routeName: "LoginPage" })]
-              });
-              this.props.navigation.dispatch(resetAction);
-            }.bind(this), 1000
-          );
-        }
+        // let tokens = await storage.get("userTokens");
+        // if (tokens != -1 && tokens) {
+        //   let url = api.base_uri + "v1/app/struct/selectHotProduct?token=1";
+        //   await fetch(url, {
+        //     method: "get",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //       token: tokens.token
+        //     }
+        //   }).then(resp => resp.json())
+        //     .then(result => {
+    
+        //       this.setState({
+        //         hotData: result.hotList
+        //       })
+    
+        //     })
+        // } else {
+        //   Alert.alert("会话过期,请重新登录");
+        //   setTimeout(
+        //     function () {
+        //       const resetAction = StackActions.reset({
+        //         index: 0,
+        //         actions: [NavigationActions.navigate({ routeName: "LoginPage" })]
+        //       });
+        //       this.props.navigation.dispatch(resetAction);
+        //     }.bind(this), 1000
+        //   );
+        // }
     
       }
       // async refreshDetail() {
@@ -351,9 +363,9 @@ export default class SearchComponent extends Component {
       }
       renderHot() {
         let arr = []
-        for (let i = 0; i < historyData.data.length; i++) {
+        for (let i = 0; i < this.state.hotData.length; i++) {
           arr.push(
-            <Text style={styles.histortBody} onPress={() => this.searchChick(historyData.data[i])}>{historyData.data[i].keyName}</Text>
+            <Text style={styles.histortBody} onPress={() => alert(this.state.hotData[i].pat_No)}>{this.state.hotData[i].pat_name}</Text>
           )
         }
         return arr

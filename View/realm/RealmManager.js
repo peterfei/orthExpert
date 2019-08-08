@@ -208,6 +208,6 @@ export {
     // queryTriggerByPifuNo,
     // queryTriggerInfo
     // insertRecentlyUse,
-    queryRecentlyUse,
+    //queryRecentlyUse,
     
 };
