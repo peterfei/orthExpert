@@ -14,7 +14,10 @@ if __name__ == '__main__':
   print("***执行yarn安装相关package***")
   bash_shell('yarn')
   print("***拷贝补丁文件***")
-  bash_shell('cp ./link.js ./node_modules/react-native/local-cli/link/link.js')
+  path =  os.path.join(os.getcwd(),'link.js')
+  # print("path is %s"% (path))
+
+  # bash_shell("cp %s %s/node_modules/react-native/local-cli/link/link.js" % (path,os.getcwd()) )
   print("***拷贝Android Setting***")
   # path = os.popen('pwd').read()
   # print("当前路径:",path)
@@ -29,3 +32,6 @@ if __name__ == '__main__':
   
   print("******打包******")
   bash_shell("react-native run-android")
+  
+  print("=============启动日志====================")
+  bash_shell("%s/logcat_package.sh  com.orthexpert"%(os.getcwd()))

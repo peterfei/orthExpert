@@ -144,65 +144,14 @@ const queryRecentlyUse = () => {
 
 
 export {
-    insertExamQuestions,
-    queryExamQuestions,
-    deleteExamQuestions,
-    queryExamQuestionsIsCorrect,
-    insertExamType,
-    queryExamTypes,
-    queryExamTypesById,
-    queryExamVersionByName,
-    insertExamVersion,
-    deleteExamTypes,
-    // deleteExamQuestion
-    saveRelationList,
-    saveStructList,
-    saveVideoList,
-    saveWebList,
-    /*getAll*/
-    getAllRelation,
-    getAllStruct,
-    getAllVideo,
-    getAllWeb,
-    /*delete*/
-    deleteAllWeb,
-    deleteAllVideo,
-    deleteAllStruct,
-    deleteAllRelation,
-    /*getByIds*/
-    getWebByIds,
-    getVideoByIds,
-    getStructByIds,
-    getRelationByName,
-    queryHistoryAll,
+    
 
     //历史搜索
-    insertHistory,
+    queryHistoryAll,
     deleteHistories,
 
     //首页推荐最近使用
-    insertRecentlyUse,
+    // insertRecentlyUse,
     queryRecentlyUse,
-    getTabVersionByName,
-    insertTabVersion,
-    deleteAllMsg,
-    //消息通知
-    insertSystemInformData,
-    querySystemInformData,
-    queryMarkNail,
-    insertMarkNail,
-    insertResRelation,
-    insertResWeb,
-    queryResWeb,
-    queryResRelation,
-    queryRelationBySmName,
-    insertMarkNoun,
-    queryMarkNoun,
-    queryMarkNailByNoun,
-    getTabVersionByNameSystem,
-    insertTabVersionSystem,
-    insertTriggerPifu,
-    insertTriggerSubmodel,
-    queryTriggerByPifuNo,
-    queryTriggerInfo
+    
 };
