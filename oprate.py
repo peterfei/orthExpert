@@ -8,7 +8,7 @@ def bash_shell(bash_command):
     return os.system(bash_command)
 
 if __name__ == '__main__':
-  print('****正在注备环境****')
+  print('========正在注备环境==========')
   print("***拉取相关代码***")
   bash_shell('git pull origin dev')
   print("***执行yarn安装相关package***")

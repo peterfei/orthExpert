@@ -175,6 +175,7 @@ public class MainApplication extends Application implements ReactApplication {
     mPushAgent.register(new IUmengRegisterCallback() {
         @Override
         public void onSuccess(String deviceToken) {
+
             UmLog.i(TAG, "device token: " + deviceToken);
         }
 
