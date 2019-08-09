@@ -101,7 +101,9 @@ export default class HomeScreen extends Component {
       .then(result => {
         this.setState({
           getData: result.pathology
-        }, () => alert(JSON.stringify(this.state.getData)))
+        }
+        //, () => alert(JSON.stringify(this.state.getData))
+        )
       })
     this.setState({
       img: true
@@ -169,6 +171,9 @@ export default class HomeScreen extends Component {
   showDetails() {
     DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
     DeviceEventEmitter.emit("getData", { getData: this.state.getData });
+    this.setState({
+      rightMenu:false
+    })
     this.pushDetails('BLCJ001')////////////////////////////////////////////////////////临时固定pat_no =》 this.state.data
   }
   closeRightMenu() {

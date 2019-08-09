@@ -26,7 +26,21 @@ export default {
     zIndex: 999
   },
   closeButton:{
-    alignItems:'center',
+    alignItems:'flex-end',
+    width:screen.width,
+    borderBottomWidth:1,
+    borderBottomColor:'#343434',
+    borderTopLeftRadius:size(20),
+    borderTopRightRadius:size(20),
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    height:30
+  },
+  information:{
+    Maxheight:100,
+    borderBottomWidth:1,
+    borderBottomColor:'#343434',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    padding:10,
   },
   deleteStyle: {
     position: "absolute",
@@ -53,7 +67,7 @@ export default {
   },
   videoSourceStyle: {
     width: '100%',
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.8)',
     borderTopLeftRadius: size(20),
     borderTopRightRadius: size(20),
     overflow: 'hidden',
@@ -77,7 +91,6 @@ export default {
     position: 'absolute',
     width: screen.width,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.8)',
   },
   detailsImage:{
     position:'absolute',

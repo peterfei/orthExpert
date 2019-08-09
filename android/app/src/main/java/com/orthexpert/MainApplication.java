@@ -3,6 +3,10 @@ package com.orthexpert;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.corbt.keepawake.KCKeepAwakePackage;
+import com.brentvatne.react.ReactVideoPackage;
 import com.github.yamill.orientation.OrientationPackage;
 import com.rnfs.RNFSPackage;
 import io.realm.react.RealmReactPackage;
@@ -52,6 +56,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new LinearGradientPackage(),
+            new VectorIconsPackage(),
+            new KCKeepAwakePackage(),
+            new ReactVideoPackage(),
             new OrientationPackage(),
             new RNFSPackage(),
             new RealmReactPackage(),

@@ -25,6 +25,7 @@ import Loading from "../../common/Loading";
 import Toast from "react-native-easy-toast";
 import api from "../../api";
 import historyData from "./History.json";
+import Video, {Container} from 'react-native-af-video-player';
 import styles from './styles';
 let unity = UnityView;
 let index = 0;
@@ -36,7 +37,7 @@ export default class Details extends Component {
     state = {
         rightMenu: false,
         video: false,
-        reason: true,
+        reason: false,
         details: false,
         search: false,
         getData: '',
@@ -81,11 +82,15 @@ export default class Details extends Component {
                     this.setState({
                         getData: getData
                     })
+
                 }
             }
         )]
 
     };
+
+    componentDidMount() {
+    }
     componentWillUnmount() {
         _.each(this.listeners, listener => {
             listener[0].remove();
@@ -104,17 +109,18 @@ export default class Details extends Component {
     details() {
         return (
             <View style={styles.details}>
-                {/* {this.state.video ? this.renderVideo() : null} */}
-                {this.state.reason ? this.renderReason() : null}
-                <View style={[styles.detailsRow, { marginTop: 5 }]}>
-                    <View>
+                {this.state.video&&this.state.getData.menus !== null ? this.renderVideo() : null}
+                {this.state.reason&&this.state.getData.menus !== null ? this.renderReason() : null}
+                <View style={{backgroundColor: 'rgba(0,0,0,0.8)'}}>
+                <View style={styles.detailsRow}>
+                    <View style={{ marginTop: 5 }}>
                         <Text style={{ color: 'white', fontWeight: 'bold', paddingLeft: 15 }}>{this.state.getData.pat_name}</Text>
                     </View>
                     <MyTouchableOpacity
                         onPress={() => {
                             this.fayin(this.state.getData.pat_name + "。" + this.state.getData.pat_name)
                         }}
-                        style={{ position: 'absolute', left: '50%', transform: [{ translateX: -40 }], alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                        style={{ marginTop: 5, position: 'absolute', left: '50%', transform: [{ translateX: -40 }], alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
                         <Image
                             style={{ width: size(30), height: size(30), marginRight: size(10) }}
                             source={require('../../img/unity/laba.png')} />
@@ -124,27 +130,35 @@ export default class Details extends Component {
                 <View style={styles.detailsRow}>
                     {this.renderBottomIcon()}
                 </View>
+                </View>
             </View>
         )
     }
     renderReason() {
-        return ( //{this.state.getData.pat_name}
+        return (
             <View style={styles.reasonStyle}>
-                <TouchableHighlight style={{ width: 20, height: 20, position: 'absolute', right: 5, top: 5 }}
-                    onPress={() => this.closeImg()}>
-                    <Image style={{ width: 20, height: 20, }}
-                        source={require('../../img/unity/cclose.png')}
-                    />
-                </TouchableHighlight>
-                <ScrollView>
-                    <Text style={{ color: 'white' }}>xxxxxxxxxxxxxxx</Text>
+                <View style={styles.closeButton}>
+                    <TouchableHighlight style={{ width: 20, height: 20, right: 5, top: 5 }}
+                        onPress={() => this.closeImg()}>
+                        <Image style={{ width: 20, height: 20, }}
+                            source={require('../../img/unity/close.png')}
+                        />
+                    </TouchableHighlight>
+                </View>
+                <ScrollView style={styles.information}>
+                    <Text style={{ color: 'white', paddingBottom: 20 }}>{JSON.parse(this.state.getData.menus)[0].content}</Text>
                 </ScrollView>
             </View>
         )
     }
+    closeImg() {
+        this.setState({
+            reason: false
+        })
+    }
     renderVideo() {
         return (
-            <View style={[styles.videoSourceStyle]}>
+            <View style={styles.videoSourceStyle}>
                 <View style={{
                     height: size(60),
                     width: '100%',
@@ -152,10 +166,7 @@ export default class Details extends Component {
                     justifyContent: 'flex-end',
                     alignItems: 'center'
                 }}>
-
-                    <MyTouchableOpacity onPress={() => {
-                        alert('关闭')
-                    }}>
+                    <MyTouchableOpacity onPress={() => this.setState({video:false})}>
                         <Image source={require('../../img/unity/close.png')} style={{
                             width: size(36),
                             height: size(36),
@@ -170,7 +181,7 @@ export default class Details extends Component {
                     lockPortraitOnFsExit
                     scrollBounce
 
-                    url={this.state.currentShowSource.content}
+                    url="http://res.vesal.site/chuzheng/CZSP036.mp4"
                     ref={(ref) => {
                         this.video = ref
                     }}
@@ -193,7 +204,7 @@ export default class Details extends Component {
         for (let i = 0; i < data.length; i++) {
             Arr.push(
                 <TouchableOpacity style={styles.btnStyle} key={i} onPress={() => {
-                    this.clickBack()
+                    this.clickBack(data[i].title)
                 }}>
                     <Image style={styles.btnImgStyle} source={data[i].img} />
                     <Text style={styles.btnTextStyle}>{data[i].title}</Text>
@@ -235,11 +246,28 @@ export default class Details extends Component {
         //     </View>
         // )
     }
-    clickBack() {
-        // this.setState({
-
-        // })
-        alert('返回')
+    clickBack(title) {
+        if (title == "成因"&&!this.state.video) {
+            this.setState({
+                reason: true
+            })
+        }
+        if (title == "返回") {
+            this.setState({
+                details:false
+            })
+        }
+        if (title == "康复") {
+            alert(title)
+        }
+        if (title == "治疗"&&!this.state.reason) {
+            this.setState({
+                video:true
+            })
+        }
+        if (title == "3D模型") {
+            alert(title)
+        }
     }
     showDetails() {
         this.setState({
