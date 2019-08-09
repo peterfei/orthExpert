@@ -4,11 +4,11 @@ import {
 import { screen, system } from "../../common";
 import { size } from '../../common/ScreenUtil';
 
-export default{
+export default {
   container: {
     flex: 1,
-    height:'100%',
-    width:'100%',
+    height: '100%',
+    width: '100%',
     //justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
@@ -18,12 +18,15 @@ export default{
     height: screen.height * 0.5,
     right: 0,
     top: screen.height * 0.5,
-    backgroundColor: '#262626',
-    width: screen.width*0.38,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    width: screen.width * 0.38,
     transform: [{ translateY: -screen.height * 0.5 * 0.5 }],
     alignItems: 'center',
     borderRadius: 5,
     zIndex: 999
+  },
+  closeButton:{
+    alignItems:'center',
   },
   deleteStyle: {
     position: "absolute",
@@ -44,6 +47,9 @@ export default{
   searchImgMain: {
     width: 20,
     height: 20,
+  },
+  reasonStyle:{
+    width:'100%',
   },
   videoSourceStyle: {
     width: '100%',
@@ -71,7 +77,15 @@ export default{
     position: 'absolute',
     width: screen.width,
     bottom: 0,
-    backgroundColor: '#262626',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+  },
+  detailsImage:{
+    position:'absolute',
+    top:'50%',
+    left:'50%',
+    transform: [{ translateX: -screen.width*0.7*0.5 },{ translateY: -screen.height*0.7*0.5 }],
+    width:screen.width*0.7,
+    height:screen.height*0.7
   },
   btnImgStyle: {
     width: size(28),
@@ -104,11 +118,11 @@ export default{
   closeRightMenuStyle: {
     height: 40,
     width: 40,
-    backgroundColor: '#262626',
+    backgroundColor: 'rgba(0,0,0,0.8)',
     borderRadius: 20,
     position: 'absolute',
     top: screen.height * 0.5,
-    right: screen.width*0.38-20,
+    right: screen.width * 0.38 - 20,
     transform: [{ translateY: -20 }],
     paddingLeft: 3,
     justifyContent: 'center',
@@ -118,7 +132,7 @@ export default{
   },
   histortTitle: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 15,
     color: '#C8C8C8',
     width: '100%',
     borderBottomWidth: 1,
@@ -132,13 +146,21 @@ export default{
     paddingBottom: 10,
     paddingTop: 10,
   },
+  place: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,1)',
+    width: size(1),
+    height: size(1),
+  },
   histortBody: {
-    padding: 10,
+    padding: 5,
     margin: 7,
     borderRadius: 3,
     borderWidth: 1,
     borderColor: '#C8C8C8',
-    fontSize: 15,
+    //fontSize: 15,
     color: '#C8C8C8'
   },
   searchBackground: {

@@ -419,12 +419,14 @@ export default class SearchComponent extends Component {
         this.setState({
           search: true
         })
+        this.props.setSearch(true)
       }
       closeSearch() {
         this.setState({
           search: false,
           showHotAndKey:true
         })
+        this.props.setSearch(false)
       }
       My() {
         this.props.navigation.navigate('MyScreen');

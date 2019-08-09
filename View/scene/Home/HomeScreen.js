@@ -9,10 +9,11 @@
 import React, { Component } from 'react';
 import {
   Platform, StyleSheet, Text, View,
-  Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity
+  Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter
 } from 'react-native';
 import { screen, system } from "../../common";
 import SearchComponent from "./search";
+import Details from "./details"
 import UnityView, { UnityViewMessageEventData, MessageHandler } from 'react-native-unity-view';
 import { size } from '../../common/ScreenUtil';
 import { VoiceUtils } from "../../common/VoiceUtils";
@@ -21,8 +22,6 @@ import { NavigationActions, StackActions } from "react-navigation";
 import { groupBy, changeArr } from "../../common/fun";
 import { queryHistoryAll, insertHistory, deleteHistories, queryRecentlyUse } from "../../realm/RealmManager";
 import { values, set } from 'mobx';
-import Loading from "../../common/Loading";
-import Toast from "react-native-easy-toast";
 import api from "../../api";
 import historyData from "./History.json";
 import styles from './styles';
@@ -37,17 +36,10 @@ export default class HomeScreen extends Component {
   state = {
     name: '',
     data: '',
-    getData:'',
+    getData: '',
+    search: false,
     rightMenu: false,
-    details: false,
-    video: false,
-    bottomIcon: [
-      { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
-      { img: require('../../img/home/tab1.png'), title: '成因' },
-      { img: require('../../img/home/tab2.png'), title: '治疗' },
-      { img: require('../../img/home/tab3.png'), title: '3D模型' },
-      { img: require('../../img/home/tab4.png'), title: '康复' }
-    ]
+    img: false,
   }
   onUnityMessage(handler) {
     console.log(handler.name); // the message name
@@ -84,32 +76,22 @@ export default class HomeScreen extends Component {
             height: screen.height
           }} />
         {/* 顶部/搜索 */}
-        <SearchComponent navigation={this.props.navigation} pushRightMune={(pat_no)=>this.pushDetails(pat_no)}/>
-        {/* 右侧菜单及关闭按钮 */}
-        {this.state.rightMenu ? [this.rightMenu(), this.rightMenuClose()] : <View style={{
-          position: 'absolute',
-          right: 0,
-          bottom:0,
-          backgroundColor: 'rgba(0,0,0,1)',
-          width:size(1),height:size(1),}}></View>}
-        {/* 底部详情 */}
-        {this.state.details ? this.details() : null}
-        {/* 提示组件 */}
-        <Loading
-          ref={r => {
-            this.Loading = r;
-          }}
-          hudHidden={false}
+        <SearchComponent navigation={this.props.navigation}
+          pushRightMune={(pat_no) => this.pushDetails(pat_no)}
+          setSearch={(bool) => this.setSearchComponent(bool)}
         />
-        <Toast style={{ backgroundColor: '#343434' }} ref="toast" opacity={1} position='top'
-          positionValue={size(100)} fadeInDuration={750} textStyle={{ color: '#FFF' }}
-          fadeOutDuration={1000} />
+        {/* 点击疾病后图片 */}
+        {this.state.img && !this.state.search ? this.imgOpen() : null}
+        {/* 右侧菜单及关闭按钮 */}
+        {this.state.rightMenu && !this.state.search ? [this.rightMenu(), this.rightMenuClose()] : <View style={styles.place}></View>}
+        {/* 底部详情 */}
+        <Details navigation={this.props.navigation} />
       </View>
     );
   }
-  async pushDetails(pat_no){
+  async pushDetails(pat_no) { //获取单个疾病资源,包括底部菜单,图片,摄像机参数等
     //获取搜索后数据
-    let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo="+pat_no;
+    let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + pat_no;
     await fetch(url, {
       method: "get",
       headers: {
@@ -118,178 +100,80 @@ export default class HomeScreen extends Component {
     }).then(resp => resp.json())
       .then(result => {
         this.setState({
-          getData: result
-        },()=>alert(JSON.stringify(this.state.getData)))
+          getData: result.pathology
+        }, () => alert(JSON.stringify(this.state.getData)))
       })
+    this.setState({
+      img: true
+    })
+    DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
+    DeviceEventEmitter.emit("getData", { getData: this.state.getData });
   }
-  details() {
+  imgOpen() {
     return (
-      <View style={styles.details}>
-        {this.state.video ? this.renderVideo() : null}
-        <View style={[styles.detailsRow, { marginTop: 5 }]}>
-          <View>
-            <Text style={{ color: 'white', fontWeight: 'bold', paddingLeft: 15 }}>{this.state.name}</Text>
-          </View>
-          <MyTouchableOpacity
-            onPress={() => {
-              this.fayin(this.state.name + "。" + this.state.name)
-            }}
-            style={{ position: 'absolute', left: '50%', transform: [{ translateX: -40 }], alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-            <Image
-              style={{ width: size(30), height: size(30), marginRight: size(10) }}
-              source={require('../../img/unity/laba.png')} />
-            <Text style={{ color: "white", }}>{this.state.name}</Text>
-          </MyTouchableOpacity>
-        </View>
-        <View style={styles.detailsRow}>
-          {this.renderBottomIcon()}
-        </View>
+      <View style={styles.detailsImage}>
+        <Image style={{ width: '100%', height: '100%' }}
+          source={{ uri: this.state.getData.img_url }}
+        />
+        <TouchableHighlight style={{ width: 20, height: 20, position: 'absolute', right: 5, top: 5 }}
+          onPress={() => this.closeImg()}>
+          <Image style={{ width: 20, height: 20, }}
+            source={require('../../img/unity/cclose.png')}
+          />
+        </TouchableHighlight>
       </View>
     )
+  }
+  closeImg() {
+    this.setState({
+      img: false
+    })
+    DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
+  }
+  setSearchComponent(bool) {
+    this.setState({
+      search: bool
+    })
+    if (bool == false) {
+      this.setState({
+        rightMenu: bool,
+        img: bool
+      })
+    }
+    DeviceEventEmitter.emit("DetailsWinEmitter", { search: bool });
+  }
+  setDetailsComponent(bool) {
+    this.setState({
+      details: bool
+    })
   }
   rightMenu() {
     return (
       <View style={styles.rightMenu}>
-        {/* <Text style={styles.boneName}>{this.state.name}</Text>
-        <Text style={styles.boneDisease} onPress={() => this.showDetails()}>{this.state.data}</Text> */}
-        <Text style={styles.boneName}>xxx</Text>
+        <Text style={styles.boneName}>{this.state.name}</Text>
         <Text style={styles.boneDisease} onPress={() => this.showDetails()}>{this.state.data}</Text>
       </View>
     )
   }
   rightMenuClose() {
     return (
-      <TouchableHighlight
-        style={[styles.closeRightMenuStyle]}
-        onPress={() => this.closeRightMenu()}>
-        <Image style={styles.closeRightMenuImg} resizeMode="contain"
-          source={require('../../img/public/right1.png')} />
-      </TouchableHighlight>
-    )
-  }
-  renderVideo() {
-    return (
-      <View style={[styles.videoSourceStyle]}>
-        <View style={{
-          height: size(60),
-          width: '100%',
-          flexDirection: 'row',
-          justifyContent: 'flex-end',
-          alignItems: 'center'
-        }}>
-
-          <MyTouchableOpacity onPress={() => {
-            alert('关闭')
-          }}>
-            <Image source={require('../../img/unity/close.png')} style={{
-              width: size(36),
-              height: size(36),
-              marginRight: size(20),
-              resizeMode: 'contain'
-            }} />
-          </MyTouchableOpacity>
-
-        </View>
-        <Video
-          rotateToFullScreen
-          lockPortraitOnFsExit
-          scrollBounce
-
-          url={this.state.currentShowSource.content}
-          ref={(ref) => {
-            this.video = ref
-          }}
-          onError={(msg) => {
-            this.playVideoError(msg)
-          }}
-          onFullScreen={(status) => {
-            status ? this.sendMsgToUnity('landscape', '', '') : this.sendMsgToUnity('portrait', '', '');
-            this.setState({
-              isPro: !status
-            })
-          }}
-        />
+      <View style={[styles.closeRightMenuStyle]}>
+        <TouchableHighlight onPress={() => this.closeRightMenu()}>
+          <Image style={styles.closeRightMenuImg} resizeMode="contain"
+            source={require('../../img/public/right1.png')} />
+        </TouchableHighlight>
       </View>
     )
   }
-  renderBottomIcon() {
-    let Arr = [];
-    let data = this.state.bottomIcon
-    for (let i = 0; i < data.length; i++) {
-      Arr.push(
-        <TouchableOpacity style={styles.btnStyle} key={i} onPress={() => {
-          this.clickBack()
-        }}>
-          <Image style={styles.btnImgStyle} source={data[i].img} />
-          <Text style={styles.btnTextStyle}>{data[i].title}</Text>
-        </TouchableOpacity>
-      )
-    }
-    return Arr
-    //   let arr = [];
-    //   arr.push(
-    //     <TouchableOpacity style={styles.btnStyle} onPress={() => {
-    //         this.clickBack()
-    //     }}>
-    //         <Image style={styles.btnImgStyle} source={require('../../img/unity/fanhuiyuan.png')}/>
-    //         <Text style={styles.btnTextStyle}>返回</Text>
-    //     </TouchableOpacity>
-    // )
-    // this.state.sourceData.forEach((item, index) => {
-    //     let icon = item.res_fy_icon_url;
-    //     let rwId = this.state.currentShowSource.rw_id == undefined ? '' : this.state.currentShowSource.rw_id;
-    //     let color = rwId == item.rw_id ? '#60ccff' : '#fff';
-    //     let data =
-    //         arr.push(
-    //             <MyTouchableOpacity style={styles.btnStyle} onPress={() => {
-    //                 this.handleActionSource(item)
-    //             }} key={index}>
-    //                 <Image style={[styles.btnImgStyle, {tintColor: color}]} source={{uri: icon}}/>
-    //                 <Text style={[styles.btnTextStyle, {color: color}]}>{item.secondFyName}</Text>
-    //             </MyTouchableOpacity>
-    //         )
-    // })
-    // return (
-    //     <View style={{
-    //         flexDirection: 'row',
-    //         height: size(90),
-    //         alignItems: 'center',
-    //         backgroundColor: 'rgba(0,0,0,0.8)',
-    //     }}>
-    //         {arr}
-    //     </View>
-    // )
-  }
-  clickBack() {
-    // this.setState({
 
-    // })
-    alert('返回')
-  }
   showDetails() {
-    this.setState({
-      details: true,
-    })
+    DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
+    DeviceEventEmitter.emit("getData", { getData: this.state.getData });
+    this.pushDetails('BLCJ001')////////////////////////////////////////////////////////临时固定pat_no =》 this.state.data
   }
   closeRightMenu() {
     this.setState({
       rightMenu: false,
-      details: false
     })
   }
-  fayin(name) {
-    name = name.replace("_L", "").replace("_R", "").replace("_左", "").replace("_右", "");
-    if (Platform.OS != "ios") {
-      this.initVoice();
-    }
-    VoiceUtils.speak(name);
-  }
-  initVoice() {
-    if (index == 0) {
-      VoiceUtils.init(0);
-      index++
-    }
-  }
 }
-
-

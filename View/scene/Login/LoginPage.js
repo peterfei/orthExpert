@@ -18,6 +18,7 @@ import {size} from "../../common/ScreenUtil";
 import ETTLightStatus from "../../common/ETTLightStatus";
 import {groupBy, changeArr, getRelationData} from "../../common/fun";
 import Orientation from 'react-native-orientation';
+// import console = require("console");
 
 Orientation.lockToPortrait();//强制竖屏
 
@@ -35,7 +36,10 @@ export default class LoginPage extends Component {
 
 
     async componentDidMount() {
+        // debugger
+        console.log("======================================");
         let tokens = await storage.get("userTokens", "");
+        // debugger
         if (!(tokens == -1 || tokens == -2)) {
             if (tokens.member.isYouke == "yes") {
                 return false;
