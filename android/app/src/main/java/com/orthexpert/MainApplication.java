@@ -34,6 +34,8 @@ import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.entity.UMessage;
 import com.umeng.message.common.UmLog;
 
+import com.xiaomi.mipush.sdk.MiPushClient;
+
 // import com.umeng.message.common.UmLog;
 
 public class MainApplication extends Application implements ReactApplication {
@@ -73,13 +75,16 @@ public class MainApplication extends Application implements ReactApplication {
 
   @Override
   public void onCreate() {
-    super.onCreate();
-    SoLoader.init(this, /* native exopackage */ false);
-    UMConfigure.setLogEnabled(true);
-    RNUMConfigure.init(this, "5d4a984e0cafb25ba6000854", "Umeng", UMConfigure.DEVICE_TYPE_PHONE,
-            "4cc540e80284d655e1e14e5a40cae979");
-    initUpush();
+      super.onCreate();
+      SoLoader.init(this, /* native exopackage */ false);
+      UMConfigure.setLogEnabled(true);
+      RNUMConfigure.init(this, "5d4a984e0cafb25ba6000854", "Umeng", UMConfigure.DEVICE_TYPE_PHONE,
+              "4cc540e80284d655e1e14e5a40cae979");
+      initUpush();
+      MiPushClient.registerPush(this, "2882303761518102556", "5671810240556");
+
   }
+
 
   @Override
   protected void attachBaseContext(Context context){

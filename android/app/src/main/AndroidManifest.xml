@@ -37,6 +37,11 @@
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
       <meta-data android:value="5d4a984e0cafb25ba6000854" android:name="UMENG_APPKEY"/>
       <meta-data android:value="4cc540e80284d655e1e14e5a40cae979" android:name="UMENG_MESSAGE_SECRET"/>
+
+      <activity
+      android:name="com.orthexpert.MipushTestActivity"
+      android:launchMode="singleTask"
+      android:exported="true" />
       
     </application>
 

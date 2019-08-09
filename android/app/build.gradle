@@ -157,7 +157,9 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'com.android.support:multidex:1.0.3'
-    
+    //小米Push通道
+    implementation 'com.umeng.umsdk:xiaomi-push:3.6.9'
+    implementation 'com.umeng.umsdk:xiaomi-umengaccs:1.1.0'  
 }
 
 // Run this once to be able to run the application with BUCK
