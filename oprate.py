@@ -3,7 +3,7 @@
 # @name   : operate.py
 # @author : peterfei
 import os
-
+import time
 def bash_shell(bash_command): 
     return os.system(bash_command)
 
@@ -26,4 +26,5 @@ if __name__ == '__main__':
   bash_shell("react-native run-android")
   
   print("=============启动日志====================")
+  time.sleep(1)
   bash_shell("%s/logcat_package.sh  com.orthexpert"%(os.getcwd()))
