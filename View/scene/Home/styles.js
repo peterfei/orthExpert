@@ -67,7 +67,7 @@ export default {
   },
   videoSourceStyle: {
     width: '100%',
-    backgroundColor: 'rgba(0,0,0,0.8)',
+    backgroundColor: 'red',
     borderTopLeftRadius: size(20),
     borderTopRightRadius: size(20),
     overflow: 'hidden',
@@ -91,6 +91,7 @@ export default {
     position: 'absolute',
     width: screen.width,
     bottom: 0,
+    left: 0
   },
   detailsImage:{
     position:'absolute',

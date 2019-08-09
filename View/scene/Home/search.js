@@ -321,7 +321,7 @@ export default class SearchComponent extends Component {
         for (let i = 0; i < this.state.historyData.length; i++) {
           let historyData = this.state.historyData[i]
           arr.push(
-            <Text style={styles.histortBody} onPress={() => this.searchChick(historyData)}>{this.getKeyName(historyData.keyName)}</Text>
+            <Text style={styles.histortBody} onPress={() => this.searchChicks(historyData.ketNo,historyData.keyName)}>{this.getKeyName(historyData.keyName)}</Text>
           )
         }
         return arr
@@ -345,13 +345,9 @@ export default class SearchComponent extends Component {
           return "";
         }
       }
-      searchChick(data){
-        alert(JSON.stringify(data)),
-        this.saveHistory(data,"key"),
-        this.getHistory()
-      }
-      searchChicks(pat_no,pat_name,pat_id){
-        let data={"keyName":pat_name,"ketId":pat_id}
+      
+      searchChicks(pat_no,pat_name){
+        let data={"keyName":pat_name,"ketNo":pat_no}
         this.saveHistory(data,"key")
         this.getHistory()
         this.props.pushRightMune(pat_no)
@@ -361,7 +357,7 @@ export default class SearchComponent extends Component {
         if ("key" == type) {
           let temp = {
             keyName: data.keyName,
-            keyId: data.keyId + "",
+            ketNo: data.ketNo + "",
             type: type,
             addTime: new Date().getTime()
           }

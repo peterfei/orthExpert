@@ -6,7 +6,7 @@ const HistorySearchSchema = {
     name: 'HistorySearch',
     properties: {
         keyName: "string",
-        keyId: "string",
+        ketNo: "string",
         type: "string",
         addTime: "int"
     }

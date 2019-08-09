@@ -25,7 +25,7 @@ import Loading from "../../common/Loading";
 import Toast from "react-native-easy-toast";
 import api from "../../api";
 import historyData from "./History.json";
-import Video, {Container} from 'react-native-af-video-player';
+import Video, { Container } from 'react-native-af-video-player';
 import styles from './styles';
 let unity = UnityView;
 let index = 0;
@@ -101,35 +101,36 @@ export default class Details extends Component {
     render() {
         return (
             <View style={{ position: 'absolute', bottom: 0, width: screen.width }}>
-                {this.state.details && !this.state.search ? this.details() : <View style={styles.place}></View>}
+                {this.state.details && !this.state.search ? this.details() : null}
             </View>
 
         )
     }
     details() {
         return (
-            <View style={styles.details}>
-                {this.state.video&&this.state.getData.menus !== null ? this.renderVideo() : null}
-                {this.state.reason&&this.state.getData.menus !== null ? this.renderReason() : null}
-                <View style={{backgroundColor: 'rgba(0,0,0,0.8)'}}>
-                <View style={styles.detailsRow}>
-                    <View style={{ marginTop: 5 }}>
-                        <Text style={{ color: 'white', fontWeight: 'bold', paddingLeft: 15 }}>{this.state.getData.pat_name}</Text>
+            <View >
+                {this.renderVideo()}
+                {/* {this.state.video && this.state.getData.menus !== null ? this.renderVideo() : null} */}
+                {this.state.reason && this.state.getData.menus !== null ? this.renderReason() : null}
+                <View>
+                    <View style={styles.detailsRow}>
+                        <View style={{ marginTop: 5 }}>
+                            <Text style={{ color: 'white', fontWeight: 'bold', paddingLeft: 15 }}>{this.state.getData.pat_name}</Text>
+                        </View>
+                        <MyTouchableOpacity
+                            onPress={() => {
+                                this.fayin(this.state.getData.pat_name + "。" + this.state.getData.pat_name)
+                            }}
+                            style={{ marginTop: 5, position: 'absolute', left: '50%', transform: [{ translateX: -40 }], alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                            <Image
+                                style={{ width: size(30), height: size(30), marginRight: size(10) }}
+                                source={require('../../img/unity/laba.png')} />
+                            <Text style={{ color: "white", }}>{this.state.getData.pat_name}</Text>
+                        </MyTouchableOpacity>
                     </View>
-                    <MyTouchableOpacity
-                        onPress={() => {
-                            this.fayin(this.state.getData.pat_name + "。" + this.state.getData.pat_name)
-                        }}
-                        style={{ marginTop: 5, position: 'absolute', left: '50%', transform: [{ translateX: -40 }], alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-                        <Image
-                            style={{ width: size(30), height: size(30), marginRight: size(10) }}
-                            source={require('../../img/unity/laba.png')} />
-                        <Text style={{ color: "white", }}>{this.state.getData.pat_name}</Text>
-                    </MyTouchableOpacity>
-                </View>
-                <View style={styles.detailsRow}>
-                    {this.renderBottomIcon()}
-                </View>
+                    <View style={styles.detailsRow}>
+                        {this.renderBottomIcon()}
+                    </View>
                 </View>
             </View>
         )
@@ -166,7 +167,7 @@ export default class Details extends Component {
                     justifyContent: 'flex-end',
                     alignItems: 'center'
                 }}>
-                    <MyTouchableOpacity onPress={() => this.setState({video:false})}>
+                    <MyTouchableOpacity onPress={() => this.setState({ video: false })}>
                         <Image source={require('../../img/unity/close.png')} style={{
                             width: size(36),
                             height: size(36),
@@ -180,7 +181,7 @@ export default class Details extends Component {
                     rotateToFullScreen
                     lockPortraitOnFsExit
                     scrollBounce
-
+                    style={{zIndex: 9999999999}}        
                     url="http://res.vesal.site/chuzheng/CZSP036.mp4"
                     ref={(ref) => {
                         this.video = ref
@@ -212,61 +213,49 @@ export default class Details extends Component {
             )
         }
         return Arr
-        //   let arr = [];
-        //   arr.push(
-        //     <TouchableOpacity style={styles.btnStyle} onPress={() => {
-        //         this.clickBack()
-        //     }}>
-        //         <Image style={styles.btnImgStyle} source={require('../../img/unity/fanhuiyuan.png')}/>
-        //         <Text style={styles.btnTextStyle}>返回</Text>
-        //     </TouchableOpacity>
-        // )
-        // this.state.sourceData.forEach((item, index) => {
-        //     let icon = item.res_fy_icon_url;
-        //     let rwId = this.state.currentShowSource.rw_id == undefined ? '' : this.state.currentShowSource.rw_id;
-        //     let color = rwId == item.rw_id ? '#60ccff' : '#fff';
-        //     let data =
-        //         arr.push(
-        //             <MyTouchableOpacity style={styles.btnStyle} onPress={() => {
-        //                 this.handleActionSource(item)
-        //             }} key={index}>
-        //                 <Image style={[styles.btnImgStyle, {tintColor: color}]} source={{uri: icon}}/>
-        //                 <Text style={[styles.btnTextStyle, {color: color}]}>{item.secondFyName}</Text>
-        //             </MyTouchableOpacity>
-        //         )
-        // })
-        // return (
-        //     <View style={{
-        //         flexDirection: 'row',
-        //         height: size(90),
-        //         alignItems: 'center',
-        //         backgroundColor: 'rgba(0,0,0,0.8)',
-        //     }}>
-        //         {arr}
-        //     </View>
-        // )
     }
     clickBack(title) {
-        if (title == "成因"&&!this.state.video) {
+        let msg = {
+            "struct_version": "4",
+            "app_type": "medical",
+            "app_version": "4",
+            "ab_path": "http://fileprod.vesal.site/upload/unity3D/android/zip/medical/v330/RA0801011.zip",
+            "youke_use": "disabled",
+            "cate_id": 27,
+            "platform": "android,ios,pc",
+            "first_icon_url": "http://fileprod.vesal.site/upload/unity3D/android/img/medical/v240/v2/RA0801011.png",
+            "visible_identity": "",
+            "is_charge": "yes",
+            "ab_list": "",
+            "struct_id": 465,
+            "struct_name": "足与踝部",
+            "struct_sort": "3",
+            "noun_id": "",
+            "struct_code": "RA0801011",
+            "app_id": "RA0801011",
+            "showModelList": "RAMYKNWZU_XiaoZhiDongQuJi,RAMYKNWZU_XiaoZhiZhanJi,RAMYKNWZU_YinZhuangJi"
+        }
+        if (title == "成因" && !this.state.video) {
             this.setState({
                 reason: true
             })
         }
         if (title == "返回") {
             this.setState({
-                details:false
+                details: false
             })
         }
         if (title == "康复") {
             alert(title)
         }
-        if (title == "治疗"&&!this.state.reason) {
+        if (title == "治疗" && !this.state.reason) {
             this.setState({
-                video:true
+                video: true
             })
         }
         if (title == "3D模型") {
-            alert(title)
+            this.props.sendMsgToUnity("app", msg, 'json')
+            DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
         }
     }
     showDetails() {

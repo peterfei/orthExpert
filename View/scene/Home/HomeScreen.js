@@ -44,14 +44,17 @@ export default class HomeScreen extends Component {
   onUnityMessage(handler) {
     console.log(handler.name); // the message name
     console.log(handler.data); // the message data
-    let boneDisease = this.hexToStr(handler.data.boneDisease)
-    this.setState({
-      name: handler.name,
-      data: boneDisease,
-      rightMenu: true,
-    })
+    if(handler.data!=null){
+      let boneDisease = this.hexToStr(handler.data.boneDisease)
+      this.setState({
+        name: handler.name,
+        data: boneDisease,
+        rightMenu: true,
+      })
+    }
+    
     setTimeout(() => {
-      handler.send('I am callback!');
+      // handler.send('I am callback!');
     }, 2000);
   }
   /**
@@ -65,6 +68,23 @@ export default class HomeScreen extends Component {
     }
     return val;
   }
+  listeners = {
+    update: DeviceEventEmitter.addListener("closeBigImg",
+      ({ ...passedArgs }) => {
+        let closeBigImg = passedArgs.closeBigImg
+        if(closeBigImg==true)
+        this.setState({
+          img: false
+        })
+      }
+    )
+  };
+  componentWillUnmount() {
+    _.each(this.listeners, listener => {
+      listener.remove();
+    });
+    this.timer && clearInterval(this.timer);
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -73,8 +93,20 @@ export default class HomeScreen extends Component {
           onUnityMessage={this.onUnityMessage.bind(this)}
           style={{
             width: screen.width,
-            height: screen.height
+            height: screen.height,
+            zIndex: -1
           }} />
+          {/* 底部详情 */}
+          <View style={{
+                    backgroundColor: "black", width: '100%', height: size(0.0001),
+                    position: 'relative',
+                    top: 0,
+                    left: 0,
+                    right: 0
+                }}>
+                </View>
+        <Details navigation={this.props.navigation}
+          sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
         {/* 顶部/搜索 */}
         <SearchComponent navigation={this.props.navigation}
           pushRightMune={(pat_no) => this.pushDetails(pat_no)}
@@ -84,10 +116,29 @@ export default class HomeScreen extends Component {
         {this.state.img && !this.state.search ? this.imgOpen() : null}
         {/* 右侧菜单及关闭按钮 */}
         {this.state.rightMenu && !this.state.search ? [this.rightMenu(), this.rightMenuClose()] : <View style={styles.place}></View>}
-        {/* 底部详情 */}
-        <Details navigation={this.props.navigation} />
+        
       </View>
     );
+  }
+  /**
+     * 发送消息给unity
+     */
+  sendMsgToUnity(name, info, type) {
+
+    if (this.unity) {
+      if (type == 'json') {
+        let temp = Object.assign({}, info)
+        this.unity.postMessageToUnityManager({
+          name: name,
+          data: JSON.stringify(temp)
+        })
+      } else {
+        this.unity.postMessageToUnityManager({
+          name: name,
+          data: info
+        })
+      }
+    }
   }
   async pushDetails(pat_no) { //获取单个疾病资源,包括底部菜单,图片,摄像机参数等
     //获取搜索后数据
@@ -102,7 +153,7 @@ export default class HomeScreen extends Component {
         this.setState({
           getData: result.pathology
         }
-        //, () => alert(JSON.stringify(this.state.getData))
+          //, () => alert(JSON.stringify(this.state.getData))
         )
       })
     this.setState({
@@ -172,7 +223,7 @@ export default class HomeScreen extends Component {
     DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
     DeviceEventEmitter.emit("getData", { getData: this.state.getData });
     this.setState({
-      rightMenu:false
+      rightMenu: false
     })
     this.pushDetails('BLCJ001')////////////////////////////////////////////////////////临时固定pat_no =》 this.state.data
   }

@@ -96,7 +96,7 @@ const insertHistory = async obj => {
     try {
         realm.write(() => {
 
-            let rs = realm.objects('HistorySearch').filtered(`keyName = '${obj.keyName}'`)
+            let rs = realm.objects('HistorySearch').filtered(`ketNo = '${obj.ketNo}'`)
             let counts = rs.length;
             if (rs == null || rs.length == 0) {
                 realm.create("HistorySearch", obj);
