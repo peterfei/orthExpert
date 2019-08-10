@@ -201,9 +201,9 @@ export default class Details extends Component {
     renderBottomIcon() {
         let Arr = [];
         let data = this.state.bottomIcon
-        let getData=''
+        let getData = ''
         //getData=JSON.parse(this.state.getData.menus)[0].type
-        this.state.getData!==""?getData=JSON.parse(this.state.getData.menus)[0].type:null
+        this.state.getData !== "" ? getData = JSON.parse(this.state.getData.menus)[0].type : null
         for (let i = 0; i < data.length; i++) {
             Arr.push(
                 <TouchableOpacity style={styles.btnStyle} key={i} onPress={() => {
@@ -213,13 +213,13 @@ export default class Details extends Component {
                     <Text style={styles.btnTextStyle}>{data[i].title}</Text>
                 </TouchableOpacity>
             )
-            if(this.state.EnterNowScreen== "isNotMainScreen"&&data[i].title=="3D模型"){
+            if (this.state.EnterNowScreen == "isNotMainScreen" && data[i].title == "3D模型") {
                 Arr.pop()
             }
-            if(data[i].title=="成因"&&getData=='video'){
+            if (data[i].title == "成因" && getData == 'video') {
                 Arr.pop()
             }
-            if(data[i].title=="治疗"&&getData=='text'){
+            if (data[i].title == "治疗" && getData == 'text') {
                 Arr.pop()
             }
         }
@@ -268,6 +268,10 @@ export default class Details extends Component {
                     EnterNowScreen: "isMainScreen"
                 })
             }
+            this.setState({
+                video: false,
+                reason: false,
+            })
         }
         if (title == "康复") {
             this.props.navigation.navigate('Recovery');
