@@ -175,14 +175,13 @@ export default class Details extends Component {
                             resizeMode: 'contain'
                         }} />
                     </MyTouchableOpacity>
-
                 </View>
                 <Video
                     rotateToFullScreen
                     lockPortraitOnFsExit
                     scrollBounce
                     style={{ zIndex: 9999999999 }}
-                    url="http://res.vesal.site/chuzheng/CZSP036.mp4"
+                    url={JSON.parse(this.state.getData.menus)[0].content}
                     ref={(ref) => {
                         this.video = ref
                     }}
@@ -202,6 +201,9 @@ export default class Details extends Component {
     renderBottomIcon() {
         let Arr = [];
         let data = this.state.bottomIcon
+        let getData=''
+        //getData=JSON.parse(this.state.getData.menus)[0].type
+        this.state.getData!==""?getData=JSON.parse(this.state.getData.menus)[0].type:null
         for (let i = 0; i < data.length; i++) {
             Arr.push(
                 <TouchableOpacity style={styles.btnStyle} key={i} onPress={() => {
@@ -212,6 +214,12 @@ export default class Details extends Component {
                 </TouchableOpacity>
             )
             if(this.state.EnterNowScreen== "isNotMainScreen"&&data[i].title=="3D模型"){
+                Arr.pop()
+            }
+            if(data[i].title=="成因"&&getData=='video'){
+                Arr.pop()
+            }
+            if(data[i].title=="治疗"&&getData=='text'){
                 Arr.pop()
             }
         }
