@@ -5,9 +5,10 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "android":"python ./oprate.py",
+    "android": "python ./oprate.py",
     "reset": "rm -rf node_modules/ && npm cache clear && watchman watch-del-all && npm i",
-    "android-device": "adb reverse tcp:8081 tcp:8081 && react-native run-android"
+    "android-device": "adb reverse tcp:8081 tcp:8081 && react-native run-android",
+    "bundle-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res "
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.4.4",

@@ -26,5 +26,5 @@ if __name__ == '__main__':
   bash_shell("react-native run-android")
   
   print("=============启动日志====================")
-  time.sleep(1)
+  # time.sleep(1)
   bash_shell("%s/logcat_package.sh  com.orthexpert"%(os.getcwd()))

@@ -60,3 +60,6 @@ buck-out/
 android/UnityExport/
 *.zip
 venv/
+*.apk
+output.json
+*.bundle

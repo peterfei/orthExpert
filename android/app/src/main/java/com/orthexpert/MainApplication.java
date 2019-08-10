@@ -3,16 +3,17 @@ package com.orthexpert;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.realm.react.RealmReactPackage;
+import com.reactnative.unity.view.UnityViewPackage;
+import com.github.yamill.orientation.OrientationPackage;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.rnfs.RNFSPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.corbt.keepawake.KCKeepAwakePackage;
 import com.brentvatne.react.ReactVideoPackage;
-import com.github.yamill.orientation.OrientationPackage;
-import com.rnfs.RNFSPackage;
-import io.realm.react.RealmReactPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.reactnative.unity.view.UnityViewPackage;
+
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -56,16 +57,17 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RealmReactPackage(),
+            new UnityViewPackage(),
+            new OrientationPackage(),
+            new RNGestureHandlerPackage(),
+            new RNFSPackage(),
+            new RNDeviceInfo(),
             new LinearGradientPackage(),
             new VectorIconsPackage(),
             new KCKeepAwakePackage(),
             new ReactVideoPackage(),
-            new OrientationPackage(),
-            new RNFSPackage(),
-            new RealmReactPackage(),
-            new RNDeviceInfo(),
-            new RNGestureHandlerPackage(),
-          new UnityViewPackage(),
+            
           new DplusReactPackage()
       );
     }
