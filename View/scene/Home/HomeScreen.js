@@ -187,7 +187,7 @@ export default class HomeScreen extends Component {
     this.setState({
       img: false
     })
-    DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
+    //DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
   }
   setSearchComponent(bool) {
     this.setState({

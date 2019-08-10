@@ -41,6 +41,7 @@ export default class Details extends Component {
         details: false,
         search: false,
         getData: '',
+        EnterNowScreen: "isMainScreen",
         bottomIcon: [
             { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
             { img: require('../../img/home/tab1.png'), title: '成因' },
@@ -113,7 +114,7 @@ export default class Details extends Component {
                 {this.state.reason && this.state.getData.menus !== null ? this.renderReason() : null}
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
                     <View style={styles.detailsRow}>
-                        <View style={{ alignItems:'center',width:"100%",marginTop:5 }}>
+                        <View style={{ alignItems: 'center', width: "100%", marginTop: 5 }}>
                             <Text style={{ color: 'white', fontWeight: 'bold', paddingLeft: 15 }}>{this.state.getData.pat_name}</Text>
                         </View>
                         {/* <MyTouchableOpacity
@@ -244,11 +245,18 @@ export default class Details extends Component {
             }
         }
         if (title == "返回") {
-            this.props.sendMsgToUnity('back', '', '')
-            DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "isMainScreen" });
-            // this.setState({
-            //     details: false
-            // })
+            if (this.state.EnterNowScreen == 'isMainScreen') {
+                this.setState({
+                    details: false
+                })
+                DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
+            } {
+                this.props.sendMsgToUnity('back', '', '')
+                DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "isMainScreen" });
+                this.setState({
+                    EnterNowScreen: "isMainScreen"
+                })
+            }
         }
         if (title == "康复") {
             this.props.navigation.navigate('Recovery');
@@ -263,9 +271,16 @@ export default class Details extends Component {
             }
         }
         if (title == "3D模型") {
-            this.props.sendMsgToUnity("app", msg, 'json')
-            DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "isNotMainScreen" });
-            DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
+            if (this.state.EnterNowScreen == 'isMainScreen') {
+                this.props.sendMsgToUnity("app", msg, 'json')
+                DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "isNotMainScreen" });
+                DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
+                this.setState({
+                    EnterNowScreen: "isNotMainScreen"
+                })
+            } else {
+                alert('您已处于3D模型')
+            }
         }
     }
     showDetails() {
