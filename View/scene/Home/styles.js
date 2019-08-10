@@ -78,7 +78,7 @@ export default {
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 5,
-    marginTop: 15
+    marginTop: 10
   },
   btnTextStyle: {
     textAlign: "center",

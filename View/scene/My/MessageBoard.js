@@ -21,7 +21,7 @@ import { NavigationActions } from "react-navigation";
 import RefreshListView, { RefreshState } from "react-native-refresh-list-view";
 import { size } from "../../common/ScreenUtil";
 
-//import {getDate} from "../Unity/LCE"
+import {getDate} from "../Unity/LCE"
 
 const that = this;
 

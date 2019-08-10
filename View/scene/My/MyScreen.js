@@ -152,20 +152,20 @@ export default class MyScreen extends Component {
               </View>
               <View>
                 <Text style={styles.username}>
-                  {this.state.member.mbName}17391973517
+                  {this.state.member.mbName}
                 </Text>
                 <Text style={styles.identityTitle}>
-                  {this.state.member.identityTitle}信息
+                  {this.state.member.identityTitle}
                 </Text>
               </View>
             </View>
-            <View style={styles.overTime}>
-              <Text style={styles.identityTitle}>{this.state.member.timer}2019.07.25会员到期</Text>
-              <TouchableWithoutFeedback
-                onPress={() => alert(111)}>
+            <TouchableWithoutFeedback
+              onPress={() => alert(111)}>
+              <View style={styles.overTime}>
+                <Text style={styles.identityTitle}>{this.state.member.timer}2019.07.25会员到期</Text>
                 <Text style={styles.identityTitle}>{this.state.member.timer}立即续费</Text>
-              </TouchableWithoutFeedback>
-            </View>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     width: screen.width,
     height: screen.height,
     flex: 1,
-    zIndex:999,
+    zIndex: 999,
   },
   backGround: {
     paddingTop: 20,
@@ -304,8 +304,8 @@ const styles = StyleSheet.create({
   back: {
     position: 'absolute',
     left: 10,
-    width: 30,
-    height: 30
+    width: 25,
+    height: 25
   },
   backImg: {
     height: '100%',

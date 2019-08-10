@@ -101,23 +101,22 @@ export default class Details extends Component {
     render() {
         return (
             <View style={{ position: 'absolute', bottom: 0, width: screen.width }}>
-                {this.state.details && !this.state.search ? this.details() : null}
+                {this.state.details && !this.state.search ? this.details() : <View style={styles.place}></View>}
             </View>
 
         )
     }
     details() {
         return (
-            <View >
-                {this.renderVideo()}
-                {/* {this.state.video && this.state.getData.menus !== null ? this.renderVideo() : null} */}
+            <View style={styles.details}>
+                {this.state.video && this.state.getData.menus !== null ? this.renderVideo() : null}
                 {this.state.reason && this.state.getData.menus !== null ? this.renderReason() : null}
-                <View>
+                <View style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
                     <View style={styles.detailsRow}>
-                        <View style={{ marginTop: 5 }}>
+                        <View style={{ alignItems:'center',width:"100%",marginTop:5 }}>
                             <Text style={{ color: 'white', fontWeight: 'bold', paddingLeft: 15 }}>{this.state.getData.pat_name}</Text>
                         </View>
-                        <MyTouchableOpacity
+                        {/* <MyTouchableOpacity
                             onPress={() => {
                                 this.fayin(this.state.getData.pat_name + "。" + this.state.getData.pat_name)
                             }}
@@ -126,7 +125,7 @@ export default class Details extends Component {
                                 style={{ width: size(30), height: size(30), marginRight: size(10) }}
                                 source={require('../../img/unity/laba.png')} />
                             <Text style={{ color: "white", }}>{this.state.getData.pat_name}</Text>
-                        </MyTouchableOpacity>
+                        </MyTouchableOpacity> */}
                     </View>
                     <View style={styles.detailsRow}>
                         {this.renderBottomIcon()}
@@ -181,7 +180,7 @@ export default class Details extends Component {
                     rotateToFullScreen
                     lockPortraitOnFsExit
                     scrollBounce
-                    style={{zIndex: 9999999999}}        
+                    style={{ zIndex: 9999999999 }}
                     url="http://res.vesal.site/chuzheng/CZSP036.mp4"
                     ref={(ref) => {
                         this.video = ref
@@ -190,14 +189,14 @@ export default class Details extends Component {
                         this.playVideoError(msg)
                     }}
                     onFullScreen={(status) => {
-                        status ? this.sendMsgToUnity('landscape', '', '') : this.sendMsgToUnity('portrait', '', '');
-                        this.setState({
-                            isPro: !status
-                        })
+                        status ? this.props.sendMsgToUnity('landscape', '', '') : this.props.sendMsgToUnity('portrait', '', '');
                     }}
                 />
             </View>
         )
+    }
+    playVideoError(msg) {
+        Alert.alert('', '该视频暂未开放, 敬请期待.', [{ text: '我知道了' }])
     }
     renderBottomIcon() {
         let Arr = [];
@@ -235,26 +234,37 @@ export default class Details extends Component {
             "app_id": "RA0801011",
             "showModelList": "RAMYKNWZU_XiaoZhiDongQuJi,RAMYKNWZU_XiaoZhiZhanJi,RAMYKNWZU_YinZhuangJi"
         }
-        if (title == "成因" && !this.state.video) {
-            this.setState({
-                reason: true
-            })
+        if (title == "成因") {
+            if (!this.state.video) {
+                this.setState({
+                    reason: true
+                })
+            } else {
+                alert('请关闭治疗')
+            }
         }
         if (title == "返回") {
-            this.setState({
-                details: false
-            })
+            this.props.sendMsgToUnity('back', '', '')
+            DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "isMainScreen" });
+            // this.setState({
+            //     details: false
+            // })
         }
         if (title == "康复") {
-            alert(title)
+            this.props.navigation.navigate('Recovery');
         }
-        if (title == "治疗" && !this.state.reason) {
-            this.setState({
-                video: true
-            })
+        if (title == "治疗") {
+            if (!this.state.reason) {
+                this.setState({
+                    video: true
+                })
+            } else {
+                alert('请关闭成因')
+            }
         }
         if (title == "3D模型") {
             this.props.sendMsgToUnity("app", msg, 'json')
+            DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "isNotMainScreen" });
             DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
         }
     }
