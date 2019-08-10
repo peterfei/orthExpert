@@ -9,7 +9,7 @@
 import React, { Component } from 'react';
 import {
   Platform, StyleSheet, Text, View,
-  Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter
+  Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
 } from 'react-native';
 import { screen, system } from "../../common";
 import SearchComponent from "./search";
@@ -34,13 +34,11 @@ export default class HomeScreen extends Component {
     header: null,
   }
   state = {
-    name: '',
-    data: '',
     getData: '',
     search: false,
     rightMenu: false,
     img: false,
-    rightMenuData:''
+    rightMenuData: '',
   }
   onUnityMessage(handler) {
     console.log(handler.name); // the message name
@@ -48,15 +46,10 @@ export default class HomeScreen extends Component {
     if (handler.data != null) {
       let boneDisease = this.hexToStr(handler.data.boneDisease)
       this.setState({
-        name: handler.name,
-        data: boneDisease,
         rightMenu: true,
       })
+      this.getPathologyAndArea(boneDisease)
     }
-    this.getPathologyAndArea('GKQY01')
-    //setTimeout(() => {
-      // handler.send('I am callback!');
-    //}, 2000);
   }
   /**
      * 16进制转字符
@@ -103,9 +96,9 @@ export default class HomeScreen extends Component {
           setSearch={(bool) => this.setSearchComponent(bool)}
         />
         {/* 点击疾病后图片 */}
-        {this.state.img && !this.state.search ? this.imgOpen() : null}
+        {this.state.img && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.imgOpen() : null}
         {/* 右侧菜单及关闭按钮 */}
-        {this.state.rightMenu && !this.state.search &&this.state.rightMenuData.pathologyList!=null ? [this.rightMenu(), this.rightMenuClose()] : <View style={styles.place}></View>}
+        {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? [this.rightMenu(), this.rightMenuClose()] : <View style={styles.place}></View>}
         {/* 底部详情 */}
         <Details navigation={this.props.navigation}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
@@ -154,7 +147,7 @@ export default class HomeScreen extends Component {
     DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
     DeviceEventEmitter.emit("getData", { getData: this.state.getData });
   }
-  async getPathologyAndArea(patAreaNo){//点击区域获取右侧疾病数据
+  async getPathologyAndArea(patAreaNo) {//点击区域获取右侧疾病数据
     let url = api.base_uri + "v1/app/pathology/getPathologyAndArea?patAreaNo=" + patAreaNo;
     await fetch(url, {
       method: "get",
@@ -169,19 +162,44 @@ export default class HomeScreen extends Component {
       })
   }
   imgOpen() {
+    let _that = this 
     return (
       <View style={styles.detailsImage}>
-        <Image style={{ width: '100%', height: '100%' }}
-          source={{ uri: this.state.getData.img_url }}
-        />
-        <TouchableHighlight style={{ width: 20, height: 20, position: 'absolute', right: 5, top: 5 }}
-          onPress={() => this.closeImg()}>
-          <Image style={{ width: 20, height: 20, }}
-            source={require('../../img/unity/cclose.png')}
-          />
-        </TouchableHighlight>
+        <ScrollView
+          horizontal={true}
+          pagingEnabled={true}
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={this.onScrollAnimationEnd.bind(_that)}
+          style={{ width: screen.width, height: screen.height * 0.75 }}
+        >
+          {this.renderImg()}
+        </ScrollView>
       </View>
     )
+  }
+  onScrollAnimationEnd(e) {
+    var i = Math.floor(e.nativeEvent.contentOffset.x / (screen.width - 0.01));
+    this.pushDetails(this.state.rightMenuData.pathologyList[i].pat_no)
+  }
+  renderImg() {
+    let arr = []
+    for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
+      arr.push(
+        <View key={i} style={{ width: screen.width, height: screen.height * 0.75 }}>
+          <Image style={{ width: '100%', height: '100%' }}
+            source={{ uri: this.state.rightMenuData.pathologyList[i].img_url }}
+          />
+          {/* 无图可能报错 */}
+          <TouchableHighlight style={{ width: 30, height: 30, position: 'absolute', right: 15, top: 15 }}
+            onPress={() => this.closeImg()}>
+            <Image style={{ width: 30, height: 30, }}
+              source={require('../../img/unity/close.png')}
+            />
+          </TouchableHighlight>
+        </View>
+      )
+    }
+    return arr
   }
   closeImg() {
     this.setState({
@@ -209,16 +227,17 @@ export default class HomeScreen extends Component {
   rightMenu() {
     return (
       <View style={styles.rightMenu}>
-        {/* {this.state.rightMenuData.area} */}
-        <Text style={styles.boneName}>肩部</Text>
-        {this.renderRightMenuBody()}
+        <Text style={styles.boneName}>{this.state.rightMenuData.area.pat_name}</Text>
+        <ScrollView>
+          {this.renderRightMenuBody()}
+        </ScrollView>
       </View>
     )
   }
-  renderRightMenuBody(){
-    let arr=[]
+  renderRightMenuBody() {
+    let arr = []
     //alert(JSON.stringify(this.state.rightMenuData.pathologyList) )
-    for(let i=0;i<this.state.rightMenuData.pathologyList.length;i++){
+    for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
       arr.push(
         <Text style={styles.boneDisease} key={i} onPress={() => this.showDetails(this.state.rightMenuData.pathologyList[i].pat_no)}>{this.state.rightMenuData.pathologyList[i].pat_name}</Text>
       )
