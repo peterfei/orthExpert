@@ -15,12 +15,12 @@ export default {
   },
   rightMenu: {
     position: 'absolute',
-    height: screen.height * 0.5,
+    height: screen.height * 0.6,
     right: 0,
     top: screen.height * 0.5,
     backgroundColor: 'rgba(0,0,0,0.8)',
     width: screen.width * 0.38,
-    transform: [{ translateY: -screen.height * 0.5 * 0.5 }],
+    transform: [{ translateY: -screen.height * 0.6 * 0.5 }],
     alignItems: 'center',
     borderRadius: 5,
     zIndex: 999
@@ -96,10 +96,9 @@ export default {
   detailsImage:{
     position:'absolute',
     top:'50%',
-    left:'50%',
-    transform: [{ translateX: -screen.width*0.7*0.5 },{ translateY: -screen.height*0.7*0.5 }],
-    width:screen.width*0.7,
-    height:screen.height*0.7
+    transform: [{ translateY: -screen.height*0.75*0.5 }],
+    width:screen.width,
+    height:screen.height*0.75
   },
   btnImgStyle: {
     width: size(28),

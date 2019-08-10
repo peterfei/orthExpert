@@ -115,7 +115,7 @@ export default class Details extends Component {
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
                     <View style={styles.detailsRow}>
                         <View style={{ alignItems: 'center', width: "100%", marginTop: 5 }}>
-                            <Text style={{ color: 'white', fontWeight: 'bold', paddingLeft: 15 }}>{this.state.getData.pat_name}</Text>
+                            <Text style={{ color: 'white', fontWeight: 'bold' }}>{this.state.getData.pat_name}</Text>
                         </View>
                         {/* <MyTouchableOpacity
                             onPress={() => {
@@ -211,29 +211,32 @@ export default class Details extends Component {
                     <Text style={styles.btnTextStyle}>{data[i].title}</Text>
                 </TouchableOpacity>
             )
+            if(this.state.EnterNowScreen== "isNotMainScreen"&&data[i].title=="3D模型"){
+                Arr.pop()
+            }
         }
         return Arr
     }
     clickBack(title) {
         let msg = {
-            "struct_version": "4",
+            "struct_version": "1",
             "app_type": "medical",
-            "app_version": "4",
-            "ab_path": "http://fileprod.vesal.site/upload/unity3D/android/zip/medical/v330/RA0801011.zip",
+            "app_version": "1",
+            "ab_path": "http://fileprod.vesal.site/upload/unity3D/android/zip/medical/v330/RA0801014.zip",
             "youke_use": "disabled",
-            "cate_id": 27,
-            "platform": "android,ios,pc",
-            "first_icon_url": "http://fileprod.vesal.site/upload/unity3D/android/img/medical/v240/v2/RA0801011.png",
-            "visible_identity": "",
+            "cate_id": 42,
+            "platform": "android,ios",
+            "first_icon_url": "http://fileprod.vesal.site/upload/unity3D/android/img/medical/v240/v2/RA0801014.png",
+            "visible_identity": null,
             "is_charge": "yes",
-            "ab_list": "",
-            "struct_id": 465,
-            "struct_name": "足与踝部",
-            "struct_sort": "3",
-            "noun_id": "",
-            "struct_code": "RA0801011",
-            "app_id": "RA0801011",
-            "showModelList": "RAMYKNWZU_XiaoZhiDongQuJi,RAMYKNWZU_XiaoZhiZhanJi,RAMYKNWZU_YinZhuangJi"
+            "ab_list": null,
+            "struct_id": 606,
+            "struct_name": "颈部",
+            "struct_sort": null,
+            "noun_id": null,
+            "struct_code": "RA0801014",
+            "app_id": "RA0801014",
+            "showModelList": "RAMYKNWJB_ZhenGu,RAMYKNWJB_XiaHeGu,RAMYKNWJB_ShuZhui,RAMYKNWJB_SheGu"
         }
         if (title == "成因") {
             if (!this.state.video) {
