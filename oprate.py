@@ -19,7 +19,7 @@ if __name__ == '__main__':
   bash_shell("cp %s %s/node_modules/react-native/local-cli/link/link.js" % (path,os.getcwd()) )
   print("***拷贝Android Setting***")
   
-  bash_shell('react-native link')
+  # bash_shell('react-native link')
   print("***Unity相关资源拷贝***")
   
   print("******打包******")

@@ -9,12 +9,14 @@ import com.github.yamill.orientation.OrientationPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.rnfs.RNFSPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import io.realm.react.RealmReactPackage;
-import com.reactnative.unity.view.UnityViewPackage;
-import com.github.yamill.orientation.OrientationPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.rnfs.RNFSPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
+
+
+// import io.realm.react.RealmReactPackage;
+// import com.reactnative.unity.view.UnityViewPackage;
+// import com.github.yamill.orientation.OrientationPackage;
+// import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+// import com.rnfs.RNFSPackage;
+// import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.corbt.keepawake.KCKeepAwakePackage;
@@ -63,12 +65,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RealmReactPackage(),
-            new UnityViewPackage(),
-            new OrientationPackage(),
-            new RNGestureHandlerPackage(),
-            new RNFSPackage(),
-            new RNDeviceInfo(),
+            
+            
+            
             new RealmReactPackage(),
             new UnityViewPackage(),
             new OrientationPackage(),
