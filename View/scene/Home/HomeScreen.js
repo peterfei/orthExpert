@@ -8,8 +8,14 @@
 
 import React, { Component } from 'react';
 import {
+<<<<<<< HEAD
 
   Platform, StyleSheet, Text, View,BackHandler,
+=======
+  Easing,
+  Platform, StyleSheet, Text, View,
+  BackAndroid,
+>>>>>>> 1043719aefb3629c6d29b81d0a1ae6e6ea20001b
   StatusBar,
   Animated, Easing,
   Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
@@ -28,7 +34,10 @@ import { values, set } from 'mobx';
 import api from "../../api";
 import historyData from "./History.json";
 import styles from './styles';
+<<<<<<< HEAD
 import Toast from "react-native-easy-toast";
+=======
+>>>>>>> 1043719aefb3629c6d29b81d0a1ae6e6ea20001b
 let unity = UnityView;
 let index = 0;
 
