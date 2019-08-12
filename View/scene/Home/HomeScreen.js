@@ -8,7 +8,7 @@
 
 import React, { Component } from 'react';
 import {
-
+  Easing,
   Platform, StyleSheet, Text, View,
   BackAndroid,
   StatusBar,
