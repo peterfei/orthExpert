@@ -1,4 +1,4 @@
-package com.orthexpert;
+package com.vesal.orthexpert;
 
 import android.app.Application;
 
@@ -79,7 +79,8 @@ public class MainApplication extends Application implements ReactApplication {
             new KCKeepAwakePackage(),
             new ReactVideoPackage(),
             
-          new DplusReactPackage()
+          new DplusReactPackage(),
+          new com.vesal.orthexpert.wxapi.WxentryPackage()
       );
     }
 

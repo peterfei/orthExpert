@@ -1,4 +1,4 @@
-package com.orthexpert;
+package com.vesal.orthexpert;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

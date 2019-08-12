@@ -136,15 +136,21 @@ export default class HomeScreen extends Component {
     DeviceEventEmitter.emit("DetailsWinEmitter", { details: false });
     this.props.navigation.goBack();
     if(!this.state.rightMenu){
+      
     this.refs.toast.show("再次点击退出");
-    BackHandler.removeEventListener("back",this.goBackClicked);
+    if(this.state.reconfirm){
+      BackHandler.exitApp()
+    }
+    this.setState({reconfirm:true})
+    //BackHandler.removeEventListener("back",this.goBackClicked);
       this.timer = setTimeout(
       () => this.reconfirm(), 1000
     );}
     return true;
   };
   reconfirm(){
-    this.BackHandler()
+    this.setState({reconfirm:false})
+    //this.BackHandler()
   }
   render() {
     return (
@@ -163,6 +169,7 @@ export default class HomeScreen extends Component {
           style={{
             width: screen.width,
             height: screen.height
+            
           }} />
         {/* 顶部/搜索 */}
         <SearchComponent navigation={this.props.navigation}
@@ -178,9 +185,14 @@ export default class HomeScreen extends Component {
         <Details navigation={this.props.navigation}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
           {/* 提示组件 */}
-        <Toast style={{ backgroundColor: '#343434' }} ref="toast" opacity={1} position='top'
-          positionValue={size(100)} fadeInDuration={750} textStyle={{ color: '#FFF' }}
-          fadeOutDuration={800} />
+          <Toast
+                    ref="toast"
+                    position="top"
+                    positionValue={200}
+                    fadeInDuration={750}
+                    fadeOutDuration={1000}
+                    opacity={0.8}
+                />
       </View>
     );
   }

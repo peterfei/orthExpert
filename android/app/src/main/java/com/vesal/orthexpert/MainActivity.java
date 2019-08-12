@@ -1,4 +1,4 @@
-package com.orthexpert;
+package com.vesal.orthexpert;
 
 import com.facebook.react.ReactActivity;
 import android.content.Intent;

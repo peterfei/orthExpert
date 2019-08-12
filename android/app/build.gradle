@@ -106,7 +106,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId "com.orthexpert"
+        applicationId "com.vesal.orthexpert"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -180,6 +180,9 @@ dependencies {
     //小米Push通道
     implementation 'com.umeng.umsdk:xiaomi-push:3.6.9'
     implementation 'com.umeng.umsdk:xiaomi-umengaccs:1.1.0'  
+
+    implementation "com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+"
+    
 }
 
 // Run this once to be able to run the application with BUCK

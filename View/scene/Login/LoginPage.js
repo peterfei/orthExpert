@@ -19,6 +19,7 @@ import ETTLightStatus from "../../common/ETTLightStatus";
 import {groupBy, changeArr, getRelationData} from "../../common/fun";
 import Orientation from 'react-native-orientation';
 // import console = require("console");
+import Toast from "react-native-easy-toast";
 
 Orientation.lockToPortrait();//强制竖屏
 
@@ -65,6 +66,15 @@ export default class LoginPage extends Component {
                             showsVerticalScrollIndicator={false}>
                     <LoginPageForm navigation={this.props.navigation}/>
                 </ScrollView>
+                {/* 提示组件 */}
+                <Toast
+                            ref="toast"
+                            position="top"
+                            positionValue={200}
+                            fadeInDuration={750}
+                            fadeOutDuration={1000}
+                            opacity={0.8}
+                        />
             </View>
         );
     }

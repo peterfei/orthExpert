@@ -265,7 +265,7 @@ export default class LoginPageForm extends Component {
     getOpenId(code) {
         code = Platform.OS === "ios" ? code.code : code;
         let requestUrl =
-            "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx6c7109324ebb9409&secret=8313cd4a71572fad19a872bf31d12d28&code=" +
+            "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxa452dfe169d3c11c&secret=&code=" +
             code +
             "&grant_type=authorization_code"
         fetch(requestUrl)
