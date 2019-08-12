@@ -9,6 +9,7 @@
 import React, { Component } from 'react';
 import {
   Platform, StyleSheet, Text, View,
+  StatusBar,
   Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
 } from 'react-native';
 import { screen, system } from "../../common";
@@ -83,6 +84,9 @@ export default class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar
+                    hidden={true}
+                />
         <UnityView
           ref={(ref) => this.unity = ref}
           onUnityMessage={this.onUnityMessage.bind(this)}
