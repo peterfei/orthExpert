@@ -9,10 +9,9 @@
 import React, { Component } from 'react';
 import {
 
-  Platform, StyleSheet, Text, View,
-  BackAndroid,
+  Platform, StyleSheet, Text, View,BackHandler,
   StatusBar,
-  Animated,
+  Animated, Easing,
   Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
 } from 'react-native';
 import { screen, system } from "../../common";
@@ -29,7 +28,7 @@ import { values, set } from 'mobx';
 import api from "../../api";
 import historyData from "./History.json";
 import styles from './styles';
-import Drawer from 'react-native-drawer';
+import Toast from "react-native-easy-toast";
 let unity = UnityView;
 let index = 0;
 
@@ -45,7 +44,8 @@ export default class HomeScreen extends Component {
     img: false,
     rightMenuData: '',
     fadeAnim: new Animated.Value(0.5),
-    willCloseAnimated:false
+    willCloseAnimated: false,
+    reconfirm: false
   }
 
   Animated() {
@@ -114,22 +114,39 @@ export default class HomeScreen extends Component {
       listener.remove();
     });
     this.timer && clearInterval(this.timer);
+    BackHandler.removeEventListener("back",this.goBackClicked);
   }
   componentWillMount() {
-      if (Platform.OS === 'android') {
-          BackAndroid.addEventListener("back", this.goBackClicked);
-      }
+    this.BackHandler()
   }
-  
+  BackHandler(){
+    if (Platform.OS === 'android') {
+      BackHandler.addEventListener("back", this.goBackClicked);
+    }
+  }
+
   /**
    * 点击物理回退键，
    * 修复闪退
    */
   goBackClicked = () => {
-      this.closeRightMenu()
-      this.props.navigation.goBack();
-      return true;
+    this.closeRightMenu();
+    this.setState({
+      img:false
+    })
+    DeviceEventEmitter.emit("DetailsWinEmitter", { details: false });
+    this.props.navigation.goBack();
+    if(!this.state.rightMenu){
+    this.refs.toast.show("再次点击退出");
+    BackHandler.removeEventListener("back",this.goBackClicked);
+      this.timer = setTimeout(
+      () => this.reconfirm(), 1000
+    );}
+    return true;
   };
+  reconfirm(){
+    this.BackHandler()
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -139,8 +156,8 @@ export default class HomeScreen extends Component {
          * By peterfei.
          */}
         <StatusBar
-                    hidden={true}
-                />
+          hidden={true}
+        />
         <UnityView
           ref={(ref) => this.unity = ref}
           onUnityMessage={this.onUnityMessage.bind(this)}
@@ -161,6 +178,10 @@ export default class HomeScreen extends Component {
         {/* 底部详情 */}
         <Details navigation={this.props.navigation}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
+          {/* 提示组件 */}
+        <Toast style={{ backgroundColor: '#343434' }} ref="toast" show='xxxxxxxx' opacity={1} position='top'
+          positionValue={size(100)} fadeInDuration={750} textStyle={{ color: '#FFF' }}
+          fadeOutDuration={800} />
       </View>
     );
   }
@@ -249,9 +270,9 @@ export default class HomeScreen extends Component {
     var i = Math.floor(e.nativeEvent.contentOffset.x / (screen.width - 0.01));
     this.pushDetails(this.state.rightMenuData.pathologyList[i].pat_no)
   }
-  MenuBody(){
-    return(
-      <TouchableOpacity activeOpacity={1} style={{width:'100%',height:'100%',position:'absolute'}} onPress={()=>this.closeRightMenu()}>
+  MenuBody() {
+    return (
+      <TouchableOpacity activeOpacity={1} style={{ width: '100%', height: '100%', position: 'absolute' }} onPress={() => this.closeRightMenu()}>
         {this.rightMenu()}{this.rightMenuClose()}
       </TouchableOpacity>
     )
@@ -301,7 +322,7 @@ export default class HomeScreen extends Component {
   rightMenu() {
     let { fadeAnim } = this.state;
     this.Animated()
-    if(this.state.willCloseAnimated){
+    if (this.state.willCloseAnimated) {
       this.AnimatedOver()
     }
     return (
@@ -319,10 +340,10 @@ export default class HomeScreen extends Component {
           zIndex: 999,
           opacity: fadeAnim,         // 将透明度指定为动画变量值
         }} >
-          <Text style={styles.boneName}>{this.state.rightMenuData.area.pat_name}</Text>
-          <ScrollView>
-            {this.renderRightMenuBody()}
-          </ScrollView>
+        <Text style={styles.boneName}>{this.state.rightMenuData.area.pat_name}</Text>
+        <ScrollView>
+          {this.renderRightMenuBody()}
+        </ScrollView>
       </Animated.View>
     )
   }
@@ -340,7 +361,7 @@ export default class HomeScreen extends Component {
   rightMenuClose() {
     let { fadeAnim } = this.state;
     this.Animated()
-    if(this.state.willCloseAnimated){
+    if (this.state.willCloseAnimated) {
       this.AnimatedOver()
     }
     return (
@@ -349,10 +370,10 @@ export default class HomeScreen extends Component {
           [styles.closeRightMenuStyle,
           { opacity: fadeAnim }]    // 将透明度指定为动画变量值
         } >
-          <TouchableHighlight onPress={() => this.closeRightMenu()}>
-            <Image style={styles.closeRightMenuImg} resizeMode="contain"
-              source={require('../../img/public/right1.png')} />
-          </TouchableHighlight>
+        <TouchableHighlight onPress={() => this.closeRightMenu()}>
+          <Image style={styles.closeRightMenuImg} resizeMode="contain"
+            source={require('../../img/public/right1.png')} />
+        </TouchableHighlight>
       </Animated.View>
     )
   }
@@ -365,13 +386,13 @@ export default class HomeScreen extends Component {
   }
   closeRightMenu() {
     this.setState({
-      willCloseAnimated:true
+      willCloseAnimated: true
     })
     this.timer = setTimeout(
       () => this.setState({
-            rightMenu: false,
-            willCloseAnimated:false
-          }),500
+        rightMenu: false,
+        willCloseAnimated: false
+      }), 500
     );
   }
 }
