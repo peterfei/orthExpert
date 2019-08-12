@@ -179,7 +179,7 @@ export default class HomeScreen extends Component {
         <Details navigation={this.props.navigation}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
           {/* 提示组件 */}
-        <Toast style={{ backgroundColor: '#343434' }} ref="toast" show='xxxxxxxx' opacity={1} position='top'
+        <Toast style={{ backgroundColor: '#343434' }} ref="toast" opacity={1} position='top'
           positionValue={size(100)} fadeInDuration={750} textStyle={{ color: '#FFF' }}
           fadeOutDuration={800} />
       </View>
