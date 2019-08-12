@@ -29,7 +29,6 @@ import { values, set } from 'mobx';
 import api from "../../api";
 import historyData from "./History.json";
 import styles from './styles';
-import Drawer from 'react-native-drawer';
 let unity = UnityView;
 let index = 0;
 
