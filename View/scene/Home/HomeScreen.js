@@ -8,8 +8,12 @@
 
 import React, { Component } from 'react';
 import {
-  Platform, StyleSheet, Text, View, Easing,
-  Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView, Animated
+
+  Platform, StyleSheet, Text, View,
+  BackAndroid,
+  StatusBar,
+  Animated,
+  Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
 } from 'react-native';
 import { screen, system } from "../../common";
 import SearchComponent from "./search";
@@ -111,9 +115,32 @@ export default class HomeScreen extends Component {
     });
     this.timer && clearInterval(this.timer);
   }
+  componentWillMount() {
+      if (Platform.OS === 'android') {
+          BackAndroid.addEventListener("back", this.goBackClicked);
+      }
+  }
+  
+  /**
+   * 点击物理回退键，
+   * 修复闪退
+   */
+  goBackClicked = () => {
+      this.closeRightMenu()
+      this.props.navigation.goBack();
+      return true;
+  };
   render() {
     return (
       <View style={styles.container}>
+        {/**
+         * Hide the StatusBar on the top which some cellphone's
+         * color always show White.
+         * By peterfei.
+         */}
+        <StatusBar
+                    hidden={true}
+                />
         <UnityView
           ref={(ref) => this.unity = ref}
           onUnityMessage={this.onUnityMessage.bind(this)}
