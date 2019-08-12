@@ -8,8 +8,8 @@
 
 import React, { Component } from 'react';
 import {
-  Platform, StyleSheet, Text, View,
-  Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
+  Platform, StyleSheet, Text, View, Easing,
+  Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView, Animated
 } from 'react-native';
 import { screen, system } from "../../common";
 import SearchComponent from "./search";
@@ -25,6 +25,7 @@ import { values, set } from 'mobx';
 import api from "../../api";
 import historyData from "./History.json";
 import styles from './styles';
+import Drawer from 'react-native-drawer';
 let unity = UnityView;
 let index = 0;
 
@@ -39,6 +40,31 @@ export default class HomeScreen extends Component {
     rightMenu: false,
     img: false,
     rightMenuData: '',
+    fadeAnim: new Animated.Value(0.5),
+    willCloseAnimated:false
+  }
+
+  Animated() {
+    Animated.timing(                  // 随时间变化而执行动画
+      this.state.fadeAnim,            // 动画中的变量值
+      {
+        easing: Easing.back(),
+        duration: 500,          // 让动画持续一段时间
+        toValue: 1,                         // 透明度最终变为1，即完全不透明
+        useNativeDriver: true
+      }
+    ).start();
+  }
+  AnimatedOver() {
+    Animated.timing(                  // 随时间变化而执行动画
+      this.state.fadeAnim,            // 动画中的变量值
+      {
+        easing: Easing.back(),
+        duration: 500,          // 让动画持续一段时间
+        toValue: 0,                         // 透明度最终变为1，即完全不透明
+        useNativeDriver: true
+      }
+    ).start();
   }
   onUnityMessage(handler) {
     console.log(handler.name); // the message name
@@ -71,6 +97,11 @@ export default class HomeScreen extends Component {
             img: false
           })
         }
+        if (closeBigImg == false) {
+          this.setState({
+            img: true
+          })
+        }
       }
     )
   };
@@ -98,7 +129,8 @@ export default class HomeScreen extends Component {
         {/* 点击疾病后图片 */}
         {this.state.img && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.imgOpen() : null}
         {/* 右侧菜单及关闭按钮 */}
-        {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? [this.rightMenu(), this.rightMenuClose()] : <View style={styles.place}></View>}
+
+        {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.MenuBody() : <View style={styles.place}></View>}
         {/* 底部详情 */}
         <Details navigation={this.props.navigation}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
@@ -162,40 +194,55 @@ export default class HomeScreen extends Component {
       })
   }
   imgOpen() {
-    let _that = this 
+    let _that = this
     return (
       <View style={styles.detailsImage}>
         <ScrollView
+          ref={component => this._scrollView = component}
           horizontal={true}
           pagingEnabled={true}
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={this.onScrollAnimationEnd.bind(_that)}
-          style={{ width: screen.width, height: screen.height * 0.75 }}
+          style={{ width: screen.width, height: screen.height }}
+          defaultLocation={this.defaultLocation}
         >
           {this.renderImg()}
         </ScrollView>
       </View>
     )
   }
+  defaultLocation = () => {
+    alert(111)
+    // var i = Math.floor(this._scrollView.e.nativeEvent.contentOffset.x/ (screen.width - 0.01));
+    // alert(i)
+    this._scrollView.scrollTo(1000)
+    alert(111)
+  }
   onScrollAnimationEnd(e) {
     var i = Math.floor(e.nativeEvent.contentOffset.x / (screen.width - 0.01));
     this.pushDetails(this.state.rightMenuData.pathologyList[i].pat_no)
+  }
+  MenuBody(){
+    return(
+      <TouchableOpacity activeOpacity={1} style={{width:'100%',height:'100%',position:'absolute'}} onPress={()=>this.closeRightMenu()}>
+        {this.rightMenu()}{this.rightMenuClose()}
+      </TouchableOpacity>
+    )
   }
   renderImg() {
     let arr = []
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
       arr.push(
-        <View key={i} style={{ width: screen.width, height: screen.height * 0.75 }}>
+        <View key={i} style={{ width: screen.width, height: screen.height }}>
           <Image style={{ width: '100%', height: '100%' }}
             source={{ uri: this.state.rightMenuData.pathologyList[i].img_url }}
           />
-          {/* 无图可能报错 */}
-          <TouchableHighlight style={{ width: 30, height: 30, position: 'absolute', right: 15, top: 15 }}
+          {/* <TouchableHighlight style={{ width: 30, height: 30, position: 'absolute', right: 15, top: 15 }}
             onPress={() => this.closeImg()}>
             <Image style={{ width: 30, height: 30, }}
               source={require('../../img/unity/close.png')}
             />
-          </TouchableHighlight>
+          </TouchableHighlight> */}
         </View>
       )
     }
@@ -225,13 +272,31 @@ export default class HomeScreen extends Component {
     })
   }
   rightMenu() {
+    let { fadeAnim } = this.state;
+    this.Animated()
+    if(this.state.willCloseAnimated){
+      this.AnimatedOver()
+    }
     return (
-      <View style={styles.rightMenu}>
-        <Text style={styles.boneName}>{this.state.rightMenuData.area.pat_name}</Text>
-        <ScrollView>
-          {this.renderRightMenuBody()}
-        </ScrollView>
-      </View>
+      <Animated.View                 // 使用专门的可动画化的View组件
+        style={{
+          position: 'absolute',
+          height: screen.height * 0.6,
+          right: 0,
+          top: screen.height * 0.5,
+          backgroundColor: 'rgba(0,0,0,0.8)',
+          width: screen.width * 0.38,
+          transform: [{ translateY: -screen.height * 0.6 * 0.5 }],
+          alignItems: 'center',
+          borderRadius: 5,
+          zIndex: 999,
+          opacity: fadeAnim,         // 将透明度指定为动画变量值
+        }} >
+          <Text style={styles.boneName}>{this.state.rightMenuData.area.pat_name}</Text>
+          <ScrollView>
+            {this.renderRightMenuBody()}
+          </ScrollView>
+      </Animated.View>
     )
   }
   renderRightMenuBody() {
@@ -246,13 +311,22 @@ export default class HomeScreen extends Component {
     return arr
   }
   rightMenuClose() {
+    let { fadeAnim } = this.state;
+    this.Animated()
+    if(this.state.willCloseAnimated){
+      this.AnimatedOver()
+    }
     return (
-      <View style={[styles.closeRightMenuStyle]}>
-        <TouchableHighlight onPress={() => this.closeRightMenu()}>
-          <Image style={styles.closeRightMenuImg} resizeMode="contain"
-            source={require('../../img/public/right1.png')} />
-        </TouchableHighlight>
-      </View>
+      <Animated.View                 // 使用专门的可动画化的View组件
+        style={
+          [styles.closeRightMenuStyle,
+          { opacity: fadeAnim }]    // 将透明度指定为动画变量值
+        } >
+          <TouchableHighlight onPress={() => this.closeRightMenu()}>
+            <Image style={styles.closeRightMenuImg} resizeMode="contain"
+              source={require('../../img/public/right1.png')} />
+          </TouchableHighlight>
+      </Animated.View>
     )
   }
 
@@ -264,7 +338,13 @@ export default class HomeScreen extends Component {
   }
   closeRightMenu() {
     this.setState({
-      rightMenu: false,
+      willCloseAnimated:true
     })
+    this.timer = setTimeout(
+      () => this.setState({
+            rightMenu: false,
+            willCloseAnimated:false
+          }),500
+    );
   }
 }

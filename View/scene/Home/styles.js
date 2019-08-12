@@ -96,9 +96,9 @@ export default {
   detailsImage:{
     position:'absolute',
     top:'50%',
-    transform: [{ translateY: -screen.height*0.75*0.5 }],
+    transform: [{ translateY: -screen.height*0.5 }],
     width:screen.width,
-    height:screen.height*0.75
+    height:screen.height
   },
   btnImgStyle: {
     width: size(28),

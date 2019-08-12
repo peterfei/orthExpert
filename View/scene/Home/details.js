@@ -202,8 +202,7 @@ export default class Details extends Component {
         let Arr = [];
         let data = this.state.bottomIcon
         let getData = ''
-        //getData=JSON.parse(this.state.getData.menus)[0].type
-        this.state.getData !== "" ? getData = JSON.parse(this.state.getData.menus)[0].type : null
+        this.state.getData !== "" ? JSON.parse(this.state.getData.menus)!=null? getData = JSON.parse(this.state.getData.menus)[0].type:getData='' : null
         for (let i = 0; i < data.length; i++) {
             Arr.push(
                 <TouchableOpacity style={styles.btnStyle} key={i} onPress={() => {
@@ -216,10 +215,10 @@ export default class Details extends Component {
             if (this.state.EnterNowScreen == "isNotMainScreen" && data[i].title == "3D模型") {
                 Arr.pop()
             }
-            if (data[i].title == "成因" && getData == 'video') {
+            if (data[i].title == "成因" && (getData == 'video'||getData == '')) {
                 Arr.pop()
             }
-            if (data[i].title == "治疗" && getData == 'text') {
+            if (data[i].title == "治疗" && (getData == 'text'||getData == '')) {
                 Arr.pop()
             }
         }
@@ -261,12 +260,13 @@ export default class Details extends Component {
                     details: false
                 })
                 DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
-            } {
+            }else{
                 this.props.sendMsgToUnity('back', '', '')
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "isMainScreen" });
                 this.setState({
                     EnterNowScreen: "isMainScreen"
                 })
+                DeviceEventEmitter.emit("closeBigImg", { closeBigImg: false });
             }
             this.setState({
                 video: false,
