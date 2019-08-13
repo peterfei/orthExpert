@@ -41,6 +41,7 @@ export default class SearchComponent extends Component {
     update: DeviceEventEmitter.addListener("EnterNowScreen",
       ({ ...passedArgs }) => {
         let EnterNowScreen = passedArgs.EnterNowScreen
+        let search = passedArgs.search
         if (EnterNowScreen == "closeAllsearch") {
           this.setState({
             allSearch: false
@@ -49,6 +50,11 @@ export default class SearchComponent extends Component {
         if (EnterNowScreen == "showAllsearch") {
           this.setState({
             allSearch: true
+          })
+        }
+        if(search==false){
+          this.setState({
+            search:false
           })
         }
       }
