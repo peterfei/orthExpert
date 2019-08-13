@@ -147,7 +147,11 @@ export default class SearchComponent extends Component {
           <View style={{ width: screen.width }}>
             {!this.state.search ? this.renderTop() : this.searchScreen()}
           </View>
-          : null
+          : 
+            <View style={{ width: 0,height:0 }}>
+              
+            </View>
+          
         }
         <Loading
           ref={r => {
