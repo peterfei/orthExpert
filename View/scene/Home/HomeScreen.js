@@ -11,6 +11,7 @@ import {
   Platform, StyleSheet, Text, View,BackHandler,
   StatusBar,
   Animated, Easing,
+  ActivityIndicator,
   Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
 } from 'react-native';
 import { screen, system } from "../../common";
@@ -30,6 +31,7 @@ import styles from './styles';
 import Toast from "react-native-easy-toast";
 let unity = UnityView;
 let index = 0;
+import ImagePlaceholder from 'react-native-image-with-placeholder'
 
 
 export default class HomeScreen extends Component {
@@ -44,7 +46,8 @@ export default class HomeScreen extends Component {
     rightMenuData: '',
     fadeAnim: new Animated.Value(0.5),
     willCloseAnimated: false,
-    reconfirm: false
+    reconfirm: false,
+    loading: true
   }
 
   Animated() {
@@ -293,9 +296,22 @@ export default class HomeScreen extends Component {
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
       arr.push(
         <View key={i} style={{ width: screen.width, height: screen.height }}>
-          <Image style={{ width: '100%', height: '100%' }}
+          {/* <Image style={{ width: '100%', height: '100%' }}
             source={{ uri: this.state.rightMenuData.pathologyList[i].img_url }}
+
+            
+          /> */}
+          <ImagePlaceholder 
+          style={{ flex: 1 }}
+          duration={1000}
+          activityIndicatorProps={{
+            size: 'large',
+            color: 'green',
+          }}
+          src={this.state.rightMenuData.pathologyList[i].img_url} 
+          placeholder='http://filetest1.vesal.site/image/slt/flowers-small.jpg'
           />
+          
           {/* <TouchableHighlight style={{ width: 30, height: 30, position: 'absolute', right: 15, top: 15 }}
             onPress={() => this.closeImg()}>
             <Image style={{ width: 30, height: 30, }}
@@ -306,6 +322,12 @@ export default class HomeScreen extends Component {
       )
     }
     return arr
+  }
+
+  _onLoadEnd = () => {
+    this.setState({
+      loading: false
+    })
   }
   closeImg() {
     this.setState({
