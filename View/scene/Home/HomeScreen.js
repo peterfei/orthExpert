@@ -47,7 +47,7 @@ export default class HomeScreen extends Component {
     willCloseAnimated: false,
     reconfirm: false,
     EnterNowScreen: "isMainScreen",
-    loading: true
+    loading: true,
   }
 
   Animated() {
@@ -228,7 +228,7 @@ export default class HomeScreen extends Component {
       }
     }
   }
-  async pushDetails(pat_no, img) { //获取单个疾病资源,包括底部菜单,图片,摄像机参数等
+  async pushDetails(pat_no, img, num) { //获取单个疾病资源,包括底部菜单,图片,摄像机参数等
     //获取搜索后数据
     let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + pat_no;
     await fetch(url, {
@@ -246,8 +246,9 @@ export default class HomeScreen extends Component {
       })
     if (img == "img") {
       this.setState({
-        img: true
-      })
+        img: true,
+      }, () => { this.defaultLocation(num) }
+      )
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
     } else if (img == "noImg") {
       this.setState({
@@ -282,19 +283,18 @@ export default class HomeScreen extends Component {
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={this.onScrollAnimationEnd.bind(_that)}
           style={{ width: screen.width, height: screen.height }}
-          defaultLocation={this.defaultLocation}
         >
           {this.renderImg()}
         </ScrollView>
       </View>
     )
   }
-  defaultLocation = () => {
-    alert(111)
-    // var i = Math.floor(this._scrollView.e.nativeEvent.contentOffset.x/ (screen.width - 0.01));
-    // alert(i)
-    this._scrollView.scrollTo(1000)
-    alert(111)
+  defaultLocation(num) {
+    if (num != null) {
+      this.fristTime = setTimeout(() => {
+        this._scrollView.scrollTo({ x: num * screen.width, y: 0, animated: false })
+      }, 0)
+    }
   }
   onScrollAnimationEnd(e) {
     var i = Math.floor(e.nativeEvent.contentOffset.x / (screen.width - 0.01));
@@ -391,11 +391,18 @@ export default class HomeScreen extends Component {
     //alert(JSON.stringify(this.state.rightMenuData.pathologyList) )
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
       arr.push(
-        <Text style={styles.boneDisease} key={i} onPress={() => this.showDetails(this.state.rightMenuData.pathologyList[i].pat_no, "img")}>{this.state.rightMenuData.pathologyList[i].pat_name}</Text>
+        <Text style={styles.boneDisease} key={i} onPress={() => this.showDetailsRight(this.state.rightMenuData.pathologyList[i].pat_no, "img", i)}>{this.state.rightMenuData.pathologyList[i].pat_name}</Text>
       )
     }
     //alert(this.state.rightMenuData.pathologyList[1])
     return arr
+  }
+  showDetailsRight(pat_no, img, i){
+    if(this.state.rightMenuData.pathologyList[i].img_url != null){
+      this.showDetails(pat_no, "img", i)
+    }else{
+      this.showDetails(pat_no, "noImg", i)
+    }
   }
   rightMenuClose() {
     let { fadeAnim } = this.state;
@@ -426,8 +433,8 @@ export default class HomeScreen extends Component {
     )
   }
 
-  showDetails(pat_no, img) {
-    this.pushDetails(pat_no, img)
+  showDetails(pat_no, img, num) {
+    this.pushDetails(pat_no, img, num)
     this.setState({
       rightMenu: false
     })
