@@ -75,6 +75,9 @@ export default class HomeScreen extends Component {
   onUnityMessage(handler) {
     // DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
     if (handler.name == "title") {
+      this.setState({
+        isUnityReady:true
+      })
       if (this.state.EnterNowScreen == 'isMainScreen') {
         DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
       }
@@ -130,9 +133,9 @@ export default class HomeScreen extends Component {
   }
   async componentWillMount() {
     //Unity 是否已加载
-    this.setState({
-      isUnityReady: await (UnityModule.isReady())
-    }) 
+    // this.setState({
+    //   isUnityReady: await (UnityModule.isReady())
+    // }) 
     this.BackHandler()
   }
   BackHandler() {
@@ -187,10 +190,12 @@ export default class HomeScreen extends Component {
             
           }} />
         {/* 顶部/搜索 */}
-        <SearchComponent navigation={this.props.navigation}
+        {this.state.isUnityReady?(
+          <SearchComponent navigation={this.props.navigation}
           pushRightMune={(pat_no, img) => this.showDetails(pat_no, img)}
           setSearch={(bool) => this.setSearchComponent(bool)}
         />
+        ):null}
         {/* 点击疾病后图片 */}
         {this.state.img && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.imgOpen() : null}
         {/* 右侧菜单及关闭按钮 */}
