@@ -8,9 +8,9 @@
 
 import React, { Component } from 'react';
 import {
-  Platform, StyleSheet, Text, View,BackHandler,
+  Platform, StyleSheet, Text, View, BackHandler,
   StatusBar,
-  Animated, Easing,
+  Animated,
   Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
 } from 'react-native';
 import { screen, system } from "../../common";
@@ -42,34 +42,42 @@ export default class HomeScreen extends Component {
     rightMenu: false,
     img: false,
     rightMenuData: '',
-    fadeAnim: new Animated.Value(0.5),
+    fadeAnim: new Animated.Value(screen.width * 0.4),
     willCloseAnimated: false,
-    reconfirm: false
+    reconfirm: false,
+    EnterNowScreen: "isMainScreen",
   }
 
   Animated() {
     Animated.timing(                  // 随时间变化而执行动画
       this.state.fadeAnim,            // 动画中的变量值
       {
-        easing: Easing.back(),
-        duration: 500,          // 让动画持续一段时间
-        toValue: 1,                         // 透明度最终变为1，即完全不透明
+        duration: 300,          // 让动画持续一段时间
+        toValue: 0,                         // 动画结束变量值
         useNativeDriver: true
       }
     ).start();
+
   }
   AnimatedOver() {
     Animated.timing(                  // 随时间变化而执行动画
       this.state.fadeAnim,            // 动画中的变量值
       {
-        easing: Easing.back(),
-        duration: 500,          // 让动画持续一段时间
-        toValue: 0,                         // 透明度最终变为1，即完全不透明
+        duration: 300,          // 让动画持续一段时间
+        toValue: screen.width * 0.4,                         // 动画结束变量值
         useNativeDriver: true
       }
     ).start();
   }
   onUnityMessage(handler) {
+    if (handler.name == "title") {
+      if (this.state.EnterNowScreen == 'isMainScreen') {
+        DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
+      }
+      if (this.state.EnterNowScreen == 'isNotMainScreen') {
+        DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
+      }
+    }
     console.log(handler.name); // the message name
     console.log(handler.data); // the message data
     if (handler.data != null) {
@@ -104,6 +112,7 @@ export default class HomeScreen extends Component {
           this.setState({
             img: true
           })
+          DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
         }
       }
     )
@@ -113,15 +122,13 @@ export default class HomeScreen extends Component {
       listener.remove();
     });
     this.timer && clearInterval(this.timer);
-    BackHandler.removeEventListener("back",this.goBackClicked);
+    BackHandler.removeEventListener("back", this.goBackClicked);
   }
   componentWillMount() {
     this.BackHandler()
   }
-  BackHandler(){
-    if (Platform.OS === 'android') {
-      BackHandler.addEventListener("back", this.goBackClicked);
-    }
+  BackHandler() {
+    BackHandler.addEventListener("back", this.goBackClicked);
   }
 
   /**
@@ -129,21 +136,27 @@ export default class HomeScreen extends Component {
    * 修复闪退
    */
   goBackClicked = () => {
-    this.closeRightMenu();
-    this.setState({
-      img:false
-    })
-    DeviceEventEmitter.emit("DetailsWinEmitter", { details: false });
-    this.props.navigation.goBack();
-    if(!this.state.rightMenu){
-    this.refs.toast.show("再次点击退出");
-    BackHandler.removeEventListener("back",this.goBackClicked);
-      this.timer = setTimeout(
-      () => this.reconfirm(), 1000
-    );}
+    if (this.state.EnterNowScreen == 'isMainScreen') {
+      this.closeRightMenu();
+      this.setState({
+        img: false
+      })
+      DeviceEventEmitter.emit("DetailsWinEmitter", { details: false });
+      DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
+      this.props.navigation.goBack();
+      if (!this.state.rightMenu) {
+        this.refs.toast.show("再次点击退出");
+        BackHandler.removeEventListener("back", this.goBackClicked);
+        this.timer = setTimeout(
+          () => this.reconfirm(), 1000
+        );
+      }
+    } else if (this.state.EnterNowScreen == 'isNotMainScreen') {
+      this.sendMsgToUnity('back', '', '')
+    }
     return true;
   };
-  reconfirm(){
+  reconfirm() {
     this.BackHandler()
   }
   render() {
@@ -166,7 +179,7 @@ export default class HomeScreen extends Component {
           }} />
         {/* 顶部/搜索 */}
         <SearchComponent navigation={this.props.navigation}
-          pushRightMune={(pat_no) => this.showDetails(pat_no)}
+          pushRightMune={(pat_no, img) => this.showDetails(pat_no, img)}
           setSearch={(bool) => this.setSearchComponent(bool)}
         />
         {/* 点击疾病后图片 */}
@@ -175,9 +188,9 @@ export default class HomeScreen extends Component {
 
         {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.MenuBody() : <View style={styles.place}></View>}
         {/* 底部详情 */}
-        <Details navigation={this.props.navigation}
+        <Details navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
-          {/* 提示组件 */}
+        {/* 提示组件 */}
         <Toast style={{ backgroundColor: '#343434' }} ref="toast" opacity={1} position='top'
           positionValue={size(100)} fadeInDuration={750} textStyle={{ color: '#FFF' }}
           fadeOutDuration={800} />
@@ -204,7 +217,7 @@ export default class HomeScreen extends Component {
       }
     }
   }
-  async pushDetails(pat_no) { //获取单个疾病资源,包括底部菜单,图片,摄像机参数等
+  async pushDetails(pat_no, img) { //获取单个疾病资源,包括底部菜单,图片,摄像机参数等
     //获取搜索后数据
     let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + pat_no;
     await fetch(url, {
@@ -220,9 +233,16 @@ export default class HomeScreen extends Component {
           //, () => alert(JSON.stringify(this.state.getData))
         )
       })
-    this.setState({
-      img: true
-    })
+    if (img == "img") {
+      this.setState({
+        img: true
+      })
+      DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
+    } else if (img == "noImg") {
+      this.setState({
+        img: false
+      })
+    }
     DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
     DeviceEventEmitter.emit("getData", { getData: this.state.getData });
   }
@@ -267,21 +287,21 @@ export default class HomeScreen extends Component {
   }
   onScrollAnimationEnd(e) {
     var i = Math.floor(e.nativeEvent.contentOffset.x / (screen.width - 0.01));
-    this.pushDetails(this.state.rightMenuData.pathologyList[i].pat_no)
+    this.pushDetails(this.state.rightMenuData.pathologyList[i].pat_no, "img")
   }
   MenuBody() {
     return (
-      <TouchableOpacity activeOpacity={1} style={{ width: '100%', height: '100%', position: 'absolute' }} onPress={() => this.closeRightMenu()}>
-        {this.rightMenu()}{this.rightMenuClose()}
-      </TouchableOpacity>
+     // <TouchableOpacity activeOpacity={1} style={{ width: '100%', height: '100%', position: 'absolute' }} >
+        [this.rightMenu(),this.rightMenuClose()]
+      //</TouchableOpacity>
     )
   }
   renderImg() {
     let arr = []
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
       arr.push(
-        <View key={i} style={{ width: screen.width, height: screen.height }}>
-          <Image style={{ width: '100%', height: '100%' }}
+        <View key={i} style={{ width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
+          <Image style={{ width: '80%', height: '80%' }}
             source={{ uri: this.state.rightMenuData.pathologyList[i].img_url }}
           />
           {/* <TouchableHighlight style={{ width: 30, height: 30, position: 'absolute', right: 15, top: 15 }}
@@ -292,6 +312,9 @@ export default class HomeScreen extends Component {
           </TouchableHighlight> */}
         </View>
       )
+      if (this.state.rightMenuData.pathologyList[i].img_url == null) {
+        arr.pop()
+      }
     }
     return arr
   }
@@ -328,16 +351,15 @@ export default class HomeScreen extends Component {
       <Animated.View                 // 使用专门的可动画化的View组件
         style={{
           position: 'absolute',
-          height: screen.height * 0.6,
-          right: 0,
+          height: screen.height * 0.7,
+          right: 0,                 //  将位置指定为动画变量
           top: screen.height * 0.5,
           backgroundColor: 'rgba(0,0,0,0.8)',
-          width: screen.width * 0.38,
-          transform: [{ translateY: -screen.height * 0.6 * 0.5 }],
+          width: screen.width * 0.4,
+          transform: [{ translateY: -screen.height * 0.7 * 0.5 }, { translateX: fadeAnim }],
           alignItems: 'center',
           borderRadius: 5,
           zIndex: 999,
-          opacity: fadeAnim,         // 将透明度指定为动画变量值
         }} >
         <Text style={styles.boneName}>{this.state.rightMenuData.area.pat_name}</Text>
         <ScrollView>
@@ -351,7 +373,7 @@ export default class HomeScreen extends Component {
     //alert(JSON.stringify(this.state.rightMenuData.pathologyList) )
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
       arr.push(
-        <Text style={styles.boneDisease} key={i} onPress={() => this.showDetails(this.state.rightMenuData.pathologyList[i].pat_no)}>{this.state.rightMenuData.pathologyList[i].pat_name}</Text>
+        <Text style={styles.boneDisease} key={i} onPress={() => this.showDetails(this.state.rightMenuData.pathologyList[i].pat_no, "img")}>{this.state.rightMenuData.pathologyList[i].pat_name}</Text>
       )
     }
     //alert(this.state.rightMenuData.pathologyList[1])
@@ -365,20 +387,29 @@ export default class HomeScreen extends Component {
     }
     return (
       <Animated.View                 // 使用专门的可动画化的View组件
-        style={
-          [styles.closeRightMenuStyle,
-          { opacity: fadeAnim }]    // 将透明度指定为动画变量值
+        style={{
+          height: 40,
+          width: 40,
+          backgroundColor: 'rgba(0,0,0,0.8)',
+          borderRadius: 20,
+          position: 'absolute',
+          top: screen.height * 0.5,
+          right: screen.width * 0.4 - 20,
+          transform: [{ translateY: -20 }, { translateX: fadeAnim }],
+          paddingLeft: 3,
+          justifyContent: 'center',
+        }
         } >
         <TouchableHighlight onPress={() => this.closeRightMenu()}>
           <Image style={styles.closeRightMenuImg} resizeMode="contain"
             source={require('../../img/public/right1.png')} />
         </TouchableHighlight>
-      </Animated.View>
+      </Animated.View >
     )
   }
 
-  showDetails(pat_no) {
-    this.pushDetails(pat_no)
+  showDetails(pat_no, img) {
+    this.pushDetails(pat_no, img)
     this.setState({
       rightMenu: false
     })

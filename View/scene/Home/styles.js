@@ -74,7 +74,7 @@ export default {
     flex: 1
   },
   btnStyle: {
-    width: size(90),
+    width: size(120),
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 5,
@@ -82,7 +82,7 @@ export default {
   },
   btnTextStyle: {
     textAlign: "center",
-    fontSize: size(16),
+    fontSize: size(20),
     color: "#FFF",
     marginTop: size(8),
     alignSelf: "center",
@@ -101,8 +101,8 @@ export default {
     height:screen.height
   },
   btnImgStyle: {
-    width: size(28),
-    height: size(28),
+    width: size(45),
+    height: size(45),
     resizeMode: 'contain',
   },
   detailsRow: {
@@ -135,7 +135,7 @@ export default {
     borderRadius: 20,
     position: 'absolute',
     top: screen.height * 0.5,
-    right: screen.width * 0.38 - 20,
+    right: screen.width * 0.4 - 20,
     transform: [{ translateY: -20 }],
     paddingLeft: 3,
     justifyContent: 'center',

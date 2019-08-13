@@ -40,6 +40,7 @@ export default class Details extends Component {
         reason: false,
         details: false,
         search: false,
+        title:true,
         getData: '',
         EnterNowScreen: "isMainScreen",
         bottomIcon: [
@@ -114,9 +115,11 @@ export default class Details extends Component {
                 {this.state.reason && this.state.getData.menus !== null ? this.renderReason() : null}
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
                     <View style={styles.detailsRow}>
-                        <View style={{ alignItems: 'center', width: "100%", marginTop: 5 }}>
-                            <Text style={{ color: 'white', fontWeight: 'bold' }}>{this.state.getData.pat_name}</Text>
+                       {this.state.title? <View style={{ alignItems: 'center', width: "100%", position:'absolute',bottom:screen.height*0.75 }}>
+                            <Text style={{ color: 'white', fontWeight: 'bold',fontSize:30 }}>{this.state.getData.pat_name}</Text>
                         </View>
+                        :null
+                        }
                         {/* <MyTouchableOpacity
                             onPress={() => {
                                 this.fayin(this.state.getData.pat_name + "。" + this.state.getData.pat_name)
@@ -167,7 +170,7 @@ export default class Details extends Component {
                     justifyContent: 'flex-end',
                     alignItems: 'center'
                 }}>
-                    <MyTouchableOpacity onPress={() => this.setState({ video: false })}>
+                    <MyTouchableOpacity onPress={() => this.setState({ video: false,title:true })}>
                         <Image source={require('../../img/unity/close.png')} style={{
                             width: size(36),
                             height: size(36),
@@ -180,6 +183,7 @@ export default class Details extends Component {
                     rotateToFullScreen
                     lockPortraitOnFsExit
                     scrollBounce
+                    autoPlay
                     style={{ zIndex: 9999999999 }}
                     url={JSON.parse(this.state.getData.menus)[0].content}
                     ref={(ref) => {
@@ -248,7 +252,8 @@ export default class Details extends Component {
         if (title == "成因") {
             if (!this.state.video) {
                 this.setState({
-                    reason: true
+                    reason: true,
+                    title:false
                 })
             } else {
                 alert('请关闭治疗')
@@ -257,15 +262,19 @@ export default class Details extends Component {
         if (title == "返回") {
             if (this.state.EnterNowScreen == 'isMainScreen') {
                 this.setState({
-                    details: false
+                    details: false,
+                    title:true
                 })
                 DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
+                DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
             }else{
                 this.props.sendMsgToUnity('back', '', '')
-                DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "isMainScreen" });
+                DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
                 this.setState({
-                    EnterNowScreen: "isMainScreen"
+                    EnterNowScreen: "isMainScreen",
+                    title:true
                 })
+                this.props.setScreen("isMainScreen")
                 DeviceEventEmitter.emit("closeBigImg", { closeBigImg: false });
             }
             this.setState({
@@ -279,7 +288,8 @@ export default class Details extends Component {
         if (title == "治疗") {
             if (!this.state.reason) {
                 this.setState({
-                    video: true
+                    video: true,
+                    title:false
                 })
             } else {
                 alert('请关闭成因')
@@ -288,11 +298,16 @@ export default class Details extends Component {
         if (title == "3D模型") {
             if (this.state.EnterNowScreen == 'isMainScreen') {
                 this.props.sendMsgToUnity("app", msg, 'json')
-                DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "isNotMainScreen" });
+                DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
                 DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
                 this.setState({
-                    EnterNowScreen: "isNotMainScreen"
+                    EnterNowScreen: "isNotMainScreen",
+                    video:false,
+                    reason: false,
+                    title:false,
+                    details:false
                 })
+                this.props.setScreen("isNotMainScreen")
             } else {
                 alert('您已处于3D模型')
             }

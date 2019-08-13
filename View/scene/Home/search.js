@@ -26,7 +26,7 @@ export default class SearchComponent extends Component {
   }
   state = {
     search: false,
-    allSearch: true,
+    allSearch: false,
     sourceData: '',
     hotData: '',
     historyData: '',
@@ -41,12 +41,12 @@ export default class SearchComponent extends Component {
     update: DeviceEventEmitter.addListener("EnterNowScreen",
       ({ ...passedArgs }) => {
         let EnterNowScreen = passedArgs.EnterNowScreen
-        if (EnterNowScreen == "isNotMainScreen") {
+        if (EnterNowScreen == "closeAllsearch") {
           this.setState({
             allSearch: false
           })
         }
-        if (EnterNowScreen == "isMainScreen") {
+        if (EnterNowScreen == "showAllsearch") {
           this.setState({
             allSearch: true
           })
@@ -377,7 +377,7 @@ export default class SearchComponent extends Component {
     let data = { "keyName": pat_name, "ketNo": pat_no }
     this.saveHistory(data, "key")
     this.getHistory()
-    this.props.pushRightMune(pat_no)
+    this.props.pushRightMune(pat_no,"noImg")
     this.closeSearch()
   }
   saveHistory(data, type) {
