@@ -5365,6 +5365,11 @@ react-native-gesture-handler@1.3.0, react-native-gesture-handler@^1.3.0:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
+react-native-image-with-placeholder@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.npm.taobao.org/react-native-image-with-placeholder/download/react-native-image-with-placeholder-0.1.1.tgz#8e5da9c2fda94aeb158cd57cf63f1cc797830f93"
+  integrity sha1-jl2pwv2pSusVjNV89j8cx5eDD5M=
+
 react-native-interactable@1.0.0:
   version "1.0.0"
   resolved "https://registry.npm.taobao.org/react-native-interactable/download/react-native-interactable-1.0.0.tgz#b6dcdff9ec61dfae9233e46e1d673ce8480a4f64"

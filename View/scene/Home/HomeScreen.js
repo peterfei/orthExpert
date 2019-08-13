@@ -30,6 +30,7 @@ import styles from './styles';
 import Toast from "react-native-easy-toast";
 let unity = UnityView;
 let index = 0;
+import ImagePlaceholder from 'react-native-image-with-placeholder'
 
 
 export default class HomeScreen extends Component {
@@ -46,6 +47,7 @@ export default class HomeScreen extends Component {
     willCloseAnimated: false,
     reconfirm: false,
     EnterNowScreen: "isMainScreen",
+    loading: true
   }
 
   Animated() {
@@ -176,6 +178,7 @@ export default class HomeScreen extends Component {
           style={{
             width: screen.width,
             height: screen.height
+            
           }} />
         {/* 顶部/搜索 */}
         <SearchComponent navigation={this.props.navigation}
@@ -190,10 +193,15 @@ export default class HomeScreen extends Component {
         {/* 底部详情 */}
         <Details navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
-        {/* 提示组件 */}
-        <Toast style={{ backgroundColor: '#343434' }} ref="toast" opacity={1} position='top'
-          positionValue={size(100)} fadeInDuration={750} textStyle={{ color: '#FFF' }}
-          fadeOutDuration={800} />
+          {/* 提示组件 */}
+          <Toast
+                    ref="toast"
+                    position="top"
+                    positionValue={200}
+                    fadeInDuration={750}
+                    fadeOutDuration={1000}
+                    opacity={0.8}
+                />
       </View>
     );
   }
@@ -303,7 +311,18 @@ export default class HomeScreen extends Component {
         <View key={i} style={{ width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
           <Image style={{ width: '80%', height: '80%' }}
             source={{ uri: this.state.rightMenuData.pathologyList[i].img_url }}
+          /> 
+          <ImagePlaceholder 
+          style={{ flex: 1 }}
+          duration={1000}
+          activityIndicatorProps={{
+            size: 'large',
+            color: 'green',
+          }}
+          src={this.state.rightMenuData.pathologyList[i].img_url} 
+          placeholder='http://filetest1.vesal.site/image/slt/flowers-small.jpg'
           />
+          
           {/* <TouchableHighlight style={{ width: 30, height: 30, position: 'absolute', right: 15, top: 15 }}
             onPress={() => this.closeImg()}>
             <Image style={{ width: 30, height: 30, }}
@@ -317,6 +336,12 @@ export default class HomeScreen extends Component {
       }
     }
     return arr
+  }
+
+  _onLoadEnd = () => {
+    this.setState({
+      loading: false
+    })
   }
   closeImg() {
     this.setState({

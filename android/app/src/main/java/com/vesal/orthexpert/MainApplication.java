@@ -1,4 +1,4 @@
-package com.orthexpert;
+package com.vesal.orthexpert;
 
 import android.app.Application;
 
@@ -79,7 +79,8 @@ public class MainApplication extends Application implements ReactApplication {
             new KCKeepAwakePackage(),
             new ReactVideoPackage(),
             
-          new DplusReactPackage()
+          new DplusReactPackage(),
+          new com.vesal.orthexpert.wxapi.WxentryPackage()
       );
     }
 
@@ -102,7 +103,7 @@ public class MainApplication extends Application implements ReactApplication {
       RNUMConfigure.init(this, "5d4a984e0cafb25ba6000854", "Umeng", UMConfigure.DEVICE_TYPE_PHONE,
               "4cc540e80284d655e1e14e5a40cae979");
       initUpush();
-      MiPushClient.registerPush(this, "2882303761518102556", "5671810240556");
+      MiPushClient.registerPush(this, "2882303761518112786", "5981811265786");
 
   }
 

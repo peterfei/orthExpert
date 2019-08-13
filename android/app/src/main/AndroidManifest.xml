@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.orthexpert">
+    package="com.vesal.orthexpert">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
@@ -40,9 +40,16 @@
       <meta-data android:value="4cc540e80284d655e1e14e5a40cae979" android:name="UMENG_MESSAGE_SECRET"/>
 
       <activity
-      android:name="com.orthexpert.MipushTestActivity"
+      android:name="com.vesal.orthexpert.MipushTestActivity"
       android:launchMode="singleTask"
       android:exported="true" />
+
+      <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            />
       
     </application>
 
