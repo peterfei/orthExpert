@@ -78,12 +78,12 @@ export default class HomeScreen extends Component {
       this.setState({
         isUnityReady:true
       })
-      if (this.state.EnterNowScreen == 'isMainScreen') {
-        DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
-      }
-      if (this.state.EnterNowScreen == 'isNotMainScreen') {
-        DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
-      }
+      // if (this.state.EnterNowScreen == 'isMainScreen') {
+      //   DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
+      // }
+      // if (this.state.EnterNowScreen == 'isNotMainScreen') {
+      //   DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
+      // }
     }
     console.log(handler.name); // the message name
     console.log(handler.data); // the message data
@@ -133,9 +133,9 @@ export default class HomeScreen extends Component {
   }
   async componentWillMount() {
     //Unity 是否已加载
-    // this.setState({
-    //   isUnityReady: await (UnityModule.isReady())
-    // }) 
+    this.setState({
+      isUnityReady: await (UnityModule.isReady())
+    }) 
     this.BackHandler()
   }
   BackHandler() {
