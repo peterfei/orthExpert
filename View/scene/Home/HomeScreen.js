@@ -16,7 +16,7 @@ import {
 import { screen, system } from "../../common";
 import SearchComponent from "./search";
 import Details from "./details"
-import UnityView, { UnityViewMessageEventData, MessageHandler } from 'react-native-unity-view';
+import UnityView, { UnityViewMessageEventData, MessageHandler ,UnityModule} from 'react-native-unity-view';
 import { size } from '../../common/ScreenUtil';
 import { VoiceUtils } from "../../common/VoiceUtils";
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
@@ -47,7 +47,8 @@ export default class HomeScreen extends Component {
     willCloseAnimated: false,
     reconfirm: false,
     EnterNowScreen: "isMainScreen",
-    loading: true
+    loading: true,
+    isUnityReady:false
   }
 
   Animated() {
@@ -72,6 +73,7 @@ export default class HomeScreen extends Component {
     ).start();
   }
   onUnityMessage(handler) {
+    // DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
     if (handler.name == "title") {
       if (this.state.EnterNowScreen == 'isMainScreen') {
         DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
@@ -126,7 +128,11 @@ export default class HomeScreen extends Component {
     this.timer && clearInterval(this.timer);
     BackHandler.removeEventListener("back", this.goBackClicked);
   }
-  componentWillMount() {
+  async componentWillMount() {
+    //Unity 是否已加载
+    this.setState({
+      isUnityReady: await (UnityModule.isReady())
+    }) 
     this.BackHandler()
   }
   BackHandler() {
@@ -287,11 +293,11 @@ export default class HomeScreen extends Component {
     )
   }
   defaultLocation = () => {
-    alert(111)
+    // alert(111)
     // var i = Math.floor(this._scrollView.e.nativeEvent.contentOffset.x/ (screen.width - 0.01));
     // alert(i)
     this._scrollView.scrollTo(1000)
-    alert(111)
+    // alert(111)
   }
   onScrollAnimationEnd(e) {
     var i = Math.floor(e.nativeEvent.contentOffset.x / (screen.width - 0.01));
@@ -309,11 +315,11 @@ export default class HomeScreen extends Component {
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
       arr.push(
         <View key={i} style={{ width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
-          <Image style={{ width: '80%', height: '80%' }}
+          {/* <Image style={{ width: '80%', height: '80%' }}
             source={{ uri: this.state.rightMenuData.pathologyList[i].img_url }}
-          /> 
+          />  */}
           <ImagePlaceholder 
-          style={{ flex: 1 }}
+          style={{  flex:1 }}
           duration={1000}
           activityIndicatorProps={{
             size: 'large',
