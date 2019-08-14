@@ -11,25 +11,15 @@ import {
   Platform, StyleSheet, Text, View, BackHandler,
   StatusBar,
   Animated,
-  Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
+  TouchableHighlight, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
 } from 'react-native';
 import { screen, system } from "../../common";
 import SearchComponent from "./search";
 import Details from "./details"
-import UnityView, { UnityViewMessageEventData, MessageHandler, UnityModule } from 'react-native-unity-view';
-import { size } from '../../common/ScreenUtil';
-import { VoiceUtils } from "../../common/VoiceUtils";
-import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
-import { NavigationActions, StackActions } from "react-navigation";
-import { groupBy, changeArr } from "../../common/fun";
-import { queryHistoryAll, insertHistory, deleteHistories, queryRecentlyUse } from "../../realm/RealmManager";
-import { values, set } from 'mobx';
+import UnityView, { UnityModule } from 'react-native-unity-view';
 import api from "../../api";
-import historyData from "./History.json";
 import styles from './styles';
 import Toast from "react-native-easy-toast";
-let unity = UnityView;
-let index = 0;
 import ImagePlaceholder from 'react-native-image-with-placeholder'
 import _ from "lodash";
 
@@ -74,26 +64,25 @@ export default class HomeScreen extends Component {
     ).start();
   }
   onUnityMessage(handler) {
-    // DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
-    if (handler.name == "title") {
-      this.setState({
-        isUnityReady: true
-      })
-      // if (this.state.EnterNowScreen == 'isMainScreen') {
-      //   DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
-      // }
-      if (this.state.EnterNowScreen == 'isNotMainScreen') {
-        DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
+    if (this.state.EnterNowScreen == 'isMainScreen') {
+      if (handler.name == "title") {
+        this.setState({
+          isUnityReady: true
+        })
       }
+    }
+    if (this.state.EnterNowScreen == 'isNotMainScreen') {
+      DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
+      DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
     }
     console.log(handler.name); // the message name
     console.log(handler.data); // the message data
     if (handler.data != null) {
       let boneDisease = this.hexToStr(handler.data.boneDisease)
+      this.getPathologyAndArea(boneDisease)
       this.setState({
         rightMenu: true,
       })
-      this.getPathologyAndArea(boneDisease)
     }
   }
   /**
@@ -111,23 +100,29 @@ export default class HomeScreen extends Component {
     update: DeviceEventEmitter.addListener("closeBigImg",
       ({ ...passedArgs }) => {
         let closeBigImg = passedArgs.closeBigImg
+        let onlyCloseBigImg=passedArgs.onlyCloseBigImg
         if (closeBigImg == true) {
           this.setState({
             img: false,
-            isUnityReady:true
+            isUnityReady: true
           })
         }
         if (closeBigImg == false) {
           // alert(111111)
           this.setState({
             img: true,
-            // isUnityReady:false
+            isUnityReady:false
           })
           DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
         }
+        if (onlyCloseBigImg == true) {
+          this.setState({
+            img: false,
+          })
+        }
       }
     ),
-    
+
   };
   componentWillUnmount() {
     _.each(this.listeners, listener => {
@@ -155,11 +150,12 @@ export default class HomeScreen extends Component {
     if (this.state.EnterNowScreen == 'isMainScreen') {
       this.closeRightMenu();
       this.setState({
-        img: false
+        img: false,
+        isUnityReady: true
       })
       DeviceEventEmitter.emit("DetailsWinEmitter", { details: false });
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
-      DeviceEventEmitter.emit("EnterNowScreen", { search:false });
+      DeviceEventEmitter.emit("EnterNowScreen", { search: false });
       this.props.navigation.goBack();
       if (!this.state.rightMenu) {
         this.refs.toast.show("再次点击退出");
@@ -244,7 +240,7 @@ export default class HomeScreen extends Component {
   }
   async pushDetails(pat_no, img, num) { //获取单个疾病资源,包括底部菜单,图片,摄像机参数等
     this.setState({
-      isUnityReady:false
+      isUnityReady: false
     })
     //获取搜索后数据
     let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + pat_no;
@@ -269,7 +265,7 @@ export default class HomeScreen extends Component {
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
     } else if (img == "noImg") {
       // alert(111)
-      
+
       this.setState({
         img: false,
         // isUnityReady:true
@@ -281,7 +277,7 @@ export default class HomeScreen extends Component {
       //   })
       // }.bind(this),2000)
       // DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
-      
+
     }
     DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
     DeviceEventEmitter.emit("getData", { getData: this.state.getData });
@@ -442,7 +438,7 @@ export default class HomeScreen extends Component {
       this.showDetails(pat_no, "noImg", i)
     }
     this.setState({
-      isUnityReady:false
+      isUnityReady: false
     })
   }
   rightMenuClose() {
@@ -478,7 +474,7 @@ export default class HomeScreen extends Component {
     this.pushDetails(pat_no, img, num)
     this.setState({
       rightMenu: false,
-      isUnityReady:true
+      isUnityReady: true
     })
   }
   closeRightMenu() {

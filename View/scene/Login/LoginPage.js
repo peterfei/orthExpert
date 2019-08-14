@@ -1,22 +1,13 @@
 import React, {Component} from "react";
 import {
     View,
-    Text,
-    Image,
     StyleSheet,
-    KeyboardAvoidingView,
-    ImageBackground,
     ScrollView
 } from "react-native";
 import LoginForm from "./LoginPageForm";
-import NetInfoDecorator from "../../common/NetInfoDecorator";
-import {screen, system} from "../../common";
 import {NavigationActions,StackActions} from "react-navigation";
 import {storage} from "../../common/storage";
-import SelectIdentity from "../Register/SelectIdentity";
-import {size} from "../../common/ScreenUtil";
 import ETTLightStatus from "../../common/ETTLightStatus";
-import {groupBy, changeArr, getRelationData} from "../../common/fun";
 import Orientation from 'react-native-orientation';
 
 Orientation.lockToPortrait();//强制竖屏
