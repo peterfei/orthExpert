@@ -154,6 +154,7 @@ export default class HomeScreen extends Component {
       })
       DeviceEventEmitter.emit("DetailsWinEmitter", { details: false });
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
+      DeviceEventEmitter.emit("EnterNowScreen", { search:false });
       this.props.navigation.goBack();
       if (!this.state.rightMenu) {
         this.refs.toast.show("再次点击退出");
