@@ -11,25 +11,15 @@ import {
   Platform, StyleSheet, Text, View, BackHandler,
   StatusBar,
   Animated,
-  Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
+  TouchableHighlight, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
 } from 'react-native';
 import { screen, system } from "../../common";
 import SearchComponent from "./search";
 import Details from "./details"
-import UnityView, { UnityViewMessageEventData, MessageHandler, UnityModule } from 'react-native-unity-view';
-import { size } from '../../common/ScreenUtil';
-import { VoiceUtils } from "../../common/VoiceUtils";
-import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
-import { NavigationActions, StackActions } from "react-navigation";
-import { groupBy, changeArr } from "../../common/fun";
-import { queryHistoryAll, insertHistory, deleteHistories, queryRecentlyUse } from "../../realm/RealmManager";
-import { values, set } from 'mobx';
+import UnityView, { UnityModule } from 'react-native-unity-view';
 import api from "../../api";
-import historyData from "./History.json";
 import styles from './styles';
 import Toast from "react-native-easy-toast";
-let unity = UnityView;
-let index = 0;
 import ImagePlaceholder from 'react-native-image-with-placeholder'
 import _ from "lodash";
 
@@ -74,7 +64,6 @@ export default class HomeScreen extends Component {
     ).start();
   }
   onUnityMessage(handler) {
-    alert(JSON.stringify(handler))
     if (this.state.EnterNowScreen == 'isMainScreen') {
       if (handler.name == "title") {
         this.setState({
@@ -90,10 +79,10 @@ export default class HomeScreen extends Component {
     console.log(handler.data); // the message data
     if (handler.data != null) {
       let boneDisease = this.hexToStr(handler.data.boneDisease)
+      this.getPathologyAndArea(boneDisease)
       this.setState({
         rightMenu: true,
       })
-      this.getPathologyAndArea(boneDisease)
     }
   }
   /**

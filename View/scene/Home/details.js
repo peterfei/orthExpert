@@ -12,22 +12,11 @@ import {
     Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
 } from 'react-native';
 import { screen, system } from "../../common";
-import SearchComponent from "./search";
-import UnityView, { UnityViewMessageEventData, MessageHandler } from 'react-native-unity-view';
 import { size } from '../../common/ScreenUtil';
 import { VoiceUtils } from "../../common/VoiceUtils";
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
-import { NavigationActions, StackActions } from "react-navigation";
-import { groupBy, changeArr } from "../../common/fun";
-import { queryHistoryAll, insertHistory, deleteHistories, queryRecentlyUse } from "../../realm/RealmManager";
-import { values, set } from 'mobx';
-import Loading from "../../common/Loading";
-import Toast from "react-native-easy-toast";
-import api from "../../api";
-import historyData from "./History.json";
-import Video, { Container } from 'react-native-af-video-player';
+import Video from 'react-native-af-video-player';
 import styles from './styles';
-let unity = UnityView;
 let index = 0;
 
 export default class Details extends Component {
