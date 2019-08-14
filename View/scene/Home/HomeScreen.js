@@ -441,6 +441,9 @@ export default class HomeScreen extends Component {
     } else {
       this.showDetails(pat_no, "noImg", i)
     }
+    this.setState({
+      isUnityReady:false
+    })
   }
   rightMenuClose() {
     let { fadeAnim } = this.state;
