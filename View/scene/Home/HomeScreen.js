@@ -186,15 +186,15 @@ export default class HomeScreen extends Component {
             height: screen.height
             
           }} />
+          
+        {/* 点击疾病后图片 */}
+        {this.state.img && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.imgOpen() : null}
         {/* 顶部/搜索 */}
         <SearchComponent navigation={this.props.navigation}
           pushRightMune={(pat_no, img) => this.showDetails(pat_no, img)}
           setSearch={(bool) => this.setSearchComponent(bool)}
         />
-        {/* 点击疾病后图片 */}
-        {this.state.img && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.imgOpen() : null}
         {/* 右侧菜单及关闭按钮 */}
-
         {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.MenuBody() : <View style={styles.place}></View>}
         {/* 底部详情 */}
         <Details navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })}

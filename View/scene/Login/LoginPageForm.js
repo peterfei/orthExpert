@@ -9,12 +9,13 @@ import {
     KeyboardAvoidingView,
     Image,
     TextInput,
+    DeviceEventEmitter
 } from "react-native"
 import {inject, observer} from "mobx-react/native"
 import UserStore from "../../mobx/User"
 import {screen, system} from "../../common";
 
-import {NavigationActions, StackActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import NetInfoDecorator from "../../common/NetInfoDecorator";
 import Toast, {DURATION} from "react-native-easy-toast";
 import {storage} from "../../common/storage";
@@ -38,6 +39,11 @@ export default class LoginPageForm extends Component {
         } catch (e) {
         }
 
+        this.bookMarkListener = DeviceEventEmitter.addListener('asynBookMark', (member) => {
+
+            this.asynBookMark(member);
+        })
+
     }
 
     constructor(props) {
@@ -60,6 +66,7 @@ export default class LoginPageForm extends Component {
         console.log("========isConnected==========" + isConnected)
     }
 
+
     async componentWillMount() {
 
         if (Platform.OS === "ios") {
@@ -70,8 +77,12 @@ export default class LoginPageForm extends Component {
         }
     }
 
+    componentWillUnmount() {
+        this.bookMarkListener.remove();
+    }
+
     loginWithTourist = async () => {
-        let that = this
+        let curr = this
         // 游客登陆
         const {isConnected} = this.props
         console.log("isConnected is" + isConnected)
@@ -83,16 +94,16 @@ export default class LoginPageForm extends Component {
         device.DeviceID = DeviceInfo.getUniqueID()
         this.store.params_data["deviceId"] = DeviceInfo.getUniqueID()
         console.log("设备的UUID==>" + device.DeviceID)
-        that.Loading.show("游客登录中..")
+        curr.Loading.show("游客登录中..")
         let resp = await this.store.loginWithTourist()
         if (resp.code == 0) {
-            that.Loading.close()
+            curr.Loading.close()
+            this.store.props = this.props
             const userDatas = resp
             await storage.save("userTokens", "", resp)
             await storage.save("memberInfo", "", resp.member)
             if (userDatas.token != undefined) {
                 storage.loadObj("user", userDatas.token)
-
                 const resetAction = StackActions.reset({
                     index: 0,
                     actions: [
@@ -101,7 +112,7 @@ export default class LoginPageForm extends Component {
                         })
                     ]
                 })
-                that.props.navigation.dispatch(resetAction)
+                this.store.props.navigation.dispatch(resetAction)
             }
         } else {
             console.log("游客登陆出错")
@@ -164,10 +175,10 @@ export default class LoginPageForm extends Component {
                 }
             } else {
                 this.Loading.close();
+
                 this.refs.toast.show(resp.msg);
             }
-        }
-        else {
+        } else {
             if (this.state.username == "" || this.state.verify_code == "") {
                 this.refs.toast.show("用户名或验证码不能为空");
                 return;
@@ -211,8 +222,14 @@ export default class LoginPageForm extends Component {
                             this.store.props.navigation.dispatch(resetAction);
                         }
                     } else {
+
                         this.Loading.close();
-                        this.refs.toast.show(resp.msg);
+                        if (resp.code == 500) {
+                            this.refs.toast.show("短信验证码错误!");
+                        } else {
+                            this.refs.toast.show("验证码错误!" + resp.code);
+                        }
+
                     }
                 })
         }
@@ -229,28 +246,16 @@ export default class LoginPageForm extends Component {
         this.props.navigation.navigate("ForgetPasswordPage");
     }
 
+
     wechatLogin = async () => {
         let _this = this;
-        Alert.alert(
-            "溫馨提示",
-            "微信和手机账号不同步，如您已注册手机账户请使用手机账户登录",
-            [
-                {text: "取消"},
-                {
-                    text: "继续登录",
-                    onPress: function () {
-                        _this.startLogin();
-                    }
-                }
-            ]
-        );
+        _this.startLogin();
     };
 
     async startLogin() {
         this.Loading.show("正在登录");
         let response = await WxEntry.sendAuthRequest("snsapi_userinfo", "wechat")
             .then(resp => {
-                // console.log("resp---->" + JSON.stringify(resp))
                 this.getOpenId(resp)
             })
             .catch(error => {
@@ -265,7 +270,7 @@ export default class LoginPageForm extends Component {
     getOpenId(code) {
         code = Platform.OS === "ios" ? code.code : code;
         let requestUrl =
-            "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxa452dfe169d3c11c&secret=&code=" +
+            "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx6c7109324ebb9409&secret=8313cd4a71572fad19a872bf31d12d28&code=" +
             code +
             "&grant_type=authorization_code"
         fetch(requestUrl)
@@ -300,6 +305,30 @@ export default class LoginPageForm extends Component {
             })
     }
 
+    //判断用户是否绑定手机号
+    async isBindTellNumber(token) {
+        let url = api.base_uri + "/v1/app/member/isBoundTellNumber";
+        let status = await fetch(url, {
+            method: 'get',
+            headers: {
+                "Content-Type": "application/json",
+                token: token
+            }
+        }).then(resp => resp.json())
+            .then(result => {
+                if (result.result == "yes") {
+                    return new Promise((resolve, reject) => {
+                        resolve(true)
+                    })
+                } else {
+                    return new Promise((resolve, reject) => {
+                        resolve(false)
+                    })
+                }
+            })
+        return status;
+    }
+
     //检测是否首次微信登录
     async checkFirstWeixin(weixininfo) {
         if (weixininfo.unionid != undefined) {
@@ -316,35 +345,58 @@ export default class LoginPageForm extends Component {
             })
                 .then(resp => resp.json())
                 .then(async result => {
-                    if (result.mbId != 0) {
-                        //同步书签
-                        await storage.save("WXUnionId", "", weixininfo.unionid);
+                    this.Loading.close();
 
-                        this.asynBookMark(result.member);
-                        //不是第一次登录
-                        storage.save("userTokens", "", result);
-                        storage.save("memberInfo", "", result.member);
-                        setTimeout(
-                            function () {
+                    if (result.code == 0) {
+                        if (result.mbId != 0) {
+
+
+                            //检查是否绑定手机号
+                            let isBind = await this.isBindTellNumber(result.token);
+                            if (isBind) {
+
+                                // 同步书签
+                                await storage.save("WXUnionId", "", weixininfo.unionid);
+
+                                this.asynBookMark(result.member);
+                                //不是第一次登录
+                                storage.save("userTokens", "", result);
+                                storage.save("memberInfo", "", result.member);
                                 this.Loading.close();
-                                const resetAction = NavigationActions.reset({
+
+                                const resetAction = StackActions.reset({
                                     index: 0,
                                     actions: [NavigationActions.navigate({routeName: "HomeScreen"})]
                                 });
                                 this.props.navigation.dispatch(resetAction);
-                            }.bind(this),
-                            1500
-                        );
-                    } else if (result.code == 500) {
-                        this.Loading.close();
-                        this.refs.toast.show("微信授权登录失败 3:" + JSON.stringify(result));
+
+                            } else {
+                                console.log("------1>" + JSON.stringify({
+                                    loginData: result,
+                                    weixininfoLogin: weixininfo
+                                }))
+                                this.props.navigation.navigate("BindPhoneSkip", {
+                                    loginData: result,
+                                    weixininfoLogin: weixininfo
+                                })
+                            }
+
+
+                        } else {
+
+                            await storage.save("WXUnionId", "", weixininfo.unionid);
+                            this.Loading.close();
+                            this.props.navigation.navigate("SelectIdentity", {
+                                obj: weixininfo
+                            });
+
+                        }
+
                     } else {
-                        await storage.save("WXUnionId", "", weixininfo.unionid);
-                        this.Loading.close();
-                        this.props.navigation.navigate("SelectIdentity", {
-                            obj: weixininfo
-                        });
+                        this.refs.toast.show("微信授权登录失败 3:" + JSON.stringify(result));
                     }
+
+
                 });
         } else {
             this.Loading.close();
@@ -390,7 +442,7 @@ export default class LoginPageForm extends Component {
             shouldStartCountting(false)
             return;
         } else {
-            this.Loading.show('正在发送验证码...');
+            this.Loading.show('发送中...');
             const url =
                 api.base_uri +
                 "/v1/app/member/getCodeCheck?tellAndEmail=" + this.state.username;
@@ -419,27 +471,19 @@ export default class LoginPageForm extends Component {
         }
     };
 
-
-    tellNumber() {
-        return (
-            <TextInput
-                style={{
-                    height: size(80),
-                    borderBottomColor: '#e0e0e0',
-                    borderBottomWidth: size(2),
-                    fontSize: setSpText(26),
-                    marginTop: size(50)
-                }}
-                placeholder="请输入手机号"
-                placeholderTextColor="#B9B9B9"
-                underlineColorAndroid="transparent"
-                onChangeText={text =>
-                    this.setState({
-                        username: text
-                    })
-                }
-            />
-        )
+    onChange(poneInput) {
+        let rs = false;
+        let myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+        let email =  new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+        if (myreg.test(poneInput)) {
+            rs  = true;
+        }
+        if (!rs){
+            if (email.test(poneInput)){
+                rs  = true;
+            }
+        }
+        return rs;
     }
 
     renderIsLogin() {
@@ -447,7 +491,7 @@ export default class LoginPageForm extends Component {
             return (
                 <View style={{marginTop: size(60)}}>
                     <TextInput style={{height: size(80), fontSize: setSpText(26),}}
-                               placeholder="请输入手机号"
+                               placeholder="请输入手机号/邮箱"
                                placeholderTextColor="#B9B9B9"
                                underlineColorAndroid="transparent"
                                onChangeText={text =>
@@ -477,8 +521,7 @@ export default class LoginPageForm extends Component {
                     <View style={{width: '100%', height: size(2), backgroundColor: '#e0e0e0'}}/>
                 </View>
             )
-        }
-        else {
+        } else {
             return (
                 <View style={{marginTop: size(60)}}>
                     <TextInput style={{height: size(80), fontSize: setSpText(26),}}
@@ -501,7 +544,7 @@ export default class LoginPageForm extends Component {
                             enablesReturnKeyAutomatically={true}
                             style={{height: size(80), fontSize: setSpText(26), flex: 3,}}
                             placeholderTextColor={"#B9B9B9"}
-                            placeholder={"请输入短信验证码"}
+                            placeholder={"请输入验证码"}
                         />
                         <CountDownButton
                             enable={true}
@@ -511,7 +554,14 @@ export default class LoginPageForm extends Component {
                             timerTitle={'获取验证码'}
                             timerActiveTitle={['请在（', 's）后重试']}
                             onClick={(shouldStartCountting) => {
-                                this.shouldStartCountdown(shouldStartCountting);
+                                let isPhone = this.onChange(this.state.username)
+                                if (isPhone) {
+                                    this.startTimer = shouldStartCountting;
+                                    this.shouldStartCountdown(shouldStartCountting);
+                                } else {
+                                    this.refs.toast.show("请输入合法手机号");
+                                }
+
                             }}/>
                     </View>
                     <View style={{width: '100%', height: size(2), backgroundColor: '#e0e0e0'}}/>
@@ -521,12 +571,12 @@ export default class LoginPageForm extends Component {
     }
 
     render() {
-        let pwdbottomColor = this.state.pwdLogin ? '#4FA5F4' : '#e0e0e0';
-        let pwdColor = this.state.pwdLogin ? '#4FA5F4' : '#0D0D0D';
-        let pwdHeight = this.state.pwdLogin ? size(2) : size(1);
-        let bottomColor = !this.state.pwdLogin ? '#4FA5F4' : '#e0e0e0';
-        let Color = !this.state.pwdLogin ? '#4FA5F4' : '#0D0D0D';
-        let height = !this.state.pwdLogin ? size(2) : size(1);
+        // let pwdbottomColor = this.state.pwdLogin ? '#4FA5F4' : '#e0e0e0';
+        // let pwdColor = this.state.pwdLogin ? '#4FA5F4' : '#0D0D0D';
+        // let pwdHeight = this.state.pwdLogin ? size(2) : size(1);
+        // let bottomColor = !this.state.pwdLogin ? '#4FA5F4' : '#e0e0e0';
+        // let Color = !this.state.pwdLogin ? '#4FA5F4' : '#0D0D0D';
+        // let height = !this.state.pwdLogin ? size(2) : size(1);
         return (
             <View style={styles.imgStyle}>
                 <KeyboardAvoidingView>
@@ -536,45 +586,48 @@ export default class LoginPageForm extends Component {
                         marginTop: size(146),
                         marginBottom: size(128)
                     }}>
-                        <Text style={{fontSize: setSpText(58), color: '#0D0D0D', fontWeight: '500'}}>登录</Text>
+                        <Image source={require('../../img/login/vesalLogo.png')}
+                               style={{width: size(372), height: size(54)}}/>
                     </View>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <TouchableOpacity style={{
-                            width: '50%',
-                            alignItems: 'center',
-                        }} onPress={() => {
-                            this.setState({
-                                pwdLogin: true
-                            })
-                        }}>
-                            <Text style={{color: pwdColor, fontSize: setSpText(32), fontWeight: '500'}}>密码登录</Text>
-                            <View style={{
-                                height: pwdHeight,
-                                backgroundColor: pwdbottomColor,
-                                width: '100%',
-                                marginTop: size(18)
-                            }}/>
-                        </TouchableOpacity>
+                    {/*<View style={{flexDirection: 'row', justifyContent: 'space-between'}}>*/}
+                    {/*<TouchableOpacity style={{*/}
+                    {/*width: '50%',*/}
+                    {/*alignItems: 'center',*/}
+                    {/*}} onPress={() => {*/}
+                    {/*this.setState({*/}
+                    {/*pwdLogin: true*/}
+                    {/*})*/}
+                    {/*}}>*/}
+                    {/*<Text style={{color: pwdColor, fontSize: setSpText(32), fontWeight: '500'}}>密码登录</Text>*/}
+                    {/*<View style={{*/}
+                    {/*height: pwdHeight,*/}
+                    {/*backgroundColor: pwdbottomColor,*/}
+                    {/*width: '100%',*/}
+                    {/*marginTop: size(18)*/}
+                    {/*}}/>*/}
+                    {/*</TouchableOpacity>*/}
 
-                        <TouchableOpacity style={{
-                            width: '50%',
-                            alignItems: 'center',
-                        }} onPress={() => {
-                            this.setState({
-                                pwdLogin: false
-                            })
-                        }}>
-                            <Text style={{color: Color, fontSize: setSpText(32), fontWeight: '500'}}>验证码登录</Text>
-                            <View style={{
-                                height: height,
-                                backgroundColor: bottomColor,
-                                width: '100%',
-                                marginTop: size(18)
-                            }}/>
-                        </TouchableOpacity>
+                    {/*<TouchableOpacity style={{*/}
+                    {/*width: '50%',*/}
+                    {/*alignItems: 'center',*/}
+                    {/*}} onPress={() => {*/}
+                    {/*this.setState({*/}
+                    {/*pwdLogin: false*/}
+                    {/*})*/}
+                    {/*}}>*/}
+                    {/*<Text style={{color: Color, fontSize: setSpText(32), fontWeight: '500'}}>验证码登录</Text>*/}
+                    {/*<View style={{*/}
+                    {/*height: height,*/}
+                    {/*backgroundColor: bottomColor,*/}
+                    {/*width: '100%',*/}
+                    {/*marginTop: size(18)*/}
+                    {/*}}/>*/}
+                    {/*</TouchableOpacity>*/}
+                    {/*</View>*/}
+                    <View>
+                        <Text style={{fontSize: setSpText(34), color: '#0D0D0D', fontWeight: '500'}}>{this.state.pwdLogin ? '账号密码登录' : '验证码登录'}</Text>
                     </View>
                     {this.renderIsLogin()}
-
                     <TouchableOpacity style={{
                         height: size(80),
                         marginTop: size(80),
@@ -585,17 +638,29 @@ export default class LoginPageForm extends Component {
                     }} onPress={this.onButtonPress.bind(this)}>
                         <Text style={{fontSize: setSpText(32), color: '#ffffff'}}>登录</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={this.onRegister.bind(this)}>
-                        <Text style={{
-                            fontSize: setSpText(26),
-                            color: '#B9B9B9',
-                            marginTop: size(30),
-                            textAlign: 'center'
-                        }}>暂无账号,
-                            <Text style={{color: '#4FA5F4'}}>立即注册</Text>
-                        </Text>
-                    </TouchableOpacity>
-
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <TouchableOpacity onPress={() => {
+                            this.setState({
+                                pwdLogin: !this.state.pwdLogin
+                            })
+                        }} style={{flex:1,}}>
+                            <Text style={{
+                                fontSize: setSpText(26),
+                                color: '#B9B9B9',
+                                marginTop: size(30),
+                            }}>{this.state.pwdLogin ? '验证码登录' : '账号密码登录'}
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={this.onRegister.bind(this)} style={{flex:1,}}>
+                            <Text style={{
+                                fontSize: setSpText(26),
+                                color: '#4FA5F4',
+                                marginTop: size(30),
+                                textAlign:'right'
+                            }}>立即注册
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                     <View style={{alignItems: "center", marginTop: size(200)}}>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             <View style={{
@@ -802,10 +867,3 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     }
 })
-
-
-
-
-
-
-

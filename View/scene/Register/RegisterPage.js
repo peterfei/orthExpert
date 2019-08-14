@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import {
     KeyboardAvoidingView,
     Platform,
@@ -10,17 +10,17 @@ import {
     Text
 
 } from "react-native";
-import {color} from "../../widget";
-import {Button, Colors, LoaderScreen} from "react-native-ui-lib";
+import { color } from "../../widget";
+import { Button, Colors, LoaderScreen } from "react-native-ui-lib";
 
-import {screen} from "../../common";
+import { screen } from "../../common";
 import UserStore from "../../mobx/User";
 import api from "../../api";
 import Toast from "react-native-easy-toast";
 import Loading from "../../common/Loading";
 import DeviceInfo from "react-native-device-info";
 import SelectDialog from 'react-native-select-dialog';
-import {size, setSpText} from '../../common/ScreenUtil';
+import { size, setSpText } from '../../common/ScreenUtil';
 import GraphicValidate from '../../common/components/GraphicValidate';
 import CountDownButton from './countDownButton.js';
 
@@ -46,14 +46,19 @@ export default class RegisterPage extends Component {
         this.props.navigation.navigate("LoginPage");
     }
 
-    onChange(text) {
-        if (!(/^[0-9]*$/.test(text))) {
-            Alert.alert("请输入合法数字！")
+    onChange(poneInput) {
+        let rs = false;
+        let myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+        let email = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+        if (myreg.test(poneInput)) {
+            rs = true;
         }
-        else if ((/^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{9}$/.test(text))) {
-            Alert.alert("不是完整的11位手机号或者正确的手机号前七位");
-            return false;
+        if (!rs) {
+            if (email.test(poneInput)) {
+                rs = true;
+            }
         }
+        return rs;
     }
 
     constructor(props) {
@@ -74,6 +79,7 @@ export default class RegisterPage extends Component {
             code: '',
             uuid: '',
             imgURL: '',
+            invisiblePassword: true
 
         };
         this.store = new UserStore(props.rootStore);
@@ -147,7 +153,7 @@ export default class RegisterPage extends Component {
                     recommendTell: this.state.recommendTell
                 };
                 console.log(data);
-                const url = api.base_uri + "/v1/app/member/register";
+                const url = api.base_uri + "/v1/app/member/newrRegister";
 
                 let responseData = await fetch(url, {
                     method: "post",
@@ -174,14 +180,14 @@ export default class RegisterPage extends Component {
             }
             return true;
         }
-        this.refs.toast.show("电话号码不能为空!");
+        this.refs.toast.show("电话号码或邮箱不能为空!");
         return false;
     }
 
     async handleCodeToMessage(code, uuid) {
         const url = api.base_uri + "/v1/app/member/getCodeAndCheckCapt?option=register&tellAndEmail=" +
             this.state.username + "&uuid=" + uuid + "&captchaCode=" + code;
-        this.Loading.show('正在发送验证码...');
+        this.Loading.show('发送中...');
         try {
             let responseData = await fetch(url, {
                 method: "get",
@@ -209,9 +215,9 @@ export default class RegisterPage extends Component {
     render() {
         const initVal = this.state.valChange ? this.state.title : this.state.initTxt;
         return (
-            <View style={{height: '100%', backgroundColor: '#ffffff', width: '100%'}}>
+            <View style={{ height: '100%', backgroundColor: '#ffffff', width: '100%' }}>
                 <ScrollView style={styles.container} keyboardShouldPersistTaps={'always'}
-                            showsVerticalScrollIndicator={false}>
+                    showsVerticalScrollIndicator={false}>
                     <KeyboardAvoidingView behavior="padding">
                         <View style={{
                             height: size(320),
@@ -225,18 +231,19 @@ export default class RegisterPage extends Component {
                                 this.props.navigation.goBack();
                             }}>
                                 <Image source={require('../../img/login/greyback.png')}
-                                       style={{
-                                           width: size(16), height: size(26),
-                                       }}/>
+                                    style={{
+                                        width: size(16), height: size(26),
+                                    }} />
                             </TouchableOpacity>
-                            <Text style={{
-                                fontSize: setSpText(58),
-                                color: '#0D0D0D',
-                                fontWeight: '500',
-                                marginTop: size(50),
-                            }}>手机号注册</Text>
+                            {/*<Text style={{*/}
+                            {/*fontSize: setSpText(58),*/}
+                            {/*color: '#0D0D0D',*/}
+                            {/*fontWeight: '500',*/}
+                            {/*marginTop: size(50),*/}
+                            {/*}}>手机号注册</Text>*/}
+                            <Image source={require('../../img/login/register.png')} style={{ width: size(225), height: size(53), marginTop: size(50) }} />
                         </View>
-                        <View style={{height: size(500),}}>
+                        <View style={{ height: size(500), }}>
                             <TextInput
                                 autoFocus={true}
                                 style={{
@@ -246,11 +253,10 @@ export default class RegisterPage extends Component {
                                     fontSize: setSpText(26),
                                     marginTop: size(50)
                                 }}
-                                placeholder="请输入手机号"
+                                placeholder="请输入手机号/邮箱"
                                 placeholderTextColor="#B9B9B9"
                                 underlineColorAndroid="transparent"
                                 onChangeText={text => {
-                                    this.onChange(text);
                                     this.setState({
                                         username: text
                                     });
@@ -268,45 +274,76 @@ export default class RegisterPage extends Component {
                                         this.setState({
                                             verify_code: text
                                         })}
-                                    style={{height: size(80), flex: 4, fontSize: setSpText(26)}}
+                                    style={{ height: size(80), flex: 4, fontSize: setSpText(26) }}
                                     placeholderTextColor={"#B9B9B9"}
-                                    placeholder={"请输入短信验证码"}
+                                    placeholder={"请输入验证码"}
                                 />
                                 <CountDownButton
                                     enable={true}
-                                    style={{flex: 3, height: size(73),}}
-                                    textStyle={{color: '#0094e1', fontSize: setSpText(24)}}
+                                    style={{ flex: 3, height: size(73) }}
+                                    textStyle={{ color: '#0094e1', fontSize: setSpText(24) }}
                                     timerCount={60}
                                     timerTitle={'获取验证码'}
                                     timerActiveTitle={['请在（', 's）后重试']}
                                     onClick={(shouldStartCountting) => {
-                                        if (this.state.username == '') {
-                                            this.refs.toast.show("电话号码不能为空!");
-                                            shouldStartCountting(false)
-                                            return;
+                                        let isPhone = this.onChange(this.state.username)
+                                        if (isPhone) {
+                                            this.startTimer = shouldStartCountting;
+                                            this.GraphicValidate.show();
+                                        } else {
+                                            this.refs.toast.show("请输入合法手机号");
                                         }
-                                        this.startTimer = shouldStartCountting;
-                                        this.GraphicValidate.show();
-                                        // this.shouldStartCountdown(shouldStartCountting);
-                                    }}/>
+
+                                    }} />
                             </View>
                             {/*设置密码*/}
                             <View style={{
                                 marginTop: size(10),
                                 flexDirection: 'row',
-                                borderBottomColor: '#e0e0e0', borderBottomWidth: size(2),
+                                borderBottomColor: '#e0e0e0',
+                                borderBottomWidth: size(2),
                             }}>
-                                <TextInput
-                                    style={{height: size(80), fontSize: setSpText(26), flex: 3,}}
-                                    placeholder="请输入6-12个字符的密码"
-                                    placeholderTextColor="#B9B9B9"
-                                    underlineColorAndroid="transparent"
-                                    secureTextEntry
-                                    onChangeText={text =>
-                                        this.setState({
-                                            password: text
-                                        })
-                                    }/>
+                                {this.state.invisiblePassword ?
+                                    <TextInput
+                                        style={{ height: size(80), fontSize: setSpText(26), flex: 4, }}
+                                        placeholder="请输入6-12个字符的密码"
+                                        placeholderTextColor="#B9B9B9"
+                                        underlineColorAndroid="transparent"
+                                        secureTextEntry={true}
+                                        value={this.state.password}
+                                        onChangeText={text =>
+                                            this.setState({
+                                                password: text
+                                            })
+                                        } /> :
+                                    <TextInput
+                                        style={{ height: size(80), fontSize: setSpText(26), flex: 4, }}
+                                        placeholder="请输入6-12个字符的密码"
+                                        placeholderTextColor="#B9B9B9"
+                                        underlineColorAndroid="transparent"
+                                        secureTextEntry={false}
+                                        value={this.state.password}
+                                        maxLength={12}
+                                        onChangeText={text =>
+                                            this.setState({
+                                                password: text
+                                            })
+                                        } />
+                                }
+
+                                <TouchableOpacity style={{
+                                    flex: 2.3,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }} onPress={() => {
+                                    this.setState({
+                                        invisiblePassword: !this.state.invisiblePassword
+                                    })
+                                }}>
+                                    <Image
+                                        source={this.state.invisiblePassword ? require('../../img/login/can_not_see.png') : require('../../img/login/can_see.png')}
+                                        style={{ width: size(30), height: size(16), }} />
+                                </TouchableOpacity>
                             </View>
 
                             {/*设置身份*/}
@@ -318,13 +355,9 @@ export default class RegisterPage extends Component {
                                 borderBottomWidth: size(2),
                                 marginTop: size(10),
                             }}>
-                                <Text style={{
-                                    color: '#B9B9B9',
-                                    marginLeft: size(5),
-                                    fontSize: setSpText(26)
-                                }}>您选择的身份：</Text>
+
                                 <TouchableOpacity style={[styles.input]} onPress={this.show.bind(this)}>
-                                    <Text style={{fontSize: setSpText(26)}}>
+                                    <Text style={{ fontSize: setSpText(26) }}>
                                         {initVal}
                                     </Text>
                                 </TouchableOpacity>
@@ -336,7 +369,7 @@ export default class RegisterPage extends Component {
                                 valueChange={this.changList.bind(this)}
                                 datas={this.state.identityList}
                                 animateType={'fade'}
-                                positionStyle={{backgroundColor: '#4FA5F4', textAlign: 'center'}}
+                                positionStyle={{ backgroundColor: '#4FA5F4', textAlign: 'center' }}
                                 renderRow={this.defineList.bind(this)}
                                 innersWidth={screen.width * 0.8}
                                 innersHeight={screen.height * 0.5}
@@ -349,7 +382,7 @@ export default class RegisterPage extends Component {
                             alignItems: 'center',
                             backgroundColor: '#4FA5F4',
                         }} onPress={this.onConfirmRegister.bind(this)}>
-                            <Text style={{fontSize: setSpText(32), color: '#ffffff'}}>注册</Text>
+                            <Text style={{ fontSize: setSpText(32), color: '#ffffff' }}>注册</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={this.toLogin.bind(this)}>
@@ -359,7 +392,7 @@ export default class RegisterPage extends Component {
                                 marginTop: size(30),
                                 textAlign: 'center'
                             }}>已有账号,
-                                <Text style={{color: '#4FA5F4'}}>去登录</Text>
+                                <Text style={{ color: '#4FA5F4' }}>去登录</Text>
                             </Text>
                         </TouchableOpacity>
 
@@ -386,7 +419,7 @@ export default class RegisterPage extends Component {
                     validateCode={(code, uuid) => {
                         this.GraphicValidate.hide();
                         this.handleCodeToMessage(code, uuid);
-                    }}/>
+                    }} />
             </View>
         );
 
@@ -433,7 +466,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        width: size(700),
+        marginRight: size(25),
         marginLeft: size(25)
     },
     groupsVerb: {
@@ -492,7 +525,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 });
-
 //
 //
 // {/*<CountdownView*/}
