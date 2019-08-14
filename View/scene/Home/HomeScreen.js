@@ -395,7 +395,7 @@ export default class HomeScreen extends Component {
     return arr
   }
   changeImg(num) {
-    this._scrollView.scrollTo({ x: num * screen.width, y: 0, animated: false })
+    this._scrollView.scrollTo({ x: num * screen.width, y: 0, animated: true })
     this.pushDetails(this.state.rightMenuData.pathologyList[num].pat_no, "img")
   }
   _onLoadEnd = () => {
