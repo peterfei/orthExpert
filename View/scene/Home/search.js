@@ -19,6 +19,7 @@ import historyData from "./History.json";
 let unity = UnityView;
 let index = 0;
 import styles from './styles';
+import _ from "lodash";
 
 export default class SearchComponent extends Component {
   static navigationOptions = {
