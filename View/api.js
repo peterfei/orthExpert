@@ -1,5 +1,6 @@
 export default {
     APPID: "wxa452dfe169d3c11c",
+    appsecret:"21a25d1a7762a4d6caf49cd18e9ad116",
     discount: "http://aop.meituan.com/api/entry/discountNew?uuid=35907A2436D257F90370E49A7CDFAE73678ABD5806B0029DFB83362199EEDAE4&utm_source=AppStore&utm_term=7.4.0&latlng=22.658886%2C114.038819&rn_package_version=0&userid=207705088&utm_content=35907A2436D257F90370E49A7CDFAE73678ABD5806B0029DFB83362199EEDAE4&utm_medium=iphone&version_name=7.4.0&movieBundleVersion=100&utm_campaign=AgroupBgroupD100H0&__reqTraceID=33F8EAE5-287C-4757-A905-EFF85DF93071&js_patch_version=2&ci=30&msid=76EC06AA-D076-4229-A3B2-4627B12F95BB2016-10-21-18-47424",
     verify_url:
         "http://rykj-service.vesal.cn/Rykj_VesalService.asmx/Ry_Vip_Member_CAPTCHASend",
