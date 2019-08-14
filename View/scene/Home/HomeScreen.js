@@ -31,6 +31,7 @@ import Toast from "react-native-easy-toast";
 let unity = UnityView;
 let index = 0;
 import ImagePlaceholder from 'react-native-image-with-placeholder'
+import _ from "lodash";
 
 
 export default class HomeScreen extends Component {
@@ -81,9 +82,9 @@ export default class HomeScreen extends Component {
       // if (this.state.EnterNowScreen == 'isMainScreen') {
       //   DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
       // }
-      // if (this.state.EnterNowScreen == 'isNotMainScreen') {
-      //   DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
-      // }
+      if (this.state.EnterNowScreen == 'isNotMainScreen') {
+        DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
+      }
     }
     console.log(handler.name); // the message name
     console.log(handler.data); // the message data
@@ -112,17 +113,21 @@ export default class HomeScreen extends Component {
         let closeBigImg = passedArgs.closeBigImg
         if (closeBigImg == true) {
           this.setState({
-            img: false
+            img: false,
+            isUnityReady:true
           })
         }
         if (closeBigImg == false) {
+          // alert(111111)
           this.setState({
-            img: true
+            img: true,
+            // isUnityReady:false
           })
           DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
         }
       }
-    )
+    ),
+    
   };
   componentWillUnmount() {
     _.each(this.listeners, listener => {
@@ -456,7 +461,8 @@ export default class HomeScreen extends Component {
   showDetails(pat_no, img, num) {
     this.pushDetails(pat_no, img, num)
     this.setState({
-      rightMenu: false
+      rightMenu: false,
+      isUnityReady:false
     })
   }
   closeRightMenu() {
