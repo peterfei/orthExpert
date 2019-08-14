@@ -16,6 +16,7 @@ import {
     Colors
 } from "react-native-ui-lib";
 import Loading from "../../common/Loading";
+
 import {screen, system} from "../../common";
 import UserStore from "../../mobx/User";
 import api, {encryptionWithStr} from "../../api";
@@ -31,15 +32,18 @@ export default class ForgetPasswordPage extends Component {
 
     constructor(props) {
         super(props);
+        let params = props.navigation.state.params;
         this.state = {
             username: "",
             password: "",
             repassword: "",
             verify_code: "",
-            title: '忘记密码',
+            img: (params == undefined) ? require('../../img/login/forgetPass.png') : require('../../img/login/RetrievePass.png'),
             code: '',
             uuid: '',
             imgURL: '',
+            invisiblePassword: false
+
         };
         this.store = new UserStore(props.rootStore);
     }
@@ -54,11 +58,13 @@ export default class ForgetPasswordPage extends Component {
             var n = Math.floor(Math.random() * 16.0).toString(16);
             guid += n;
         }
+
         let url = api.base_uri + "/appCaptcha?uuid=" + guid;
         this.setState({
             imgURL: url,
             uuid: guid
         })
+
     }
 
     shouldStartCountdown = async (shouldStartCountting) => {
@@ -70,7 +76,7 @@ export default class ForgetPasswordPage extends Component {
             return;
         }
         else {
-            this.Loading.show('正在发送验证码...');
+            this.Loading.show('发送中...');
             const url =
                 api.base_uri +
                 "/v1/app/member/getCodeCheck?tellAndEmail=" + this.state.username;
@@ -141,7 +147,20 @@ export default class ForgetPasswordPage extends Component {
         this.refs.toast.show("电话号码或邮箱不能为空!");
         return false;
     }
-
+    onChange(poneInput) {
+        let rs = false;
+        let myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+        let email =  new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+        if (myreg.test(poneInput)) {
+            rs  = true;
+        }
+        if (!rs){
+            if (email.test(poneInput)){
+                rs  = true;
+            }
+        }
+        return rs;
+    }
     render() {
         return (
             <View style={{height: '100%', backgroundColor: '#ffffff'}}>
@@ -164,12 +183,8 @@ export default class ForgetPasswordPage extends Component {
                                            width: size(16), height: size(26),
                                        }}/>
                             </TouchableOpacity>
-                            <Text style={{
-                                fontSize: setSpText(58),
-                                color: '#0D0D0D',
-                                fontWeight: '500',
-                                marginTop: size(50),
-                            }}>找回密码</Text>
+                            <Image source={this.state.img} style={{width:size(225),height:size(53),marginTop: size(50)}}/>
+
                         </View>
                         <View style={{height: size(500)}}>
                             <TextInput
@@ -181,7 +196,7 @@ export default class ForgetPasswordPage extends Component {
                                     fontSize: setSpText(26),
                                     marginTop: size(50)
                                 }}
-                                placeholder="请输入手机号"
+                                placeholder="请输入手机号/邮箱"
                                 placeholderTextColor="#B9B9B9"
                                 underlineColorAndroid="transparent"
                                 onChangeText={text =>
@@ -204,7 +219,7 @@ export default class ForgetPasswordPage extends Component {
                                         })}
                                     style={{height: size(80), flex: 4, fontSize: setSpText(26)}}
                                     placeholderTextColor={"#B9B9B9"}
-                                    placeholder={"请输入短信验证码"}
+                                    placeholder={"请输入验证码"}
                                 />
                                 <CountDownButton
                                     enable={true}
@@ -214,7 +229,13 @@ export default class ForgetPasswordPage extends Component {
                                     timerTitle={'获取验证码'}
                                     timerActiveTitle={['请在（', 's）后重试']}
                                     onClick={(shouldStartCountting) => {
-                                        this.shouldStartCountdown(shouldStartCountting);
+                                        let isPhone = this.onChange(this.state.username)
+                                        if (isPhone) {
+                                            this.startTimer = shouldStartCountting;
+                                            this.shouldStartCountdown(shouldStartCountting);
+                                        } else {
+                                            this.refs.toast.show("请输入合法手机号");
+                                        }
                                     }}/>
                             </View>
                             {/*设置密码*/}
@@ -224,16 +245,30 @@ export default class ForgetPasswordPage extends Component {
                                 borderBottomColor: '#e0e0e0', borderBottomWidth: size(2),
                             }}>
                                 <TextInput
-                                    style={{height: size(80), fontSize: setSpText(26), flex: 3,}}
+                                    style={{height: size(80), fontSize: setSpText(26), flex: 4,}}
                                     placeholder="请输入6-12个字符的密码"
                                     placeholderTextColor="#B9B9B9"
                                     underlineColorAndroid="transparent"
-                                    secureTextEntry
+                                    secureTextEntry={!this.state.invisiblePassword}
+                                    value={this.state.password}
                                     onChangeText={text =>
                                         this.setState({
                                             password: text
                                         })
                                     }/>
+                                <TouchableOpacity style={{
+                                    flex: 2.3,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }} onPress={() => {
+                                    this.setState({
+                                        invisiblePassword: !this.state.invisiblePassword
+                                    })
+                                }}>
+                                    <Image
+                                        source={this.state.invisiblePassword ? require('../../img/login/can_see.png') : require('../../img/login/can_not_see.png')}
+                                        style={{width: size(30), height: size(16),}}/>
+                                </TouchableOpacity>
                             </View>
                         </View>
                         {/*点击确定*/}
@@ -253,6 +288,12 @@ export default class ForgetPasswordPage extends Component {
                             fadeInDuration={750}
                             fadeOutDuration={1000}
                             opacity={0.8}
+                        />
+                        <Loading
+                            ref={r => {
+                                this.Loading = r
+                            }}
+                            hudHidden={false}
                         />
                     </KeyboardAvoidingView>
                 </ScrollView>
@@ -283,7 +324,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        width: size(700),
+        marginRight:size(25),
         marginLeft: size(25)
     },
     groupsVerb: {
