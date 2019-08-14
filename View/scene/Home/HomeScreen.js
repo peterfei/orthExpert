@@ -81,9 +81,9 @@ export default class HomeScreen extends Component {
       // if (this.state.EnterNowScreen == 'isMainScreen') {
       //   DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
       // }
-      // if (this.state.EnterNowScreen == 'isNotMainScreen') {
-      //   DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
-      // }
+      if (this.state.EnterNowScreen == 'isNotMainScreen') {
+        DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
+      }
     }
     console.log(handler.name); // the message name
     console.log(handler.data); // the message data
