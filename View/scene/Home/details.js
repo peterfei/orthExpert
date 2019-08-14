@@ -299,7 +299,7 @@ export default class Details extends Component {
             if (this.state.EnterNowScreen == 'isMainScreen') {
                 this.props.sendMsgToUnity("app", msg, 'json')
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
-                DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
+                DeviceEventEmitter.emit("closeBigImg", { onlyCloseBigImg: true });
                 this.setState({
                     EnterNowScreen: "isNotMainScreen",
                     video:false,
