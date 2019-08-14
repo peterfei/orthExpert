@@ -22,7 +22,7 @@ import styles from './styles';
 import Toast from "react-native-easy-toast";
 import ImagePlaceholder from 'react-native-image-with-placeholder'
 import _ from "lodash";
-
+import LoadingView from '../../common/LoadingView.js'
 
 export default class HomeScreen extends Component {
   static navigationOptions = {
@@ -40,7 +40,8 @@ export default class HomeScreen extends Component {
     EnterNowScreen: "isMainScreen",
     loading: true,
     isUnityReady: false,
-    iArr: ''//有效i值
+    iArr: '',//有效i值,
+    showLoading:false
   }
 
   Animated() {
@@ -68,7 +69,8 @@ export default class HomeScreen extends Component {
     if (this.state.EnterNowScreen == 'isMainScreen') {
       if (handler.name == "title") {
         this.setState({
-          isUnityReady: true
+          isUnityReady: true,
+          showLoading:false
         })
       }
     }
@@ -135,14 +137,21 @@ export default class HomeScreen extends Component {
   async componentWillMount() {
     //Unity 是否已加载
     this.setState({
-      isUnityReady: await (UnityModule.isReady())
+      isUnityReady: await (UnityModule.isReady()),
+      showLoading:true
     })
     this.BackHandler()
   }
   BackHandler() {
     BackHandler.addEventListener("back", this.goBackClicked);
   }
-
+  async componentDidMount(){
+    if(await (UnityModule.isReady())){
+      this.setState({
+        showLoading:false
+      })
+    }
+  }
   /**
    * 点击物理回退键，
    * 修复闪退
@@ -176,6 +185,8 @@ export default class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
+        
+
         {/**
          * Hide the StatusBar on the top which some cellphone's
          * color always show White.
@@ -216,6 +227,7 @@ export default class HomeScreen extends Component {
           fadeOutDuration={1000}
           opacity={0.8}
         />
+        <LoadingView showLoading={ this.state.showLoading } />
       </View>
     );
   }
