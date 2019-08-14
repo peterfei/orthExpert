@@ -39,7 +39,8 @@ export default class HomeScreen extends Component {
     reconfirm: false,
     EnterNowScreen: "isMainScreen",
     loading: true,
-    isUnityReady: false
+    isUnityReady: false,
+    iArr: ''//有效i值
   }
 
   Animated() {
@@ -89,9 +90,9 @@ export default class HomeScreen extends Component {
      * 16进制转字符
      * */
   hexToStr(str) {
-    var val = "";
-    var arr = str.split("_");
-    for (var i = 0; i < arr.length; i++) {
+    let val = "";
+    let arr = str.split("_");
+    for (let i = 0; i < arr.length; i++) {
       val += String.fromCharCode(parseInt(arr[i], 16));
     }
     return val;
@@ -100,7 +101,7 @@ export default class HomeScreen extends Component {
     update: DeviceEventEmitter.addListener("closeBigImg",
       ({ ...passedArgs }) => {
         let closeBigImg = passedArgs.closeBigImg
-        let onlyCloseBigImg=passedArgs.onlyCloseBigImg
+        let onlyCloseBigImg = passedArgs.onlyCloseBigImg
         if (closeBigImg == true) {
           this.setState({
             img: false,
@@ -111,7 +112,7 @@ export default class HomeScreen extends Component {
           // alert(111111)
           this.setState({
             img: true,
-            isUnityReady:false
+            isUnityReady: false
           })
           DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
         }
@@ -292,7 +293,8 @@ export default class HomeScreen extends Component {
     }).then(resp => resp.json())
       .then(result => {
         this.setState({
-          rightMenuData: result
+          rightMenuData: result,
+          iArr:''//有效i值重置
         })
       })
   }
@@ -321,8 +323,9 @@ export default class HomeScreen extends Component {
     }
   }
   onScrollAnimationEnd(e) {
-    var i = Math.floor(e.nativeEvent.contentOffset.x / (screen.width - 0.01));
-    this.pushDetails(this.state.rightMenuData.pathologyList[i].pat_no, "img")
+    let i = Math.floor(e.nativeEvent.contentOffset.x / (screen.width - 0.01));
+    let num = this.state.iArr[i]
+    this.pushDetails(this.state.rightMenuData.pathologyList[num].pat_no, "img")
   }
   MenuBody() {
     return (
@@ -332,13 +335,25 @@ export default class HomeScreen extends Component {
     )
   }
   renderImg() {
+    let iArrs = []//有效i值
+    for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
+      //判断数据第一个元素的i和最后一个元素的i
+      iArrs.push(i)
+      if (this.state.rightMenuData.pathologyList[i].img_url == null) { iArrs.pop() }
+    }
+    if (this.state.iArr == '') {
+      this.setState({
+        iArr: iArrs
+      })
+    }
+    let fristiArr = iArrs[0]
+    let lastiArr = iArrs[iArrs.length - 1]
+
+    //遍历图片
     let arr = []
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
       arr.push(
         <View key={i} style={{ width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
-          {/* <Image style={{ width: '80%', height: '80%' }}
-            source={{ uri: this.state.rightMenuData.pathologyList[i].img_url }}
-          />  */}
           <ImagePlaceholder
             style={{ flex: 1 }}
             duration={1000}
@@ -349,22 +364,40 @@ export default class HomeScreen extends Component {
             src={this.state.rightMenuData.pathologyList[i].img_url}
             placeholder='http://filetest1.vesal.site/image/slt/flowers-small.jpg'
           />
-
-          {/* <TouchableHighlight style={{ width: 30, height: 30, position: 'absolute', right: 15, top: 15 }}
-            onPress={() => this.closeImg()}>
-            <Image style={{ width: 30, height: 30, }}
-              source={require('../../img/unity/close.png')}
-            />
-          </TouchableHighlight> */}
+          {i != fristiArr ?
+            <TouchableHighlight style={{ width: 50, height: 50, position: 'absolute', left: 15, top: '50%' }}
+              onPress={() => this.changeImg(i - 1)}>
+              <Image style={{ height: 50, width: 50 }}
+                source={require('../../img/unity/arrow_l.png')}
+              />
+            </TouchableHighlight>
+            : null
+          }
+          {i != lastiArr ?
+            <TouchableHighlight style={{ width: 50, height: 50, position: 'absolute', right: 15, top: '50%' }}
+              onPress={() => this.changeImg(i + 1)}>
+              <Image style={{ height: 50, width: 50 }}
+                source={require('../../img/unity/arrow_r.png')}
+              />
+            </TouchableHighlight>
+            : null
+          }
         </View>
       )
       if (this.state.rightMenuData.pathologyList[i].img_url == null) {
         arr.pop()
       }
     }
+    // inRenderArr=false
+    // arr.pop()
+    // let lastArr =arr[arr.length-1]
+    // arr.push(lastArr)
     return arr
   }
-
+  changeImg(num) {
+    this._scrollView.scrollTo({ x: num * screen.width, y: 0, animated: false })
+    this.pushDetails(this.state.rightMenuData.pathologyList[num].pat_no, "img")
+  }
   _onLoadEnd = () => {
     this.setState({
       loading: false
