@@ -243,6 +243,9 @@ export default class HomeScreen extends Component {
     }
   }
   async pushDetails(pat_no, img, num) { //获取单个疾病资源,包括底部菜单,图片,摄像机参数等
+    this.setState({
+      isUnityReady:false
+    })
     //获取搜索后数据
     let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + pat_no;
     await fetch(url, {
@@ -265,9 +268,20 @@ export default class HomeScreen extends Component {
       )
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
     } else if (img == "noImg") {
+      // alert(111)
+      
       this.setState({
-        img: false
+        img: false,
+        // isUnityReady:true
       })
+      // setTimeout(function(){
+      //   this.setState({
+      //     img: false,
+      //     isUnityReady:true
+      //   })
+      // }.bind(this),2000)
+      // DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
+      
     }
     DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
     DeviceEventEmitter.emit("getData", { getData: this.state.getData });
@@ -461,7 +475,7 @@ export default class HomeScreen extends Component {
     this.pushDetails(pat_no, img, num)
     this.setState({
       rightMenu: false,
-      isUnityReady:false
+      isUnityReady:true
     })
   }
   closeRightMenu() {
