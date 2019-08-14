@@ -26,7 +26,7 @@ export default class SearchComponent extends Component {
   }
   state = {
     search: false,
-    allSearch: false,
+    allSearch: true,
     sourceData: '',
     hotData: '',
     historyData: '',
@@ -143,14 +143,20 @@ export default class SearchComponent extends Component {
   render() {
     return (
       <View style={{ position: 'absolute', width: screen.width }}>
+        
         {this.state.allSearch ?
           <View style={{ width: screen.width }}>
             {!this.state.search ? this.renderTop() : this.searchScreen()}
           </View>
           : 
-            <View style={{ width: 0,height:0 }}>
-              
-            </View>
+          <View style={{
+              width: size(10),
+              position: 'absolute',
+              bottom: 0,
+              height: size(10),
+              backgroundColor: "#FFF",
+              left: 0,
+          }}/>
           
         }
         <Loading

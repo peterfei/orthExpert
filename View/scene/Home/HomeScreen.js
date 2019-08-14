@@ -16,7 +16,7 @@ import {
 import { screen, system } from "../../common";
 import SearchComponent from "./search";
 import Details from "./details"
-import UnityView, { UnityViewMessageEventData, MessageHandler ,UnityModule} from 'react-native-unity-view';
+import UnityView, { UnityViewMessageEventData, MessageHandler, UnityModule } from 'react-native-unity-view';
 import { size } from '../../common/ScreenUtil';
 import { VoiceUtils } from "../../common/VoiceUtils";
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
@@ -48,7 +48,7 @@ export default class HomeScreen extends Component {
     reconfirm: false,
     EnterNowScreen: "isMainScreen",
     loading: true,
-    isUnityReady:false
+    isUnityReady: false
   }
 
   Animated() {
@@ -75,12 +75,15 @@ export default class HomeScreen extends Component {
   onUnityMessage(handler) {
     // DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
     if (handler.name == "title") {
-      if (this.state.EnterNowScreen == 'isMainScreen') {
-        DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
-      }
-      if (this.state.EnterNowScreen == 'isNotMainScreen') {
-        DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
-      }
+      this.setState({
+        isUnityReady: true
+      })
+      // if (this.state.EnterNowScreen == 'isMainScreen') {
+      //   DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
+      // }
+      // if (this.state.EnterNowScreen == 'isNotMainScreen') {
+      //   DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
+      // }
     }
     console.log(handler.name); // the message name
     console.log(handler.data); // the message data
@@ -132,7 +135,7 @@ export default class HomeScreen extends Component {
     //Unity 是否已加载
     this.setState({
       isUnityReady: await (UnityModule.isReady())
-    }) 
+    })
     this.BackHandler()
   }
   BackHandler() {
@@ -184,30 +187,32 @@ export default class HomeScreen extends Component {
           style={{
             width: screen.width,
             height: screen.height
-            
+
           }} />
-          
+
         {/* 点击疾病后图片 */}
         {this.state.img && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.imgOpen() : null}
-        {/* 顶部/搜索 */}
-        <SearchComponent navigation={this.props.navigation}
-          pushRightMune={(pat_no, img) => this.showDetails(pat_no, img)}
-          setSearch={(bool) => this.setSearchComponent(bool)}
-        />
         {/* 右侧菜单及关闭按钮 */}
         {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.MenuBody() : <View style={styles.place}></View>}
         {/* 底部详情 */}
         <Details navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
-          {/* 提示组件 */}
-          <Toast
-                    ref="toast"
-                    position="top"
-                    positionValue={200}
-                    fadeInDuration={750}
-                    fadeOutDuration={1000}
-                    opacity={0.8}
-                />
+        {/* 顶部/搜索 */}
+        {this.state.isUnityReady ? (
+          <SearchComponent navigation={this.props.navigation}
+            pushRightMune={(pat_no, img) => this.showDetails(pat_no, img)}
+            setSearch={(bool) => this.setSearchComponent(bool)}
+          />
+        ) : null}
+        {/* 提示组件 */}
+        <Toast
+          ref="toast"
+          position="top"
+          positionValue={200}
+          fadeInDuration={750}
+          fadeOutDuration={1000}
+          opacity={0.8}
+        />
       </View>
     );
   }
@@ -305,8 +310,8 @@ export default class HomeScreen extends Component {
   }
   MenuBody() {
     return (
-     // <TouchableOpacity activeOpacity={1} style={{ width: '100%', height: '100%', position: 'absolute' }} >
-        [this.rightMenu(),this.rightMenuClose()]
+      // <TouchableOpacity activeOpacity={1} style={{ width: '100%', height: '100%', position: 'absolute' }} >
+      [this.rightMenu(), this.rightMenuClose()]
       //</TouchableOpacity>
     )
   }
@@ -318,17 +323,17 @@ export default class HomeScreen extends Component {
           {/* <Image style={{ width: '80%', height: '80%' }}
             source={{ uri: this.state.rightMenuData.pathologyList[i].img_url }}
           />  */}
-          <ImagePlaceholder 
-          style={{  flex:1 }}
-          duration={1000}
-          activityIndicatorProps={{
-            size: 'large',
-            color: 'green',
-          }}
-          src={this.state.rightMenuData.pathologyList[i].img_url} 
-          placeholder='http://filetest1.vesal.site/image/slt/flowers-small.jpg'
+          <ImagePlaceholder
+            style={{ flex: 1 }}
+            duration={1000}
+            activityIndicatorProps={{
+              size: 'large',
+              color: 'green',
+            }}
+            src={this.state.rightMenuData.pathologyList[i].img_url}
+            placeholder='http://filetest1.vesal.site/image/slt/flowers-small.jpg'
           />
-          
+
           {/* <TouchableHighlight style={{ width: 30, height: 30, position: 'absolute', right: 15, top: 15 }}
             onPress={() => this.closeImg()}>
             <Image style={{ width: 30, height: 30, }}
@@ -410,10 +415,10 @@ export default class HomeScreen extends Component {
     //alert(this.state.rightMenuData.pathologyList[1])
     return arr
   }
-  showDetailsRight(pat_no, img, i){
-    if(this.state.rightMenuData.pathologyList[i].img_url != null){
+  showDetailsRight(pat_no, img, i) {
+    if (this.state.rightMenuData.pathologyList[i].img_url != null) {
       this.showDetails(pat_no, "img", i)
-    }else{
+    } else {
       this.showDetails(pat_no, "noImg", i)
     }
   }

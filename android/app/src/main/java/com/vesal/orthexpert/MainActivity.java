@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import com.umeng.message.PushAgent;
-
+import android.widget.Toast;
+import android.view.KeyEvent;
 public class MainActivity extends ReactActivity {
+    private long firstClick;
 
     /**
      * Returns the name of the main component registered from JavaScript.
@@ -45,4 +47,29 @@ public class MainActivity extends ReactActivity {
         super.onPause();
         // MobclickAgent.onPause(this);
     }
+
+    @Override
+    protected void onDestroy() {
+        // TODO 自动生成的方法存根
+        super.onDestroy();
+        // unbindService(conn);
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // TODO Auto-generated method stub
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            if(System.currentTimeMillis()-firstClick>2000){
+                firstClick=System.currentTimeMillis();
+                Toast.makeText(this, "再按一次退出", 2000).show();;
+            }else{
+                System.exit(0);
+            }
+            return true;
+        }
+        return false;
+    }
+
+
 }
