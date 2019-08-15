@@ -34,6 +34,7 @@ export default class Details extends Component {
         title:true,
         getData: '',
         EnterNowScreen: "isMainScreen",
+        lastImgState:false,
         bottomIcon: [
             { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
             { img: require('../../img/home/tab1.png'), title: '成因' },
@@ -276,13 +277,18 @@ export default class Details extends Component {
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
             }else{
                 this.props.sendMsgToUnity('back', '', '')
-                DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
+                if(this.state.lastImgState){
+                    DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
+                    DeviceEventEmitter.emit("closeBigImg", { closeBigImg: false });
+                }else{
+                    DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
+                    DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
+                }
                 this.setState({
                     EnterNowScreen: "isMainScreen",
                     title:true
                 })
                 this.props.setScreen("isMainScreen")
-                DeviceEventEmitter.emit("closeBigImg", { closeBigImg: false });
             }
             this.setState({
                 video: false,
@@ -314,7 +320,8 @@ export default class Details extends Component {
                     reason: false,
                     title:false,
                     details:false,
-                    showLoading:true
+                    showLoading:true,
+                    lastImgState:this.props.img
                 })
                 this.props.setScreen("isNotMainScreen")
             } else {

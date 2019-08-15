@@ -42,7 +42,7 @@ export default class HomeScreen extends Component {
     loading: true,
     isUnityReady: false,
     iArr: '',//有效i值,
-    showLoading:false
+    showLoading: false
   }
 
   Animated() {
@@ -72,7 +72,7 @@ export default class HomeScreen extends Component {
       if (handler.name == "title") {
         this.setState({
           isUnityReady: true,
-          showLoading:false
+          showLoading: false
         })
       }
       if (handler.name == "clickBlank") {
@@ -80,13 +80,13 @@ export default class HomeScreen extends Component {
       }
     }
     if (this.state.EnterNowScreen == 'isNotMainScreen') {
-      
+
       // this.setState({
       //   showLoading:true
       // })
       if (handler.name == "title") {
         //发送给detail Hide Loading
-        DeviceEventEmitter.emit("hideLoading", { hide: true});
+        DeviceEventEmitter.emit("hideLoading", { hide: true });
       }
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
       DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
@@ -151,22 +151,22 @@ export default class HomeScreen extends Component {
     //Unity 是否已加载
     this.setState({
       isUnityReady: await (UnityModule.isReady()),
-      showLoading:true
+      showLoading: true
     })
     this.BackHandler()
     /**
      * 30秒后关闭Loading
      */
-    setTimeout(()=>{
+    setTimeout(() => {
       this.setState({
-        showLoading:false
+        showLoading: false
       })
-    },3000)
+    }, 3000)
   }
   BackHandler() {
     BackHandler.addEventListener("back", this.goBackClicked);
   }
-  async componentDidMount(){
+  async componentDidMount() {
     // let tokens = await storage.get("userTokens", "");
     // if (!(tokens == -1 || tokens == -2)) {
     //     if (tokens.member.isYouke == "yes") {
@@ -179,9 +179,9 @@ export default class HomeScreen extends Component {
     //     });
     //     this.props.navigation.dispatch(resetAction);
     // }
-    if(await (UnityModule.isReady())){
+    if (await (UnityModule.isReady())) {
       this.setState({
-        showLoading:false
+        showLoading: false
       })
     }
   }
@@ -218,7 +218,7 @@ export default class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        
+
 
         {/**
          * Hide the StatusBar on the top which some cellphone's
@@ -243,6 +243,7 @@ export default class HomeScreen extends Component {
         {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.MenuBody() : <View style={styles.place}></View>}
         {/* 底部详情 */}
         <Details navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })}
+          img={this.state.img}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
         {/* 顶部/搜索 */}
         {this.state.isUnityReady ? (
@@ -260,7 +261,7 @@ export default class HomeScreen extends Component {
           fadeOutDuration={1000}
           opacity={0.8}
         />
-        <LoadingView showLoading={ this.state.showLoading } />
+        <LoadingView showLoading={this.state.showLoading} />
       </View>
     );
   }
@@ -339,7 +340,7 @@ export default class HomeScreen extends Component {
       .then(result => {
         this.setState({
           rightMenuData: result,
-          iArr:''//有效i值重置
+          iArr: ''//有效i值重置
         })
       })
   }
@@ -512,12 +513,15 @@ export default class HomeScreen extends Component {
   showDetailsRight(pat_no, img, i) {
     if (this.state.rightMenuData.pathologyList[i].img_url != null) {
       this.showDetails(pat_no, "img", i)
+      this.setState({
+        isUnityReady: false
+      })
     } else {
       this.showDetails(pat_no, "noImg", i)
+      this.setState({
+        isUnityReady: true
+      })
     }
-    this.setState({
-      isUnityReady: false
-    })
   }
   rightMenuClose() {
     let { fadeAnim } = this.state;
