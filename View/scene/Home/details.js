@@ -278,16 +278,17 @@ export default class Details extends Component {
             }else{
                 this.props.sendMsgToUnity('back', '', '')
                 if(this.state.lastImgState){
-                    DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
+                    DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
                     DeviceEventEmitter.emit("closeBigImg", { closeBigImg: false });
                 }else{
-                    DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
+                    DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
                     DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
                 }
                 this.setState({
                     EnterNowScreen: "isMainScreen",
                     title:true
                 })
+                this.props.setImg()
                 this.props.setScreen("isMainScreen")
             }
             this.setState({

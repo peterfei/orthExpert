@@ -25,6 +25,7 @@ import ImagePlaceholder from 'react-native-image-with-placeholder'
 import _ from "lodash";
 import LoadingView from '../../common/LoadingView.js'
 import { size } from '../../common/ScreenUtil';
+import { set } from 'mobx';
 
 export default class HomeScreen extends Component {
   static navigationOptions = {
@@ -43,7 +44,8 @@ export default class HomeScreen extends Component {
     loading: true,
     isUnityReady: false,
     iArr: '',//有效i值,
-    showLoading: false
+    showLoading: false,
+    nowIndex:0//当前数据下标
   }
 
   Animated() {
@@ -231,7 +233,7 @@ export default class HomeScreen extends Component {
         {this.state.img && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.imgOpen() : null}
        
         {/* 底部详情 */}
-        <Details navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })}
+        <Details navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })} setImg={()=>this.setImg()}
           img={this.state.img}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
         {/* 顶部/搜索 */}
@@ -306,6 +308,7 @@ export default class HomeScreen extends Component {
     if (img == "img") {
       this.setState({
         img: true,
+        nowIndex:num
       }, () => { this.defaultLocation(num) }
       )
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
@@ -314,7 +317,6 @@ export default class HomeScreen extends Component {
 
       this.setState({
         img: false,
-        // isUnityReady:true
       })
       // setTimeout(function(){
       //   this.setState({
@@ -342,6 +344,9 @@ export default class HomeScreen extends Component {
           iArr: ''//有效i值重置
         })
       })
+  }
+  setImg(){
+    this.defaultLocation(this.state.nowIndex)
   }
   imgOpen() {
     let _that = this
