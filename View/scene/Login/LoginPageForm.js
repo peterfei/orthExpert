@@ -585,8 +585,7 @@ export default class LoginPageForm extends Component {
                         marginTop: size(146),
                         marginBottom: size(128)
                     }}>
-                        <Image source={require('../../img/login/vesalLogo.png')}
-                               style={{width: size(372), height: size(54)}}/>
+                        <Text style={{color:'#4FA5F4',fontSize:30,fontWeight:'bold'}}>维萨里骨科专家</Text>
                     </View>
                     {/*<View style={{flexDirection: 'row', justifyContent: 'space-between'}}>*/}
                     {/*<TouchableOpacity style={{*/}
