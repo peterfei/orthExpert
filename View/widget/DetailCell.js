@@ -238,21 +238,22 @@ class DetailCell extends PureComponent<Props> {
                         }
 
                         else if (this.props.name == "logout") {
-                            this.refs.toast.show("退出成功");
+                            
 
-                            storage.clearMapForKey("mystructList");
-                            storage.clearMapForKey("versionByInitMyStruct");
-                            storage.clearMapForKey("initMyStruct");
                             storage.clearMapForKey("userTokens");
-                            storage.clearMapForKey("memberInfo");
+                            storage.clearMap();
+                            this.refs.toast.show("退出成功");
+                            setTimeout(()=>{
+                                const resetAction = StackActions.reset({
+                                    index: 0,
+                                    actions: [
+                                        NavigationActions.navigate({ routeName: "LoginPage" })
+                                    ]
+                                });
+                                this.props.navigation.dispatch(resetAction);
+                            },500)
                             // storage.clearMapForKey("tokens");
-                            const resetAction = StackActions.reset({
-                                index: 0,
-                                actions: [
-                                    NavigationActions.navigate({ routeName: "LoginPage" })
-                                ]
-                            });
-                            this.props.navigation.dispatch(resetAction);
+                            
 
                             // console.log("============1111=============")
                             // // alert(111)

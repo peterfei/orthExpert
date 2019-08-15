@@ -11,7 +11,8 @@ import {
   Platform, StyleSheet, Text, View, BackHandler,
   StatusBar,
   Animated,
-  TouchableHighlight, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
+  TouchableHighlight, Image, TouchableOpacity, DeviceEventEmitter, ScrollView,
+
 } from 'react-native';
 import { screen, system } from "../../common";
 import SearchComponent from "./search";
@@ -153,11 +154,31 @@ export default class HomeScreen extends Component {
       showLoading:true
     })
     this.BackHandler()
+    /**
+     * 30秒后关闭Loading
+     */
+    setTimeout(()=>{
+      this.setState({
+        showLoading:false
+      })
+    },3000)
   }
   BackHandler() {
     BackHandler.addEventListener("back", this.goBackClicked);
   }
   async componentDidMount(){
+    // let tokens = await storage.get("userTokens", "");
+    // if (!(tokens == -1 || tokens == -2)) {
+    //     if (tokens.member.isYouke == "yes") {
+    //         return false;
+    //     }
+
+    //     const resetAction = StackActions.reset({
+    //         index: 0,
+    //         actions: [NavigationActions.navigate({routeName: "HomeScreen"})]
+    //     });
+    //     this.props.navigation.dispatch(resetAction);
+    // }
     if(await (UnityModule.isReady())){
       this.setState({
         showLoading:false
