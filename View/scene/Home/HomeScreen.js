@@ -229,8 +229,7 @@ export default class HomeScreen extends Component {
 
         {/* 点击疾病后图片 */}
         {this.state.img && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.imgOpen() : null}
-        {/* 右侧菜单及关闭按钮 */}
-        {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.MenuBody() : <View style={styles.place}></View>}
+       
         {/* 底部详情 */}
         <Details navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })}
           img={this.state.img}
@@ -242,6 +241,8 @@ export default class HomeScreen extends Component {
             setSearch={(bool) => this.setSearchComponent(bool)}
           />
         ) : null}
+         {/* 右侧菜单及关闭按钮 */}
+         {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.MenuBody() : <View style={styles.place}></View>}
         {/* 提示组件 */}
         <Toast
           ref="toast"
@@ -374,8 +375,11 @@ export default class HomeScreen extends Component {
   MenuBody() {
     return (
       // <TouchableOpacity activeOpacity={1} style={{ width: '100%', height: '100%', position: 'absolute' }} >
-      [this.rightMenu(), this.rightMenuClose()]
+      //[this.rightMenu(), this.rightMenuClose()]
       //</TouchableOpacity>
+      <TouchableOpacity activeOpacity={1} style={{ width: '100%', height: '100%', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.8)' }} onPress={() => this.closeRightMenu()} >
+        <View>{this.rightMenu()}{this.rightMenuClose()}</View>
+      </TouchableOpacity>
     )
   }
   renderImg() {
@@ -480,12 +484,12 @@ export default class HomeScreen extends Component {
       <Animated.View                 // 使用专门的可动画化的View组件
         style={{
           position: 'absolute',
-          height: screen.height * 0.7,
+          height: screen.height ,
           right: 0,                 //  将位置指定为动画变量
           top: screen.height * 0.5,
-          backgroundColor: 'rgba(0,0,0,0.8)',
+          backgroundColor: 'rgba(0,0,0,1)',
           width: screen.width * 0.4,
-          transform: [{ translateY: -screen.height * 0.7 * 0.5 }, { translateX: fadeAnim }],
+          transform: [{ translateY: -screen.height * 0.5 }, { translateX: fadeAnim }],
           alignItems: 'center',
           borderRadius: 5,
           zIndex: 999,
