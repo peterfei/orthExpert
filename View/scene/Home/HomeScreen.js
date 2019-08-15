@@ -73,6 +73,9 @@ export default class HomeScreen extends Component {
           showLoading:false
         })
       }
+      if (handler.name == "clickBlank") {
+        this.closeRightMenu()
+      }
     }
     if (this.state.EnterNowScreen == 'isNotMainScreen') {
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
