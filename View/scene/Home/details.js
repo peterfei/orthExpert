@@ -100,8 +100,9 @@ export default class Details extends Component {
     }
     componentWillUnmount() {
         _.each(this.listeners, listener => {
-            listener.remove();
-            
+            listener[0].remove();
+            listener[1].remove();
+            listener[2].remove();
         });
         this.timer && clearInterval(this.timer);
     }
