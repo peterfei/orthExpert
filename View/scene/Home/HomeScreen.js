@@ -162,7 +162,7 @@ export default class HomeScreen extends Component {
       this.setState({
         showLoading:false
       })
-    },3000)
+    },5000)
   }
   BackHandler() {
     BackHandler.addEventListener("back", this.goBackClicked);

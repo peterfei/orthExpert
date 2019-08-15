@@ -276,6 +276,7 @@ export default class Details extends Component {
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
             }else{
                 this.props.sendMsgToUnity('back', '', '')
+                // DeviceEventEmitter.emit("showSearchMenu", { EnterNowScreen: "showAllsearch" });
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
                 this.setState({
                     EnterNowScreen: "isMainScreen",
@@ -314,7 +315,7 @@ export default class Details extends Component {
                     reason: false,
                     title:false,
                     details:false,
-                    showLoading:true
+                    // showLoading:true
                 })
                 this.props.setScreen("isNotMainScreen")
             } else {
