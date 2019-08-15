@@ -18,6 +18,7 @@ import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
 import Video from 'react-native-af-video-player';
 import styles from './styles';
 let index = 0;
+import LoadingView from '../../common/LoadingView.js'
 
 export default class Details extends Component {
     static navigationOptions = {
@@ -38,7 +39,8 @@ export default class Details extends Component {
             { img: require('../../img/home/tab2.png'), title: '治疗' },
             { img: require('../../img/home/tab3.png'), title: '3D模型' },
             { img: require('../../img/home/tab4.png'), title: '康复' }
-        ]
+        ],
+        showLoading:false
     }
     listeners = {
         update: [DeviceEventEmitter.addListener("DetailsWinEmitter",
@@ -76,7 +78,20 @@ export default class Details extends Component {
 
                 }
             }
-        )]
+        ),
+        
+        DeviceEventEmitter.addListener("hideLoading",
+            ({ ...passedArgs }) => {
+                let ifHide = passedArgs.hide
+                if (ifHide) {
+                    this.setState({
+                        showLoading: false
+                    })
+
+                }
+            }
+        ),
+        ]
 
     };
 
@@ -84,8 +99,8 @@ export default class Details extends Component {
     }
     componentWillUnmount() {
         _.each(this.listeners, listener => {
-            listener[0].remove();
-            listener[1].remove();
+            listener.remove();
+            
         });
         this.timer && clearInterval(this.timer);
     }
@@ -93,6 +108,7 @@ export default class Details extends Component {
         return (
             <View style={{ position: 'absolute', bottom: 0, width: screen.width }}>
                 {this.state.details && !this.state.search ? this.details() : <View style={styles.place}></View>}
+                <LoadingView showLoading={ this.state.showLoading } />
             </View>
 
         )
@@ -286,6 +302,7 @@ export default class Details extends Component {
         }
         if (title == "3D模型") {
             if (this.state.EnterNowScreen == 'isMainScreen') {
+
                 this.props.sendMsgToUnity("app", msg, 'json')
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
                 DeviceEventEmitter.emit("closeBigImg", { onlyCloseBigImg: true });
@@ -294,7 +311,8 @@ export default class Details extends Component {
                     video:false,
                     reason: false,
                     title:false,
-                    details:false
+                    details:false,
+                    showLoading:true
                 })
                 this.props.setScreen("isNotMainScreen")
             } else {

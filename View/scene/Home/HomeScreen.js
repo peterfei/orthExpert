@@ -66,6 +66,7 @@ export default class HomeScreen extends Component {
     ).start();
   }
   onUnityMessage(handler) {
+    // alert(1111)
     if (this.state.EnterNowScreen == 'isMainScreen') {
       if (handler.name == "title") {
         this.setState({
@@ -75,6 +76,14 @@ export default class HomeScreen extends Component {
       }
     }
     if (this.state.EnterNowScreen == 'isNotMainScreen') {
+      
+      // this.setState({
+      //   showLoading:true
+      // })
+      if (handler.name == "title") {
+        //发送给detail Hide Loading
+        DeviceEventEmitter.emit("hideLoading", { hide: true});
+      }
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
       DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
     }
