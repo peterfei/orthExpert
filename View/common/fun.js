@@ -17,7 +17,7 @@ import {storage} from "../common/storage"
 
 import {NativeModules} from "react-native"
 import _ from "lodash"
-import {NavigationActions} from "react-navigation"
+import {NavigationActions,StackActions} from "react-navigation"
 
 const {InAppUtils} = NativeModules
 import api, {encryptionWithStr} from "../api"

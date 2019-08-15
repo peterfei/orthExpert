@@ -5,7 +5,7 @@ import RefreshListView, { RefreshState } from "react-native-refresh-list-view";
 import Cell from "./Cell";
 import { storage } from "../../common/storage";
 import api from "../../api";
-import { NavigationActions } from "react-navigation";
+import { NavigationActions,StackActions } from "react-navigation";
 
 export default class OrderItem extends Component {
 

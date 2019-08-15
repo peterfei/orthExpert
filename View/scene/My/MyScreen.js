@@ -16,7 +16,7 @@ import { screen, system } from "../../common";
 import { size } from "../../common/ScreenUtil";
 import { storage } from "../../common/storage";
 import Toast, { DURATION } from "react-native-easy-toast";
-import { NavigationActions } from "react-navigation";
+import { NavigationActions, StackActions } from "react-navigation";
 import _ from "lodash";
 //import ChangePassword from "../Register/ChangePassword";
 //import InputInviteCode from "../Register/InputInviteCode";
@@ -101,7 +101,7 @@ export default class MyScreen extends Component {
             <View style={styles.vipStyle}>
               <Text style={{ fontSize: size(34) }}>VIP会员</Text>
               <TouchableHighlight style={styles.vipButton}
-                onPress={() => alert('开通会员')} >
+                onPress={() => this.BuyVip()} >
                 <Text style={styles.vipButtonText}>开通会员</Text>
               </TouchableHighlight>
             </View>
@@ -120,6 +120,19 @@ export default class MyScreen extends Component {
         />
       </View>
     );
+  }
+  async BuyVip() {
+    try {
+      let memberInfo = await storage.get("memberInfo");
+      //如果是游客跳转注册
+      if (memberInfo.isYouke == "yes") {
+        this.props.navigation.navigate("LoginPage");
+      } else {
+        this.props.navigation.navigate('BuyVip');
+      }
+    } catch (e) {
+      this.props.navigation.navigate("LoginPage");
+    }
   }
   renderHeader() {
     // if (this.state.userData) {
@@ -160,7 +173,7 @@ export default class MyScreen extends Component {
               </View>
             </View>
             <TouchableWithoutFeedback
-              onPress={() => alert(111)}>
+              onPress={() => this.BuyVip()}>
               <View style={styles.overTime}>
                 <Text style={styles.identityTitle}>{this.state.member.timer}2019.07.25会员到期</Text>
                 <Text style={styles.identityTitle}>{this.state.member.timer}立即续费</Text>

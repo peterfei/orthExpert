@@ -3,7 +3,7 @@
  */
 import { storage } from './index'
 //import api from '../../api'///////
-import { NavigationActions } from 'react-navigation'
+import { NavigationActions,StackActions } from 'react-navigation'
 
 /**
  * sync方法的名字必须和所存数据的key完全相同

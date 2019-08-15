@@ -18,7 +18,7 @@ import _ from "lodash";
 import Toast, { DURATION } from "react-native-easy-toast";
 import DeviceInfo from "react-native-device-info";
 import { storage } from "../common/storage";
-import { NavigationActions } from "react-navigation";
+import { NavigationActions ,StackActions} from "react-navigation";
 import api from "../api";
 import UShare from "../share/share";
 import SharePlatform from "../share/SharePlatform";

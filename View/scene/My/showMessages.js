@@ -19,7 +19,7 @@ import DeviceInfo from "react-native-device-info";
 import { storage } from "../../common/storage";
 import api from "../../api";
 import { color } from "../../widget";
-import { NavigationActions } from "react-navigation";
+import { NavigationActions,StackActions } from "react-navigation";
 import TitleBar from '../../scene/Home/TitleBar';
 import {size} from "../../common/ScreenUtil";
 

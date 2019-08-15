@@ -17,7 +17,7 @@ import {color, DetailCell, SpacingView} from "../../widget";
 import Login from "../Login/Login";
 import {storage} from "../../common/storage";
 import Toast from "react-native-easy-toast";
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import ChangePassword from "../Register/ChangePassword";
 import {size} from "../../common/ScreenUtil";
 import ActionSheet from "react-native-actionsheet";

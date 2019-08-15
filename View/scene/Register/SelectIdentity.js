@@ -13,7 +13,7 @@ import {
     Platform
 } from "react-native";
 import Swiper from "react-native-swiper";
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import {screen} from "../../common";
 import api from "../../api";
 import Toast, {DURATION} from "react-native-easy-toast";

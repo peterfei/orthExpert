@@ -380,21 +380,21 @@ export default class HomeScreen extends Component {
             placeholder='http://filetest1.vesal.site/image/slt/flowers-small.jpg'
           />
           {i != fristiArr ?
-            <TouchableHighlight style={{ width: 50, height: 50, position: 'absolute', left: 15, top: '50%' }}
+            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', left: 15, top: '50%' }}
               onPress={() => this.changeImg(i - 1)}>
               <Image style={{ height: 50, width: 50 }}
                 source={require('../../img/unity/arrow_l.png')}
               />
-            </TouchableHighlight>
+            </TouchableOpacity>
             : null
           }
           {i != lastiArr ?
-            <TouchableHighlight style={{ width: 50, height: 50, position: 'absolute', right: 15, top: '50%' }}
+            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', right: 15, top: '50%' }}
               onPress={() => this.changeImg(i + 1)}>
               <Image style={{ height: 50, width: 50 }}
                 source={require('../../img/unity/arrow_r.png')}
               />
-            </TouchableHighlight>
+            </TouchableOpacity>
             : null
           }
         </View>
@@ -510,10 +510,10 @@ export default class HomeScreen extends Component {
           justifyContent: 'center',
         }
         } >
-        <TouchableHighlight onPress={() => this.closeRightMenu()}>
+        <TouchableOpacity onPress={() => this.closeRightMenu()}>
           <Image style={styles.closeRightMenuImg} resizeMode="contain"
             source={require('../../img/public/right1.png')} />
-        </TouchableHighlight>
+        </TouchableOpacity>
       </Animated.View >
     )
   }

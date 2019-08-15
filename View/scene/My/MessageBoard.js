@@ -17,7 +17,7 @@ import api from "../../api";
 import { color } from "../../widget";
 import showMessages from "./showMessages";
 import { storage } from "../../common/storage";
-import { NavigationActions } from "react-navigation";
+import { NavigationActions,StackActions } from "react-navigation";
 import RefreshListView, { RefreshState } from "react-native-refresh-list-view";
 import { size } from "../../common/ScreenUtil";
 

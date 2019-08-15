@@ -17,6 +17,7 @@ import { VoiceUtils } from "../../common/VoiceUtils";
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
 import Video from 'react-native-af-video-player';
 import styles from './styles';
+import _ from "lodash";
 let index = 0;
 
 export default class Details extends Component {
@@ -131,12 +132,12 @@ export default class Details extends Component {
         return (
             <View style={styles.reasonStyle}>
                 <View style={styles.closeButton}>
-                    <TouchableHighlight style={{ width: 20, height: 20, right: 5, top: 5 }}
+                    <TouchableOpacity style={{ width: 20, height: 20, right: 5, top: 5 }}
                         onPress={() => this.closeImg()}>
                         <Image style={{ width: 20, height: 20, }}
                             source={require('../../img/unity/close.png')}
                         />
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 </View>
                 <ScrollView style={styles.information}>
                     <Text style={{ color: 'white', paddingBottom: 20 }}>{JSON.parse(this.state.getData.menus)[0].content}</Text>

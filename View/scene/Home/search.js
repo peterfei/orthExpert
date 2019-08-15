@@ -169,11 +169,11 @@ export default class SearchComponent extends Component {
     return (
       <View style={styles.searchBackground}>
         <View style={[styles.top, { justifyContent: 'flex-start' }]}>
-          <TouchableHighlight style={[styles.icon, { marginLeft: 10, marginRight: 10 }]}
+          <TouchableOpacity style={[styles.icon, { marginLeft: 10, marginRight: 10 }]}
             onPress={() => this.closeSearch()}>
             <Image style={styles.icon}
               source={require('../../img/public/left.png')} />
-          </TouchableHighlight>
+          </TouchableOpacity>
           <View style={{ width: "85%" }}>
             <TextInput
               style={[styles.input, { width: "100%" }]}
@@ -181,11 +181,11 @@ export default class SearchComponent extends Component {
               placeholderTextColor='#757575'
               autoFocus={true}
               onChangeText={(value) => this.queryKey(value)} />
-            <TouchableHighlight style={styles.searchImg}
+            <TouchableOpacity style={styles.searchImg}
               onPress={() => this.searchStart()}>
               <Image style={styles.searchImgMain}
                 source={require('../../img/search/search.png')} />
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
         </View>
         <View style={{ width: '100%', padding: 10 }}>
@@ -195,11 +195,11 @@ export default class SearchComponent extends Component {
                 this.state.historyData.length !== 0 ?
                   <View>
                     <Text style={styles.histortTitle}>历史记录</Text>
-                    <TouchableHighlight style={styles.deleteStyle}
+                    <TouchableOpacity style={styles.deleteStyle}
                       onPress={() => this.deleteHistory()}>
                       <Image style={styles.searchImgMain}
                         source={require('../../img/search/delete.png')} />
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                     <View style={styles.histortMain}>
                       {this.renderHistory()}
                     </View>
@@ -414,15 +414,15 @@ export default class SearchComponent extends Component {
     return (
       <View style={styles.body}>
         <View style={styles.top}>
-          <TouchableHighlight
+          <TouchableOpacity
             onPress={() => this.My()}>
             <View style={[styles.button, { marginLeft: 10 }]}>
               <Image style={styles.icon}
                 source={require('../../img/home/left.png')} />
               <Text style={styles.iconTitle}>我的</Text>
             </View>
-          </TouchableHighlight>
-          <TouchableHighlight style={[styles.input, { paddingLeft: 0 }]}
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.input, { paddingLeft: 0 }]}
             onPress={() => this.showSearch()}>
             <View>
               <TextInput
@@ -435,15 +435,15 @@ export default class SearchComponent extends Component {
                   source={require('../../img/search/search.png')} />
               </View>
             </View>
-          </TouchableHighlight>
-          <TouchableHighlight
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => this.Message()}>
             <View style={[styles.button, { marginRight: 10 }]}>
               <Image style={styles.icon}
                 source={require('../../img/home/right.png')} />
               <Text style={styles.iconTitle}>消息</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
       </View>
     )
