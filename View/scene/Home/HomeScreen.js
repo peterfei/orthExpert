@@ -24,6 +24,7 @@ import Toast from "react-native-easy-toast";
 import ImagePlaceholder from 'react-native-image-with-placeholder'
 import _ from "lodash";
 import LoadingView from '../../common/LoadingView.js'
+import { size } from '../../common/ScreenUtil';
 
 export default class HomeScreen extends Component {
   static navigationOptions = {
@@ -161,25 +162,14 @@ export default class HomeScreen extends Component {
       this.setState({
         showLoading: false
       })
-    }, 3000)
+    },5000)
   }
   BackHandler() {
     BackHandler.addEventListener("back", this.goBackClicked);
   }
-  async componentDidMount() {
-    // let tokens = await storage.get("userTokens", "");
-    // if (!(tokens == -1 || tokens == -2)) {
-    //     if (tokens.member.isYouke == "yes") {
-    //         return false;
-    //     }
-
-    //     const resetAction = StackActions.reset({
-    //         index: 0,
-    //         actions: [NavigationActions.navigate({routeName: "HomeScreen"})]
-    //     });
-    //     this.props.navigation.dispatch(resetAction);
-    // }
-    if (await (UnityModule.isReady())) {
+  async componentDidMount(){
+    
+    if(await (UnityModule.isReady())){
       this.setState({
         showLoading: false
       })
@@ -261,7 +251,15 @@ export default class HomeScreen extends Component {
           fadeOutDuration={1000}
           opacity={0.8}
         />
-        <LoadingView showLoading={this.state.showLoading} />
+        <LoadingView showLoading={ this.state.showLoading } />
+        <View style={{
+                        width: size(10),
+                        position: 'absolute',
+                        top: 0,
+                        height: size(10),
+                        backgroundColor: "rgba(0,0,0,0.2)",
+                        left: 0,
+                    }}/>
       </View>
     );
   }

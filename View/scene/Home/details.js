@@ -320,7 +320,7 @@ export default class Details extends Component {
                     reason: false,
                     title:false,
                     details:false,
-                    showLoading:true,
+                    //showLoading:true,
                     lastImgState:this.props.img
                 })
                 this.props.setScreen("isNotMainScreen")
