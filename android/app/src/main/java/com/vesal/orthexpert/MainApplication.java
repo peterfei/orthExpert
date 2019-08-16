@@ -80,7 +80,8 @@ public class MainApplication extends Application implements ReactApplication {
             new ReactVideoPackage(),
             
           new DplusReactPackage(),
-          new com.vesal.orthexpert.wxapi.WxentryPackage()
+          new com.vesal.orthexpert.wxapi.WxentryPackage(),
+          new com.vesal.orthexpert.wxapi.WxpayPackage()
       );
     }
 

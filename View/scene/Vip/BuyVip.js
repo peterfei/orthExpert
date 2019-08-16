@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackground } from "react-native";
 
-import { screen, ContainerView, BaseComponent, NavBar, AppDef, HttpTool, NetInterface, FuncUtils,Wxpay } from '../../common';
+import { screen, ContainerView, BaseComponent, NavBar, AppDef, HttpTool, NetInterface, FuncUtils } from '../../common';
 import { size } from '../../common/Tool/ScreenUtil';
 import DateUtil from "../../common/DateUtils";
 import Loading from "../../common/Loading";
@@ -10,7 +10,10 @@ import { storage } from "../../common/storage";
 import memberBackground from '../../img/vip/memberBackground.png'
 import member_center_details from '../../img/vip/member_center_details.png'
 import api from "../../api";
-// import {Wxpay} from "../../common";
+
+import { NativeModules } from 'react-native'
+const Wxpay= NativeModules.Wxpay
+// import {Wxpay} from "../../common/Wxpay";
 import Toast, { DURATION } from "react-native-easy-toast";
 
 
@@ -71,7 +74,7 @@ export default class BuyVip extends BaseComponent {
             "business": "orthope"
         }
         let url = api.base_uri +"/v1/app/orthope/order/newAddOrder?token="+tokens.token
-        await fetch(url, {
+       let responseData =  await fetch(url, {
             method: "post",
             headers: {
                 "Content-Type": "application/json"
