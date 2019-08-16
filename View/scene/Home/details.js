@@ -90,12 +90,12 @@ export default class Details extends Component {
                 if (text !== null && text !== 'no') {
                     this.setState({
                         text: text,
-                        textOpen:true
+                        textOpen: true
                     })
                 } else if (text == 'no') {
                     this.setState({
                         text: 'no',
-                        textOpen:false
+                        textOpen: false
                     })
                 }
             }
@@ -139,7 +139,7 @@ export default class Details extends Component {
             <View style={styles.details}>
                 {this.state.video && this.state.getData.menus !== null ? this.renderVideo() : null}
                 {this.state.reason && this.state.getData.menus !== null ? this.renderReason() : null}
-                {this.state.textOpen && this.state.getData.menus !== null ? this.rendertextOpen() : null}
+                {this.state.textOpen && this.state.text !== null ? this.rendertextOpen() : null}
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
                     <View style={styles.detailsRow}>
                         {this.state.title ? <View style={{ alignItems: 'center', width: "100%", position: 'absolute', bottom: screen.height * 0.75 }}>
@@ -199,7 +199,7 @@ export default class Details extends Component {
             </View>
         )
     }
-    closeText(){
+    closeText() {
         this.setState({
             textOpen: false
         })
@@ -319,6 +319,14 @@ export default class Details extends Component {
         }
         if (title == "返回") {
             if (this.state.EnterNowScreen == 'isMainScreen') {
+                if(this.state.video||this.state.reason||this.state.textOpen) {
+                    this.setState({
+                        video: false,
+                        reason: false,
+                        title:true
+                    })
+                    return
+                }
                 this.setState({
                     details: false,
                     title: true
@@ -326,6 +334,14 @@ export default class Details extends Component {
                 DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
             } else {
+                if(this.state.video||this.state.reason||this.state.textOpen) {
+                    this.setState({
+                        video: false,
+                        reason: false,
+                        textOpen:false
+                    })
+                    return
+                }
                 this.props.sendMsgToUnity('back', '', '')
                 if (this.state.lastImgState) {
                     DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
@@ -342,11 +358,6 @@ export default class Details extends Component {
                 })
                 this.props.setScreen("isMainScreen")
             }
-            this.setState({
-                video: false,
-                reason: false,
-                textOpen: false,
-            })
         }
         if (title == "康复") {
             this.props.navigation.navigate('Recovery');
