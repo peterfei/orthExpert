@@ -95,7 +95,7 @@ export default class HomeScreen extends Component {
         DeviceEventEmitter.emit("textData", { text: boneDisease });//传递简介
       }
       if (handler.name == "ClickBlank") {
-        //DeviceEventEmitter.emit("textData", { text: "no" });//关闭简介
+        DeviceEventEmitter.emit("textData", { text: "no" });//关闭简介
       }
       if (handler.name == "title") {
         //发送给detail Hide Loading

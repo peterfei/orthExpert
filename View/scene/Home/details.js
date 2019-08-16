@@ -95,7 +95,7 @@ export default class Details extends Component {
                 } else if (text == 'no') {
                     this.setState({
                         text: 'no',
-                        
+                        textOpen:false
                     })
                 }
             }
