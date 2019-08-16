@@ -89,7 +89,8 @@ export default class Details extends Component {
                 let text = passedArgs.text
                 if (text !== null && text !== 'no') {
                     this.setState({
-                        text: text
+                        text: text,
+                        textOpen:true
                     })
                 } else if (text == 'no') {
                     this.setState({
@@ -186,7 +187,7 @@ export default class Details extends Component {
             <View style={styles.reasonStyle}>
                 <View style={styles.closeButton}>
                     <TouchableOpacity style={{ width: 20, height: 20, right: 5, top: 5 }}
-                        onPress={() => this.closeImg()}>
+                        onPress={() => this.closeText()}>
                         <Image style={{ width: 20, height: 20, }}
                             source={require('../../img/unity/close.png')}
                         />
@@ -197,6 +198,11 @@ export default class Details extends Component {
                 </ScrollView>
             </View>
         )
+    }
+    closeText(){
+        this.setState({
+            textOpen: false
+        })
     }
     closeImg() {
         this.setState({
