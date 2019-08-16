@@ -90,12 +90,12 @@ export default class Details extends Component {
                 if (text !== null && text !== 'no') {
                     this.setState({
                         text: text,
-                        textOpen:true
+                        textOpen: true
                     })
                 } else if (text == 'no') {
                     this.setState({
                         text: 'no',
-                        textOpen:false
+                        textOpen: false
                     })
                 }
             }
@@ -199,7 +199,7 @@ export default class Details extends Component {
             </View>
         )
     }
-    closeText(){
+    closeText() {
         this.setState({
             textOpen: false
         })
@@ -319,6 +319,14 @@ export default class Details extends Component {
         }
         if (title == "返回") {
             if (this.state.EnterNowScreen == 'isMainScreen') {
+                if(this.state.video||this.state.reason||this.state.textOpen) {
+                    this.setState({
+                        video: false,
+                        reason: false,
+                        title:true
+                    })
+                    return
+                }
                 this.setState({
                     details: false,
                     title: true
@@ -326,6 +334,14 @@ export default class Details extends Component {
                 DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
             } else {
+                if(this.state.video||this.state.reason||this.state.textOpen) {
+                    this.setState({
+                        video: false,
+                        reason: false,
+                        textOpen:false
+                    })
+                    return
+                }
                 this.props.sendMsgToUnity('back', '', '')
                 if (this.state.lastImgState) {
                     DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
@@ -342,11 +358,6 @@ export default class Details extends Component {
                 })
                 this.props.setScreen("isMainScreen")
             }
-            this.setState({
-                video: false,
-                reason: false,
-                textOpen: false,
-            })
         }
         if (title == "康复") {
             this.props.navigation.navigate('Recovery');
