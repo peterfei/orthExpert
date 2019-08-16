@@ -177,7 +177,7 @@ export default class OrderDetail extends Component {
     }
 
     async payOrder() {
-        this.props.navigation.navigate("ConfirmPayScreen", {
+        this.props.navigation.navigate("PaymentOrder", {
             infos: this.state.combo,
             ordNo: this.state.ordNo
         });

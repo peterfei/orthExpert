@@ -31,10 +31,10 @@ export default class Details extends Component {
         reason: false,
         details: false,
         search: false,
-        title:true,
+        title: true,
         getData: '',
         EnterNowScreen: "isMainScreen",
-        lastImgState:false,
+        lastImgState: false,
         bottomIcon: [
             { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
             { img: require('../../img/home/tab1.png'), title: '成因' },
@@ -42,7 +42,7 @@ export default class Details extends Component {
             { img: require('../../img/home/tab3.png'), title: '3D模型' },
             { img: require('../../img/home/tab4.png'), title: '康复' }
         ],
-        showLoading:false
+        showLoading: false
     }
     listeners = {
         update: [DeviceEventEmitter.addListener("DetailsWinEmitter",
@@ -81,7 +81,7 @@ export default class Details extends Component {
                 }
             }
         ),
-        
+
         DeviceEventEmitter.addListener("hideLoading",
             ({ ...passedArgs }) => {
                 let ifHide = passedArgs.hide
@@ -111,7 +111,7 @@ export default class Details extends Component {
         return (
             <View style={{ position: 'absolute', bottom: 0, width: screen.width }}>
                 {this.state.details && !this.state.search ? this.details() : <View style={styles.place}></View>}
-                <LoadingView showLoading={ this.state.showLoading } />
+                <LoadingView showLoading={this.state.showLoading} />
             </View>
 
         )
@@ -123,10 +123,10 @@ export default class Details extends Component {
                 {this.state.reason && this.state.getData.menus !== null ? this.renderReason() : null}
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
                     <View style={styles.detailsRow}>
-                       {this.state.title? <View style={{ alignItems: 'center', width: "100%", position:'absolute',bottom:screen.height*0.75 }}>
-                            <Text style={{ color: 'white', fontWeight: 'bold',fontSize:30 }}>{this.state.getData.pat_name}</Text>
+                        {this.state.title ? <View style={{ alignItems: 'center', width: "100%", position: 'absolute', bottom: screen.height * 0.75 }}>
+                            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 30 }}>{this.state.getData.pat_name}</Text>
                         </View>
-                        :null
+                            : null
                         }
                         {/* <MyTouchableOpacity
                             onPress={() => {
@@ -178,7 +178,7 @@ export default class Details extends Component {
                     justifyContent: 'flex-end',
                     alignItems: 'center'
                 }}>
-                    <MyTouchableOpacity onPress={() => this.setState({ video: false,title:true })}>
+                    <MyTouchableOpacity onPress={() => this.setState({ video: false, title: true })}>
                         <Image source={require('../../img/unity/close.png')} style={{
                             width: size(36),
                             height: size(36),
@@ -214,7 +214,7 @@ export default class Details extends Component {
         let Arr = [];
         let data = this.state.bottomIcon
         let getData = ''
-        this.state.getData !== "" ? JSON.parse(this.state.getData.menus)!=null? getData = JSON.parse(this.state.getData.menus)[0].type:getData='' : null
+        this.state.getData !== "" ? JSON.parse(this.state.getData.menus) != null ? getData = JSON.parse(this.state.getData.menus)[0].type : getData = '' : null
         for (let i = 0; i < data.length; i++) {
             Arr.push(
                 <TouchableOpacity style={styles.btnStyle} key={i} onPress={() => {
@@ -227,10 +227,10 @@ export default class Details extends Component {
             if (this.state.EnterNowScreen == "isNotMainScreen" && data[i].title == "3D模型") {
                 Arr.pop()
             }
-            if (data[i].title == "成因" && (getData == 'video'||getData == '')) {
+            if (data[i].title == "成因" && (getData == 'video' || getData == '')) {
                 Arr.pop()
             }
-            if (data[i].title == "治疗" && (getData == 'text'||getData == '')) {
+            if (data[i].title == "治疗" && (getData == 'text' || getData == '')) {
                 Arr.pop()
             }
         }
@@ -261,7 +261,7 @@ export default class Details extends Component {
             if (!this.state.video) {
                 this.setState({
                     reason: true,
-                    title:false
+                    title: false
                 })
             } else {
                 alert('请关闭治疗')
@@ -271,24 +271,24 @@ export default class Details extends Component {
             if (this.state.EnterNowScreen == 'isMainScreen') {
                 this.setState({
                     details: false,
-                    title:true
+                    title: true
                 })
                 DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
-            }else{
+            } else {
                 this.props.sendMsgToUnity('back', '', '')
-                if(this.state.lastImgState){
+                if (this.state.lastImgState) {
                     DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
                     DeviceEventEmitter.emit("closeBigImg", { closeBigImg: false });
-                }else{
+                    this.props.setImg()
+                } else {
                     DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
                     DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
                 }
                 this.setState({
                     EnterNowScreen: "isMainScreen",
-                    title:true
+                    title: true
                 })
-                this.props.setImg()
                 this.props.setScreen("isMainScreen")
             }
             this.setState({
@@ -303,7 +303,7 @@ export default class Details extends Component {
             if (!this.state.reason) {
                 this.setState({
                     video: true,
-                    title:false
+                    title: false
                 })
             } else {
                 alert('请关闭成因')
@@ -317,12 +317,12 @@ export default class Details extends Component {
                 DeviceEventEmitter.emit("closeBigImg", { onlyCloseBigImg: true });
                 this.setState({
                     EnterNowScreen: "isNotMainScreen",
-                    video:false,
+                    video: false,
                     reason: false,
-                    title:false,
-                    details:false,
+                    title: false,
+                    details: false,
                     //showLoading:true,
-                    lastImgState:this.props.img
+                    lastImgState: this.props.img
                 })
                 this.props.setScreen("isNotMainScreen")
             } else {

@@ -28,6 +28,8 @@ import Find from "./View/scene/Search/Find";
 import Recovery from "./View/scene/Recovery/Recovery";
 import BindPhoneSkip from "./View/scene/Login/BindPhoneSkip";
 import BuyVip from "./View/scene/Vip/BuyVip";
+import PaymentOrder from './View/scene/Pay/PaymentOrder';
+
 
 /**消息通知页面 */
 import MessageNotice from './View/scene/Search/MessageNotice';
@@ -56,6 +58,7 @@ const RootStack =createAppContainer( createStackNavigator( //跟路由
     Recovery:{screen:Recovery},
     BindPhoneSkip:{screen:BindPhoneSkip},
     BuyVip:{screen:BuyVip},
+    PaymentOrder:{screen:PaymentOrder},
   },
   {
     initialRouteName: 'LoginPage',     //设置初始路由为Home

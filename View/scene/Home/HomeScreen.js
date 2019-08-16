@@ -45,7 +45,7 @@ export default class HomeScreen extends Component {
     isUnityReady: false,
     iArr: '',//有效i值,
     showLoading: false,
-    nowIndex:0//当前数据下标
+    nowIndex: 0//当前数据下标
   }
 
   Animated() {
@@ -70,7 +70,6 @@ export default class HomeScreen extends Component {
     ).start();
   }
   onUnityMessage(handler) {
-    // alert(1111)
     if (this.state.EnterNowScreen == 'isMainScreen') {
       if (handler.name == "title") {
         this.setState({
@@ -81,27 +80,22 @@ export default class HomeScreen extends Component {
       if (handler.name == "clickBlank") {
         this.closeRightMenu()
       }
+      if (handler.data != null) {
+        let boneDisease = this.hexToStr(handler.data.boneDisease)
+        this.getPathologyAndArea(boneDisease)
+        this.setState({
+          rightMenu: true,
+        })
+      }
     }
     if (this.state.EnterNowScreen == 'isNotMainScreen') {
-
-      // this.setState({
-      //   showLoading:true
-      // })
+      alert(JSON.stringify(handler))
       if (handler.name == "title") {
         //发送给detail Hide Loading
         DeviceEventEmitter.emit("hideLoading", { hide: true });
       }
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
       DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
-    }
-    console.log(handler.name); // the message name
-    console.log(handler.data); // the message data
-    if (handler.data != null) {
-      let boneDisease = this.hexToStr(handler.data.boneDisease)
-      this.getPathologyAndArea(boneDisease)
-      this.setState({
-        rightMenu: true,
-      })
     }
   }
   /**
@@ -164,14 +158,14 @@ export default class HomeScreen extends Component {
       this.setState({
         showLoading: false
       })
-    },5000)
+    }, 5000)
   }
   BackHandler() {
     BackHandler.addEventListener("back", this.goBackClicked);
   }
-  async componentDidMount(){
-    
-    if(await (UnityModule.isReady())){
+  async componentDidMount() {
+
+    if (await (UnityModule.isReady())) {
       this.setState({
         showLoading: false
       })
@@ -231,9 +225,9 @@ export default class HomeScreen extends Component {
 
         {/* 点击疾病后图片 */}
         {this.state.img && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.imgOpen() : null}
-       
+
         {/* 底部详情 */}
-        <Details navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })} setImg={()=>this.setImg()}
+        <Details navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })} setImg={() => this.setImg()}
           img={this.state.img}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
         {/* 顶部/搜索 */}
@@ -243,8 +237,8 @@ export default class HomeScreen extends Component {
             setSearch={(bool) => this.setSearchComponent(bool)}
           />
         ) : null}
-         {/* 右侧菜单及关闭按钮 */}
-         {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.MenuBody() : <View style={styles.place}></View>}
+        {/* 右侧菜单及关闭按钮 */}
+        {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.MenuBody() : <View style={styles.place}></View>}
         {/* 提示组件 */}
         <Toast
           ref="toast"
@@ -254,15 +248,15 @@ export default class HomeScreen extends Component {
           fadeOutDuration={1000}
           opacity={0.8}
         />
-        <LoadingView showLoading={ this.state.showLoading } />
+        <LoadingView showLoading={this.state.showLoading} />
         <View style={{
-                        width: size(10),
-                        position: 'absolute',
-                        top: 0,
-                        height: size(10),
-                        backgroundColor: "rgba(0,0,0,0.2)",
-                        left: 0,
-                    }}/>
+          width: size(10),
+          position: 'absolute',
+          top: 0,
+          height: size(10),
+          backgroundColor: "rgba(0,0,0,0.2)",
+          left: 0,
+        }} />
       </View>
     );
   }
@@ -308,7 +302,7 @@ export default class HomeScreen extends Component {
     if (img == "img") {
       this.setState({
         img: true,
-        nowIndex:num
+        nowIndex: num
       }, () => { this.defaultLocation(num) }
       )
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
@@ -345,7 +339,7 @@ export default class HomeScreen extends Component {
         })
       })
   }
-  setImg(){
+  setImg() {
     this.defaultLocation(this.state.nowIndex)
   }
   imgOpen() {
@@ -489,7 +483,7 @@ export default class HomeScreen extends Component {
       <Animated.View                 // 使用专门的可动画化的View组件
         style={{
           position: 'absolute',
-          height: screen.height ,
+          height: screen.height,
           right: 0,                 //  将位置指定为动画变量
           top: screen.height * 0.5,
           backgroundColor: 'rgba(0,0,0,1)',
