@@ -35,8 +35,11 @@ export default class Details extends Component {
         getData: '',
         EnterNowScreen: "isMainScreen",
         lastImgState: false,
+        text: 'no',
+        textOpen: false,
         bottomIcon: [
             { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
+            { img: require('../../img/home/xinxi.png'), title: '简介' },
             { img: require('../../img/home/tab1.png'), title: '成因' },
             { img: require('../../img/home/tab2.png'), title: '治疗' },
             { img: require('../../img/home/tab3.png'), title: '3D模型' },
@@ -81,7 +84,21 @@ export default class Details extends Component {
                 }
             }
         ),
-
+        DeviceEventEmitter.addListener("textData",
+            ({ ...passedArgs }) => {
+                let text = passedArgs.text
+                if (text !== null && text !== 'no') {
+                    this.setState({
+                        text: text
+                    })
+                } else if (text == 'no') {
+                    this.setState({
+                        text: 'no',
+                        
+                    })
+                }
+            }
+        ),
         DeviceEventEmitter.addListener("hideLoading",
             ({ ...passedArgs }) => {
                 let ifHide = passedArgs.hide
@@ -121,6 +138,7 @@ export default class Details extends Component {
             <View style={styles.details}>
                 {this.state.video && this.state.getData.menus !== null ? this.renderVideo() : null}
                 {this.state.reason && this.state.getData.menus !== null ? this.renderReason() : null}
+                {this.state.textOpen && this.state.getData.menus !== null ? this.rendertextOpen() : null}
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
                     <View style={styles.detailsRow}>
                         {this.state.title ? <View style={{ alignItems: 'center', width: "100%", position: 'absolute', bottom: screen.height * 0.75 }}>
@@ -158,7 +176,24 @@ export default class Details extends Component {
                     </TouchableOpacity>
                 </View>
                 <ScrollView style={styles.information}>
-                    <Text style={{ color: 'white', paddingBottom: 20 }}>{JSON.parse(this.state.getData.menus)[0].content}</Text>
+                    <Text style={{ color: 'white', paddingBottom: 20, lineHeight: 25 }}>{JSON.parse(this.state.getData.menus)[0].content}</Text>
+                </ScrollView>
+            </View>
+        )
+    }
+    rendertextOpen() {
+        return (
+            <View style={styles.reasonStyle}>
+                <View style={styles.closeButton}>
+                    <TouchableOpacity style={{ width: 20, height: 20, right: 5, top: 5 }}
+                        onPress={() => this.closeImg()}>
+                        <Image style={{ width: 20, height: 20, }}
+                            source={require('../../img/unity/close.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <ScrollView style={styles.information}>
+                    <Text style={{ color: 'white', paddingBottom: 20, lineHeight: 25 }}>{this.state.text}</Text>
                 </ScrollView>
             </View>
         )
@@ -233,6 +268,9 @@ export default class Details extends Component {
             if (data[i].title == "治疗" && (getData == 'text' || getData == '')) {
                 Arr.pop()
             }
+            if (data[i].title == "简介" && (this.state.text == 'no' || this.state.text == null)) {
+                Arr.pop()
+            }
         }
         return Arr
     }
@@ -258,14 +296,20 @@ export default class Details extends Component {
             "showModelList": "RAMYKNWJB_ZhenGu,RAMYKNWJB_XiaHeGu,RAMYKNWJB_ShuZhui,RAMYKNWJB_SheGu"
         }
         if (title == "成因") {
-            if (!this.state.video) {
-                this.setState({
-                    reason: true,
-                    title: false
-                })
-            } else {
-                alert('请关闭治疗')
-            }
+            this.setState({
+                reason: true,
+                title: false,
+                video: false,
+                textOpen: false,
+            })
+        }
+        if (title == "简介") {
+            this.setState({
+                textOpen: true,
+                title: false,
+                reason: false,
+                video: false
+            })
         }
         if (title == "返回") {
             if (this.state.EnterNowScreen == 'isMainScreen') {
@@ -287,27 +331,27 @@ export default class Details extends Component {
                 }
                 this.setState({
                     EnterNowScreen: "isMainScreen",
-                    title: true
+                    title: true,
+                    text: 'no'
                 })
                 this.props.setScreen("isMainScreen")
             }
             this.setState({
                 video: false,
                 reason: false,
+                textOpen: false,
             })
         }
         if (title == "康复") {
             this.props.navigation.navigate('Recovery');
         }
         if (title == "治疗") {
-            if (!this.state.reason) {
-                this.setState({
-                    video: true,
-                    title: false
-                })
-            } else {
-                alert('请关闭成因')
-            }
+            this.setState({
+                video: true,
+                title: false,
+                reason: false,
+                textOpen: false,
+            })
         }
         if (title == "3D模型") {
             if (this.state.EnterNowScreen == 'isMainScreen') {
