@@ -89,7 +89,14 @@ export default class HomeScreen extends Component {
       }
     }
     if (this.state.EnterNowScreen == 'isNotMainScreen') {
-      alert(JSON.stringify(handler))
+      //alert(JSON.stringify(handler))
+      if (handler.data != null&&handler.data.Note != null) {
+        let boneDisease = this.hexToStr(handler.data.Note)
+        DeviceEventEmitter.emit("textData", { text: boneDisease });//传递简介
+      }
+      if (handler.name == "ClickBlank") {
+        //DeviceEventEmitter.emit("textData", { text: "no" });//关闭简介
+      }
       if (handler.name == "title") {
         //发送给detail Hide Loading
         DeviceEventEmitter.emit("hideLoading", { hide: true });

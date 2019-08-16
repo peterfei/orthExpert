@@ -36,7 +36,7 @@ export default {
     height:30
   },
   information:{
-    Maxheight:100,
+    height:100,
     borderBottomWidth:1,
     borderBottomColor:'#343434',
     backgroundColor: 'rgba(0,0,0,0.8)',
