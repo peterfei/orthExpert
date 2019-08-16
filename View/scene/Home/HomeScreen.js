@@ -26,6 +26,7 @@ import _ from "lodash";
 import LoadingView from '../../common/LoadingView.js'
 import { size } from '../../common/ScreenUtil';
 import { set } from 'mobx';
+import Help from "./help";
 
 export default class HomeScreen extends Component {
   static navigationOptions = {
@@ -45,7 +46,8 @@ export default class HomeScreen extends Component {
     isUnityReady: false,
     iArr: '',//有效i值,
     showLoading: false,
-    nowIndex: 0//当前数据下标
+    nowIndex: 0,//当前数据下标
+    help:false,
   }
 
   Animated() {
@@ -90,6 +92,11 @@ export default class HomeScreen extends Component {
     }
     if (this.state.EnterNowScreen == 'isNotMainScreen') {
       //alert(JSON.stringify(handler))
+      if(handler.name == 'help'){
+        this.setState({
+          help:true
+        })
+      }
       if (handler.data != null&&handler.data.Note != null) {
         let boneDisease = this.hexToStr(handler.data.Note)
         DeviceEventEmitter.emit("textData", { text: boneDisease });//传递简介
@@ -244,6 +251,8 @@ export default class HomeScreen extends Component {
             setSearch={(bool) => this.setSearchComponent(bool)}
           />
         ) : null}
+        {/* 帮助按钮 */}
+        {this.state.help?<Help/>:null}
         {/* 右侧菜单及关闭按钮 */}
         {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.MenuBody() : <View style={styles.place}></View>}
         {/* 提示组件 */}
