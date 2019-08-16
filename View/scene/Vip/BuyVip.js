@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackground } from "react-native";
 
-import { screen, ContainerView, BaseComponent, NavBar, AppDef, HttpTool, NetInterface, FuncUtils } from '../../common';
+import { screen, ContainerView, BaseComponent, NavBar, AppDef, HttpTool, NetInterface, FuncUtils,Wxpay } from '../../common';
 import { size } from '../../common/Tool/ScreenUtil';
 import DateUtil from "../../common/DateUtils";
 import Loading from "../../common/Loading";
@@ -10,7 +10,7 @@ import { storage } from "../../common/storage";
 import memberBackground from '../../img/vip/memberBackground.png'
 import member_center_details from '../../img/vip/member_center_details.png'
 import api from "../../api";
-import {Wxpay} from "../../common";
+// import {Wxpay} from "../../common";
 import Toast, { DURATION } from "react-native-easy-toast";
 
 
@@ -26,9 +26,9 @@ export default class BuyVip extends BaseComponent {
             memberCenterDetailsHeight: 10,
             isUse: false, // 是否是会员
             PayData:'',
-            priceId: this.props.comboList.length > 0 ? this.props.comboList[0].price_id : "",
-            comboId: this.props.comboList.length > 0 ? this.props.comboList[0].combo_id : "",
-            productID: this.props.comboList.length > 0 ? this.props.comboList[0].product_id : "",
+            priceId: "",
+            comboId: "",
+            productID:  "",
             OrderNo: "",
         }
     }
