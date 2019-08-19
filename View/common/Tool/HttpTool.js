@@ -91,6 +91,31 @@ export async function GET(urlInterface) {
       });
   });
 }
+export async function GETX(urlInterface) {
+  let tokens = await storage.get("userTokens");
+  let url = api.base_uri + urlInterface;
+  return new Promise(function(resolve, reject){
+    fetch(url,{
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "*/*",
+        token: tokens.token
+      }
+    })
+      .then((resp) => resp.json())
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        let isConnect = getNetWorkState();
+        if (!isConnect) {
+          error = '检测到你当前无网络连接';
+        }
+        reject(error);
+      });
+  });
+}
 
 export async function UploadImg(photos) {
   let uploadUrl = base_url_sport+NetInterface.uploadImg + '?type=6';

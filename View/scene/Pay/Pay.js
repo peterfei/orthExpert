@@ -85,16 +85,13 @@ export default class Pay extends BaseComponent {
 
         //微信支付
         this.wxPay()
-
     }
 
     async wxGetPreyId() {
+        const url = NetInterface.wxGetPreyId + "?ordNo=" + this.state.OrderNo + "&business=orthope";
 
 
-        const url = NetInterface.wxGetPreyId + "?ordNo=" + this.state.OrderNo + "&business=kfxl";
-
-
-        let result = await HttpTool.GET(url)
+        let result = await HttpTool.GETX(url)
             .then(result => {
 
 
@@ -288,7 +285,7 @@ export default class Pay extends BaseComponent {
 
                     </ImageBackground>
                     <View style={{ marginTop: size(56), marginBottom: size(57), marginLeft: size(50) }}>
-                        <Text style={{ color: '#262626', fontSize: size(34), fontWeight: '400' }}>VIP会员{FuncUtils.getBuyTime(this.state.combo.timeValue)}</Text>
+                        <Text style={{ color: '#262626', fontSize: size(34), fontWeight: '400' }}>VIP会员{FuncUtils.getBuyTime(this.state.combo.deadline)}</Text>
                         <Text style={{ color: '#EF8131', fontSize: size(34), fontWeight: '500', marginTop: size(60) }}>¥{this.state.combo.sellPrice}</Text>
                     </View>
 
@@ -297,7 +294,7 @@ export default class Pay extends BaseComponent {
                 <View style={styles.priceContent}>
                     <Text style={styles.buyText}>购买后可用时长</Text>
                     <Text style={styles.buyTime}>
-                        {FuncUtils.getBuyTime(this.state.combo.timeValue)}
+                        {FuncUtils.getBuyTime(this.state.combo.deadline)}
                     </Text>
                 </View>
                 <View style={styles.priceContent}>
