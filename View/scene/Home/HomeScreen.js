@@ -47,7 +47,7 @@ export default class HomeScreen extends Component {
     iArr: '',//有效i值,
     showLoading: false,
     nowIndex: 0,//当前数据下标
-    help:false,
+    help: false,
   }
 
   Animated() {
@@ -92,12 +92,12 @@ export default class HomeScreen extends Component {
     }
     if (this.state.EnterNowScreen == 'isNotMainScreen') {
       //alert(JSON.stringify(handler))
-      if(handler.name == 'help'){
+      if (handler.name == 'help') {
         this.setState({
-          help:true
+          help: true
         })
       }
-      if (handler.data != null&&handler.data.Note != null) {
+      if (handler.data != null && handler.data.Note != null) {
         let boneDisease = this.hexToStr(handler.data.Note)
         DeviceEventEmitter.emit("textData", { text: boneDisease });//传递简介
       }
@@ -252,7 +252,10 @@ export default class HomeScreen extends Component {
           />
         ) : null}
         {/* 帮助按钮 */}
-        {this.state.help?<Help/>:null}
+        {this.state.help ?
+          <Help navigation={this.props.navigation}
+            setHelp={(bool) => this.setHelp(bool)}
+            sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} /> : null}
         {/* 右侧菜单及关闭按钮 */}
         {this.state.rightMenu && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.MenuBody() : <View style={styles.place}></View>}
         {/* 提示组件 */}
@@ -483,6 +486,11 @@ export default class HomeScreen extends Component {
       })
     }
     DeviceEventEmitter.emit("DetailsWinEmitter", { search: bool });
+  }
+  setHelp(bool) {
+    this.setState({
+      help: bool
+    })
   }
   setDetailsComponent(bool) {
     this.setState({
