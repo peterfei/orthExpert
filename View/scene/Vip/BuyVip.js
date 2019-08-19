@@ -86,10 +86,10 @@ export default class BuyVip extends BaseComponent {
         })
     }
     gotoPay() {
-        // this.props.navigation.navigate("PaymentOrder", {
-        //     combo: this.state.packageDetail[this.state.packageSelected]
-        // });
-        this.newAddOrder(this.state.packageDetail[this.state.packageSelected].priceId,this.state.packageDetail[this.state.packageSelected].comboId)
+        this.props.navigation.navigate("Pay", {
+            combo: this.state.packageDetail[this.state.packageSelected]
+        });
+        //this.newAddOrder(this.state.packageDetail[this.state.packageSelected].priceId,this.state.packageDetail[this.state.packageSelected].comboId)
     }
 
     renderPackageDetail() {

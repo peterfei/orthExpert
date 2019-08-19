@@ -68,7 +68,7 @@ export async function POST(urlInterface, params) {
 
 export async function GET(urlInterface) {
   let tokens = await storage.get("userTokens");
-  let url = api.base_url + urlInterface;
+  let url = base_url_sport + urlInterface;
   return new Promise(function(resolve, reject){
     fetch(url,{
       method: "get",

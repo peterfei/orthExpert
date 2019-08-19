@@ -7,6 +7,7 @@ import NavBar from './NavBar'
 import AppDef from './Defined'
 import * as HttpTool from './Tool/HttpTool'
 import NetInterface from './NetInterface'
-import FuncUtils from './FuncUtils'
+import  * as FuncUtils from './FuncUtils'
+import Line from './Line'
 // import show from './ToastUtils'
-export { screen, system, Wxpay,ContainerView ,BaseComponent,NavBar,AppDef,HttpTool,NetInterface,FuncUtils}
+export { screen, system, Wxpay,ContainerView ,BaseComponent,NavBar,AppDef,HttpTool,NetInterface,FuncUtils,Line}
