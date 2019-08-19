@@ -1,6 +1,6 @@
 import screen from './screen'
 import system from './system'
-import Wxpay from './Wxpay'
+import  Wxpay from './Wxpay'
 import ContainerView from './ContainerView'
 import BaseComponent from './BaseComponent'
 import NavBar from './NavBar'
