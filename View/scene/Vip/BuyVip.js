@@ -112,6 +112,7 @@ export default class BuyVip extends BaseComponent {
             console.log("****getOrderId****");
             // 取微信支付配置
             const data = await this.tenPay();
+
             // debugger
             console.log(
                 "-------**data from wechat pay response is **------" +
@@ -170,7 +171,7 @@ export default class BuyVip extends BaseComponent {
         // debugger
         const orderNo = this.state.OrderNo;
         let tokens = await storage.get("userTokens");
-        const url = api.base_uri + "/v1/app/pay/wxGetPreyId?ordNo=" + orderNo + "&business=sport";
+        const url = api.base_uri + "/v1/app/pay/wxGetPreyId?ordNo=" + orderNo + "&business=orthope";
         // debugger;
         let responseData = await fetch(url, {
             method: "get",

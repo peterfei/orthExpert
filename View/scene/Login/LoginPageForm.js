@@ -189,7 +189,7 @@ export default class LoginPageForm extends Component {
             storage.clearMapForKey("userTokens");
             storage.clearMapForKey("memberInfo");
 
-            let url = api.base_uri + "/v1/app/member/codeLogin?tellAndEmail=" + this.state.username + "&code=" + this.state.verify_code + "&business=anatomy";
+            let url = api.base_uri + "/v1/app/member/codeLogin?tellAndEmail=" + this.state.username + "&code=" + this.state.verify_code + "&business=orthope";
 
             await fetch(url, {
                 method: "get",
