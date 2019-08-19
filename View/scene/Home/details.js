@@ -35,13 +35,30 @@ export default class Details extends Component {
         getData: '',
         EnterNowScreen: "isMainScreen",
         lastImgState: false,
-        text: 'no',
-        textOpen: false,
+        text: 'no',//简介
+        textOpen: false,//底部unity-ui
+        intro: false,//简介
         bottomIcon: [
             { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
             { img: require('../../img/home/xinxi.png'), title: '简介' },
             { img: require('../../img/home/tab1.png'), title: '成因' },
             { img: require('../../img/home/tab2.png'), title: '治疗' },
+            { img: require('../../img/home/tab3.png'), title: '3D模型' },
+            { img: require('../../img/home/tab4.png'), title: '康复' }
+        ],
+        bottomIconNo: [
+            { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
+            { img: require('../../img/home/xinxi.png'), title: '简介' },
+            { img: require('../../img/home/tab1.png'), title: '成因' },
+            { img: require('../../img/home/tab2.png'), title: '治疗' },
+            { img: require('../../img/home/tab3.png'), title: '3D模型' },
+            { img: require('../../img/home/tab4.png'), title: '康复' }
+        ],
+        bottomIconTab2: [
+            { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
+            { img: require('../../img/home/xinxi.png'), title: '简介' },
+            { img: require('../../img/home/tab1.png'), title: '成因' },
+            { img: require('../../img/home/okTab2.png'), title: '治疗' },
             { img: require('../../img/home/tab3.png'), title: '3D模型' },
             { img: require('../../img/home/tab4.png'), title: '康复' }
         ],
@@ -94,7 +111,6 @@ export default class Details extends Component {
                     })
                 } else if (text == 'no') {
                     this.setState({
-                        text: 'no',
                         textOpen: false
                     })
                 }
@@ -137,9 +153,15 @@ export default class Details extends Component {
     details() {
         return (
             <View style={styles.details}>
-                {this.state.textOpen && this.state.text !== null ? this.rendertextOpen() : null}
+                {/* 简介 */}
+                {this.state.intro && this.state.text !== 'no' ? this.rendertextOpen() : null}
+                {/* 视频 */}
                 {this.state.video && this.state.getData.menus !== null ? this.renderVideo() : null}
+                {/* 成因 */}
                 {this.state.reason && this.state.getData.menus !== null ? this.renderReason() : null}
+                {/* unity底部菜单 */}
+                {this.state.textOpen && !this.state.intro && this.state.text !== 'no' ? this._renderSBActionBtn() : null}
+                {/* rn菜单 */}
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
                     <View style={styles.detailsRow}>
                         {this.state.title ? <View style={{ alignItems: 'center', width: "100%", position: 'absolute', bottom: screen.height * 0.75 }}>
@@ -201,7 +223,7 @@ export default class Details extends Component {
     }
     closeText() {
         this.setState({
-            textOpen: false
+            intro: false
         })
     }
     closeImg() {
@@ -219,7 +241,7 @@ export default class Details extends Component {
                     justifyContent: 'flex-end',
                     alignItems: 'center'
                 }}>
-                    <MyTouchableOpacity onPress={() => this.setState({ video: false, title: true })}>
+                    <MyTouchableOpacity onPress={() => this.closeVideo()}>
                         <Image source={require('../../img/unity/close.png')} style={{
                             width: size(36),
                             height: size(36),
@@ -232,7 +254,7 @@ export default class Details extends Component {
                     lockPortraitOnFsExit
                     scrollBounce
                     autoPlay
-                    style={{ zIndex: 9999999999,width:screen.width,height:screen.height*0.4}}
+                    style={{ zIndex: 9999999999, width: screen.width, height: screen.height * 0.4 }}
                     url={JSON.parse(this.state.getData.menus)[0].content}
                     ref={(ref) => {
                         this.video = ref
@@ -247,8 +269,55 @@ export default class Details extends Component {
             </View>
         )
     }
+    closeVideo() {
+        if (this.state.EnterNowScreen == "isMainScreen") {
+            this.setState({ video: false, title: true,bottomIcon:this.state.bottomIconNo, })
+        } else {
+            this.setState({ video: false,bottomIcon:this.state.bottomIconNo, })
+        }
+        
+    }
     playVideoError(msg) {
         Alert.alert('', '该视频暂未开放, 敬请期待.', [{ text: '我知道了' }])
+    }
+    // 选中骨骼后操作unity的功能按钮
+    _renderSBActionBtn() {
+        // alert(111);
+        let arr = [];
+        let btnTitles = ['隐藏选择', '透明选择', '透明其他', '隐藏其他', '单独显示'];
+        let unityMessages = ['hideSel', 'alphaSel', 'alphaOther', 'hideOther', 'singleShow'];
+        btnTitles.forEach((item, index) => {
+            arr.push(
+                <MyTouchableOpacity
+                    onPress={() => {
+                        this.props.sendMsgToUnity(unityMessages[index], '', '');
+                    }}
+                    key={index}
+                    style={{
+                        backgroundColor: "rgba(12,12,12,0.8)",
+                        marginLeft: size(10),
+                        marginRight: size(10),
+                        height: size(45),
+                        flex: 1,
+                        alignItems: 'center'
+                    }}>
+                    <Text style={{
+                        color: 'white',
+                        textAlign: 'center',
+                        fontSize: size(16),
+                        height: size(45),
+                        lineHeight: size(45)
+                    }}>{item}</Text>
+                </MyTouchableOpacity>
+            )
+        })
+
+        return (
+            <View
+                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', height: size(60) }}>
+                {arr}
+            </View>
+        );
     }
     renderBottomIcon() {
         let Arr = [];
@@ -305,39 +374,43 @@ export default class Details extends Component {
                 reason: true,
                 title: false,
                 video: false,
-                textOpen: false,
+                intro: false,
             })
         }
         if (title == "简介") {
             this.setState({
-                textOpen: true,
+                intro: true,
                 title: false,
                 reason: false,
-                video: false
+                video: false,
+                textOpen: false
             })
         }
         if (title == "返回") {
             if (this.state.EnterNowScreen == 'isMainScreen') {
-                if(this.state.video||this.state.reason||this.state.textOpen) {
+                if (this.state.video || this.state.reason || this.state.intro) {
                     this.setState({
                         video: false,
                         reason: false,
-                        title:true
+                        title: true,
+                        bottomIcon:this.state.bottomIconNo,
                     })
                     return
                 }
                 this.setState({
                     details: false,
-                    title: true
+                    title: true,
+                    bottomIcon:this.state.bottomIconNo,
                 })
                 DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
             } else {
-                if(this.state.video||this.state.reason||this.state.textOpen) {
+                if (this.state.video || this.state.reason || this.state.intro) {
                     this.setState({
                         video: false,
                         reason: false,
-                        textOpen:false
+                        intro: false,
+                        bottomIcon:this.state.bottomIconNo,
                     })
                     return
                 }
@@ -360,13 +433,21 @@ export default class Details extends Component {
         }
         if (title == "康复") {
             this.props.navigation.navigate('Recovery');
+            this.setState({
+                video: false,
+                title: false,
+                reason: false,
+                intro: false,
+                bottomIcon:this.state.bottomIconNo,
+            })
         }
         if (title == "治疗") {
             this.setState({
                 video: true,
                 title: false,
                 reason: false,
-                textOpen: false,
+                intro: false,
+                bottomIcon:this.state.bottomIconTab2,
             })
         }
         if (title == "3D模型") {
@@ -382,7 +463,8 @@ export default class Details extends Component {
                     title: false,
                     details: false,
                     //showLoading:true,
-                    lastImgState: this.props.img
+                    lastImgState: this.props.img,
+                    bottomIcon:this.state.bottomIconNo,
                 })
                 this.props.setScreen("isNotMainScreen")
             } else {

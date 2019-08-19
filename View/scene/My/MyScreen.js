@@ -33,7 +33,8 @@ export default class MyScreen extends Component {
     userData: {},
     member: [],
     isFirstShare: true,
-    reviewState: true
+    reviewState: true,
+    isUse: false, // 是否是会员
   }
   onHeaderRefresh() {
     this.setState({
