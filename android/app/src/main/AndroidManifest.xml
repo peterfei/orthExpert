@@ -45,7 +45,7 @@
       android:exported="true" />
 
       <activity
-            android:name=".wxapi.WXEntryActivity"
+            android:name="com.vesal.orthexpert.wxapi.WXEntryActivity"
             android:exported="true"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
@@ -59,6 +59,11 @@
           android:windowSoftInputMode="adjustResize"
           android:process=":unityplayer">
       </activity>
+      <!--微信支付-->
+        <activity
+            android:name="com.vesal.orthexpert.wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"/>
     </application>
 
 </manifest>

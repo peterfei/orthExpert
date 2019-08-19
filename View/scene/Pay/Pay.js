@@ -6,7 +6,7 @@ import { size } from "../../common/Tool/ScreenUtil";
 import {storage} from "../../common/storage";
 import api from "../../api";
 
-let Wxpay = NativeModules.Wxentry;
+let Wxpay = NativeModules.Wxpay;
 
 export default class Pay extends BaseComponent {
 
@@ -82,7 +82,7 @@ export default class Pay extends BaseComponent {
 
     checkPay() {
         //TODO 检测手机号是否绑定
-
+        Wxpay.registerApp(api.APPID);
         //微信支付
         this.wxPay()
     }
@@ -116,6 +116,7 @@ export default class Pay extends BaseComponent {
     async wxPay() {
 
         let isSupported = await Wxpay.isSupported();
+        console.log(`**************是否支持微信${isSupported}*********`)
         // 判断是否支持微信支付
         if (!isSupported) {
             this.mainView._toast("找不到微信应用，请安装最新版微信");
@@ -130,7 +131,7 @@ export default class Pay extends BaseComponent {
         //获取预付单
         const data = await this.wxGetPreyId();
 
-        alert("data:" + JSON.stringify(data))
+        console.log("data:" + JSON.stringify(data))
         //调用微信SDK支付
         let result = await Wxpay.pay(data);
 
