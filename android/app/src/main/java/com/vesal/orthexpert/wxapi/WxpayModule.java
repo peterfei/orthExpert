@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import android.util.Log;
 
 class WxpayModule extends ReactContextBaseJavaModule {
 
@@ -41,6 +42,7 @@ class WxpayModule extends ReactContextBaseJavaModule {
     request.nonceStr= order.getString("noncestr");
     request.timeStamp= order.getString("timestamp");
     request.sign= order.getString("sign");
+    Log.d("Wxpay", "sign is " +request.sign);
     api.sendReq(request);
   }
 
