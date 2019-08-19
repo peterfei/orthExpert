@@ -137,9 +137,9 @@ export default class Details extends Component {
     details() {
         return (
             <View style={styles.details}>
+                {this.state.textOpen && this.state.text !== null ? this.rendertextOpen() : null}
                 {this.state.video && this.state.getData.menus !== null ? this.renderVideo() : null}
                 {this.state.reason && this.state.getData.menus !== null ? this.renderReason() : null}
-                {this.state.textOpen && this.state.text !== null ? this.rendertextOpen() : null}
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
                     <View style={styles.detailsRow}>
                         {this.state.title ? <View style={{ alignItems: 'center', width: "100%", position: 'absolute', bottom: screen.height * 0.75 }}>
@@ -229,11 +229,10 @@ export default class Details extends Component {
                     </MyTouchableOpacity>
                 </View>
                 <Video
-                    rotateToFullScreen
                     lockPortraitOnFsExit
                     scrollBounce
                     autoPlay
-                    style={{ zIndex: 9999999999 }}
+                    style={{ zIndex: 9999999999,width:screen.width,height:screen.height*0.4}}
                     url={JSON.parse(this.state.getData.menus)[0].content}
                     ref={(ref) => {
                         this.video = ref
