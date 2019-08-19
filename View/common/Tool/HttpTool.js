@@ -68,7 +68,32 @@ export async function POST(urlInterface, params) {
 
 export async function GET(urlInterface) {
   let tokens = await storage.get("userTokens");
-  let url = api.base_url + urlInterface;
+  let url = base_url_sport + urlInterface;
+  return new Promise(function(resolve, reject){
+    fetch(url,{
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "*/*",
+        token: tokens.token
+      }
+    })
+      .then((resp) => resp.json())
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        let isConnect = getNetWorkState();
+        if (!isConnect) {
+          error = '检测到你当前无网络连接';
+        }
+        reject(error);
+      });
+  });
+}
+export async function GETX(urlInterface) {
+  let tokens = await storage.get("userTokens");
+  let url = api.base_uri + urlInterface;
   return new Promise(function(resolve, reject){
     fetch(url,{
       method: "get",

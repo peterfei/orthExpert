@@ -29,6 +29,7 @@ import Recovery from "./View/scene/Recovery/Recovery";
 import BindPhoneSkip from "./View/scene/Login/BindPhoneSkip";
 import BuyVip from "./View/scene/Vip/BuyVip";
 import PaymentOrder from './View/scene/Pay/PaymentOrder';
+import Pay from './View/scene/Pay/Pay';
 
 
 /**消息通知页面 */
@@ -59,6 +60,7 @@ const RootStack =createAppContainer( createStackNavigator( //跟路由
     BindPhoneSkip:{screen:BindPhoneSkip},
     BuyVip:{screen:BuyVip},
     PaymentOrder:{screen:PaymentOrder},
+    Pay:{screen:Pay}
   },
   {
     initialRouteName: 'LoginPage',     //设置初始路由为Home
