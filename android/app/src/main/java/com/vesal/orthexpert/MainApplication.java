@@ -3,6 +3,8 @@ package com.vesal.orthexpert;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import fr.greweb.reactnativeviewshot.RNViewShotPackage;
+import com.zmxv.RNSound.RNSoundPackage;
 import io.realm.react.RealmReactPackage;
 import com.reactnative.unity.view.UnityViewPackage;
 import com.github.yamill.orientation.OrientationPackage;
@@ -65,6 +67,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNViewShotPackage(),
+            new RNSoundPackage(),
             
             
             

@@ -8,7 +8,7 @@ let realm = null;
 realm = new Realm(Migrations[0]);
 Realm.copyBundledRealmFiles();
 
-
+realmSystem = new Realm(Migrations[1]);
 
 
 function ifNullString(item) {
@@ -64,6 +64,61 @@ function getRequireString(filed, ids) {
         return temp;
     }
 }
+/**
+ * 根据肌肉查找相关动画
+ * @returns {*}
+ */
+const getItemBySmName = (smName) => {
+    let _query;
+    try {
+        _query = realmSystem.objects("SportItemAnimations").filtered(`item_name = '${smName}'`);
+    } catch (error) {
+        console.log(error);
+    }
+    return _query;
+};
+/**
+ * 根据多个动画编号查找列表
+ * @returns {*}
+ */
+const getAnimationByNos = (nos) => {
+    //   debugger;
+    let _query;
+    try {
+        let str = getRequire('am_no', nos);
+        _query = realmSystem.objects("Animation").filtered(str);
+        // alert(`query is ${JSON.stringify(_query)}`)
+    } catch (error) {
+        console.log(error);
+    }
+    return _query;
+};
+// 查询
+const getRelationByName = (name, type) => {
+    let _query;
+    try {
+        _query = realm.objects("RelationList").filtered(`${type} = '${name}'`);
+    } catch (error) {
+        console.log(error);
+    }
+    return _query;
+};
+
+/*根据ids查询*/
+// 查询全部 资源-web
+const getWebByIds = (ids) => {
+    //   debugger;
+    let _query;
+    try {
+        let str = getIds('rw_id', ids);
+
+        _query = realm.objects("WebList").filtered(str);
+
+    } catch (error) {
+        console.log(error);
+    }
+    return _query;
+};
 
 /**
  * 查询全部的历史搜索
@@ -170,7 +225,10 @@ export {
     // deleteAllStruct,
     // deleteAllRelation,
     /*getByIds*/
-    // getWebByIds,
+    getWebByIds,
+    getItemBySmName,
+    getAnimationByNos,
+    getRelationByName,
     // getVideoByIds,
     // getStructByIds,
     // getRelationByName,

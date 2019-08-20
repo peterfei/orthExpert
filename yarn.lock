@@ -5439,6 +5439,11 @@ react-native-select-dialog@^1.2.0:
   dependencies:
     prop-types "^15.5.6"
 
+react-native-sound@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.npm.taobao.org/react-native-sound/download/react-native-sound-0.11.0.tgz#ad60b55ba8c6dc89917f381ad3713f2738de530f"
+  integrity sha1-rWC1W6jG3ImRfzga03E/JzjeUw8=
+
 react-native-star-rating@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npm.taobao.org/react-native-star-rating/download/react-native-star-rating-1.1.0.tgz#57fcd023c63e947427c4dbbd1c8f4cc49e5c48ce"
@@ -5516,6 +5521,11 @@ react-native-video@^2.0.0:
   dependencies:
     keymirror "0.1.1"
     prop-types "^15.5.10"
+
+react-native-view-shot@2.6.0:
+  version "2.6.0"
+  resolved "https://registry.npm.taobao.org/react-native-view-shot/download/react-native-view-shot-2.6.0.tgz#3b23675826f67658366352c4b97b59a6aded2f43"
+  integrity sha1-OyNnWCb2dlg2Y1LEuXtZpq3tL0M=
 
 react-native-xml2js@^1.0.3:
   version "1.0.3"

@@ -1,9 +1,12 @@
-import {Platform} from "react-native";
+import { Platform } from "react-native";
 import {
-    
+    RelationListSchema,
+    WebListSchema,
+    AnimationSchema,
+    SportItemAnimations,
     HistorySearchSchema,
     GetRecentlyUseSchema,
-    
+
 } from './Schemas'
 
 /*
@@ -13,29 +16,27 @@ import {
 var RNFS = require('react-native-fs');
 export default [{
     schema: [
-        
+        RelationListSchema,
+        WebListSchema,
+        AnimationSchema,
+        SportItemAnimations,
         HistorySearchSchema,
         GetRecentlyUseSchema,
-        
+
     ],
     path: 'orth.realm',
     schemaVersion: 1,
     migration: (oldRealm, newRealm) => {
     }
 },
-    // {
-    //     schema: [
-    //         MarkNailSchema,
-    //         ResWebSchema,
-    //         ResRelationSchema,
-    //         MarkNounSchema,
-    //         TabVersionSchemea,
-    //         TriggerSubmodelSchema,
-    //         TriggerPifuSchema
-    //     ],
-    //     path: RNFS.DocumentDirectoryPath + '/system330.realm',
-    //     schemaVersion: 330,
-    //     migration: (oldRealm, newRealm) => {
-    //     }
-    // }
+{
+    schema: [
+        SportItemAnimations,
+        AnimationSchema,
+    ],
+    path: RNFS.DocumentDirectoryPath + '/sportSystem220.realm',
+    schemaVersion: 56,
+    migration: (oldRealm, newRealm) => {
+    }
+}
 ]

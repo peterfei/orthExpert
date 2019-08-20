@@ -6,96 +6,79 @@ import {
     StyleSheet,
     Image,
     TextInput,
-    Button,Alert,
+    Button, Alert,
     DeviceEventEmitter,
-    Platform, TouchableHighlight
+    Platform, TouchableHighlight,ScrollView
 } from "react-native";
 import { color } from "../../widget";
 import { screen, system } from "../../common";
 import { size } from "../../common/ScreenUtil";
 import { storage } from "../../common/storage";
 import StarRating from "react-native-star-rating";
+import api from "../../api";
+import CardCell from './CardCell';
 
 export default class RecoveryItem extends Component {
     state = {
-        data: [
-            {
-                title: '腰间盘突出方案',
-                content: '根据您腰部的症状智能定制适合您的康复方案',
-                starCount: 3,
-                describe: '12组动作',
-            },
-            {
-                title: '腰间盘突出方案',
-                content: '根据您腰部的症状智能定制适合您的康复方案',
-                starCount: 3,
-                describe: '12组动作'
-            },
-            {
-                title: '腰间盘突出方案',
-                content: '根据您腰部的症状智能定制适合您的康复方案',
-                starCount: 3,
-                describe: '12组动作'
+        CardCellData: '',
+    }
+    componentDidMount() {
+        this.getSchemesByPatNo()
+    }
+    async getSchemesByPatNo() {
+        let url = "http://114.115.210.145:8085/vesal-sport-test/app/kfxl/v1/scheme/getSchemesByPatNo?patNo=" + this.props.patNo + "&page=1&limit=10&planType=sysTpl";
+        // alert(url)
+        await fetch(url, {
+            method: "get",
+            headers: {
+                "Content-Type": "application/json",
             }
-        ]
+        }).then(resp => resp.json())
+            .then(result => {
+                alert(JSON.stringify(result))
+                this.setState({
+                    CardCellData: result.page.list
+                })
+            })
     }
     render() {
         return (
             <View style={styles.container}>
                 {this.props.orderState == 'firstScreen' ?
-                    <View style={{ width: '100%', height: "100%", alignItems: 'center', backgroundColor: 'yellow' }}>
-                        {this.renderCell()}
-                    </View>
+                    <ScrollView style={{width:'100%'}}>
+                        {this.showKeyList()}
+                        <View style={{height: size(30),width:'100%'}}></View>
+                    </ScrollView>
                     :
-                    <View style={{ width: '100%', height: "100%", alignItems: 'center', backgroundColor: 'blue' }}>
-                        <Image  style={{width:'100%',height:screen.height-100-size(130),resizeMode:'stretch'}}
-                           source={require('../../img/recovery/customization.png')} />
-                        <Text style={styles.buttonStyle} onPress={()=>this.button()}>立即定制</Text>
+                    <View style={{ width: '100%', height: "100%", alignItems: 'center' }}>
+                        <Image style={{ width: '100%', height: screen.height - 100 - size(130), resizeMode: 'stretch' }}
+                            source={require('../../img/recovery/customization.png')} />
+                        <Text style={styles.buttonStyle} onPress={() => this.button()}>立即定制</Text>
                     </View>
                 }
             </View>
         )
     }
-    renderCell() {
-        let arr = []
-        for (let i = 0; i < this.state.data.length; i++) {
-            arr.push(
-                <View style={styles.cell}>
-                    <Image style={styles.bg}
-                        source={require('../../img/recovery/bg.png')} />
-                    <View style={styles.body}>
-                        <Text style={{ fontWeight: 'bold', marginBottom: 10 }}>
-                            {this.state.data[i].title}
-                        </Text>
-                        <Text>
-                            {this.state.data[i].content}
-                        </Text>
-                        <View style={{ width: 125 }}>
-                            <StarRating
-                                disabled={false}
-                                maxStars={5}
-                                emptyStar={"ios-star-outline"}
-                                fullStar={"ios-star"}
-                                halfStar={"ios-star-half"}
-                                iconSet={"Ionicons"}
-                                rating={this.state.data[i].starCount}
-                                fullStarColor={"white"}
-                                starSize={20}
-                                selectedStar={rating => this.onStarRatingPress(rating)}
-                            />
-                        </View>
-                        <Text>
-                            {this.state.data[i].describe}
-                        </Text>
-                    </View>
-                </View>
-            )
+    showKeyList() {
+        let arr = [];
+        if(this.state.CardCellData!==''){
+            this.state.CardCellData.forEach((item, value) => {
+                arr.push(
+                    <CardCell cellRow={item} selectCard={(row) => {
+                        this.selectCard(row)
+                    }}/>
+                )
+            });
         }
-        return arr
+        return arr;
     }
-    button(){
+    selectCard(data) {
+        this.props.navigation.navigate('kfPlanDetail', { 'planId': data.planId })
+        alert(data.planId)
+    }
+    button() {
         Alert.alert(
-            '立即下载运动康复训练APP','定制计划',
+            '立即下载运动康复训练APP', '定制计划',
             [
                 { text: "稍后再说" },
                 {
@@ -112,11 +95,6 @@ export default class RecoveryItem extends Component {
             ]
         );
     }
-    onStarRatingPress(rating) {
-        this.setState({
-            starCount: rating
-        });
-    }
 }
 const styles = StyleSheet.create({
     container: {
@@ -126,30 +104,14 @@ const styles = StyleSheet.create({
         flex: 1,
         zIndex: 999,
     },
-    cell: {
-        width: '90%',
-        margin: 8,
-    },
-    body: {
-        width: '60%',
-        padding: 15,
-        height: 150,
-        justifyContent: 'space-between',
-    },
-    bg: {
-        position: "absolute",
-        width: "100%",
-        height: 150,
-        borderRadius: 10
-    },
-    buttonStyle:{
-        color:'white',
-        backgroundColor:'#44B4E9',
-        height:50,
-        fontSize:18,
-        fontWeight:'bold',
-        width:screen.width,
-        lineHeight:45,
-        textAlign:'center'
+    buttonStyle: {
+        color: 'white',
+        backgroundColor: '#44B4E9',
+        height: 50,
+        fontSize: 18,
+        fontWeight: 'bold',
+        width: screen.width,
+        lineHeight: 45,
+        textAlign: 'center'
     }
 })

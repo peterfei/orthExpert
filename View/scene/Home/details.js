@@ -432,7 +432,7 @@ export default class Details extends Component {
             }
         }
         if (title == "康复") {
-            this.props.navigation.navigate('Recovery');
+            this.props.navigation.navigate('Recovery',{patNo:this.props.patNo});
             this.setState({
                 video: false,
                 title: false,

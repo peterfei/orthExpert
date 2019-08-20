@@ -7,7 +7,7 @@
  */
 
 import React, { Component } from 'react';
-import { createStackNavigator,createAppContainer} from 'react-navigation';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import HomeScreen from "./View/scene/Home/HomeScreen";
 import MyScreen from "./View/scene/My/MyScreen";
@@ -30,51 +30,59 @@ import BindPhoneSkip from "./View/scene/Login/BindPhoneSkip";
 import BuyVip from "./View/scene/Vip/BuyVip";
 import PaymentOrder from './View/scene/Pay/PaymentOrder';
 import Pay from './View/scene/Pay/Pay';
+import kfPlanDetail from './View/scene/Recovery/PlanDetail';
+import kfSharingPlan from './View/scene/Share/SharingPlan';
+import RenTi from './View/scene/Unity/RenTi';//底部按钮转跳商城
+import TrainPlay from './View/scene/Unity/TrainPlay';
 
 
 /**消息通知页面 */
 import MessageNotice from './View/scene/Search/MessageNotice';
 import MessageDetails from './View/scene/Search/MessageDetails';
 
-const RootStack =createAppContainer( createStackNavigator( //跟路由
+const RootStack = createAppContainer(createStackNavigator( //跟路由
   {//定义模块
-    HomeScreen: {screen: HomeScreen},
-    MyScreen: {screen: MyScreen},
-    MyOrder:{screen:MyOrder},
-    OrderDetail:{screen:OrderDetail},
-    MessageBoard:{screen:MessageBoard},
-    showMessages:{screen:showMessages},
-    Help:{screen:Help},
-    problemDetails:{screen:problemDetails},
-    EditMember:{screen:EditMember},
-    MemberComplete:{screen:MemberComplete},
-    RegisterPage:{screen:RegisterPage},
-    ForgetPasswordPage:{screen:ForgetPasswordPage},
-    ChangePassword:{screen:ChangePassword},
-    SelectIdentity:{screen:SelectIdentity},
-    LoginPage:{screen:LoginPage},
-    MessageNotice:{screen:MessageNotice},
-    MessageDetails:{screen:MessageDetails},
-    Find:{screen:Find},
-    Recovery:{screen:Recovery},
-    BindPhoneSkip:{screen:BindPhoneSkip},
-    BuyVip:{screen:BuyVip},
-    PaymentOrder:{screen:PaymentOrder},
-    Pay:{screen:Pay}
+    HomeScreen: { screen: HomeScreen },
+    MyScreen: { screen: MyScreen },
+    MyOrder: { screen: MyOrder },
+    OrderDetail: { screen: OrderDetail },
+    MessageBoard: { screen: MessageBoard },
+    showMessages: { screen: showMessages },
+    Help: { screen: Help },
+    problemDetails: { screen: problemDetails },
+    EditMember: { screen: EditMember },
+    MemberComplete: { screen: MemberComplete },
+    RegisterPage: { screen: RegisterPage },
+    ForgetPasswordPage: { screen: ForgetPasswordPage },
+    ChangePassword: { screen: ChangePassword },
+    SelectIdentity: { screen: SelectIdentity },
+    LoginPage: { screen: LoginPage },
+    MessageNotice: { screen: MessageNotice },
+    MessageDetails: { screen: MessageDetails },
+    Find: { screen: Find },
+    Recovery: { screen: Recovery },
+    BindPhoneSkip: { screen: BindPhoneSkip },
+    BuyVip: { screen: BuyVip },
+    PaymentOrder: { screen: PaymentOrder },
+    Pay: { screen: Pay },
+    kfPlanDetail: { screen: kfPlanDetail },
+    kfSharingPlan: { screen: kfSharingPlan },
+    RenTi: { screen: RenTi },
+    TrainPlay: { screen: TrainPlay },
   },
   {
     initialRouteName: 'LoginPage',     //设置初始路由为Home
-    mode:'modal',
-    navigationOptions:{
-      header:null,
-      headerStyle:{
+    mode: 'modal',
+    navigationOptions: {
+      header: null,
+      headerStyle: {
         //background:'red'
       },
-      headerBackTitle:null,
-      headerTintColor:'#333333',
-      showIcon:true,
-      animationEnabled:false,
-      gesturesEnabled:false
+      headerBackTitle: null,
+      headerTintColor: '#333333',
+      showIcon: true,
+      animationEnabled: false,
+      gesturesEnabled: false
     }
   }
 ))

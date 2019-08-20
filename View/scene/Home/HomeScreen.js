@@ -48,6 +48,7 @@ export default class HomeScreen extends Component {
     showLoading: false,
     nowIndex: 0,//当前数据下标
     help: false,
+    patNo:''
   }
 
   Animated() {
@@ -241,7 +242,7 @@ export default class HomeScreen extends Component {
         {this.state.img && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.imgOpen() : null}
 
         {/* 底部详情 */}
-        <Details navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })} setImg={() => this.setImg()}
+        <Details patNo={this.state.patNo} navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })} setImg={() => this.setImg()}
           img={this.state.img}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
         {/* 顶部/搜索 */}
@@ -301,7 +302,8 @@ export default class HomeScreen extends Component {
   }
   async pushDetails(pat_no, img, num) { //获取单个疾病资源,包括底部菜单,图片,摄像机参数等
     this.setState({
-      isUnityReady: false
+      isUnityReady: false,
+      patNo:pat_no
     })
     //获取搜索后数据
     let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + pat_no;

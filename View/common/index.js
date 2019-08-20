@@ -9,5 +9,6 @@ import * as HttpTool from './Tool/HttpTool'
 import NetInterface from './NetInterface'
 import  * as FuncUtils from './FuncUtils'
 import Line from './Line'
+import {deviceWidth, deviceHeight, isIPhoneXPaddTop, isIPhoneXFooter, isIPhoneX, setSpText, size} from './Tool/ScreenUtil';
 // import show from './ToastUtils'
-export { screen, system, Wxpay,ContainerView ,BaseComponent,NavBar,AppDef,HttpTool,NetInterface,FuncUtils,Line}
+export { screen, system, Wxpay,ContainerView ,BaseComponent,NavBar,AppDef,HttpTool,NetInterface,FuncUtils,Line,deviceWidth, deviceHeight, isIPhoneXPaddTop, isIPhoneXFooter, isIPhoneX, setSpText, size}

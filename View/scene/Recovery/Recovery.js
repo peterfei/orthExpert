@@ -35,7 +35,7 @@ export default class Recovery extends Component {
                     tabBarActiveTextColor={color.main}>
 
                     <View style={styles.textStyle} tabLabel="推荐训练">
-                        <RecoveryItem orderState="firstScreen" navigation={this.props.navigation} />
+                        <RecoveryItem patNo={this.props.navigation.state.params.patNo} orderState="firstScreen" navigation={this.props.navigation} />
                     </View>
 
                     <View style={styles.textStyle} tabLabel="指定计划">
