@@ -6,7 +6,7 @@ import {
     StyleSheet,
     Image,
     TextInput,
-    Button,
+    Button,Alert,
     DeviceEventEmitter,
     Platform, TouchableHighlight
 } from "react-native";
@@ -42,14 +42,16 @@ export default class RecoveryItem extends Component {
     render() {
         return (
             <View style={styles.container}>
-                {this.props.orderState=='firstScreen'?
-                <View style={{width:'100%',height:"100%",alignItems:'center',backgroundColor:'yellow'}}>
-                {this.renderCell()}
-                </View>
-                :
-                <View style={{width:'100%',height:"100%",alignItems:'center',backgroundColor:'blue'}}>
-                {this.renderCell()}
-                </View>
+                {this.props.orderState == 'firstScreen' ?
+                    <View style={{ width: '100%', height: "100%", alignItems: 'center', backgroundColor: 'yellow' }}>
+                        {this.renderCell()}
+                    </View>
+                    :
+                    <View style={{ width: '100%', height: "100%", alignItems: 'center', backgroundColor: 'blue' }}>
+                        <Image  style={{width:'100%',height:screen.height-100-size(130),resizeMode:'stretch'}}
+                           source={require('../../img/recovery/customization.png')} />
+                        <Text style={styles.buttonStyle} onPress={()=>this.button()}>立即定制</Text>
+                    </View>
                 }
             </View>
         )
@@ -68,19 +70,19 @@ export default class RecoveryItem extends Component {
                         <Text>
                             {this.state.data[i].content}
                         </Text>
-                        <View style={{width:125}}>
-                        <StarRating
-                            disabled={false}
-                            maxStars={5}
-                            emptyStar={"ios-star-outline"}
-                            fullStar={"ios-star"}
-                            halfStar={"ios-star-half"}
-                            iconSet={"Ionicons"}
-                            rating={this.state.data[i].starCount}
-                            fullStarColor={"white"}
-                            starSize={20}
-                            selectedStar={rating => this.onStarRatingPress(rating)}
-                        />
+                        <View style={{ width: 125 }}>
+                            <StarRating
+                                disabled={false}
+                                maxStars={5}
+                                emptyStar={"ios-star-outline"}
+                                fullStar={"ios-star"}
+                                halfStar={"ios-star-half"}
+                                iconSet={"Ionicons"}
+                                rating={this.state.data[i].starCount}
+                                fullStarColor={"white"}
+                                starSize={20}
+                                selectedStar={rating => this.onStarRatingPress(rating)}
+                            />
                         </View>
                         <Text>
                             {this.state.data[i].describe}
@@ -90,6 +92,25 @@ export default class RecoveryItem extends Component {
             )
         }
         return arr
+    }
+    button(){
+        Alert.alert(
+            '立即下载运动康复训练APP','定制计划',
+            [
+                { text: "稍后再说" },
+                {
+                    text: "立即下载"
+                    //,
+                    // onPress: function () {
+                    //     const downloadUrl = item.url;
+                    //     NativeModules.DownloadApk.downloading(
+                    //         downloadUrl,
+                    //         "vesal.apk"
+                    //     );
+                    // }
+                }
+            ]
+        );
     }
     onStarRatingPress(rating) {
         this.setState({
@@ -120,5 +141,15 @@ const styles = StyleSheet.create({
         width: "100%",
         height: 150,
         borderRadius: 10
+    },
+    buttonStyle:{
+        color:'white',
+        backgroundColor:'#44B4E9',
+        height:50,
+        fontSize:18,
+        fontWeight:'bold',
+        width:screen.width,
+        lineHeight:45,
+        textAlign:'center'
     }
 })

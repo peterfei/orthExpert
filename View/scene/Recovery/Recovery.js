@@ -34,11 +34,11 @@ export default class Recovery extends Component {
                     tabBarUnderlineStyle={styles.lineStyle}
                     tabBarActiveTextColor={color.main}>
 
-                    <View style={styles.textStyle} tabLabel="康复方案">
+                    <View style={styles.textStyle} tabLabel="推荐训练">
                         <RecoveryItem orderState="firstScreen" navigation={this.props.navigation} />
                     </View>
 
-                    <View style={styles.textStyle} tabLabel="指定方案">
+                    <View style={styles.textStyle} tabLabel="指定计划">
                         <RecoveryItem orderState="secondScreen" navigation={this.props.navigation} />
                     </View>
 
