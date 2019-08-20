@@ -7,6 +7,8 @@ import android.os.Bundle;
 import com.umeng.message.PushAgent;
 import android.widget.Toast;
 import android.view.KeyEvent;
+import com.umeng.socialize.UMShareAPI;
+import com.vesal.orthexpert.module.*;
 public class MainActivity extends ReactActivity {
     private long firstClick;
 
@@ -31,6 +33,7 @@ public class MainActivity extends ReactActivity {
         super.onCreate(savedInstanceState);
         PushModule.initPushSDK(this);
         PushAgent.getInstance(this).onAppStart();
+        ShareModule.initActivity(this);
         // MobclickAgent.setSessionContinueMillis(1000);
         // MobclickAgent.setScenarioType(this, EScenarioType.E_DUM_NORMAL);
         // MobclickAgent.openActivityDurationTrack(false);
@@ -71,5 +74,10 @@ public class MainActivity extends ReactActivity {
         return false;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+    }
 
 }

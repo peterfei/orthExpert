@@ -259,6 +259,11 @@ export default class MyScreen extends Component {
         name: "AboutVasl"
       },
       {
+        title: "分享",
+        image: require("../../img/my/liuyan.png"),
+        name: "share"
+      },
+      {
         title: "退出登录",
         image: require("../../img/my/liuyan.png"),
         name: "logout"
