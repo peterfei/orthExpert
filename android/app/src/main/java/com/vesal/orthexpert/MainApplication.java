@@ -48,8 +48,10 @@ import com.umeng.message.UmengMessageHandler;
 import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.entity.UMessage;
 import com.umeng.message.common.UmLog;
-
+import com.umeng.socialize.PlatformConfig;
 import com.xiaomi.mipush.sdk.MiPushClient;
+
+import com.vesal.orthexpert.module.SharePackage;
 
 // import com.umeng.message.common.UmLog;
 
@@ -85,7 +87,8 @@ public class MainApplication extends Application implements ReactApplication {
             
           new DplusReactPackage(),
           new com.vesal.orthexpert.wxapi.WxentryPackage(),
-          new com.vesal.orthexpert.wxapi.WxpayPackage()
+          new com.vesal.orthexpert.wxapi.WxpayPackage(),
+          new SharePackage()
       );
     }
 
@@ -110,6 +113,12 @@ public class MainApplication extends Application implements ReactApplication {
       initUpush();
       MiPushClient.registerPush(this, "2882303761518112786", "5981811265786");
 
+  }
+  {
+    PlatformConfig.setWeixin("wxa452dfe169d3c11c", "21a25d1a7762a4d6caf49cd18e9ad116");
+    // PlatformConfig.setQQZone("1106207359", "3JjbG8aXMuh5w0sV");
+    // PlatformConfig.setSinaWeibo("2733400964", "fac50980a44e3e3afd4bc968ea572887",
+    // "www.baidu.com");
   }
 
 

@@ -155,8 +155,8 @@ class DetailCell extends PureComponent<Props> {
         //console.log(`click button is ${buttonIndex}`);
         if (buttonIndex == 1) {
             UShare.share(
-                "维萨里3D解剖App",
-                "维萨里3D解剖，提供全三维人体结构细节，让我们的工作进入您健康的每一个细节",
+                "骨科专家App",
+                "骨科专家，提供全三维人体结构细节，让我们的工作进入您健康的每一个细节",
                 "http://vesal.cn:8080/weiChat-master/index.html",
                 "http://fileprod.vesal.site/upload/vesaliicon/v1/vesal_icon.png",
                 SharePlatform.WECHAT,
@@ -169,8 +169,8 @@ class DetailCell extends PureComponent<Props> {
             );
         } else if (buttonIndex == 2) {
             UShare.share(
-                "维萨里3D解剖App",
-                "维萨里3D解剖，提供全三维人体结构细节，让我们的工作进入您健康的每一个细节",
+                "骨科专家",
+                "骨科专家，提供全三维人体结构细节，让我们的工作进入您健康的每一个细节",
                 "http://vesal.cn:8080/weiChat-master/index.html",
                 "http://fileprod.vesal.site/upload/vesaliicon/v1/vesal_icon.png",
                 SharePlatform.WECHATMOMENT,
