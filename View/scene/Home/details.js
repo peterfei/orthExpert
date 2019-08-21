@@ -274,49 +274,58 @@ export default class Details extends Component {
     }
     renderVideoBody() {
         let arr = []
-        let videoData = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))
-        //alert(videoData[0].url)
-        for (let i = 0; i < videoData.length; i++) {
-            arr.push(
-                <View style={{ width: screen.width, height: screen.height - 50, justifyContent: 'center', alignItems: 'center' }}>
-                    <Video
-                        //autoPlay
-                        scrollBounce
-                        volume={0.8}
-                        inlineOnly
-                        key={i}
-                        style={{ width: '100%', height: '100%' }}
-                        url={videoData[i].url}
-                        ref={(ref) => {
-                            this.video = ref
-                        }}
-                        onError={(msg) => {
-                            this.playVideoError(msg)
-                        }}
-                        onFullScreen={(status) => {
-                            status ? this.props.sendMsgToUnity('landscape', '', '') : this.props.sendMsgToUnity('portrait', '', '');
-                        }}
-                    />
-                    <MyTouchableOpacity style={{
-                        position: 'absolute',
-                        height: size(60),
-                        width: size(60),
-                        right: 10,
-                        top: 35,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        zIndex: 9999999999,
-                    }} onPress={() => this.closeVideo()}>
-                        <Image source={require('../../img/unity/close.png')} style={{
-                            width: 30,
-                            height: 30,
-                            marginRight: 15,
-                            resizeMode: 'contain'
-                        }} />
-                    </MyTouchableOpacity>
-                </View>
-            )
+        if(this.state.getData.menus.length==0){
+            alert(111)
+            return 
         }
+        try{
+            let videoData = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))
+            //alert(videoData[0].url)
+            for (let i = 0; i < videoData.length; i++) {
+                arr.push(
+                    <View style={{ width: screen.width, height: screen.height - 50, justifyContent: 'center', alignItems: 'center' }}>
+                        <Video
+                            //autoPlay
+                            scrollBounce
+                            volume={0.8}
+                            inlineOnly
+                            key={i}
+                            style={{ width: '100%', height: '100%' }}
+                            url={videoData[i].url}
+                            ref={(ref) => {
+                                this.video = ref
+                            }}
+                            onError={(msg) => {
+                                this.playVideoError(msg)
+                            }}
+                            onFullScreen={(status) => {
+                                status ? this.props.sendMsgToUnity('landscape', '', '') : this.props.sendMsgToUnity('portrait', '', '');
+                            }}
+                        />
+                        <MyTouchableOpacity style={{
+                            position: 'absolute',
+                            height: size(60),
+                            width: size(60),
+                            right: 10,
+                            top: 35,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            zIndex: 9999999999,
+                        }} onPress={() => this.closeVideo()}>
+                            <Image source={require('../../img/unity/close.png')} style={{
+                                width: 30,
+                                height: 30,
+                                marginRight: 15,
+                                resizeMode: 'contain'
+                            }} />
+                        </MyTouchableOpacity>
+                    </View>
+                )
+            }
+        }catch(e){
+            Alert.alert('', '该视频暂未开放, 敬请期待.', [{ text: '我知道了' }])
+        }
+        
         return arr
     }
     closeVideo() {
@@ -399,7 +408,7 @@ export default class Details extends Component {
         return Arr
     }
     clickBack(title) {
-        alert(this.props.load_app_id)
+        // alert(this.props.load_app_id)
         let msg = {
             "struct_version": "1",
             "app_type": "medical",
