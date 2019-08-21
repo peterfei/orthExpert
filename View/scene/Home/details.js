@@ -274,10 +274,6 @@ export default class Details extends Component {
     }
     renderVideoBody() {
         let arr = []
-        if(this.state.getData.menus.length==0){
-            alert(111)
-            return 
-        }
         try{
             let videoData = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))
             //alert(videoData[0].url)
