@@ -99,7 +99,7 @@ export default {
     transform: [{ translateY: -screen.height*0.5 }],
     width:screen.width,
     height:screen.height,
-    backgroundColor:'#3E4147'
+    backgroundColor:'rgba(0,0,0,1)'
   },
   btnImgStyle: {
     width: size(35),
