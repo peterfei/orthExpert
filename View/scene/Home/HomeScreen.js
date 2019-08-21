@@ -437,22 +437,16 @@ export default class HomeScreen extends Component {
     //遍历图片
     let arr = []
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
-
-      // let src = this.state.rightMenuData.pathologyList[i].img_url
-      // if (src !== null && src !== '') {
-      //   src = this.state.rightMenuData.pathologyList[i].img_url
-      // } else {
-      //   src = 'https://www.baidu.com/img/bd_logo1.png'
-      //   alert(src)
-      // }
       let src = this.state.rightMenuData.pathologyList[i].img_url !== null && this.state.rightMenuData.pathologyList[i].img_url !== '' ? this.state.rightMenuData.pathologyList[i].img_url : 'http://filetest1.vesal.site/image/slt/flowers-small.jpg'
       //alert(src)
       arr.push(
         <View key={i} style={{ width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
-          <View style={{ width: '70%', height: '70%', justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ width: '70%', height: '70%', justifyContent: 'center', alignItems: 'center'}}>
             <ImagePlaceholder
               style={{ width: '100%', height: '100%' }}
               duration={1000}
+              imageStyle={{ borderRadius:20 }}
+              placeholderStyle={{ borderRadius:20 }}
               activityIndicatorProps={{
                 size: 'large',
                 color: 'green',
@@ -462,7 +456,7 @@ export default class HomeScreen extends Component {
             />
           </View>
           {i != fristiArr ?
-            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', left: 15, top: '50%' }}
+            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', left: 10, top: '50%',transform: [{ translateY: -25 }], }}
               onPress={() => this.changeImg(i - 1)}>
               <Image style={{ height: 50, width: 50 }}
                 source={require('../../img/unity/arrow_l.png')}
@@ -471,7 +465,7 @@ export default class HomeScreen extends Component {
             : null
           }
           {i != lastiArr ?
-            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', right: 15, top: '50%' }}
+            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', right: 10, top: '50%',transform: [{ translateY: -25 }], }}
               onPress={() => this.changeImg(i + 1)}>
               <Image style={{ height: 50, width: 50 }}
                 source={require('../../img/unity/arrow_r.png')}
