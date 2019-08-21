@@ -66,7 +66,7 @@ export default {
     width:'100%',
   },
   videoSourceStyle: {
-    width: '100%',
+    width: screen.width,
     height: screen.height-50,
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.6)',
@@ -99,7 +99,7 @@ export default {
     transform: [{ translateY: -screen.height*0.5 }],
     width:screen.width,
     height:screen.height,
-    backgroundColor:'rgba(0,0,0,0.6)'
+    backgroundColor:'#3E4147'
   },
   btnImgStyle: {
     width: size(35),

@@ -9,7 +9,7 @@
 import React, { Component } from 'react';
 import {
     Platform, StyleSheet, Text, View,
-    Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView
+    Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter, ScrollView, Alert
 } from 'react-native';
 import { screen, system } from "../../common";
 import { size } from '../../common/ScreenUtil';
@@ -178,8 +178,8 @@ export default class Details extends Component {
                 {/* rn菜单 */}
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
                     <View style={styles.detailsRow}>
-                        {this.state.title ? <View style={{ alignItems: 'center', width: "100%", position: 'absolute', bottom: screen.height * 0.77 }}>
-                            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 30 }}>{this.state.getData.pat_name}</Text>
+                        {this.state.title ? <View style={{ alignItems: 'center', width: "100%", position: 'absolute', bottom: screen.height * 0.81 }}>
+                            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>{this.state.getData.pat_name}</Text>
                         </View>
                             : null
                         }
@@ -263,15 +263,30 @@ export default class Details extends Component {
                 //horizontal={true}
                 pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
-                style={{ width: screen.width, height: screen.height-50 }}>
-                <View style={styles.videoSourceStyle}>
+                horizontal={true}
+                style={{ width: screen.width, height: screen.height - 50 }}>
+
+                {this.renderVideoBody()}
+
+
+            </ScrollView>
+        )
+    }
+    renderVideoBody() {
+        let arr = []
+        let videoData = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))
+        //alert(videoData[0].url)
+        for (let i = 0; i < videoData.length; i++) {
+            arr.push(
+                <View style={{ width: screen.width, height: screen.height - 50, justifyContent: 'center', alignItems: 'center' }}>
                     <Video
                         //autoPlay
                         scrollBounce
                         volume={0.8}
                         inlineOnly
-                        style={{ zIndex: 9999999999, width: '100%', height: '100%' }}
-                        url={JSON.parse(this.state.getData.menus)[0].content}
+                        key={i}
+                        style={{ width: '100%', height: '100%' }}
+                        url={videoData[i].url}
                         ref={(ref) => {
                             this.video = ref
                         }}
@@ -300,44 +315,9 @@ export default class Details extends Component {
                         }} />
                     </MyTouchableOpacity>
                 </View>
-                <View style={styles.videoSourceStyle}>
-                    <Video
-                        autoPlay
-                        scrollBounce
-                        volume={0.8}
-                        inlineOnly
-                        style={{ zIndex: 9999999999, width: '100%', height: '100%' }}
-                        url={JSON.parse(this.state.getData.menus)[0].content}
-                        ref={(ref) => {
-                            this.video = ref
-                        }}
-                        onError={(msg) => {
-                            this.playVideoError(msg)
-                        }}
-                        onFullScreen={(status) => {
-                            status ? this.props.sendMsgToUnity('landscape', '', '') : this.props.sendMsgToUnity('portrait', '', '');
-                        }}
-                    />
-                    <MyTouchableOpacity style={{
-                        position: 'absolute',
-                        height: size(60),
-                        width: size(60),
-                        right: 10,
-                        top: 35,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        zIndex: 9999999999,
-                    }} onPress={() => this.closeVideo()}>
-                        <Image source={require('../../img/unity/close.png')} style={{
-                            width: 30,
-                            height: 30,
-                            marginRight: 15,
-                            resizeMode: 'contain'
-                        }} />
-                    </MyTouchableOpacity>
-                </View>
-            </ScrollView>
-        )
+            )
+        }
+        return arr
     }
     closeVideo() {
         if (this.state.EnterNowScreen == "isMainScreen") {

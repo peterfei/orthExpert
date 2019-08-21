@@ -441,12 +441,12 @@ export default class HomeScreen extends Component {
       //alert(src)
       arr.push(
         <View key={i} style={{ width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
-          <View style={{ width: '70%', height: '70%', justifyContent: 'center', alignItems: 'center'}}>
+          <View style={{ width: '90%', height: '70%', justifyContent: 'center', alignItems: 'center'}}>
             <ImagePlaceholder
               style={{ width: '100%', height: '100%' }}
               duration={1000}
-              imageStyle={{ borderRadius:20 }}
-              placeholderStyle={{ borderRadius:20 }}
+              // imageStyle={{ borderRadius:20 }}
+              // placeholderStyle={{ borderRadius:20 }}
               activityIndicatorProps={{
                 size: 'large',
                 color: 'green',
@@ -456,18 +456,18 @@ export default class HomeScreen extends Component {
             />
           </View>
           {i != fristiArr ?
-            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', left: 10, top: '50%',transform: [{ translateY: -25 }], }}
+            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', left: 15, top: '50%',transform: [{ translateY: -25 }], }}
               onPress={() => this.changeImg(i - 1)}>
-              <Image style={{ height: 50, width: 50 }}
+              <Image style={{ height: 30, width: 30 }}
                 source={require('../../img/unity/arrow_l.png')}
               />
             </TouchableOpacity>
             : null
           }
           {i != lastiArr ?
-            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', right: 10, top: '50%',transform: [{ translateY: -25 }], }}
+            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', right: 0, top: '50%',transform: [{ translateY: -25 }], }}
               onPress={() => this.changeImg(i + 1)}>
-              <Image style={{ height: 50, width: 50 }}
+              <Image style={{ height: 30, width: 30 }}
                 source={require('../../img/unity/arrow_r.png')}
               />
             </TouchableOpacity>
