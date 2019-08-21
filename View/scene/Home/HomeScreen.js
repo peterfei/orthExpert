@@ -603,8 +603,6 @@ export default class HomeScreen extends Component {
           <View>
             <Image style={{ width: 20, position: 'absolute', left: -3, top: -44 }} resizeMode="contain"
               source={require('../../img/home/memuOne.png')} />
-            <Image style={{ height: 20, position: 'absolute', left: 0, top: 10 ,}} resizeMode="contain"
-              source={require('../../img/home/memuTwo.png')} />
           </View>
 
         </TouchableOpacity>
