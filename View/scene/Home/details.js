@@ -259,42 +259,84 @@ export default class Details extends Component {
     }
     renderVideo() {
         return (
-            <View style={styles.videoSourceStyle}>
-                <Video
-                    autoPlay
-                    scrollBounce
-                    volume={0.8}
-                    inlineOnly
-                    style={{ zIndex: 9999999999, width: '100%', height: '100%' }}
-                    url={JSON.parse(this.state.getData.menus)[0].content}
-                    ref={(ref) => {
-                        this.video = ref
-                    }}
-                    onError={(msg) => {
-                        this.playVideoError(msg)
-                    }}
-                    onFullScreen={(status) => {
-                        status ? this.props.sendMsgToUnity('landscape', '', '') : this.props.sendMsgToUnity('portrait', '', '');
-                    }}
-                />
-                <MyTouchableOpacity style={{
-                    position: 'absolute',
-                    height: size(60),
-                    width: size(60),
-                    right:10,
-                    top:35,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    zIndex: 9999999999,
-                }} onPress={() => this.closeVideo()}>
-                    <Image source={require('../../img/unity/close.png')} style={{
-                        width: 30,
-                        height: 30,
-                        marginRight: 15,
-                        resizeMode: 'contain'
-                    }} />
-                </MyTouchableOpacity>
-            </View>
+            <ScrollView
+                //horizontal={true}
+                pagingEnabled={true}
+                showsHorizontalScrollIndicator={false}
+                style={{ width: screen.width, height: screen.height-50 }}>
+                <View style={styles.videoSourceStyle}>
+                    <Video
+                        //autoPlay
+                        scrollBounce
+                        volume={0.8}
+                        inlineOnly
+                        style={{ zIndex: 9999999999, width: '100%', height: '100%' }}
+                        url={JSON.parse(this.state.getData.menus)[0].content}
+                        ref={(ref) => {
+                            this.video = ref
+                        }}
+                        onError={(msg) => {
+                            this.playVideoError(msg)
+                        }}
+                        onFullScreen={(status) => {
+                            status ? this.props.sendMsgToUnity('landscape', '', '') : this.props.sendMsgToUnity('portrait', '', '');
+                        }}
+                    />
+                    <MyTouchableOpacity style={{
+                        position: 'absolute',
+                        height: size(60),
+                        width: size(60),
+                        right: 10,
+                        top: 35,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        zIndex: 9999999999,
+                    }} onPress={() => this.closeVideo()}>
+                        <Image source={require('../../img/unity/close.png')} style={{
+                            width: 30,
+                            height: 30,
+                            marginRight: 15,
+                            resizeMode: 'contain'
+                        }} />
+                    </MyTouchableOpacity>
+                </View>
+                <View style={styles.videoSourceStyle}>
+                    <Video
+                        autoPlay
+                        scrollBounce
+                        volume={0.8}
+                        inlineOnly
+                        style={{ zIndex: 9999999999, width: '100%', height: '100%' }}
+                        url={JSON.parse(this.state.getData.menus)[0].content}
+                        ref={(ref) => {
+                            this.video = ref
+                        }}
+                        onError={(msg) => {
+                            this.playVideoError(msg)
+                        }}
+                        onFullScreen={(status) => {
+                            status ? this.props.sendMsgToUnity('landscape', '', '') : this.props.sendMsgToUnity('portrait', '', '');
+                        }}
+                    />
+                    <MyTouchableOpacity style={{
+                        position: 'absolute',
+                        height: size(60),
+                        width: size(60),
+                        right: 10,
+                        top: 35,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        zIndex: 9999999999,
+                    }} onPress={() => this.closeVideo()}>
+                        <Image source={require('../../img/unity/close.png')} style={{
+                            width: 30,
+                            height: 30,
+                            marginRight: 15,
+                            resizeMode: 'contain'
+                        }} />
+                    </MyTouchableOpacity>
+                </View>
+            </ScrollView>
         )
     }
     closeVideo() {

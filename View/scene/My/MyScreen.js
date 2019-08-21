@@ -8,7 +8,7 @@
 
 import React, { Component } from 'react';
 import {
-  Platform, StyleSheet, Text, View, Image, Linking,
+  Platform, StyleSheet, Text, View, Image, Linking,StatusBar,
   Dimensions, TouchableHighlight, TextInput, RefreshControl, ImageBackground, ScrollView, TouchableWithoutFeedback, DeviceEventEmitter, Button
 } from 'react-native';
 import { color, NavigationItem, SpacingView, DetailCell } from "../../widget";
@@ -88,6 +88,9 @@ export default class MyScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar
+          hidden={false}
+        />
         <ScrollView
           refreshControl={
             <RefreshControl

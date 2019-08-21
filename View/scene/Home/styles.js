@@ -196,7 +196,7 @@ export default {
     backgroundColor: 'rgba(250,250,250,0)',
   },
   top: {
-    marginTop: 30,
+    marginTop: 25,
     width: screen.width,
     flexDirection: 'row',
     justifyContent: 'space-around',

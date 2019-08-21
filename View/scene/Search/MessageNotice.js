@@ -13,7 +13,7 @@ import {
     DeviceEventEmitter,
     AppState,
     ActivityIndicator,
-    InteractionManager,
+    InteractionManager,StatusBar
 } from "react-native";
 import { size } from "../../common/ScreenUtil";
 import ScrollableTabView, {
@@ -50,6 +50,9 @@ export default class MessageNotice extends PureComponent {
     render() {
         return (
             <View style={styles.container}>
+                <StatusBar
+                    hidden={false}
+                />
                 <View style={styles.titleBar}>
                     <TouchableOpacity style={{ flex: 2, justifyContent: 'center', alignItems: 'center', height: size(40), }}
                         onPress={this._onJump.bind(this)}>
@@ -76,7 +79,7 @@ export default class MessageNotice extends PureComponent {
                     }}
                     renderTabBar={() => (
                         <DefaultTabBar
-                            style={{  borderWidth: 0, elevation: 0 }}
+                            style={{ borderWidth: 0, elevation: 0 }}
                         />
                     )}
                 >

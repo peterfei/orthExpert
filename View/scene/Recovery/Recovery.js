@@ -8,7 +8,7 @@ import {
     TextInput,
     Button,
     DeviceEventEmitter,
-    Platform, TouchableHighlight
+    Platform, TouchableHighlight,StatusBar
 } from "react-native";
 
 import { color } from "../../widget";
@@ -27,6 +27,9 @@ export default class Recovery extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <StatusBar
+                    hidden={false}
+                />
                 {this.renderHeader()}
                 <ScrollableTabView
                     style={styles.containert}
