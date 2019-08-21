@@ -7,11 +7,11 @@ import { size } from '../../common/ScreenUtil';
 export default {
   container: {
     flex: 1,
-    height: '100%',
-    width: '100%',
+    // height: '100%',
+    // width: '100%',
     //justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: 'rgba(0,0,0,0.8)',
   },
   rightMenu: {
     position: 'absolute',

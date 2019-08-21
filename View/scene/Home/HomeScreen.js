@@ -454,7 +454,7 @@ export default class HomeScreen extends Component {
                 color: 'green',
               }}
               src={src}
-              placeholder='http://filetest1.vesal.site/image/slt/flowers-small.jpg'
+              placeholder='http://res.vesal.site/pathology/img/T_JBGK001.jpg'
             />
           </View>
           {i != fristiArr ?
