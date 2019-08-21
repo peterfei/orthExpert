@@ -33,7 +33,7 @@ export default class HomeScreen extends Component {
                 </View>
                 {this.state.video ?
                     <View style={{ width: '100%', height: '100%', position: 'absolute', left: 0, top: 0, zIndex: 99998 }}>
-                        <TouchableOpacity style={{position:"absolute",right:20,top:40,width: 30,height: 30,zIndex: 9999999}} onPress={() => this.setState({ video: false, title: true })}>
+                        <TouchableOpacity style={{position:"absolute",right:20,top:40,width: 30,height: 30,zIndex: 9999999}} onPress={() => this.closeVideo()}>
                             <Image source={require('../../img/unity/close.png')} style={{
                                 width: 30,
                                 height: 30,
@@ -42,9 +42,9 @@ export default class HomeScreen extends Component {
                         </TouchableOpacity>
                         <Video
                             autoPlay
-                            lockPortraitOnFsExit
                             scrollBounce
-                            inlineOnly={true}
+                            volume={0.8}
+                            inlineOnly
                             style={{ width: '100%', height: '100%',zIndex: 99999 }}
                             url={'http://filetest1.vesal.site/jiepao/help/video/instructions.mp4'}
                             ref={(ref) => {
@@ -63,6 +63,10 @@ export default class HomeScreen extends Component {
             </View>
         )
     }
+    closeVideo(){
+        this.setState({ video: false, title: true })
+        DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
+    }
     playVideoError(msg) {
         Alert.alert('', '该视频暂未开放, 敬请期待.', [{ text: '我知道了' }])
     }
@@ -73,6 +77,7 @@ export default class HomeScreen extends Component {
         this.setState({
             video: true
         })
+        DeviceEventEmitter.emit("closeHomeModule", { closeUnity: true });
     }
     showHelp() {
         this.props.navigation.navigate('Help')

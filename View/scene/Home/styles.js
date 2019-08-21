@@ -67,9 +67,9 @@ export default {
   },
   videoSourceStyle: {
     width: '100%',
+    height: screen.height-50,
+    justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.6)',
-    borderTopLeftRadius: size(20),
-    borderTopRightRadius: size(20),
     overflow: 'hidden',
     flex: 1
   },
@@ -98,11 +98,12 @@ export default {
     top:'50%',
     transform: [{ translateY: -screen.height*0.5 }],
     width:screen.width,
-    height:screen.height
+    height:screen.height,
+    backgroundColor:'rgba(0,0,0,0.6)'
   },
   btnImgStyle: {
-    width: size(45),
-    height: size(45),
+    width: size(35),
+    height: size(35),
     resizeMode: 'contain',
   },
   detailsRow: {
@@ -183,8 +184,8 @@ export default {
     height: screen.height
   },
   icon: {
-    width: 25,
-    height: 25,
+    width: 20,
+    height: 20,
   },
   body: {
     position: "absolute",

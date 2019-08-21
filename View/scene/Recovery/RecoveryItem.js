@@ -35,7 +35,7 @@ export default class RecoveryItem extends Component {
             }
         }).then(resp => resp.json())
             .then(result => {
-                alert(JSON.stringify(result))
+                //alert(JSON.stringify(result))
                 this.setState({
                     CardCellData: result.page.list
                 })
@@ -61,7 +61,11 @@ export default class RecoveryItem extends Component {
     }
     showKeyList() {
         let arr = [];
-        if(this.state.CardCellData!==''){
+        if(this.state.CardCellData !==''&&this.state.CardCellData !==[]){
+        if(this.state.CardCellData ==''||this.state.CardCellData ==[]){
+            return <View style={{width:'100%',height:500,justifyContent:'center',alignItems:'center'}}><Text>暂无数据</Text></View>
+        }else{
+            
             this.state.CardCellData.forEach((item, value) => {
                 arr.push(
                     <CardCell cellRow={item} selectCard={(row) => {
@@ -69,12 +73,13 @@ export default class RecoveryItem extends Component {
                     }}/>
                 )
             });
+            return arr;
         }
-        return arr;
+    }
     }
     selectCard(data) {
         this.props.navigation.navigate('kfPlanDetail', { 'planId': data.planId })
-        alert(data.planId)
+        //alert(data.planId)
     }
     button() {
         Alert.alert(

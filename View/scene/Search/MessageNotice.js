@@ -51,11 +51,11 @@ export default class MessageNotice extends PureComponent {
         return (
             <View style={styles.container}>
                 <View style={styles.titleBar}>
-                    <TouchableOpacity style={{ flex: 2, justifyContent: 'center', alignItems: 'center', height: size(60), }}
+                    <TouchableOpacity style={{ flex: 2, justifyContent: 'center', alignItems: 'center', height: size(40), }}
                         onPress={this._onJump.bind(this)}>
                         <Image source={require('../../img/search/backjt.png')} style={{ width: size(40), height: size(40) }}></Image>
                     </TouchableOpacity>
-                    <View style={{ flex: 11, alignItems: 'flex-start', justifyContent: 'center', height: size(60), }}>
+                    <View style={{ flex: 11, alignItems: 'flex-start', justifyContent: 'center', height: size(30), }}>
                         <Text style={{ fontSize: size(34), color: '#fff', fontWeight: 'bold' }}>消息通知</Text>
                     </View>
                 </View >
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     titleBar: {
-        height: size(148),
+        height: size(130),
         paddingTop: size(70),
         flexDirection: "row",
         backgroundColor: "#0094e5",

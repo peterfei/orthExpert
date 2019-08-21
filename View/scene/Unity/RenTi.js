@@ -1,13 +1,13 @@
 import React from "react";
-import {Button, DeviceEventEmitter, Image, TouchableOpacity, Text, View, StyleSheet} from "react-native";
+import { Button, DeviceEventEmitter, Image, TouchableOpacity, Text, View, StyleSheet } from "react-native";
 import UnityView from "react-native-unity-view"
 
 import Toast from "react-native-easy-toast"
 import RenTiBottomTab from "./RenTiBottomTab";
-import {isIPhoneXPaddTop, size} from "../../common/Tool/ScreenUtil";
+import { isIPhoneXPaddTop, size } from "../../common/Tool/ScreenUtil";
 
 let unity = UnityView
-import {groupBy, hexToStr, getAmList, compare} from "./common"
+import { groupBy, hexToStr, getAmList, compare } from "./common"
 import Loading from "../../common/Loading";
 import Video from "react-native-af-video-player";
 
@@ -34,11 +34,11 @@ export default class RenTi extends React.Component {
             unityHeight: '100%',
             currModel: initModel,
             currAmList: [],
-            equipList:this.props.navigation.state.params.equipList,
+            equipList: this.props.navigation.state.params.equipList,
             searchWin: false,
             currAnimation: {},
-            ysTitle:"动作演示",
-            videoShow:false,
+            ysTitle: "动作演示",
+            videoShow: false,
             from: 2//进来的入扣口[1,直接点击动画进来的,2:点击人体]
 
         };
@@ -55,20 +55,20 @@ export default class RenTi extends React.Component {
 
 
         //下载ab包
-        this.downloadAb()
+        //this.downloadAb()
 
 
 
     }
 
-    unityReady(){
+    unityReady() {
 
 
-        let obj   = Object.assign({}, this.props.navigation.state.params.animation);
+        let obj = Object.assign({}, this.props.navigation.state.params.animation);
 
-        obj['ta_type']="";
+        obj['ta_type'] = "";
 
-        this.sendMsgToUnity('animation',obj, 'json');
+        this.sendMsgToUnity('animation', obj, 'json');
         this.sendMsgToUnity('animationContinue', "", '');
         this.setState({
             currModel: {
@@ -84,10 +84,10 @@ export default class RenTi extends React.Component {
     }
 
 
-    downloadAb(){
+    downloadAb() {
 
-        let downList  = {
-            equipList:this.state.equipList
+        let downList = {
+            equipList: this.state.equipList
         };
         let amList = [this.props.navigation.state.params.animation];
 
@@ -112,10 +112,10 @@ export default class RenTi extends React.Component {
     /**
      * 打开动作演示
      */
-    amDetail(){
+    amDetail() {
 
         this.setState({
-            videoShow:true
+            videoShow: true
         })
 
 
@@ -154,7 +154,7 @@ export default class RenTi extends React.Component {
      * 接收unity消息
      */
     async onUnityMessage(event) {
-         // alert(JSON.stringify(event))
+        // alert(JSON.stringify(event))
 
         if (event.name == "model") {
 
@@ -196,7 +196,7 @@ export default class RenTi extends React.Component {
                 searchWin: true
             });
 
-        }else if (event.name == 'DownReady'){
+        } else if (event.name == 'DownReady') {
             await this.unityReady();
 
         }
@@ -224,38 +224,36 @@ export default class RenTi extends React.Component {
                     onPress={() => {
                         this.amDetail()
                     }}
-                    style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={styles.detailBtn}>{this.state.ysTitle}</Text>
                 </TouchableOpacity>
             </View>
         </View>;
     }
-    render_am_video(){
+    render_am_video() {
         return <View style={{
             position: 'absolute',
-            top:0,
+            top: 0,
             right: 0,
-            bottom:0,
+            bottom: 0,
             height: '100%',
             width: '100%',
-            backgroundColor:"#000",
+            backgroundColor: "#000",
             flex: 1,
             justifyContent: 'center'
 
         }}>
 
             <Video
-                inlineOnly
-                volume={0.8}
+                autoPlay
                 scrollBounce
+                volume={0.8}
+                inlineOnly
                 url={"http://fileprod.vesal.site/animation/test/yanshi/KF0022.mp4"}
 
                 autoPlay={true}
                 onEnd={() => {
                     this.refs.toast.show("播放结束");
-                    this.setState({
-                        videoShow:false
-                    })
                 }}
 
                 ref={(ref) => {
@@ -266,12 +264,14 @@ export default class RenTi extends React.Component {
                 <TouchableOpacity
 
                     onPress={() => {
-                      this.setState({
-                          videoShow:false
-                      })
+                        //   this.setState({
+                        //       videoShow:false
+                        //   })
+                        this.props.navigation.goBack();
+                        DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
                     }}>
                     <Image
-                        source={require('../../img/login/close_video.png')}
+                        source={require('../../img/unity/close.png')}
                         style={styles.imgSty}>
                     </Image>
                 </TouchableOpacity>
@@ -284,7 +284,7 @@ export default class RenTi extends React.Component {
         return (
             <View style={styles.parent}>
 
-                <UnityView
+                {/* <UnityView
                     ref={ref => (this.unity = ref)}
                     onUnityMessage={this.onUnityMessage.bind(this)}
                     style={{
@@ -293,20 +293,20 @@ export default class RenTi extends React.Component {
                         width: this.state.unityWidth,
                         bottom: 0,
                     }}
-                />
+                /> */}
 
-                <View style={{
+                {/* <View style={{
                     backgroundColor: "#525252", width: '100%', height: size(0.0001),
                     position: 'relative',
                     top: 0,
                     left: 0,
                     right: 0
                 }}>
-                </View>
+                </View> */}
                 {/*动作详情按钮*/}
-                {this.render_am_detail()}
+                {/* {this.render_am_detail()} */}
 
-                <RenTiBottomTab
+                {/* <RenTiBottomTab
                     videoShow={this.state.videoShow}
                     navigation={this.props.navigation}
                     animationListWin={this.state.animationListWin}
@@ -331,10 +331,10 @@ export default class RenTi extends React.Component {
                             videoShow:false
                         })
                     }
-                />
+                /> */}
                 {/*演示视频播放窗口*/}
-                {this.state.videoShow?this.render_am_video():null}
-
+                {/* {this.state.videoShow?this.render_am_video():null} */}
+                {this.render_am_video()}
                 <Loading
                     ref={r => {
                         this.Loading = r;
@@ -369,17 +369,16 @@ const styles = StyleSheet.create({
     btnHead: {
         position: 'absolute',
         zIndex: 999,
-        flexDirection: 'row',
-        width: '95%',
-        height: '10%',
-        left: size(50),
-        top:    0,
+        width: 30,
+        height: 30,
+        right: 15,
+        top: 0,
         marginTop: isIPhoneXPaddTop ? 44 : 0,
     },
 
     imgSty: {
-        width: size(50),
-        height: size(50)
+        width: 30,
+        height: 30
     },
 });
 //http://fileprod.vesal.site/animation/test/yanshi/KF0022.mp4

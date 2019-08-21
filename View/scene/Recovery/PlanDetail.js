@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import {View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, ImageBackground,StatusBar} from "react-native";
+import {View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, ImageBackground,StatusBar,DeviceEventEmitter} from "react-native";
 import {
   HttpTool,
   NetInterface,
@@ -133,6 +133,7 @@ export default class PlanDetail extends BaseComponent {
       animation: data,
       equipList:this.state.equipNoList
     })
+    DeviceEventEmitter.emit("closeHomeModule", { closeUnity: true });
 
   }
 
@@ -243,17 +244,17 @@ export default class PlanDetail extends BaseComponent {
     )
   }
 
-  _renderFooter() {
-    return (
-      <TouchableOpacity activeOpacity={0.8} style={styles.startTouchStyle} onPress={() => {
-       // alert('开始训练');
+  // _renderFooter() {
+  //   return (
+  //     <TouchableOpacity activeOpacity={0.8} style={styles.startTouchStyle} onPress={() => {
+  //      // alert('开始训练');
 
-        this.startPlay()
-      }}>
-        <Text style={styles.startTextStyle}>开始训练</Text>
-      </TouchableOpacity>
-    )
-  }
+  //       this.startPlay()
+  //     }}>
+  //       <Text style={styles.startTextStyle}>开始训练</Text>
+  //     </TouchableOpacity>
+  //   )
+  // }
 
   _renderAnimationNav() {
     let planName = this.state.planInfo ? this.state.planInfo.plan_name : '';
@@ -297,7 +298,7 @@ export default class PlanDetail extends BaseComponent {
 
         </ScrollView>
 
-        {this._renderFooter()}
+        {/* {this._renderFooter()} */}
 
         {this._renderAnimationNav()}
 

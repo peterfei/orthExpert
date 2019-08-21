@@ -24,7 +24,7 @@ export default class titleBar extends Component {
                     onPress={() => { this.props.navigate.goBack()}}>
                     <Image source={require('../../img/public/left.png')} style={{ width: size(40), height: size(40) }}></Image>
                 </TouchableOpacity>
-                <View style={{ flex: 11, alignItems: 'flex-start', justifyContent: 'center', height: size(40), }}>
+                <View style={{ flex: 11, alignItems: 'flex-start', justifyContent: 'center', height: size(30), }}>
                     <Text style={{ fontSize: size(34), color: '#fff', fontWeight: 'bold' }}>{this.props.title}</Text>
                 </View>
             </View >
@@ -33,7 +33,7 @@ export default class titleBar extends Component {
 }
 const styles = StyleSheet.create({
     titleBar: {
-        height: size(148),
+        height: size(130),
         paddingTop: size(70),
         flexDirection: "row",
         backgroundColor: "#0094e5",

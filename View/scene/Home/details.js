@@ -38,6 +38,7 @@ export default class Details extends Component {
         text: 'no',//简介
         textOpen: false,//底部unity-ui
         intro: false,//简介
+        towScreenName: '',//第二界面骨名
         bottomIcon: [
             { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
             { img: require('../../img/home/xinxi.png'), title: '简介' },
@@ -127,6 +128,17 @@ export default class Details extends Component {
                 }
             }
         ),
+        DeviceEventEmitter.addListener("towScreenName",
+            ({ ...passedArgs }) => {
+                let towScreenName = passedArgs.towScreenName
+                if (towScreenName !== null) {
+                    this.setState({
+                        towScreenName: towScreenName
+                    })
+
+                }
+            }
+        ),
         ]
 
     };
@@ -138,6 +150,8 @@ export default class Details extends Component {
             listener[0].remove();
             listener[1].remove();
             listener[2].remove();
+            listener[3].remove();
+            listener[4].remove();
         });
         this.timer && clearInterval(this.timer);
     }
@@ -164,7 +178,7 @@ export default class Details extends Component {
                 {/* rn菜单 */}
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
                     <View style={styles.detailsRow}>
-                        {this.state.title ? <View style={{ alignItems: 'center', width: "100%", position: 'absolute', bottom: screen.height * 0.75 }}>
+                        {this.state.title ? <View style={{ alignItems: 'center', width: "100%", position: 'absolute', bottom: screen.height * 0.77 }}>
                             <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 30 }}>{this.state.getData.pat_name}</Text>
                         </View>
                             : null
@@ -179,6 +193,18 @@ export default class Details extends Component {
                                 source={require('../../img/unity/laba.png')} />
                             <Text style={{ color: "white", }}>{this.state.getData.pat_name}</Text>
                         </MyTouchableOpacity> */}
+                        {this.state.text !== 'no' && this.state.EnterNowScreen == "isNotMainScreen" ?
+                            <View style={{ alignItems: 'center', width: "100%" }}>
+                                <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 15 }}>{this.state.towScreenName}</Text>
+                            </View>
+                            :
+
+                            this.state.EnterNowScreen == "isNotMainScreen" ?
+                                <View style={{ alignItems: 'center', width: "100%" }}>
+                                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 15 }}>&nbsp;</Text>
+                                </View>
+                                : null
+                        }
                     </View>
                     <View style={styles.detailsRow}>
                         {this.renderBottomIcon()}
@@ -234,27 +260,12 @@ export default class Details extends Component {
     renderVideo() {
         return (
             <View style={styles.videoSourceStyle}>
-                <View style={{
-                    height: size(60),
-                    width: '100%',
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
-                    alignItems: 'center'
-                }}>
-                    <MyTouchableOpacity onPress={() => this.closeVideo()}>
-                        <Image source={require('../../img/unity/close.png')} style={{
-                            width: size(36),
-                            height: size(36),
-                            marginRight: size(20),
-                            resizeMode: 'contain'
-                        }} />
-                    </MyTouchableOpacity>
-                </View>
                 <Video
-                    lockPortraitOnFsExit
-                    scrollBounce
                     autoPlay
-                    style={{ zIndex: 9999999999, width: screen.width, height: screen.height * 0.4 }}
+                    scrollBounce
+                    volume={0.8}
+                    inlineOnly
+                    style={{ zIndex: 9999999999, width: '100%', height: '100%' }}
                     url={JSON.parse(this.state.getData.menus)[0].content}
                     ref={(ref) => {
                         this.video = ref
@@ -266,16 +277,33 @@ export default class Details extends Component {
                         status ? this.props.sendMsgToUnity('landscape', '', '') : this.props.sendMsgToUnity('portrait', '', '');
                     }}
                 />
+                <MyTouchableOpacity style={{
+                    position: 'absolute',
+                    height: size(60),
+                    width: size(60),
+                    right:10,
+                    top:35,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    zIndex: 9999999999,
+                }} onPress={() => this.closeVideo()}>
+                    <Image source={require('../../img/unity/close.png')} style={{
+                        width: 30,
+                        height: 30,
+                        marginRight: 15,
+                        resizeMode: 'contain'
+                    }} />
+                </MyTouchableOpacity>
             </View>
         )
     }
     closeVideo() {
         if (this.state.EnterNowScreen == "isMainScreen") {
-            this.setState({ video: false, title: true,bottomIcon:this.state.bottomIconNo, })
+            this.setState({ video: false, title: true, bottomIcon: this.state.bottomIconNo, })
         } else {
-            this.setState({ video: false,bottomIcon:this.state.bottomIconNo, })
+            this.setState({ video: false, bottomIcon: this.state.bottomIconNo, })
         }
-        
+        DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
     }
     playVideoError(msg) {
         Alert.alert('', '该视频暂未开放, 敬请期待.', [{ text: '我知道了' }])
@@ -376,6 +404,7 @@ export default class Details extends Component {
                 video: false,
                 intro: false,
             })
+            DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
         }
         if (title == "简介") {
             this.setState({
@@ -385,6 +414,7 @@ export default class Details extends Component {
                 video: false,
                 textOpen: false
             })
+            DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
         }
         if (title == "返回") {
             if (this.state.EnterNowScreen == 'isMainScreen') {
@@ -393,16 +423,17 @@ export default class Details extends Component {
                         video: false,
                         reason: false,
                         title: true,
-                        bottomIcon:this.state.bottomIconNo,
+                        bottomIcon: this.state.bottomIconNo,
                     })
+                    DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
                     return
                 }
                 this.setState({
                     details: false,
                     title: true,
-                    bottomIcon:this.state.bottomIconNo,
+                    bottomIcon: this.state.bottomIconNo,
                 })
-                DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
+                DeviceEventEmitter.emit("closeHomeModule", { closeBigImg: true });
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
             } else {
                 if (this.state.video || this.state.reason || this.state.intro) {
@@ -410,18 +441,19 @@ export default class Details extends Component {
                         video: false,
                         reason: false,
                         intro: false,
-                        bottomIcon:this.state.bottomIconNo,
+                        bottomIcon: this.state.bottomIconNo,
                     })
+                    DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
                     return
                 }
                 this.props.sendMsgToUnity('back', '', '')
                 if (this.state.lastImgState) {
                     DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
-                    DeviceEventEmitter.emit("closeBigImg", { closeBigImg: false });
+                    DeviceEventEmitter.emit("closeHomeModule", { closeBigImg: false });
                     this.props.setImg()
                 } else {
                     DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
-                    DeviceEventEmitter.emit("closeBigImg", { closeBigImg: true });
+                    DeviceEventEmitter.emit("closeHomeModule", { closeBigImg: true });
                 }
                 this.setState({
                     EnterNowScreen: "isMainScreen",
@@ -432,14 +464,15 @@ export default class Details extends Component {
             }
         }
         if (title == "康复") {
-            this.props.navigation.navigate('Recovery',{patNo:this.props.patNo});
+            this.props.navigation.navigate('Recovery', { patNo: this.props.patNo });
             this.setState({
                 video: false,
                 title: false,
                 reason: false,
                 intro: false,
-                bottomIcon:this.state.bottomIconNo,
+                bottomIcon: this.state.bottomIconNo,
             })
+            DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
         }
         if (title == "治疗") {
             this.setState({
@@ -447,15 +480,16 @@ export default class Details extends Component {
                 title: false,
                 reason: false,
                 intro: false,
-                bottomIcon:this.state.bottomIconTab2,
+                bottomIcon: this.state.bottomIconTab2,
             })
+            DeviceEventEmitter.emit("closeHomeModule", { closeUnity: true });
         }
         if (title == "3D模型") {
             if (this.state.EnterNowScreen == 'isMainScreen') {
 
                 this.props.sendMsgToUnity("app", msg, 'json')
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
-                DeviceEventEmitter.emit("closeBigImg", { onlyCloseBigImg: true });
+                DeviceEventEmitter.emit("closeHomeModule", { onlyCloseBigImg: true });
                 this.setState({
                     EnterNowScreen: "isNotMainScreen",
                     video: false,
@@ -464,8 +498,9 @@ export default class Details extends Component {
                     details: false,
                     //showLoading:true,
                     lastImgState: this.props.img,
-                    bottomIcon:this.state.bottomIconNo,
+                    bottomIcon: this.state.bottomIconNo,
                 })
+                DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
                 this.props.setScreen("isNotMainScreen")
             } else {
                 alert('您已处于3D模型')

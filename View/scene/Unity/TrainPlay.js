@@ -1136,7 +1136,7 @@ export default class TrainPlay extends React.Component {
             right: 0,
             width: '20%',
             height: size(60),
-            backgroundColor: "#212121",
+            backgroundColor: "red",
             borderBottomLeftRadius: size(50),
             borderTopLeftRadius: size(50),
         }}>

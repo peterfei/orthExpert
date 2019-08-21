@@ -46,9 +46,9 @@ export default class SearchComponent extends Component {
             allSearch: true
           })
         }
-        if(search==false){
+        if (search == false) {
           this.setState({
-            search:false
+            search: false
           })
         }
       }
@@ -137,21 +137,21 @@ export default class SearchComponent extends Component {
   render() {
     return (
       <View style={{ position: 'absolute', width: screen.width }}>
-        
+
         {this.state.allSearch ?
           <View style={{ width: screen.width }}>
             {!this.state.search ? this.renderTop() : this.searchScreen()}
           </View>
-          : 
+          :
           <View style={{
-              width: size(10),
-              position: 'absolute',
-              bottom: 0,
-              height: size(10),
-              backgroundColor: "#FFF",
-              left: 0,
-          }}/>
-          
+            width: size(10),
+            position: 'absolute',
+            bottom: 0,
+            height: size(10),
+            backgroundColor: "#FFF",
+            left: 0,
+          }} />
+
         }
         <Loading
           ref={r => {
@@ -387,7 +387,7 @@ export default class SearchComponent extends Component {
     let data = { "keyName": pat_name, "ketNo": pat_no }
     this.saveHistory(data, "key")
     this.getHistory()
-    this.props.pushRightMune(pat_no,"noImg")
+    this.props.pushRightMune(pat_no, "noImg")
     this.closeSearch()
   }
   saveHistory(data, type) {
@@ -413,6 +413,8 @@ export default class SearchComponent extends Component {
   renderTop() {
     return (
       <View style={styles.body}>
+        <Image style={{ position: 'absolute', top: 0, width: '100%', height: 90, resizeMode: 'stretch' }}
+          source={require('../../img/home/topBg.png')} />
         <View style={styles.top}>
           <TouchableOpacity
             onPress={() => this.My()}>

@@ -48,7 +48,9 @@ export default class HomeScreen extends Component {
     showLoading: false,
     nowIndex: 0,//当前数据下标
     help: false,
-    patNo:''
+    patNo: '',
+    unityHeight: screen.height,
+    unityWith: screen.width
   }
 
   Animated() {
@@ -100,7 +102,10 @@ export default class HomeScreen extends Component {
       }
       if (handler.data != null && handler.data.Note != null) {
         let boneDisease = this.hexToStr(handler.data.Note)
+        let towScreenName = this.hexToStr(handler.data.Chinese)
+        //alert(towScreenName)
         DeviceEventEmitter.emit("textData", { text: boneDisease });//传递简介
+        DeviceEventEmitter.emit("towScreenName", { towScreenName: towScreenName });//传递骨名
       }
       if (handler.name == "ClickBlank") {
         DeviceEventEmitter.emit("textData", { text: "no" });//关闭简介
@@ -125,10 +130,11 @@ export default class HomeScreen extends Component {
     return val;
   }
   listeners = {
-    update: DeviceEventEmitter.addListener("closeBigImg",
+    update: DeviceEventEmitter.addListener("closeHomeModule",
       ({ ...passedArgs }) => {
         let closeBigImg = passedArgs.closeBigImg
         let onlyCloseBigImg = passedArgs.onlyCloseBigImg
+        let closeUnity = passedArgs.closeUnity
         if (closeBigImg == true) {
           this.setState({
             img: false,
@@ -148,9 +154,20 @@ export default class HomeScreen extends Component {
             img: false,
           })
         }
+        if (closeUnity == true) {
+          this.setState({
+            unityHeight: 0,
+            unityWith: 0
+          })
+        }
+        if (closeUnity == false) {
+          this.setState({
+            unityHeight: screen.height,
+            unityWith: screen.width
+          })
+        }
       }
     ),
-
   };
   componentWillUnmount() {
     _.each(this.listeners, listener => {
@@ -233,8 +250,8 @@ export default class HomeScreen extends Component {
           ref={(ref) => this.unity = ref}
           onUnityMessage={this.onUnityMessage.bind(this)}
           style={{
-            width: screen.width,
-            height: screen.height
+            width: this.state.unityWith,
+            height: this.state.unityHeight
 
           }} />
 
@@ -303,7 +320,7 @@ export default class HomeScreen extends Component {
   async pushDetails(pat_no, img, num) { //获取单个疾病资源,包括底部菜单,图片,摄像机参数等
     this.setState({
       isUnityReady: false,
-      patNo:pat_no
+      patNo: pat_no
     })
     //获取搜索后数据
     let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + pat_no;
@@ -420,18 +437,30 @@ export default class HomeScreen extends Component {
     //遍历图片
     let arr = []
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
+
+      // let src = this.state.rightMenuData.pathologyList[i].img_url
+      // if (src !== null && src !== '') {
+      //   src = this.state.rightMenuData.pathologyList[i].img_url
+      // } else {
+      //   src = 'https://www.baidu.com/img/bd_logo1.png'
+      //   alert(src)
+      // }
+      let src = this.state.rightMenuData.pathologyList[i].img_url !== null && this.state.rightMenuData.pathologyList[i].img_url !== '' ? this.state.rightMenuData.pathologyList[i].img_url : 'http://filetest1.vesal.site/image/slt/flowers-small.jpg'
+      //alert(src)
       arr.push(
         <View key={i} style={{ width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
-          <ImagePlaceholder
-            style={{ flex: 1 }}
-            duration={1000}
-            activityIndicatorProps={{
-              size: 'large',
-              color: 'green',
-            }}
-            src={this.state.rightMenuData.pathologyList[i].img_url}
-            placeholder='http://filetest1.vesal.site/image/slt/flowers-small.jpg'
-          />
+          <View style={{ width: '70%', height: '70%', justifyContent: 'center', alignItems: 'center' }}>
+            <ImagePlaceholder
+              style={{ width: '100%', height: '100%' }}
+              duration={1000}
+              activityIndicatorProps={{
+                size: 'large',
+                color: 'green',
+              }}
+              src={src}
+              placeholder='http://filetest1.vesal.site/image/slt/flowers-small.jpg'
+            />
+          </View>
           {i != fristiArr ?
             <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', left: 15, top: '50%' }}
               onPress={() => this.changeImg(i - 1)}>
@@ -544,7 +573,7 @@ export default class HomeScreen extends Component {
         isUnityReady: false
       })
     } else {
-      this.showDetails(pat_no, "noImg", i)
+      this.showDetails(pat_no, "img", i)//noImg
       this.setState({
         isUnityReady: true
       })
@@ -561,19 +590,23 @@ export default class HomeScreen extends Component {
         style={{
           height: 40,
           width: 40,
-          backgroundColor: 'rgba(0,0,0,0.8)',
-          borderRadius: 20,
+          //borderRadius: 20,
           position: 'absolute',
           top: screen.height * 0.5,
           right: screen.width * 0.4 - 20,
           transform: [{ translateY: -20 }, { translateX: fadeAnim }],
           paddingLeft: 3,
-          justifyContent: 'center',
+          justifyContent: 'center'
         }
         } >
-        <TouchableOpacity onPress={() => this.closeRightMenu()}>
-          <Image style={styles.closeRightMenuImg} resizeMode="contain"
-            source={require('../../img/public/right1.png')} />
+        <TouchableOpacity style={{ height: 40, width: 40 }} onPress={() => this.closeRightMenu()}>
+          <View>
+            <Image style={{ width: 20, position: 'absolute', left: -3, top: -44 }} resizeMode="contain"
+              source={require('../../img/home/memuOne.png')} />
+            <Image style={{ height: 20, position: 'absolute', left: 0, top: 10 ,}} resizeMode="contain"
+              source={require('../../img/home/memuTwo.png')} />
+          </View>
+
         </TouchableOpacity>
       </Animated.View >
     )
