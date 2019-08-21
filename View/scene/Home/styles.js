@@ -51,7 +51,7 @@ export default {
     width: 55
   },
   searchImg: {
-    width: 35,
+    width: 40,
     height: 35,
     position: "absolute",
     left: 0,
@@ -59,8 +59,8 @@ export default {
     justifyContent: 'center'
   },
   searchImgMain: {
-    width: 20,
-    height: 20,
+    width: 15,
+    height: 15,
   },
   reasonStyle:{
     width:'100%',
@@ -119,14 +119,16 @@ export default {
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
-    padding:12,
+    padding:15,
+    marginTop:10,
+    marginBottom:10,
     flexWrap: 'wrap',
   },
   boneDisease: {
     width: screen.width * 0.4,
     color: 'white',
     textAlign: 'center',
-    padding:10,
+    padding:15,
     flexWrap: 'wrap',
   },
   closeRightMenuStyle: {
@@ -203,10 +205,10 @@ export default {
   input: {
     height: 35,
     width: '70%',
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: 'rgba(121, 121, 121, 0.3)',
     borderRadius: 3,
     margin: 0, padding: 0,
-    paddingLeft: 30,
+    paddingLeft: 40,
   },
   button: {
     justifyContent: 'center',
@@ -217,7 +219,7 @@ export default {
   },
   iconTitle: {
     fontSize: size(20),
-    color: "#C8C8C8"
+    color: "#CACACA"
   },
   activityIndicator: {
     position: "absolute",

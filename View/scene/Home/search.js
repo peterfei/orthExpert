@@ -428,7 +428,7 @@ export default class SearchComponent extends Component {
             onPress={() => this.showSearch()}>
             <View>
               <TextInput
-                style={{ width: '100%', height: '100%', paddingLeft: 30 }}
+                style={{ width: '100%', height: 35, paddingLeft: 40,margin: 0, padding: 0,}}
                 placeholder="请输入病症名称"
                 placeholderTextColor='#757575'
                 editable={false} />

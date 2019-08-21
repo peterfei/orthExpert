@@ -557,6 +557,9 @@ export default class HomeScreen extends Component {
   }
   renderRightMenuBody() {
     let arr = []
+    arr.push(
+      <View style={{width:10,height:15}}></View>
+    )
     //alert(JSON.stringify(this.state.rightMenuData.pathologyList) )
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
       arr.push(
@@ -564,6 +567,9 @@ export default class HomeScreen extends Component {
       )
     }
     //alert(this.state.rightMenuData.pathologyList[1])
+    arr.push(
+      <View style={{width:10,height:15}}></View>
+    )
     return arr
   }
   showDetailsRight(pat_no, img, i) {
