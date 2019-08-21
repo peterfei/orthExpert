@@ -49,6 +49,7 @@ export default class HomeScreen extends Component {
     nowIndex: 0,//当前数据下标
     help: false,
     patNo: '',
+    load_app_id:'',
     unityHeight: screen.height,
     unityWith: screen.width
   }
@@ -259,7 +260,7 @@ export default class HomeScreen extends Component {
         {this.state.img && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.imgOpen() : null}
 
         {/* 底部详情 */}
-        <Details patNo={this.state.patNo} navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })} setImg={() => this.setImg()}
+        <Details patNo={this.state.patNo} load_app_id={this.state.load_app_id}  navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })} setImg={() => this.setImg()}
           img={this.state.img}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
         {/* 顶部/搜索 */}
@@ -373,6 +374,7 @@ export default class HomeScreen extends Component {
       .then(result => {
         this.setState({
           rightMenuData: result,
+          load_app_id:result.area.load_app_id,
           iArr: ''//有效i值重置
         })
       })

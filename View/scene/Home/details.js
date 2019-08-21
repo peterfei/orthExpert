@@ -399,6 +399,7 @@ export default class Details extends Component {
         return Arr
     }
     clickBack(title) {
+        alert(this.props.load_app_id)
         let msg = {
             "struct_version": "1",
             "app_type": "medical",
@@ -415,9 +416,9 @@ export default class Details extends Component {
             "struct_name": "颈部",
             "struct_sort": null,
             "noun_id": null,
-            "struct_code": "RA0801014",
-            "app_id": "RA0801014",
-            "showModelList": "RAMYKNWJB_ZhenGu,RAMYKNWJB_XiaHeGu,RAMYKNWJB_ShuZhui,RAMYKNWJB_SheGu"
+            "struct_code": this.props.load_app_id,
+            "app_id": this.props.load_app_id,
+            "showModelList": this.state.getData.open_model
         }
         if (title == "成因") {
             this.setState({
