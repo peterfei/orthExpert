@@ -33,10 +33,10 @@ export default class HomeScreen extends Component {
                 </View>
                 {this.state.video ?
                     <View style={{ width: '100%', height: '100%', position: 'absolute', left: 0, top: 0, zIndex: 99998 }}>
-                        <TouchableOpacity style={{position:"absolute",right:20,top:40,width: 30,height: 30,zIndex: 9999999}} onPress={() => this.closeVideo()}>
+                        <TouchableOpacity style={{position:"absolute",left:10,top:27,width: 30,height: 30,zIndex: 9999999}} onPress={() => this.closeVideo()}>
                             <Image source={require('../../img/unity/close.png')} style={{
-                                width: 30,
-                                height: 30,
+                                width: 25,
+                                height: 25,
                                 resizeMode: 'contain'
                             }} />
                         </TouchableOpacity>

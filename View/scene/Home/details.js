@@ -322,7 +322,7 @@ export default class Details extends Component {
                             height: size(60),
                             width: size(60),
                             left: 10,
-                            top: 35,
+                            top: 27,
                             flexDirection: 'row',
                             alignItems: 'center',
                             zIndex: 9999999999,
