@@ -387,7 +387,7 @@ export default class SearchComponent extends Component {
     let data = { "keyName": pat_name, "ketNo": pat_no }
     this.saveHistory(data, "key")
     this.getHistory()
-    this.props.pushRightMune(pat_no, "noImg")
+    this.props.pushRightMune(pat_no, "img")
     this.closeSearch()
   }
   saveHistory(data, type) {
@@ -459,7 +459,7 @@ export default class SearchComponent extends Component {
   closeSearch() {
     this.setState({
       search: false,
-      showHotAndKey: true
+      showHotAndKey: true,
     })
     this.props.setSearch(false)
   }

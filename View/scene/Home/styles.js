@@ -92,14 +92,14 @@ export default {
     width: screen.width,
     bottom: 0,
     left: 0,
-    backgroundColor: 'rgba(250,250,250,1)',
+    backgroundColor: 'rgba(250,250,250,0)',
   },
   detailsImage:{
     position:'absolute',
     top:'50%',
-    transform: [{ translateY: -screen.height*0.5-25 }],
+    transform: [{ translateY: -screen.height*2*0.5 }],
     width:screen.width,
-    height:screen.height+50,
+    height:screen.height*2,
     backgroundColor:'rgba(0,0,0,1)'
   },
   btnImgStyle: {

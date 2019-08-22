@@ -49,7 +49,8 @@ export default class HomeScreen extends Component {
     nowIndex: 0,//当前数据下标
     help: false,
     patNo: '',
-    load_app_id:'',
+    load_app_id: '',
+    numImg: '',
     unityHeight: screen.height,
     unityWith: screen.width
   }
@@ -79,7 +80,7 @@ export default class HomeScreen extends Component {
     if (this.state.EnterNowScreen == 'isMainScreen') {
       if (handler.name == "title") {
         this.setState({
-          isUnityReady: true,
+          //isUnityReady: true,
           showLoading: false
         })
       }
@@ -257,16 +258,16 @@ export default class HomeScreen extends Component {
           }} />
 
         {/* 点击疾病后图片 */}
-        {this.state.img && !this.state.search && this.state.rightMenuData.pathologyList != null ? this.imgOpen() : null}
+        {this.state.img && !this.state.search ? this.imgOpen() : null}
 
         {/* 底部详情 */}
-        <Details patNo={this.state.patNo} load_app_id={this.state.load_app_id}  navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })} setImg={() => this.setImg()}
+        <Details patNo={this.state.patNo} load_app_id={this.state.load_app_id} navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })} setImg={() => this.setImg()}
           img={this.state.img}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
         {/* 顶部/搜索 */}
         {this.state.isUnityReady ? (
           <SearchComponent navigation={this.props.navigation}
-            pushRightMune={(pat_no, img) => this.showDetails(pat_no, img)}
+            pushRightMune={(pat_no, img) => { this.showDetails(pat_no, img); this.setState({ numImg: "one" }) }}
             setSearch={(bool) => this.setSearchComponent(bool)}
           />
         ) : null}
@@ -333,9 +334,10 @@ export default class HomeScreen extends Component {
     }).then(resp => resp.json())
       .then(result => {
         this.setState({
-          getData: result.pathology
+          getData: result.pathology,
+          load_app_id:result.pathology.app_id,
         }
-          //, () => alert(JSON.stringify(this.state.getData))
+          //, () => alert(JSON.stringify(result))
         )
       })
     if (img == "img") {
@@ -374,7 +376,6 @@ export default class HomeScreen extends Component {
       .then(result => {
         this.setState({
           rightMenuData: result,
-          load_app_id:result.area.load_app_id,
           iArr: ''//有效i值重置
         })
       })
@@ -384,20 +385,45 @@ export default class HomeScreen extends Component {
   }
   imgOpen() {
     let _that = this
-    return (
-      <View style={styles.detailsImage}>
-        <ScrollView
-          ref={component => this._scrollView = component}
-          horizontal={true}
-          pagingEnabled={true}
-          showsHorizontalScrollIndicator={false}
-          onMomentumScrollEnd={this.onScrollAnimationEnd.bind(_that)}
-          style={{ width: screen.width, height: screen.height }}
-        >
-          {this.renderImg()}
-        </ScrollView>
-      </View>
-    )
+    //alert(this.state.numImg)
+    if (this.state.numImg == "one") {
+      return (
+        <View style={styles.detailsImage}>
+          <View style={{ marginTop:screen.height*0.5,width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ width: '90%', height: '70%', justifyContent: 'center', alignItems: 'center' }}>
+              <ImagePlaceholder
+                style={{ width: '100%', height: '100%' }}
+                duration={1000}
+                // imageStyle={{ borderRadius:20 }}
+                // placeholderStyle={{ borderRadius:20 }}
+                activityIndicatorProps={{
+                  size: 'large',
+                  color: 'green',
+                }}
+                src={this.state.getData.img_url}
+                placeholder='http://res.vesal.site/pathology/img/T_JBGK001.jpg'
+              />
+            </View>
+          </View>
+        </View>
+      )
+    }
+    if (this.state.numImg == "more") {
+      return (
+        <View style={styles.detailsImage}>
+          <ScrollView
+            ref={component => this._scrollView = component}
+            horizontal={true}
+            pagingEnabled={true}
+            showsHorizontalScrollIndicator={false}
+            onMomentumScrollEnd={this.onScrollAnimationEnd.bind(_that)}
+            style={{ width: screen.width, height: screen.height }}
+          >
+            {this.renderImg()}
+          </ScrollView>
+        </View>
+      )
+    }
   }
   defaultLocation(num) {
     if (num != null) {
@@ -442,8 +468,8 @@ export default class HomeScreen extends Component {
       let src = this.state.rightMenuData.pathologyList[i].img_url !== null && this.state.rightMenuData.pathologyList[i].img_url !== '' ? this.state.rightMenuData.pathologyList[i].img_url : 'http://filetest1.vesal.site/image/slt/flowers-small.jpg'
       //alert(src)
       arr.push(
-        <View key={i} style={{ width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
-          <View style={{ width: '90%', height: '70%', justifyContent: 'center', alignItems: 'center'}}>
+        <View key={i} style={{  marginTop:screen.height*0.5,width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ width: '90%', height: '70%', justifyContent: 'center', alignItems: 'center' }}>
             <ImagePlaceholder
               style={{ width: '100%', height: '100%' }}
               duration={1000}
@@ -458,7 +484,7 @@ export default class HomeScreen extends Component {
             />
           </View>
           {i != fristiArr ?
-            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', left: 15, top: '50%',transform: [{ translateY: -25 }], }}
+            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', left: 15, top: '50%', transform: [{ translateY: -25 }], }}
               onPress={() => this.changeImg(i - 1)}>
               <Image style={{ height: 30, width: 30 }}
                 source={require('../../img/unity/arrow_l.png')}
@@ -467,7 +493,7 @@ export default class HomeScreen extends Component {
             : null
           }
           {i != lastiArr ?
-            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', right: 0, top: '50%',transform: [{ translateY: -25 }], }}
+            <TouchableOpacity style={{ width: 50, height: 50, position: 'absolute', right: 0, top: '50%', transform: [{ translateY: -25 }], }}
               onPress={() => this.changeImg(i + 1)}>
               <Image style={{ height: 30, width: 30 }}
                 source={require('../../img/unity/arrow_r.png')}
@@ -554,7 +580,7 @@ export default class HomeScreen extends Component {
   renderRightMenuBody() {
     let arr = []
     arr.push(
-      <View style={{width:10,height:15}}></View>
+      <View style={{ width: 10, height: 15 }}></View>
     )
     //alert(JSON.stringify(this.state.rightMenuData.pathologyList) )
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
@@ -564,7 +590,7 @@ export default class HomeScreen extends Component {
     }
     //alert(this.state.rightMenuData.pathologyList[1])
     arr.push(
-      <View style={{width:10,height:15}}></View>
+      <View style={{ width: 10, height: 15 }}></View>
     )
     return arr
   }
@@ -572,12 +598,14 @@ export default class HomeScreen extends Component {
     if (this.state.rightMenuData.pathologyList[i].img_url != null) {
       this.showDetails(pat_no, "img", i)
       this.setState({
-        isUnityReady: false
+        isUnityReady: false,
+        numImg: "more"
       })
     } else {
       this.showDetails(pat_no, "img", i)//noImg
       this.setState({
-        isUnityReady: true
+        isUnityReady: false,  // true
+        numImg: "more"
       })
     }
   }
@@ -616,7 +644,7 @@ export default class HomeScreen extends Component {
     this.pushDetails(pat_no, img, num)
     this.setState({
       rightMenu: false,
-      isUnityReady: true
+      isUnityReady: false
     })
   }
   closeRightMenu() {

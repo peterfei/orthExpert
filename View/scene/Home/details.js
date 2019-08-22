@@ -98,7 +98,6 @@ export default class Details extends Component {
                     this.setState({
                         getData: getData
                     })
-
                 }
             }
         ),
@@ -214,21 +213,35 @@ export default class Details extends Component {
         )
     }
     renderReason() {
-        return (
-            <View style={styles.reasonStyle}>
-                <View style={styles.closeButton}>
-                    <TouchableOpacity style={{ width: 20, height: 20, right: 5, top: 5 }}
-                        onPress={() => this.closeImg()}>
-                        <Image style={{ width: 20, height: 20, }}
-                            source={require('../../img/unity/close.png')}
-                        />
-                    </TouchableOpacity>
+        if (JSON.parse(this.state.getData.menus)[0].type == 'text') {
+            return (
+                <View style={styles.reasonStyle}>
+                    <View style={styles.closeButton}>
+                        <TouchableOpacity style={{ width: 20, height: 20, right: 5, top: 5 }}
+                            onPress={() => this.closeImg()}>
+                            <Image style={{ width: 20, height: 20, }}
+                                source={require('../../img/unity/close.png')}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <ScrollView style={styles.information}>
+                        <Text style={{ color: 'white', paddingBottom: 20, lineHeight: 25 }}>{JSON.parse(this.state.getData.menus)[0].content}</Text>
+                    </ScrollView>
                 </View>
-                <ScrollView style={styles.information}>
-                    <Text style={{ color: 'white', paddingBottom: 20, lineHeight: 25 }}>{JSON.parse(this.state.getData.menus)[0].content}</Text>
-                </ScrollView>
-            </View>
-        )
+            )
+        }
+        if (JSON.parse(this.state.getData.menus)[0].type == 'video') {
+            return (
+                <ScrollView
+                //horizontal={true}
+                pagingEnabled={true}
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
+                style={{ width: screen.width, height: screen.height * 2, paddingTop: screen.height + 50 }}>
+                {this.renderVideoBody('one')}
+            </ScrollView>
+            )
+        }
     }
     rendertextOpen() {
         return (
@@ -264,20 +277,26 @@ export default class Details extends Component {
                 pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
                 horizontal={true}
-                style={{ width: screen.width, height: screen.height - 50 }}>
+                style={{ width: screen.width, height: screen.height * 2, paddingTop: screen.height + 50 }}>
 
-                {this.renderVideoBody()}
+                {this.renderVideoBody('more')}
 
 
             </ScrollView>
         )
     }
-    renderVideoBody() {
+    renderVideoBody(num) {
         let arr = []
-        try{
+        let url = ''
+        try {
             let videoData = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))
-            //alert(videoData[0].url)
             for (let i = 0; i < videoData.length; i++) {
+                if (num == 'more') {
+                    url = videoData[i].url
+                }
+                if (num == 'one') {
+                    url = JSON.parse(this.state.getData.menus)[0].content
+                }
                 arr.push(
                     <View style={{ width: screen.width, height: screen.height - 50, justifyContent: 'center', alignItems: 'center' }}>
                         <Video
@@ -287,7 +306,7 @@ export default class Details extends Component {
                             inlineOnly
                             key={i}
                             style={{ width: '100%', height: '100%' }}
-                            url={videoData[i].url}
+                            url={url}
                             ref={(ref) => {
                                 this.video = ref
                             }}
@@ -302,33 +321,46 @@ export default class Details extends Component {
                             position: 'absolute',
                             height: size(60),
                             width: size(60),
-                            right: 10,
+                            left: 10,
                             top: 35,
                             flexDirection: 'row',
                             alignItems: 'center',
                             zIndex: 9999999999,
-                        }} onPress={() => this.closeVideo()}>
+                        }} onPress={() => this.closeVideo(num)}>
                             <Image source={require('../../img/unity/close.png')} style={{
-                                width: 30,
-                                height: 30,
-                                marginRight: 15,
+                                width: 25,
+                                height: 25,
                                 resizeMode: 'contain'
                             }} />
                         </MyTouchableOpacity>
                     </View>
                 )
+                if (num == 'one') {
+                    break
+                }
             }
-        }catch(e){
+        } catch (e) {
             Alert.alert('', '该视频暂未开放, 敬请期待.', [{ text: '我知道了' }])
+            this.clickBack('返回')
         }
-        
+
         return arr
     }
-    closeVideo() {
+    closeVideo(num) {
         if (this.state.EnterNowScreen == "isMainScreen") {
-            this.setState({ video: false, title: true, bottomIcon: this.state.bottomIconNo, })
+            {
+                num == 'more' ?
+                this.setState({ video: false, title: true, bottomIcon: this.state.bottomIconNo, })
+                :
+                this.setState({ reason: false, title: true })
+            }
         } else {
-            this.setState({ video: false, bottomIcon: this.state.bottomIconNo, })
+            {
+                num == 'more' ?
+                this.setState({ video: false, bottomIcon: this.state.bottomIconNo, })
+                :
+                this.setState({ reason: false, })
+            }
         }
         DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
     }
@@ -377,8 +409,10 @@ export default class Details extends Component {
     renderBottomIcon() {
         let Arr = [];
         let data = this.state.bottomIcon
-        let getData = ''
-        this.state.getData !== "" ? JSON.parse(this.state.getData.menus) != null ? getData = JSON.parse(this.state.getData.menus)[0].type : getData = '' : null
+        let getData0 = ''//成因
+        let getData1 = ''//治疗
+        this.state.getData !== "" ? JSON.parse(this.state.getData.menus) != null && JSON.parse(this.state.getData.menus)[1] != null ? getData1 = JSON.parse(this.state.getData.menus)[1].type : getData1 = '' : null
+        this.state.getData !== "" ? JSON.parse(this.state.getData.menus) != null && JSON.parse(this.state.getData.menus)[0] != null ? getData0 = JSON.parse(this.state.getData.menus)[0].type : getData0 = '' : null
         for (let i = 0; i < data.length; i++) {
             Arr.push(
                 <TouchableOpacity style={styles.btnStyle} key={i} onPress={() => {
@@ -391,10 +425,10 @@ export default class Details extends Component {
             if (this.state.EnterNowScreen == "isNotMainScreen" && data[i].title == "3D模型") {
                 Arr.pop()
             }
-            if (data[i].title == "成因" && (getData == 'video' || getData == '')) {
+            if (data[i].title == "成因" && (getData0 == '' || (getData0 !== 'text' && getData0 !== 'video'))) {
                 Arr.pop()
             }
-            if (data[i].title == "治疗" && (getData == 'text' || getData == '')) {
+            if (data[i].title == "治疗" && (getData1 == '' || getData1 !== 'zhiliao')) {
                 Arr.pop()
             }
             if (data[i].title == "简介" && (this.state.text == 'no' || this.state.text == null)) {
@@ -404,7 +438,8 @@ export default class Details extends Component {
         return Arr
     }
     clickBack(title) {
-        // alert(this.props.load_app_id)
+        //alert(this.props.load_app_id)
+        //alert(this.state.getData.open_model)
         let msg = {
             "struct_version": "1",
             "app_type": "medical",
@@ -426,13 +461,19 @@ export default class Details extends Component {
             "showModelList": this.state.getData.open_model
         }
         if (title == "成因") {
+            if (JSON.parse(this.state.getData.menus)[0].type == 'video') {
+                DeviceEventEmitter.emit("closeHomeModule", { closeUnity: true });
+            }
+            if (JSON.parse(this.state.getData.menus)[0].type == 'text') {
+                DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
+            }
             this.setState({
                 reason: true,
-                title: false,
+                //title: false,
                 video: false,
                 intro: false,
+                bottomIcon: this.state.bottomIconNo,
             })
-            DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
         }
         if (title == "简介") {
             this.setState({
@@ -440,7 +481,8 @@ export default class Details extends Component {
                 title: false,
                 reason: false,
                 video: false,
-                textOpen: false
+                textOpen: false,
+                bottomIcon: this.state.bottomIconNo,
             })
             DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
         }
@@ -478,10 +520,12 @@ export default class Details extends Component {
                 if (this.state.lastImgState) {
                     DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
                     DeviceEventEmitter.emit("closeHomeModule", { closeBigImg: false });
+                    //alert('关闭搜索，打开图片')
                     this.props.setImg()
                 } else {
                     DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
                     DeviceEventEmitter.emit("closeHomeModule", { closeBigImg: true });
+                    //alert('关闭搜索，打开图片')
                 }
                 this.setState({
                     EnterNowScreen: "isMainScreen",
