@@ -11,7 +11,7 @@ export default {
     // width: '100%',
     //justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.8)',
+    backgroundColor: 'rgba(0,0,0,1)',
   },
   rightMenu: {
     position: 'absolute',
@@ -91,14 +91,15 @@ export default {
     position: 'absolute',
     width: screen.width,
     bottom: 0,
-    left: 0
+    left: 0,
+    backgroundColor: 'rgba(250,250,250,1)',
   },
   detailsImage:{
     position:'absolute',
     top:'50%',
-    transform: [{ translateY: -screen.height*0.5 }],
+    transform: [{ translateY: -screen.height*0.5-25 }],
     width:screen.width,
-    height:screen.height,
+    height:screen.height+50,
     backgroundColor:'rgba(0,0,0,1)'
   },
   btnImgStyle: {
