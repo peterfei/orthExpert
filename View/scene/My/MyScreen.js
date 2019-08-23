@@ -57,7 +57,7 @@ export default class MyScreen extends Component {
       {
         title: '激活码兑换',
         imgPath: require('../../img/kf_mine/mine_bzzx.png'),
-        route: 'kfActivationCode'
+        route: 'ActivationCode'
       }
     ]
     this.btnData = [

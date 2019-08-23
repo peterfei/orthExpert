@@ -9,7 +9,7 @@ import React, {Component} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity, Linking, Platform, Alert} from 'react-native';
 import {AppDef, Line, HttpTool, FuncUtils} from './index';
 import {size} from './Tool/ScreenUtil';
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import {storage} from "./storage";
 import DeviceInfo from "react-native-device-info";
 import NetInterface from "./NetInterface";
