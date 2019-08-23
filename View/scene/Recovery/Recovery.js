@@ -38,11 +38,16 @@ export default class Recovery extends Component {
                     tabBarActiveTextColor={color.main}>
 
                     <View style={styles.textStyle} tabLabel="推荐训练">
-                        <RecoveryItem patNo={this.props.navigation.state.params.patNo} orderState="firstScreen" navigation={this.props.navigation} />
+                        <RecoveryItem
+                         patNo={this.props.navigation.state.params.patNo}
+                          orderState="firstScreen" 
+                          navigation={this.props.navigation} />
                     </View>
 
-                    <View style={styles.textStyle} tabLabel="指定计划">
-                        <RecoveryItem orderState="secondScreen" navigation={this.props.navigation} />
+                    <View style={styles.textStyle} tabLabel="我的方案">
+                        <RecoveryItem 
+                        orderState="secondScreen" 
+                        navigation={this.props.navigation} />
                     </View>
 
                 </ScrollableTabView>
@@ -59,6 +64,16 @@ export default class Recovery extends Component {
                             source={require('../../img/public/left.png')} />
                     </TouchableHighlight>
                     <Text style={styles.title}>康复方案</Text>
+                    <TouchableHighlight style={{
+                        position: 'absolute',
+                        right: 10,
+                        width: size(40),
+                        height: size(40)
+                    }}
+                        onPress={() => {this.props.navigation.navigate('kfSickPlanList', {'sick': this.props.navigation.state.params.sick})}}>
+                        <Image style={styles.backImg}
+                            source={require('../../img/kf_main/kf_plan_add.png')} />
+                    </TouchableHighlight>
                 </View>
             </View>
         )
@@ -97,8 +112,8 @@ const styles = StyleSheet.create({
     back: {
         position: 'absolute',
         left: 10,
-        width: 25,
-        height: 25
+        width: size(25),
+        height: size(25)
     },
     backImg: {
         height: '100%',

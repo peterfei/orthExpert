@@ -343,6 +343,7 @@ export default class HomeScreen extends Component {
       }
     }).then(resp => resp.json())
       .then(result => {
+        // alert(JSON.stringify(result));
         this.setState({
           getData: result.pathology,
           load_app_id:result.pathology.app_id,
@@ -594,8 +595,12 @@ export default class HomeScreen extends Component {
     )
     //alert(JSON.stringify(this.state.rightMenuData.pathologyList) )
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
+      let sick = this.state.rightMenuData.pathologyList[i];
       arr.push(
-        <Text style={styles.boneDisease} key={i} onPress={() => this.showDetailsRight(this.state.rightMenuData.pathologyList[i].pat_no, "img", i)}>{this.state.rightMenuData.pathologyList[i].pat_name}</Text>
+        <Text style={styles.boneDisease} key={i}
+         onPress={() => this.showDetailsRight(sick.pat_no, "img", i)}>
+         {sick.pat_name}
+         </Text>
       )
     }
     //alert(this.state.rightMenuData.pathologyList[1])
