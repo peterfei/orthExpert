@@ -51,6 +51,7 @@ export default class HomeScreen extends Component {
     patNo: '',
     load_app_id: '',
     numImg: '',
+    times:0,
     unityHeight: screen.height,
     unityWith: screen.width
   }
@@ -78,11 +79,20 @@ export default class HomeScreen extends Component {
   }
   onUnityMessage(handler) {
     if (this.state.EnterNowScreen == 'isMainScreen') {
-      if (handler.name == "title") {
+      if (handler.name == "title") {  //只运行一次初始化判断
         this.setState({
-          //isUnityReady: true,
-          showLoading: false
+          times:this.state.times+1
         })
+        if(this.state.times==1){
+          this.setState({
+            isUnityReady: true,
+            showLoading: false
+          })
+        }else{
+          this.setState({
+            showLoading: false
+          })
+        }
       }
       if (handler.name == "clickBlank") {
         this.closeRightMenu()
@@ -580,7 +590,7 @@ export default class HomeScreen extends Component {
   renderRightMenuBody() {
     let arr = []
     arr.push(
-      <View style={{ width: 10, height: 15 }}></View>
+      <View style={{ width: 10, height: 8 }}></View>
     )
     //alert(JSON.stringify(this.state.rightMenuData.pathologyList) )
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {

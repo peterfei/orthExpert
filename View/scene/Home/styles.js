@@ -120,7 +120,7 @@ export default {
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
-    padding:15,
+    padding:13,
     marginTop:10,
     marginBottom:10,
     flexWrap: 'wrap',
@@ -129,7 +129,7 @@ export default {
     width: screen.width * 0.4,
     color: 'white',
     textAlign: 'center',
-    padding:15,
+    padding:13,
     flexWrap: 'wrap',
   },
   closeRightMenuStyle: {

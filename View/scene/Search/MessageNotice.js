@@ -56,7 +56,7 @@ export default class MessageNotice extends PureComponent {
                 <View style={styles.titleBar}>
                     <TouchableOpacity style={{ flex: 2, justifyContent: 'center', alignItems: 'center', height: size(40), }}
                         onPress={this._onJump.bind(this)}>
-                        <Image source={require('../../img/search/backjt.png')} style={{ width: size(40), height: size(40) }}></Image>
+                        <Image source={require('../../img/search/backjt.png')} style={{ width: size(25), height: size(25) }}></Image>
                     </TouchableOpacity>
                     <View style={{ flex: 11, alignItems: 'flex-start', justifyContent: 'center', height: size(30), }}>
                         <Text style={{ fontSize: size(34), color: '#fff', fontWeight: 'bold' }}>消息通知</Text>
