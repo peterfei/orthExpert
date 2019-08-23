@@ -91,8 +91,6 @@ export default class SharingPlan extends Component {
     }
 
     _renderSchemeList() {
-        console.log('计划详情信息：' + JSON.stringify(this.state.planInfo))
-        console.log('列表详情信息：' + JSON.stringify(this.state.amList))
         return (
             <View style={styles.amList}>
                 <FlatList
@@ -267,7 +265,7 @@ export default class SharingPlan extends Component {
                         {this._renderShareQRCode()}
                         {this._renderBottom()}
                     </ImageBackground>
-                    {this.state.showMenu ? this._renderBottomBlank() : null}
+                    {/*{this.state.showMenu ? this._renderBottomBlank() : null}*/}
                 </ScrollView>
                 {this.state.showMenu ? this._renderBotShare() : null}
             </ContainerView>
@@ -344,6 +342,9 @@ const styles = StyleSheet.create({
     qrCode: {
         position: 'absolute',
         top: size(56),
+        borderColor: '#979797',
+        borderWidth: size(1),
+        borderRadius: size(10),
         height: size(232),
         width: size(232)
     },

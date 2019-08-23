@@ -35,7 +35,7 @@ export default class RecoveryItem extends Component {
             }
         }).then(resp => resp.json())
             .then(result => {
-                //alert(JSON.stringify(result))
+                // alert(JSON.stringify(result))
                 this.setState({
                     CardCellData: result.page.list
                 })
@@ -79,7 +79,6 @@ export default class RecoveryItem extends Component {
     }
     selectCard(data) {
         this.props.navigation.navigate('kfPlanDetail', { 'planId': data.planId })
-        //alert(data.planId)
     }
     button() {
         Alert.alert(
