@@ -18,7 +18,7 @@ import {
 import {size} from "../../common/ScreenUtil";
 import {screen, system} from "../../common";
 import {checkIsUse} from "./LCE"
-import {NavigationActions} from 'react-navigation'
+import {NavigationActions,StackActions} from 'react-navigation'
 import Toast from "react-native-easy-toast";
 import ScrollableTabView, {
     DefaultTabBar,
@@ -295,7 +295,7 @@ export default class Menus extends Component {
         } else {
             Alert.alert("该功能需要付费 ,已为您推荐套餐", "请选择套餐");
             if (Platform.OS == 'ios') {
-                const resetAction = NavigationActions.reset({
+                const resetAction = StackActions.reset({
                     index: 0,
                     actions: [
                         NavigationActions.navigate({
@@ -375,7 +375,7 @@ export default class Menus extends Component {
                     Alert.alert("会话过期,请重新登录");
                     setTimeout(
                         function () {
-                            const resetAction = NavigationActions.reset({
+                            const resetAction = StackActions.reset({
                                 index: 0,
                                 actions: [NavigationActions.navigate({routeName: "Login"})]
                             });
@@ -389,7 +389,7 @@ export default class Menus extends Component {
                     Alert.alert("该结构不支持游客观看, 请先注册");
                     setTimeout(
                         function () {
-                            const resetAction = NavigationActions.reset({
+                            const resetAction = StackActions.reset({
                                 index: 0,
                                 actions: [NavigationActions.navigate({routeName: "Login"})]
                             });
@@ -406,7 +406,7 @@ export default class Menus extends Component {
             Alert.alert("会话过期,请重新登录");
             setTimeout(
                 function () {
-                    const resetAction = NavigationActions.reset({
+                    const resetAction = StackActions.reset({
                         index: 0,
                         actions: [NavigationActions.navigate({routeName: "Login"})]
                     });

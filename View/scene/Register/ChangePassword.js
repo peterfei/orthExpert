@@ -27,7 +27,7 @@ import { screen, system } from "../../common";
 import CountdownView from "rn-countdown";
 import UserStore from "../../mobx/User";
 import api, { encryptionWithStr } from "../../api";
-import { NavigationActions } from "react-navigation";
+import { NavigationActions,StackActions } from "react-navigation";
 import { RadioGroup, RadioButton } from "react-native-flexi-radio-button";
 import _ from "lodash";
 import { storage } from "../../common/storage";

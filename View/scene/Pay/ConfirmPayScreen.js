@@ -42,7 +42,7 @@ import {Wxpay} from "../../common";
 import Toast, {DURATION} from "react-native-easy-toast";
 import {storage} from "../../common/storage";
 import _ from "lodash";
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import {NativeModules} from "react-native";
 import {size} from "../../common/ScreenUtil";
 // import { Alipay } from "../../common/alipay";
@@ -219,7 +219,7 @@ export default class ConfirmPayScreen extends Component {
                 this.reloadLince()
                 // setTimeout(
                 //   function() {
-                //       const resetAction = NavigationActions.reset({
+                //       const resetAction = StackActions.reset({
                 //           index: 0,
                 //           actions: [NavigationActions.navigate({ routeName: "Tab" })]
                 //       });
@@ -370,7 +370,7 @@ export default class ConfirmPayScreen extends Component {
                 this.reloadLince()
                 // setTimeout(
                 //     function () {
-                //         const resetAction = NavigationActions.reset({
+                //         const resetAction = StackActions.reset({
                 //             index: 0,
                 //             actions: [NavigationActions.navigate({routeName: "Tab"})]
                 //         });
@@ -650,10 +650,10 @@ export default class ConfirmPayScreen extends Component {
                                     // DeviceEventEmitter.emit("HomeListener");
                                     setTimeout(
                                         function () {
-                                            const resetAction = NavigationActions.reset({
+                                            const resetAction = StackActions.reset({
                                                 index: 0,
                                                 actions: [
-                                                    NavigationActions.navigate({routeName: "Tab"})
+                                                    NavigationActions.navigate({routeName: "HomeScreen"})
                                                 ]
                                             });
                                             // this.props.navigation.pop() && this.props.navigation.pop();

@@ -8,384 +8,263 @@
 
 import React, { Component } from 'react';
 import {
-  Platform, StyleSheet, Text, View, Image, Linking,StatusBar,
+  Platform, StyleSheet, Text, View, Image, Linking, StatusBar, TouchableOpacity,
   Dimensions, TouchableHighlight, TextInput, RefreshControl, ImageBackground, ScrollView, TouchableWithoutFeedback, DeviceEventEmitter, Button
 } from 'react-native';
-import { color, NavigationItem, SpacingView, DetailCell } from "../../widget";
-import { screen, system } from "../../common";
-import { size } from "../../common/ScreenUtil";
 import { storage } from "../../common/storage";
-import Toast, { DURATION } from "react-native-easy-toast";
-import { NavigationActions, StackActions } from "react-navigation";
-import _ from "lodash";
-//import ChangePassword from "../Register/ChangePassword";
-//import InputInviteCode from "../Register/InputInviteCode";
+import { ContainerView, BaseComponent, NavBar, ListCell, Line, MineBuuton, AppDef, isIPhoneXPaddTop, size, FuncUtils, deviceWidth } from '../../common';
 import api from "../../api";
-import { checkEnvironment } from '../../common/fun';
 
+const statusBarHeight = StatusBar.currentHeight;
 
 export default class MyScreen extends Component {
   static navigationOptions = {
     header: null,
   }
-  state = {
-    isRefreshing: false,
-    userData: {},
-    member: [],
-    isFirstShare: true,
-    reviewState: true,
-    isUse: false, // 是否是会员
-  }
-  onHeaderRefresh() {
-    this.setState({
-      isRefreshing: true
-    });
-
-    setTimeout(() => {
-      this.setState({
-        isRefreshing: false
-      });
-    }, 2000);
-  }
-  componentDidMount() {
-
-    let curr = this;
-    DeviceEventEmitter.addListener("reloadAboutUs", async function () {
-      let memberInfo = await storage.get("memberInfo");
-      curr.setState({
-        member: memberInfo
-      });
-    });
-  }
-  async componentWillMount() {
-    let state = await checkEnvironment(this);
-    let tokens = await storage.get("userTokens");
-    let memberInfo = await storage.get("memberInfo");
-    this.setState({
-      member: memberInfo,
-      reviewState: state
-    });
-
-    storage.loadObj("user", tokens.token, {}, "").then(userData => {
-      if (userData == -2) {
-        this.refs.toast.show("用户信息已失效,请重新登录");
-        setTimeout(
-          function () {
-            const resetAction = StackActions.reset({
-              index: 0,
-              actions: [NavigationActions.navigate({ routeName: "LoginPage" })]
-            });
-            this.props.navigation.dispatch(resetAction);
-          }.bind(this),
-          1000
-        );
+  constructor(props) {
+    super(props);
+    this.state = {
+      isUse: false,//vip是否可以使用
+      vipTitle: "开通会员",
+      memberInfo: {}
+    }
+    this.listData = [
+      {
+        title: '意见反馈',
+        imgPath: require('../../img/kf_mine/mine_yjfk.png'),
+        route: 'MessageBoard',
+      },
+      {
+        title: '版本信息',
+        imgPath: require('../../img/kf_mine/mine_version.png'),
+        route: 'version',
+      },
+      {
+        title: '联系客服',
+        imgPath: require('../../img/kf_mine/mine_lxkf.png'),
+        route: 'contactUs',
+      },
+      {
+        title: '消息通知',
+        imgPath: require('../../img/kf_mine/mine_xxtz.png'),
+        route: 'MessageNotice',
+      },
+      {
+        title: '帮助中心',
+        imgPath: require('../../img/kf_mine/mine_bzzx.png'),
+        route: 'Help',
+      },
+      {
+        title: '激活码兑换',
+        imgPath: require('../../img/kf_mine/mine_bzzx.png'),
+        route: 'kfActivationCode'
       }
-      this.setState({
-        userData: userData
-      });
-    });
+    ]
+    this.btnData = [
+      {
+        title: '我的锻炼',
+        imgPath: require('../../img/kf_mine/mine_myexcise.png'),
+        route: 'kfMyExercise',
+      },
+      {
+        title: '我的定制',
+        imgPath: require('../../img/kf_mine/mine_mycustom.png'),
+        route: 'kfMyCustom',
+      },
+      {
+        title: '我的订单',
+        imgPath: require('../../img/kf_mine/mine_myorder.png'),
+        route: 'kfMyOrder',
+      },
+      // {
+      //   title: '我的订单',
+      //   imgPath: require('../../img/kf_mine/mine_myorder.png'),
+      //   route: 'kfMyOrder',
+      // },
+    ]
   }
+
+  async componentDidMount() {
+    let combo = await FuncUtils.getComboByCode(AppDef.KFXL_VIP);
+    let memberInfo = await storage.get("memberInfo");
+
+    if (combo != null) {
+      let isUse = await FuncUtils.checkPerm("yes", AppDef.KFXL_VIP);
+
+      this.setState({
+        isUse: isUse,
+        combo: combo,
+        memberInfo: memberInfo
+      })
+    } else {
+      this.setState({
+        memberInfo: memberInfo
+      })
+    }
+  }
+
+  async componentWillMount() {
+    this.emit = DeviceEventEmitter.addListener(AppDef.kNotify_UpdateUserInfoSuccess, async () => {
+      let memberInfo = await storage.get("memberInfo");
+      this.setState({
+        memberInfo: memberInfo
+      })
+    })
+  }
+
+  componentWillUnmount() {
+    if (this.emit) {
+      this.emit.remove()
+    }
+  }
+
+  gotoDetail() {
+    this.props.navigation.navigate('kfMineUserInfo')
+  }
+
+  isShowDefalutHeader() {
+    if (this.state.memberInfo.mbHeadUrl) {
+      return { uri: this.state.memberInfo.mbHeadUrl }
+    } else {
+      return require('../../img/kf_mine/defalutHead.png')
+    }
+  }
+  _renderHeader() {
+    return (
+      <ImageBackground source={require('../../img/kf_mine/mine_topback.png')} style={styles.topImgBack}>
+        <View style={{
+          justifyContent: 'center', alignItems: 'center',//size(25)size(88)
+          paddingTop: isIPhoneXPaddTop(0) + (Platform.OS === 'android' ? statusBarHeight + 0 : 0), height: size(60) + isIPhoneXPaddTop(0)
+        }}>
+          <Text style={{ color: AppDef.White, fontWeight: 'bold', fontSize: AppDef.TitleSize }} allowFontScaling={false}>个人中心</Text>
+          {/*<View style={{position: 'absolute', height: size(88), right: size(32), top: isIPhoneXPaddTop(0), justifyContent: 'center', alignItems: 'center'}}>*/}
+          {/*<Image*/}
+          {/*source={require('../../img/kf_mine/mine_nav_message.png')}*/}
+          {/*style={{width: size(43), height: size(48)}}/>*/}
+          {/*</View>*/}
+        </View>
+
+        <View style={{ width: '100%', flexDirection: 'row', marginBottom: size(41), marginTop: (Platform.OS === 'android' ? size(40) : 0) }}>
+          <TouchableOpacity onPress={() => this.gotoDetail()}>
+            <Image
+              source={this.isShowDefalutHeader()}
+
+              style={{ width: size(100), height: size(100), marginLeft: size(25), borderRadius: size(50) }} />
+          </TouchableOpacity>
+          <View style={{ marginLeft: size(40), marginRight: size(32), justifyContent: 'center', flex: 1 }}>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={{ color: AppDef.White, fontSize: AppDef.SubTitleSize }} allowFontScaling={false}>{this.state.memberInfo.mbName}</Text>
+                {
+                  this.state.isUse
+                    ?
+                    <Image source={require('../../img/kf_mine/mine_vip_icon.png')} style={{ width: size(26), height: size(25), marginLeft: size(20) }} />
+                    : null
+                }
+              </View>
+              <Text style={{ fontSize: size(18), color: AppDef.White, }} allowFontScaling={false}>{this.state.isUse ? this.state.combo.end_time.substring(0, 10) + "到期" : ""}</Text>
+            </View>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
+              <Text style={{ fontSize: size(24), color: AppDef.White, }} allowFontScaling={false}>当前职业: {this.state.memberInfo.identityTitle}</Text>
+              {
+                this.state.isUse
+                  ?
+                  <TouchableOpacity activeOpacity={1} onPress={() => {
+                    this.props.navigation.navigate('BuyVip')
+                  }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', width: size(130), height: size(30), borderColor: AppDef.White, borderWidth: size(0.5), borderRadius: size(10) }}>
+                      <Text style={{ fontSize: size(18), color: AppDef.White }} allowFontScaling={false}>立即续费</Text>
+                    </View>
+                  </TouchableOpacity>
+                  :
+                  null
+              }
+            </View>
+
+          </View>
+        </View>
+      </ImageBackground>
+    )
+  }
+
+  _renderVipButton() {
+    return (
+      <TouchableOpacity onPress={() => { this.props.navigation.navigate('BuyVip') }}>
+        <View style={{ marginTop: size(39), marginBottom: size(39), marginLeft: size(25), marginRight: size(25) }}>
+          <Image source={require('../../img/kf_mine/mine_vipbtn.png')} style={{ width: '100%', height: size(90) }} />
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  _renderMiddle() {
+    let arr = [];
+    let marginLeft = ((deviceWidth - size(140)) - 4 * size(93)) / 3;
+    this.btnData.forEach((item, index) => {
+      arr.push(
+        <View style={{ marginLeft: index == 0 ? 0 : marginLeft }}>
+          <MineBuuton key={index} title={item.title} imgPath={item.imgPath} route={item.route} clickAction={(route) => {
+            // alert(JSON.stringify(route));
+            this.props.navigation.navigate(route)
+          }} />
+        </View>
+      )
+    })
+    return arr;
+  }
+
+  _renderList() {
+    let arr = [];
+    this.listData.forEach((item, index) => {
+      arr.push(
+        <ListCell title={item.title} imgPath={item.imgPath} route={item.route} navigation={this.props.navigation} />
+      )
+    })
+    return arr;
+  }
+
   render() {
     return (
-      <View style={styles.container}>
+      <ContainerView ref={r => this.mainView = r}>
         <StatusBar
           hidden={false}
         />
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.isRefreshing}
-              onRefresh={() => this.onHeaderRefresh()}
-              tintColor="gray"
-            />
-          }>
-          {this.renderHeader()}
-          {/* <SpacingView /> */}
-          <View style={{ alignItems: 'center', marginTop: 20 }}>
-            <View style={styles.vipStyle}>
-              <Text style={{ fontSize: size(34) }}>VIP会员</Text>
-              <TouchableHighlight style={styles.vipButton}
-                onPress={() => this.BuyVip()} >
-                <Text style={styles.vipButtonText}>开通会员</Text>
-              </TouchableHighlight>
-            </View>
-            <View style={styles.cellStyle}>
-              {this.renderCells()}
-            </View>
-          </View>
-        </ScrollView>
-        <Toast
-          ref="toast"
-          position="top"
-          positionValue={200}
-          fadeInDuration={750}
-          fadeOutDuration={1000}
-          opacity={0.8}
-        />
-      </View>
-    );
-  }
-  async BuyVip() {
-    try {
-      let memberInfo = await storage.get("memberInfo");
-      //如果是游客跳转注册
-      if (memberInfo.isYouke == "yes") {
-        this.props.navigation.navigate("LoginPage");
-      } else {
-        this.props.navigation.navigate('BuyVip');
-      }
-    } catch (e) {
-      this.props.navigation.navigate("LoginPage");
-    }
-  }
-  renderHeader() {
-    // if (this.state.userData) {
-    //   if (Object.keys(this.state.userData).length > 0) {
-    return (
-      <TouchableWithoutFeedback style={styles.topTouch} onPress={() => this.toEditMember()}>
-        <View style={styles.backGround}>
-          <View style={styles.topTitle}>
-            <TouchableHighlight style={styles.back}
-              onPress={() => this.props.navigation.goBack()}>
-              <Image style={styles.backImg}
-                source={require('../../img/public/left.png')} />
-            </TouchableHighlight>
-            <Text style={styles.title}>个人中心</Text>
-          </View>
-          <View style={styles.topExternal}>
-            <View style={styles.row}>
-              <View>
-                {this.state.member.mbHeadUrl != null ? (
-                  <Image
-                    style={styles.avatar}
-                    source={{ uri: this.state.member.mbHeadUrl }}
-                  />
-                ) : (
-                    <Image
-                      style={styles.avatar}
-                      source={require("../../img/my/liuyan.png")}
-                    />
-                  )}
-              </View>
-              <View>
-                <Text style={styles.username}>
-                  {this.state.member.mbName}
-                </Text>
-                <Text style={styles.identityTitle}>
-                  {this.state.member.identityTitle}
-                </Text>
-              </View>
-            </View>
-            <TouchableWithoutFeedback
-              onPress={() => this.BuyVip()}>
-              <View style={styles.overTime}>
-                <Text style={styles.identityTitle}>{this.state.member.timer}2019.07.25会员到期</Text>
-                <Text style={styles.identityTitle}>{this.state.member.timer}立即续费</Text>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    )
-    //   }
-    // }
-  }
-  renderCells() {
-    let cells = [];
-    let dataList = this.getDataList();
-    for (let i = 0; i < dataList.length; i++) {
-      let sublist = dataList[i];
-      for (let j = 0; j < sublist.length; j++) {
-        let data = sublist[j];
-        let cell = (
-          <DetailCell
-            style={{}}
-            image={data.image}
-            name={data.name}
-            title={data.title}
-            subtitle={data.subtitle}
-            key={data.title}
-            navigation={this.props.navigation}
-          />
-        );
-        cells.push(cell);
-      }
-      //cells.push(<SpacingView key={i} />);
-    }
+        <ScrollView bounces={false} style={{ height: '100%' }}>
 
-    return (
-      <View
-        style={{
-          flex: 1
-        }}>
-        {cells}
-      </View>
+          {this._renderHeader()}
+
+          {!this.state.isUse ? this._renderVipButton() : null}
+
+          {/* <View style={styles.middleViewStyle}>
+            {this._renderMiddle()}
+          </View> */}
+
+          <Line height={size(14)} />
+
+          {this._renderList()}
+
+        </ScrollView>
+
+      </ContainerView>
     );
-  }
-  async toEditMember() {
-    let memberInfo = await storage.get("memberInfo");
-    this.setState({
-      member: memberInfo
-    });
-    //如果是游客跳转注册
-    if (this.state.member.isYouke == "yes") {
-      this.props.navigation.navigate("MemberComplete");
-    } else {
-      this.props.navigation.navigate("EditMember");
-    }
-  }
-  getDataList() {
-    let arr = [
-      [{
-        title: "我的订单",
-        image: require("../../img/my/liuyan.png"),
-        name: "MyOrder"
-      },
-      {
-        title: "意见反馈",
-        image: require("../../img/my/liuyan.png"),
-        name: "MessageBoard"
-      },
-      {
-        title: "版本更新",
-        image: require("../../img/my/liuyan.png"),
-        name: "version"
-      },
-      {
-        title: "帮助中心",
-        image: require("../../img/my/liuyan.png"),
-        name: "Help"
-      },
-      {
-        title: "关于维萨里",
-        image: require("../../img/my/liuyan.png"),
-        name: "AboutVasl"
-      },
-      {
-        title: "分享",
-        image: require("../../img/my/liuyan.png"),
-        name: "share"
-      },
-      {
-        title: "退出登录",
-        image: require("../../img/my/liuyan.png"),
-        name: "logout"
-      }]
-    ]
-    return arr;
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: screen.width,
-    height: screen.height,
-    flex: 1,
-    zIndex: 999,
-  },
-  backGround: {
-    paddingTop: 20,
+  topImgBack: {
     width: '100%',
-    height: size(333),
-    backgroundColor: 'rgb(2, 178, 236)'
+    height: size(269),
   },
-  topTitle: {
-    width: '100%',
-    position: 'absolute',
-    top: 30,
-    flexDirection: "row",
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: size(33),
-    fontWeight: "bold",
-    color: "#ffffff"
-  },
-  topTouch: {
-    width: '100%',
-    height: size(333),
-  },
-  topExternal: {
-    flexDirection: "row",
-    justifyContent: 'space-between',
-    width: '100%',
-    height: '100%',
-    marginTop: 55
-  },
-  row: {
-    flexDirection: "row",
-  },
-  overTime: {
-    alignItems: 'center',
-    width: 180,
-    height: 75,
-    borderRadius: 180,
-    backgroundColor: 'rgba(255,255,255,0.5)'
-  },
-  back: {
-    position: 'absolute',
-    left: 10,
-    width: 25,
-    height: 25
-  },
-  backImg: {
-    height: '100%',
-    width: '100%'
-  },
-  avatar: {
-    width: 60,
-    height: 60,
-    marginRight: 10,
-    borderRadius: 60,
-    borderWidth: 1,
-    borderColor: "#cecece",
-    marginLeft: 10,
-    top: 10
-  },
-  username: {
-    fontSize: size(28),
-    fontWeight: "bold",
-    width: size(200),
-    marginTop: size(20),
-    color: "#ffffff"
-  },
-  identityTitle: {
-    fontSize: size(25),
-    fontWeight: "bold",
-    marginTop: size(20),
-    color: "#e5e5e5",
-  },
-  vipStyle: {
-    width: '90%',
-    height: 80,
-    borderRadius: 5,
-    borderWidth: 3,
-    borderColor: 'rgba(210,210,210,0.1)',
-    backgroundColor: 'rgba(255, 152, 0,0.2)',
+  middleViewStyle: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-    padding: 10
-  },
-  vipButtonText: {
-    fontSize: size(28),
-    fontWeight: "bold",
-    color: "white"
-  },
-  vipButton: {
-    backgroundColor: 'rgb(82, 83, 89)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 40,
-    width: 100,
-    borderRadius: 3,
-  },
-  cellStyle: {
-    width: '90%',
-    borderRadius: 5,
-    borderWidth: 3,
-    borderColor: 'rgba(210,210,210,0.1)'
+    marginLeft: size(70),
+    marginRight: size(70),
+    paddingTop: size(30),
+    paddingBottom: size(30),
+    // backgroundColor: 'red'
   }
-});
+})

@@ -14,7 +14,7 @@ import {
 import { screen, system } from "../../common";
 import { color } from "../../widget";
 import api from "../../api";
-import { NavigationActions } from "react-navigation";
+import { NavigationActions,StackActions } from "react-navigation";
 import { storage } from "../../common/storage";
 import { RadioGroup, RadioButton } from "react-native-flexi-radio-button";
 import Toast, { DURATION } from "react-native-easy-toast";

@@ -29,7 +29,7 @@ import {
     deleteHistories
 } from "../../realm/RealmManager";
 import {ifnull, getLinceList, checkIsUse, checkGotoUnity, useStart} from "../Unity/LCE";
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 
 //排序
 
@@ -128,7 +128,7 @@ export default class Find extends React.Component {
             Alert.alert("会话过期,请重新登录");
             setTimeout(
                 function () {
-                    const resetAction = NavigationActions.reset({
+                    const resetAction = StackActions.reset({
                         index: 0,
                         actions: [NavigationActions.navigate({routeName: "Login"})]
                     });

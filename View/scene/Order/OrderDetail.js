@@ -18,7 +18,7 @@ import ScrollableTabView, {
 } from "react-native-scrollable-tab-view";
 
 import {RefreshState} from "react-native-refresh-list-view";
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import {storage} from "../../common/storage";
 import {RadioGroup, RadioButton} from "react-native-flexi-radio-button";
 import Toast, {DURATION} from "react-native-easy-toast";

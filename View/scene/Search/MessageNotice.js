@@ -22,7 +22,7 @@ import ScrollableTabView, {
 } from "react-native-scrollable-tab-view";
 import { screen, system } from "../../common";
 
-import { NavigationActions } from "react-navigation";
+import { NavigationActions,StackActions } from "react-navigation";
 import { storage } from "../../common/storage";
 import api from "../../api";
 import ReplyScreen from "../../scene/Search/ReplyScreen"

@@ -3,6 +3,7 @@ package com.vesal.orthexpert;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.syanpicker.RNSyanImagePickerPackage;
 import fr.greweb.reactnativeviewshot.RNViewShotPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import io.realm.react.RealmReactPackage;
@@ -69,6 +70,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNSyanImagePickerPackage(),
             new RNViewShotPackage(),
             new RNSoundPackage(),
             

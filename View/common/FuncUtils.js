@@ -1,7 +1,7 @@
 import {Alert} from 'react-native';
 import {HttpTool, NetInterface} from "./index";
 import {storage} from "./storage";
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 
 
 //检测app 版本是否是最新版本
@@ -259,7 +259,7 @@ export async function  logout(that) {
     await storage.clearMapForKey("userTokens");
     await storage.clearMapForKey("memberInfo");
     await storage.clearMapForKey("memberCombo");
-    const resetAction = NavigationActions.reset({
+    const resetAction = StackActions.reset({
         index: 0,
         actions: [
             NavigationActions.navigate({routeName: "kfLogin"})

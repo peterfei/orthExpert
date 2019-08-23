@@ -35,7 +35,7 @@ import EditPlanInfo from './EditPlanInfo';
 import MotionListCell from './MotionListCell';
 import MotionEditCell from './MotionEditCell';
 import DragTable from '../../common/DragTable';
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 const statusBarHeight = StatusBar.currentHeight;
 
 export default class CreatePlan extends BaseComponent {
@@ -162,7 +162,7 @@ export default class CreatePlan extends BaseComponent {
         if (res.code == 0 && res.msg == 'success') {
           // alert(JSON.stringify(res));
           this.mainView._toast("创建成功, 请前往-'我的定制'-界面查看");
-          const resetAction = NavigationActions.reset({
+          const resetAction = StackActions.reset({
             index: 0,
             actions: [NavigationActions.navigate({routeName: "Tab"})]
           });

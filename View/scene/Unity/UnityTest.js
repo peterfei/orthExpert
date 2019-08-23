@@ -16,7 +16,7 @@ import Loading from "../../common/Loading";
 import Toast, {DURATION} from "react-native-easy-toast";
 import api from "../../api";
 import {storage} from "../../common/storage";
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import {ifnull, checkIsUse, useStart} from "../Unity/LCE";
 import {VoiceUtils} from '../../common/VoiceUtils'
 
@@ -75,7 +75,7 @@ export default class UnityTest extends React.Component {
             let tokens = await storage.get("userTokens");
             if (tokens == -1 || tokens == -2) {
 
-                const resetAction = NavigationActions.reset({
+                const resetAction = StackActions.reset({
                     index: 0,
                     actions: [NavigationActions.navigate({routeName: "Login"})]
                 });
