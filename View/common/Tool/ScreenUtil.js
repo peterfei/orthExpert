@@ -28,13 +28,21 @@ export const isIPhoneX = (Platform.OS === 'ios' && (Number(((deviceHeight/device
 //iphoneX 顶部留白的兼容处理
 export function isIPhoneXPaddTop(number) {
     number = isNaN(+number) ? 0 : +number;
-    return number + (isIPhoneX ? 44 : 20)
+    if (Platform.OS === 'ios') {
+        return number + (isIPhoneX ? 44 : 20)
+    } else {
+        return 0
+    }
 }
 
 //iPhoneX 底部高度兼容处理
 export function isIPhoneXFooter(number){
     number = isNaN(+number) ? 0 : +number;
-    return number + (isIPhoneX ? 34 : 0 )
+    if (Platform.OS === 'ios') {
+        return number + (isIPhoneX ? 34 : 0 )
+    } else {
+        return 0
+    }
 }
 
 //文字适配size, 暂不使用

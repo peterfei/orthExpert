@@ -14,7 +14,7 @@ import {
   TouchableHighlight, Image, TouchableOpacity, DeviceEventEmitter, ScrollView,
 
 } from 'react-native';
-import { screen, system } from "../../common";
+import {deviceHeight, screen, system} from "../../common";
 import SearchComponent from "./search";
 import Details from "./details"
 import UnityView, { UnityModule } from 'react-native-unity-view';
@@ -52,7 +52,7 @@ export default class HomeScreen extends Component {
     load_app_id: '',
     numImg: '',
     times:0,
-    unityHeight: screen.height,
+    unityHeight: screen.height  + (Platform.OS == 'ios' ? 0 : size(148)),
     unityWith: screen.width
   }
 
@@ -263,7 +263,7 @@ export default class HomeScreen extends Component {
           onUnityMessage={this.onUnityMessage.bind(this)}
           style={{
             width: this.state.unityWith,
-            height: this.state.unityHeight
+            height: this.state.unityHeight + (Platform.OS == 'ios' ? 0 : size(35))
 
           }} />
 

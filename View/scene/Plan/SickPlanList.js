@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Image, ScrollView, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View} from "react-native";
 import {
   AppDef,
   BaseComponent,
@@ -15,10 +15,11 @@ import {
   Line,
   NavBar,
   NetInterface,
-  NullData,
+  NullData, screen,
   size
 } from '../../common';
 import CardCell from '../Recovery/CardCell';
+import {color} from "../../widget";
 
 export default class SickPlanList extends BaseComponent {
 
@@ -29,7 +30,7 @@ export default class SickPlanList extends BaseComponent {
       sick: props.navigation.state.params.sick,
       data: []
     }
-    alert(JSON.stringify( props.navigation.state.params.sick));
+    // alert(JSON.stringify( props.navigation.state.params.sick));
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -95,7 +96,7 @@ export default class SickPlanList extends BaseComponent {
 
   _renderCreateButton() {
     return (
-      <TouchableOpacity onPress={() => {this.props.navigation.navigate('kfCreatePlan', {'isMB': false, 'sick': this.props.navigation.state.params.sick, 'planId': ''});}}>
+      <TouchableOpacity onPress={() => {this.props.navigation.navigate('kfCreatePlan', {'isMB': false, 'sick': this.props.navigation.state.params.sick, 'planId': '', 'b_key': this.props.navigation.state.key});}}>
         <View style={{width: deviceWidth - size(50), height: size(80), marginLeft: size(25), marginTop: size(40),
           borderColor: AppDef.Blue, borderWidth: size(0.5), borderRadius: size(20),
           flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
@@ -106,10 +107,25 @@ export default class SickPlanList extends BaseComponent {
     )
   }
 
+  _renderHeader() {
+    return (
+      <View style={styles.backGround}>
+        <View style={styles.topTitle}>
+          <TouchableHighlight style={styles.back}
+                              onPress={() => this.props.navigation.goBack()}>
+            <Image style={styles.backImg}
+                   source={require('../../img/public/left.png')} />
+          </TouchableHighlight>
+          <Text style={styles.title}>{this.state.sick.pat_name + '方案'}</Text>
+        </View>
+      </View>
+    )
+  }
+
   render() {
     return (
       <ContainerView ref={r => this.mainView = r}>
-        <NavBar title={this.state.sick.pat_name + '方案'} navigation={this.props.navigation}/>
+        {this._renderHeader()}
         <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
           {this._renderTitle()}
           {this._renderCards()}
@@ -121,4 +137,46 @@ export default class SickPlanList extends BaseComponent {
   }
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  backGround: {
+    paddingTop: 20,
+    width: '100%',
+    height: size(130),
+    backgroundColor: 'rgb(2, 178, 236)'
+  },
+  topTitle: {
+    width: '100%',
+    position: 'absolute',
+    top: 30,
+    flexDirection: "row",
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: size(33),
+    fontWeight: "bold",
+    color: "#ffffff"
+  },
+  back: {
+    position: 'absolute',
+    left: 10,
+    width: size(40),
+    height: size(40)
+  },
+  backImg: {
+    height: '100%',
+    width: '100%'
+  },
+  lineStyle: {
+    width: screen.width / 2,
+    height: 2,
+    backgroundColor: color.main
+  },
+  textStyle: {
+    flex: 1,
+    // fontSize: 20,
+    marginTop: 1,
+    height: 20
+    // textAlign: "center"
+  }
+});

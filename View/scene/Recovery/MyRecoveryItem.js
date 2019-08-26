@@ -18,21 +18,31 @@ import StarRating from "react-native-star-rating";
 import api from "../../api";
 import CardCell from './CardCell';
 
-export default class RecoveryItem extends Component {
+export default class MyRecoveryItem extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            CardCellData: ''
+            CardCellData: '',
         }
     }
 
     componentDidMount() {
-        this.getSchemesByPatNo()
+        this.getData();
+
+        this.listener = DeviceEventEmitter.addListener('UpdateMyCustom', () => {
+            this.getData();
+        })
     }
-    async getSchemesByPatNo() {
-        let url = "http://114.115.210.145:8085/vesal-sport-test/app/kfxl/v1/scheme/getSchemesByPatNo?patNo=" + this.props.patNo + "&page=1&limit=10&planType=sysTpl";
-        // alert(url)
+
+    componentWillUnmount() {
+        this.listener.remove();
+    }
+
+    async getData() {
+        let tokens = await storage.get('userTokens');
+        let url = "http://118.24.119.234:8087/vesal-jiepao-test/v1/app/orthope/scheme/myCreateSchemes?token=" + tokens.token + "&patNo=" + this.props.patNo + "&page=1&limit=100&business=orthope";
+        alert(url)
         await fetch(url, {
             method: "get",
             headers: {
@@ -46,55 +56,46 @@ export default class RecoveryItem extends Component {
                 })
             })
     }
+
     render() {
         return (
             <View style={styles.container}>
-                <ScrollView style={{width:'100%'}}>
-                    {this.showKeyList()}
-                    <View style={{height: size(30),width:'100%'}}></View>
-                </ScrollView>
+                {this.state.CardCellData.length > 0 ?
+                    <ScrollView style={{width:'100%'}}>
+                        {this.showKeyList()}
+                        <View style={{height: size(30),width:'100%'}}></View>
+                    </ScrollView>
+                    :
+                    <View style={{ width: '100%', height: "100%", alignItems: 'center' }}>
+                        <Image style={{ width: '100%', height: screen.height - 100 - size(130), resizeMode: 'stretch' }}
+                            source={require('../../img/recovery/customization.png')} />
+                    </View>
+                }
             </View>
         )
     }
+
     showKeyList() {
         let arr = [];
         if(this.state.CardCellData !==''&&this.state.CardCellData !==[]){
-        if(this.state.CardCellData ==''||this.state.CardCellData ==[]){
-            return <View style={{width:'100%',height:500,justifyContent:'center',alignItems:'center'}}><Text>暂无数据</Text></View>
-        }else{
+            if(this.state.CardCellData ==''||this.state.CardCellData ==[]){
+                return <View style={{width:'100%',height:500,justifyContent:'center',alignItems:'center'}}><Text>暂无数据</Text></View>
+            }else{
 
-            this.state.CardCellData.forEach((item, value) => {
-                arr.push(
-                    <CardCell cellRow={item} selectCard={(row) => {
-                        this.selectCard(row)
-                    }}/>
-                )
-            });
-            return arr;
+                this.state.CardCellData.forEach((item, value) => {
+                    arr.push(
+                        <CardCell cellRow={item} selectCard={(row) => {
+                            this.selectCard(row)
+                        }}/>
+                    )
+                });
+                return arr;
+            }
         }
     }
-    }
+
     selectCard(data) {
         this.props.navigation.navigate('kfPlanDetail', { 'planId': data.planId })
-    }
-    button() {
-        Alert.alert(
-            '立即下载运动康复训练APP', '定制计划',
-            [
-                { text: "稍后再说" },
-                {
-                    text: "立即下载"
-                    //,
-                    // onPress: function () {
-                    //     const downloadUrl = item.url;
-                    //     NativeModules.DownloadApk.downloading(
-                    //         downloadUrl,
-                    //         "vesal.apk"
-                    //     );
-                    // }
-                }
-            ]
-        );
     }
 }
 const styles = StyleSheet.create({

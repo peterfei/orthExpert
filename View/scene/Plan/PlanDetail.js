@@ -103,31 +103,29 @@ export default class PlanDetail extends BaseComponent {
   _renderHeader() {
     let planName = '';
     let desc = '';
-    let uri = { uri: '' };
+    let uri = {uri: ''};
     let label_a = '';
     if (this.state.planInfo) {
 
       planName = this.state.planInfo.plan_name;
       desc = this.state.planInfo.description;
       label_a = this.state.planInfo.label_a;
-      uri = { uri: this.state.planInfo.icon2_url };
+      uri = {uri: this.state.planInfo.icon2_url};
     }
 
     return (
       <ImageBackground style={styles.bannerImg} source={uri}>
-        <Text style={{ color: AppDef.White, fontSize: size(50), fontWeight: '600', marginBottom: size(35), marginLeft: size(25) }}>
+        <Text style={{color: AppDef.White, fontSize: size(50), fontWeight: '600', marginBottom: size(35), marginLeft: size(25)}}>
           {planName}
         </Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: size(25), marginRight: size(40), marginBottom: size(35) }}>
-          <Text numberOfLines={1} style={{ color: AppDef.White, fontSize: size(24), marginRight: size(35), flex: 1 }}>
+        <View style={{flexDirection: 'row', alignItems:'center', marginLeft: size(25), marginRight: size(40), marginBottom: size(35)}}>
+          <Text numberOfLines={1} style={{color: AppDef.White, fontSize: size(24), marginRight: size(35), flex: 1}}>
             {label_a}
           </Text>
-          <TouchableOpacity onPress={() => { this.props.navigation.navigate('kfPlanDescHtml', { planName: planName, desc: desc }) }}>
-            <View style={{
-              justifyContent: 'center', alignItems: 'center', borderRadius: size(5), borderColor: AppDef.White, borderWidth: size(0.5),
-              paddingLeft: size(8), paddingRight: size(8), paddingTop: size(5), paddingBottom: size(5)
-            }}>
-              <Text style={{ color: 'rgba(215,215,215,1)', fontSize: size(20) }}>
+          <TouchableOpacity onPress={() => {this.props.navigation.navigate('kfPlanDescHtml', {planName: planName, desc: desc})}}>
+            <View style={{justifyContent: 'center', alignItems: 'center', borderRadius: size(5), borderColor: AppDef.White, borderWidth: size(0.5),
+              paddingLeft: size(8), paddingRight: size(8), paddingTop: size(5), paddingBottom: size(5)}}>
+              <Text style={{color: 'rgba(215,215,215,1)', fontSize: size(20)}}>
                 查看更多
               </Text>
             </View>
@@ -137,11 +135,28 @@ export default class PlanDetail extends BaseComponent {
     )
   }
 
+  s_to_hs(s) {
+    //计算分钟
+    //算法：将秒数除以60，然后下舍入，既得到分钟数
+    var h;
+    h = Math.floor(s / 60);
+    //计算秒
+    //算法：取得秒%60的余数，既得到秒数
+    s = s % 60;
+    //将变量转换为字符串
+    h += '';
+    s += '';
+    //如果只有一位数，前面增加一个0
+    h = (h.length == 1) ? '0' + h : h;
+    s = (s.length == 1) ? '0' + s : s;
+    return h + ':' + s;
+  }
+
   _renderShare() {
 
     let amNum = this.state.planInfo ? this.state.planInfo.am_num : 0;
     let time = 10;
-
+    let completeTime = this.state.planInfo&&this.state.planInfo.complete_time>0 ? this.s_to_hs(this.state.planInfo.complete_time*60) : "-";
 
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: size(40) }}>
@@ -170,7 +185,7 @@ export default class PlanDetail extends BaseComponent {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ color: 'rgba(104, 104, 104, 1)', fontSize: size(28), marginBottom: size(30) }}>时长</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end' }}>
-                <Text style={{ color: AppDef.Blue, fontSize: size(38) }}>12:50</Text>
+                <Text style={{ color: AppDef.Blue, fontSize: size(38) }}>{completeTime}</Text>
                 <Text style={{ color: AppDef.Black, fontSize: size(24), marginBottom: size(6) }}> 分钟</Text>
               </View>
             </View>
@@ -184,7 +199,7 @@ export default class PlanDetail extends BaseComponent {
   _renderEquip() {
 
     let equipments = [];
-
+    let need_equip = this.state.planInfo ? this.state.planInfo.need_equip : "";
 
     return (
       <View style={{ width: '100%', marginTop: size(30) }}>
@@ -194,8 +209,8 @@ export default class PlanDetail extends BaseComponent {
             <Text style={{ color: AppDef.White, fontSize: size(24) }}>准备器材</Text>
           </ImageBackground>
           <View style={{ height: size(80), flexDirection: 'row', alignItems: 'center', marginLeft: size(222) }}>
-            <Text style={{ color: AppDef.Black, fontSize: size(28) }}>瑜伽垫</Text>
-            <Text style={{ color: AppDef.Black, fontSize: size(28), marginLeft: size(60) }}>椅子</Text>
+            <Text style={{color: AppDef.Black, fontSize: size(28)}}>{need_equip}</Text>
+            {/*<Text style={{ color: AppDef.Black, fontSize: size(28), marginLeft: size(60) }}>椅子</Text>*/}
           </View>
         </View>
         <View style={{ width: '100%', paddingLeft: size(25), paddingRight: size(25) }}>

@@ -8,14 +8,10 @@ import {
   TouchableOpacity,
   StatusBar
 } from 'react-native';
-
-import { size } from "../ScreenUtil"
-import { isiOS, isiPhoneX } from '../device'
-
-import leftImage from '../../img/search/backjt.png'
-
-const STATUS_BAR_HEIGHT = isiOS() ? (isiPhoneX() ? 34 : 20) : StatusBar.currentHeight
-const HEADER_HEIGHT = 44
+import { size, isIPhoneXPaddTop } from "../Tool/ScreenUtil"
+import leftImage from '../../img/search/backjt.png';
+import AppDef from '../../common/Defined';
+const statusBarHeight = StatusBar.currentHeight;
 
 export default class NavBar extends Component {
   constructor(props) {
@@ -24,28 +20,35 @@ export default class NavBar extends Component {
 
   render() {
     // leftTitle和leftImage 优先判断leftTitle (即 文本按钮和图片按钮优先显示文本按钮)
-    const { title, leftTitle, leftAction, rightTitle, navigation, rightImage, rightAction } = this.props;
+    const { hideback, title, leftTitle, leftAction, rightTitle, navigation, rightImage, rightAction, rightBothShow } = this.props;
     return (
       <View style={[styles.barView, this.props.style]}>
+        <StatusBar translucent={true} backgroundColor='rgba(0, 0, 0, 0)' barStyle="light-content" />
         <View style={ styles.showView }>
           {
-            leftImage
+            !hideback
               ?
-              <TouchableOpacity style={styles.leftNav} onPress={() => { navigation.goBack()}}>
-                <Image style={styles.imgNav} source={leftImage}/>
-              </TouchableOpacity>
-              :
               (
-                leftTitle
+                leftImage
                   ?
-                  <TouchableOpacity style={styles.leftNav} onPress={ ()=>{leftAction()} }>
-                    <View style={{alignItems: 'center'}}>
-                      <Text style={styles.barButton}>{leftTitle}</Text>
-                    </View>
+                  <TouchableOpacity style={styles.leftNav} onPress={() => {this.props.navigation.pop()}}>
+                    <Image style={styles.imgNav} source={leftImage}/>
                   </TouchableOpacity>
-                  : null
+                  :
+                  (
+                    leftTitle
+                      ?
+                      <TouchableOpacity style={styles.leftNav} onPress={ ()=>{leftAction()} }>
+                        <View style={{alignItems: 'center'}}>
+                          <Text style={styles.barButton}>{leftTitle}</Text>
+                        </View>
+                      </TouchableOpacity>
+                      : null
+                  )
               )
+              : null
           }
+
           {
             title ?
               <View style={{alignItems: 'center'}}>
@@ -54,16 +57,21 @@ export default class NavBar extends Component {
               : null
           }
           {
-            rightImage ?
+            !rightBothShow ?
+              (rightImage ?
+                <TouchableOpacity style={styles.rightNav} onPress={ ()=>{rightAction()} }>
+                  <Image style={styles.imgNav} source={ rightImage }/>
+                </TouchableOpacity>
+                : (rightTitle ?
+                    <TouchableOpacity style={styles.rightNav} onPress={ ()=>{rightAction()} }>
+                      <Text style={styles.barButton}>{rightTitle}</Text>
+                    </TouchableOpacity>
+                    : null
+                )) :
               <TouchableOpacity style={styles.rightNav} onPress={ ()=>{rightAction()} }>
                 <Image style={styles.imgNav} source={ rightImage }/>
+                <Text style={styles.barButton}>{ rightTitle }</Text>
               </TouchableOpacity>
-              : (rightTitle ?
-              <TouchableOpacity style={styles.rightNav} onPress={ ()=>{rightAction()} }>
-                <Text style={styles.barButton}>{rightTitle}</Text>
-              </TouchableOpacity>
-                : null
-              )
           }
         </View>
       </View>
@@ -73,9 +81,9 @@ export default class NavBar extends Component {
 
 const styles = StyleSheet.create({
   barView: {
-    height: Platform.OS === 'android' ? size(128) :  size(88) + STATUS_BAR_HEIGHT,
-    paddingTop: STATUS_BAR_HEIGHT,
-    backgroundColor: '#0094e5',
+    height: Platform.OS === 'android' ? size(128) :  size(88) + isIPhoneXPaddTop(0),
+    paddingTop: isIPhoneXPaddTop(0) + ( Platform.OS === 'android' ? statusBarHeight : 0),
+    backgroundColor: AppDef.Blue,
   },
   showView: {
     flex: 1,
@@ -85,7 +93,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    fontSize: size(38),
+    fontSize: size(34),
     fontWeight: 'bold'
   },
   leftNav: {
@@ -98,17 +106,17 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   imgNav: {
-    width: size(40),
-    height: size(40),
+    width: size(36),
+    height: size(36),
   },
   rightNav: {
     position: 'absolute',
     bottom: 0,
     right: 0,
-    width: size(100),
     height: size(80),
+    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   barButton: {
     color: 'white',

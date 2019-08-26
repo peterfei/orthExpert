@@ -111,7 +111,9 @@ export default class EditPlanInfo extends Component {
       pbId: selectImage.pbId,
       labelA: this.state.labelA
     }
-    this.props.editComplete(params);
+    if (this.props.editComplete) {
+      this.props.editComplete(params);
+    }
   }
 
   _renderImages() {
