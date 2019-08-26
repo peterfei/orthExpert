@@ -29,7 +29,7 @@ import Orientation from 'react-native-orientation';
 import Video, {Container} from 'react-native-af-video-player';
 import {boneData} from "./BoneData"
 import {storage} from "../../common/storage";
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import UnityGuideView from './UnityGuideView';
 import {groupBy, isUndefinedVal} from "../../common/fun"
 //let boneData= [];
@@ -751,7 +751,7 @@ export default class MedicalScene extends Component {
         } else {
             Alert.alert("该功能需要付费 ,已为您推荐套餐", "请选择套餐");
             if (Platform.OS == 'ios') {
-                const resetAction = NavigationActions.reset({
+                const resetAction = StackActions.reset({
                     index: 0,
                     actions: [
                         NavigationActions.navigate({

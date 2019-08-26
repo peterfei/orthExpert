@@ -29,7 +29,7 @@ import Loading from "../../common/Loading";
 import api from "../../api";
 import { Colors } from "react-native-ui-lib";
 import JPushModule from "jpush-react-native";
-import { NavigationActions } from "react-navigation";
+import { NavigationActions,StackActions } from "react-navigation";
 
 import { storage } from "../../common/storage";
 import _ from "lodash";

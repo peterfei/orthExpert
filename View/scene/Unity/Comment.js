@@ -19,7 +19,7 @@ import {getDate} from "./LCE"
 import Toast from "react-native-easy-toast";
 import api from "../../api";
 import {storage} from "../../common/storage";
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import DeviceInfo from "react-native-device-info";
 import {ifnull} from "./LCE"
 

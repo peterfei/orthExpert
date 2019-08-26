@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
 import {PixelRatio, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import {color} from "../../widget";
 export default class Cell extends PureComponent {
     getState(state) {

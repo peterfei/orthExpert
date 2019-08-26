@@ -32,7 +32,7 @@ import Orientation from 'react-native-orientation';
 import Video, {Container} from 'react-native-af-video-player';
 import {boneData} from "./BoneData"
 import {storage} from "../../common/storage";
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import UnityGuideView from './UnityGuideView';
 import {isAvailableString, ConvertString, analysis, getChildNode} from '../../common/fun'
 import SpeechRecognizer from "../../common/SpeechUtils"
@@ -872,11 +872,11 @@ export default class BonesScene extends Component {
         } else {
             Alert.alert("该功能需要付费 ,已为您推荐套餐", "请选择套餐");
             if (Platform.OS == 'ios') {
-                const resetAction = NavigationActions.reset({
+                const resetAction = StackActions.reset({
                     index: 0,
                     actions: [
                         NavigationActions.navigate({
-                            routeName: "Tab",
+                            routeName: "HomeScreen",
                             action: NavigationActions.navigate({
                                 routeName: 'Shop',
                                 params: {

@@ -17,7 +17,7 @@ import MessageBoard from "./View/scene/My/MessageBoard";
 import showMessages from "./View/scene/My/showMessages";
 import Help from "./View/scene/Help/help";
 import problemDetails from "./View/scene/Help/problemDetails";
-import EditMember from "./View/scene/My/EditMember";
+import kfMineUserInfo from "./View/scene/My/UserInfoDetail";//EditMember
 import MemberComplete from "./View/scene/Register/MemberComplete";
 import RegisterPage from "./View/scene/Register/RegisterPage";
 import ForgetPasswordPage from "./View/scene/Register/ForgetPasswordPage";
@@ -32,12 +32,13 @@ import PaymentOrder from './View/scene/Pay/PaymentOrder';
 import Pay from './View/scene/Pay/Pay';
 import kfPlanDetail from './View/scene/Plan/PlanDetail';
 import kfSharingPlan from './View/scene/Plan/SharingPlan';
-import kfPlanDescHtml from'./View/scene/Plan/PlanDescHtml';
+import kfPlanDescHtml from './View/scene/Plan/PlanDescHtml';
 import RenTi from './View/scene/Unity/RenTi';//底部按钮转跳商城
 import TrainPlay from './View/scene/Unity/TrainPlay';
 import kfSickPlanList from './View/scene/Plan/SickPlanList';
 import kfCreatePlan from './View/scene/Plan/CreatePlan';
-
+import kfModifyData from './View/scene/My/ModifyData';
+import ActivationCode from './View/scene/My/ActivationCode';
 
 /**消息通知页面 */
 import MessageNotice from './View/scene/Search/MessageNotice';
@@ -53,7 +54,7 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
     showMessages: { screen: showMessages },
     Help: { screen: Help },
     problemDetails: { screen: problemDetails },
-    EditMember: { screen: EditMember },
+    kfMineUserInfo: { screen: kfMineUserInfo },
     MemberComplete: { screen: MemberComplete },
     RegisterPage: { screen: RegisterPage },
     ForgetPasswordPage: { screen: ForgetPasswordPage },
@@ -75,6 +76,8 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
     kfCreatePlan: { screen: kfCreatePlan },
     RenTi: { screen: RenTi },
     TrainPlay: { screen: TrainPlay },
+    kfModifyData: { screen: kfModifyData },
+    ActivationCode:{screen:ActivationCode},
   },
   {
     initialRouteName: 'LoginPage',     //设置初始路由为Home

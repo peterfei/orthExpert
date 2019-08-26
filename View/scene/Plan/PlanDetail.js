@@ -14,7 +14,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,Alert
 } from "react-native";
 import {
   AppDef,
@@ -93,7 +93,7 @@ export default class PlanDetail extends BaseComponent {
   }
 
   gotoSharePlan() {
-    this.props.navigation.navigate("kfSharingPlan", {planInfo: this.state.planInfo, amList: this.state.amList})
+    this.props.navigation.navigate("kfSharingPlan", { planInfo: this.state.planInfo, amList: this.state.amList })
   }
 
   gotoDetail() {
@@ -103,29 +103,31 @@ export default class PlanDetail extends BaseComponent {
   _renderHeader() {
     let planName = '';
     let desc = '';
-    let uri = {uri: ''};
+    let uri = { uri: '' };
     let label_a = '';
     if (this.state.planInfo) {
 
       planName = this.state.planInfo.plan_name;
       desc = this.state.planInfo.description;
       label_a = this.state.planInfo.label_a;
-      uri = {uri: this.state.planInfo.icon2_url};
+      uri = { uri: this.state.planInfo.icon2_url };
     }
 
     return (
       <ImageBackground style={styles.bannerImg} source={uri}>
-        <Text style={{color: AppDef.White, fontSize: size(50), fontWeight: '600', marginBottom: size(35), marginLeft: size(25)}}>
+        <Text style={{ color: AppDef.White, fontSize: size(50), fontWeight: '600', marginBottom: size(35), marginLeft: size(25) }}>
           {planName}
         </Text>
-        <View style={{flexDirection: 'row', alignItems:'center', marginLeft: size(25), marginRight: size(40), marginBottom: size(35)}}>
-          <Text numberOfLines={1} style={{color: AppDef.White, fontSize: size(24), marginRight: size(35), flex: 1}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: size(25), marginRight: size(40), marginBottom: size(35) }}>
+          <Text numberOfLines={1} style={{ color: AppDef.White, fontSize: size(24), marginRight: size(35), flex: 1 }}>
             {label_a}
           </Text>
-          <TouchableOpacity onPress={() => {this.props.navigation.navigate('kfPlanDescHtml', {planName: planName, desc: desc})}}>
-            <View style={{justifyContent: 'center', alignItems: 'center', borderRadius: size(5), borderColor: AppDef.White, borderWidth: size(0.5),
-              paddingLeft: size(8), paddingRight: size(8), paddingTop: size(5), paddingBottom: size(5)}}>
-              <Text style={{color: 'rgba(215,215,215,1)', fontSize: size(20)}}>
+          <TouchableOpacity onPress={() => { this.props.navigation.navigate('kfPlanDescHtml', { planName: planName, desc: desc }) }}>
+            <View style={{
+              justifyContent: 'center', alignItems: 'center', borderRadius: size(5), borderColor: AppDef.White, borderWidth: size(0.5),
+              paddingLeft: size(8), paddingRight: size(8), paddingTop: size(5), paddingBottom: size(5)
+            }}>
+              <Text style={{ color: 'rgba(215,215,215,1)', fontSize: size(20) }}>
                 查看更多
               </Text>
             </View>
@@ -142,32 +144,34 @@ export default class PlanDetail extends BaseComponent {
 
 
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: size(40)}}>
-        <ImageBackground source={require('../../img/kf_main/kf_plan_banner_back.png')} style={{width: size(713), height: size(237)}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: size(40) }}>
+        <ImageBackground source={require('../../img/kf_main/kf_plan_banner_back.png')} style={{ width: size(713), height: size(237) }}>
 
-          <TouchableOpacity onPress={() => {this.gotoSharePlan()}}>
-            <View style={{marginLeft: size(57), marginRight: size(57), height: size(70), flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
-              borderWidth: size(1), borderRadius: size(10), borderColor: 'rgba(158, 122, 92, 1)'}}>
-              <Image source={require('../../img/kf_main/kf_plan_share_icon.png')} style={{width: size(33), height: size(28)}}/>
-              <Text style={{color: 'rgba(150, 125, 100, 1)', fontSize: size(28), marginLeft: size(30)}} >点击一下，分享此方案吧！</Text>
+          <TouchableOpacity onPress={() => { this.gotoSharePlan() }}>
+            <View style={{
+              marginLeft: size(57), marginRight: size(57), height: size(70), flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+              borderWidth: size(1), borderRadius: size(10), borderColor: 'rgba(158, 122, 92, 1)'
+            }}>
+              <Image source={require('../../img/kf_main/kf_plan_share_icon.png')} style={{ width: size(33), height: size(28) }} />
+              <Text style={{ color: 'rgba(150, 125, 100, 1)', fontSize: size(28), marginLeft: size(30) }} >点击一下，分享此方案吧！</Text>
             </View>
           </TouchableOpacity>
 
-          <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
 
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{color: 'rgba(104, 104, 104, 1)', fontSize: size(28), marginBottom: size(30)}}>个数</Text>
-              <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end'}}>
-                <Text style={{color: AppDef.Blue, fontSize: size(38)}}>{amNum}</Text>
-                <Text style={{color: AppDef.Black, fontSize: size(24), marginBottom: size(6)}}> 个动作</Text>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: 'rgba(104, 104, 104, 1)', fontSize: size(28), marginBottom: size(30) }}>个数</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end' }}>
+                <Text style={{ color: AppDef.Blue, fontSize: size(38) }}>{amNum}</Text>
+                <Text style={{ color: AppDef.Black, fontSize: size(24), marginBottom: size(6) }}> 个动作</Text>
               </View>
             </View>
-            <View style={{width: size(1), height: size(80), backgroundColor: 'rgba(219, 219, 219, 1)'}}/>
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{color: 'rgba(104, 104, 104, 1)', fontSize: size(28), marginBottom: size(30)}}>时长</Text>
-              <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end'}}>
-                <Text style={{color: AppDef.Blue, fontSize: size(38)}}>12:50</Text>
-                <Text style={{color: AppDef.Black, fontSize: size(24), marginBottom: size(6)}}> 分钟</Text>
+            <View style={{ width: size(1), height: size(80), backgroundColor: 'rgba(219, 219, 219, 1)' }} />
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: 'rgba(104, 104, 104, 1)', fontSize: size(28), marginBottom: size(30) }}>时长</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end' }}>
+                <Text style={{ color: AppDef.Blue, fontSize: size(38) }}>12:50</Text>
+                <Text style={{ color: AppDef.Black, fontSize: size(24), marginBottom: size(6) }}> 分钟</Text>
               </View>
             </View>
 
@@ -183,21 +187,21 @@ export default class PlanDetail extends BaseComponent {
 
 
     return (
-      <View style={{width: '100%', marginTop: size(30)}}>
-        <View style={{width: '100%', paddingLeft: size(25), paddingRight: size(25)}}>
-          <Line/>
-          <ImageBackground source={require('../../img/kf_main/kf_plan_tip.png')} style={{width: size(160), height: size(46), justifyContent: 'center', alignItems: 'center'}}>
-            <Text style={{color: AppDef.White, fontSize: size(24)}}>准备器材</Text>
+      <View style={{ width: '100%', marginTop: size(30) }}>
+        <View style={{ width: '100%', paddingLeft: size(25), paddingRight: size(25) }}>
+          <Line />
+          <ImageBackground source={require('../../img/kf_main/kf_plan_tip.png')} style={{ width: size(160), height: size(46), justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: AppDef.White, fontSize: size(24) }}>准备器材</Text>
           </ImageBackground>
-          <View style={{height: size(80), flexDirection: 'row', alignItems: 'center', marginLeft: size(222)}}>
-            <Text style={{color: AppDef.Black, fontSize: size(28)}}>瑜伽垫</Text>
-            <Text style={{color: AppDef.Black, fontSize: size(28), marginLeft: size(60)}}>椅子</Text>
+          <View style={{ height: size(80), flexDirection: 'row', alignItems: 'center', marginLeft: size(222) }}>
+            <Text style={{ color: AppDef.Black, fontSize: size(28) }}>瑜伽垫</Text>
+            <Text style={{ color: AppDef.Black, fontSize: size(28), marginLeft: size(60) }}>椅子</Text>
           </View>
         </View>
-        <View style={{width: '100%', paddingLeft: size(25), paddingRight: size(25)}}>
-          <Line/>
-          <ImageBackground source={require('../../img/kf_main/kf_plan_tip.png')} style={{width: size(160), height: size(46), justifyContent: 'center', alignItems: 'center'}}>
-            <Text style={{color: AppDef.White, fontSize: size(24)}}>动作解析</Text>
+        <View style={{ width: '100%', paddingLeft: size(25), paddingRight: size(25) }}>
+          <Line />
+          <ImageBackground source={require('../../img/kf_main/kf_plan_tip.png')} style={{ width: size(160), height: size(46), justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: AppDef.White, fontSize: size(24) }}>动作解析</Text>
           </ImageBackground>
         </View>
       </View>
@@ -205,33 +209,49 @@ export default class PlanDetail extends BaseComponent {
     )
   }
 
-  gotoAmDetail(data){
-  //TODO 处理不需要下载的器械
-    this.props.navigation.navigate("RenTi", {
-      animation: data,
-      equipList:this.state.equipNoList
-    })
-
+  gotoAmDetail(data) {
+    //TODO 处理不需要下载的器械
+    // this.props.navigation.navigate("RenTi", {
+    //   animation: data,
+    //   equipList:this.state.equipNoList
+    // })
+    Alert.alert(
+      '立即下载运动康复训练APP', '定制计划',
+      [
+        { text: "稍后再说" },
+        {
+          text: "立即下载"
+          //,
+          // onPress: function () {
+          //     const downloadUrl = item.url;
+          //     NativeModules.DownloadApk.downloading(
+          //         downloadUrl,
+          //         "vesal.apk"
+          //     );
+          // }
+        }
+      ]
+    );
   }
 
-  async startPlay(){
+  async startPlay() {
 
     //检测权限
     this.mainView._showLoading('加载中');
-    let isUse = await FuncUtils.checkPerm("no",AppDef.KFXL_VIP);
-    if (isUse){
+    let isUse = await FuncUtils.checkPerm("no", AppDef.KFXL_VIP);
+    if (isUse) {
 
       //保存记录
 
-      FuncUtils.saveProgress(this.state.planId,0);
+      FuncUtils.saveProgress(this.state.planId, 0);
 
       let downList = {
-        amList:this.state.amList,
-        equipList:this.state.equipNoList
+        amList: this.state.amList,
+        equipList: this.state.equipNoList
       }
 
-      this.props.navigation.navigate("TrainPlay", {plan: this.state.planInfo,downList:downList})
-    } else{
+      this.props.navigation.navigate("TrainPlay", { plan: this.state.planInfo, downList: downList })
+    } else {
       this.props.navigation.navigate('Member');
     }
     this.mainView._closeLoading();
@@ -254,38 +274,38 @@ export default class PlanDetail extends BaseComponent {
       seconds = isShowSeconds ? motions.ta_time + '秒' : seconds;
       let rest = motions.rest;
       let isShowLast = index == this.state.amList.length - 1 ? false : true;
-      let uri =  motions.icon_url ? {uri: motions.icon_url} : require('../../img/exercise/actimg.jpg');
+      let uri = motions.icon_url ? { uri: motions.icon_url } : require('../../img/exercise/actimg.jpg');
 
       arr.push(
         <TouchableOpacity
-            onPress={() => {
-              this.gotoAmDetail(motions)
-            }}
+          onPress={() => {
+            this.gotoAmDetail(motions)
+          }}
         >
-          <View style={{flex: 1, marginTop: size(30), marginBottom: size(30), marginLeft: size(25), marginRight: size(50), flexDirection: 'row'}}>
+          <View style={{ flex: 1, marginTop: size(30), marginBottom: size(30), marginLeft: size(25), marginRight: size(50), flexDirection: 'row' }}>
             <View>
-              <Image source={uri} style={{width: size(172), height: size(132), borderRadius: size(10), overflow: 'hidden'}}/>
+              <Image source={uri} style={{ width: size(172), height: size(132), borderRadius: size(10), overflow: 'hidden' }} />
             </View>
-            <View style={{flex: 1, marginLeft: size(50), justifyContent: 'space-between'}}>
-              <Text style={{color: AppDef.Black, fontSize: size(26)}}>{name}</Text>
-              <View style={{justifyContent: 'space-between'}}>
-                <Text style={{color: 'rgba(104, 104, 104, 1)', fontSize: size(20)}}>训练类型: {dzType}</Text>
-                <View style={{flexDirection: 'row', alignItems: 'center', marginTop: size(15)}}>
+            <View style={{ flex: 1, marginLeft: size(50), justifyContent: 'space-between' }}>
+              <Text style={{ color: AppDef.Black, fontSize: size(26) }}>{name}</Text>
+              <View style={{ justifyContent: 'space-between' }}>
+                <Text style={{ color: 'rgba(104, 104, 104, 1)', fontSize: size(20) }}>训练类型: {dzType}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: size(15) }}>
                   {
                     isShowSeconds ?
-                      <Text style={{color: 'rgba(104, 104, 104, 1)', fontSize: size(24), width: size(150)}}>时长: {seconds}</Text> : null
+                      <Text style={{ color: 'rgba(104, 104, 104, 1)', fontSize: size(24), width: size(150) }}>时长: {seconds}</Text> : null
                   }
                   {
                     isShowCS ?
-                      <Text style={{color: 'rgba(104, 104, 104, 1)', fontSize: size(24), width: size(150)}}>次数: {cs}</Text> : null
+                      <Text style={{ color: 'rgba(104, 104, 104, 1)', fontSize: size(24), width: size(150) }}>次数: {cs}</Text> : null
                   }
-                  <Text style={{color: 'rgba(104, 104, 104, 1)', fontSize: size(24), width: size(150)}}>休息: {rest}s</Text>
+                  <Text style={{ color: 'rgba(104, 104, 104, 1)', fontSize: size(24), width: size(150) }}>休息: {rest}s</Text>
                 </View>
               </View>
             </View>
           </View>
 
-          <Line color='rgba(227, 227, 227, 0.5)' height={size(1)}/>
+          <Line color='rgba(227, 227, 227, 0.5)' height={size(1)} />
         </TouchableOpacity>
       )
     })
@@ -294,8 +314,8 @@ export default class PlanDetail extends BaseComponent {
 
     return (
       <View>
-        <View style={{marginLeft: size(25), paddingTop: size(10), paddingBottom: size(10)}}>
-          <Text style={{color: AppDef.Black, fontSize: size(28),}}>{title}</Text>
+        <View style={{ marginLeft: size(25), paddingTop: size(10), paddingBottom: size(10) }}>
+          <Text style={{ color: AppDef.Black, fontSize: size(28), }}>{title}</Text>
         </View>
         {arr}
       </View>
@@ -305,7 +325,7 @@ export default class PlanDetail extends BaseComponent {
   _renderFooter() {
     return (
       <TouchableOpacity activeOpacity={0.8} style={styles.startTouchStyle} onPress={() => {
-       // alert('开始训练');
+        // alert('开始训练');
 
         this.startPlay()
       }}>
@@ -317,8 +337,8 @@ export default class PlanDetail extends BaseComponent {
   _renderAnimationNav() {
     let planName = this.state.planInfo ? this.state.planInfo.plan_name : '';
     return (
-      <View style={[styles.navbarStyle, {position: 'absolute', top: 0, left: 0, right: 0,}]} opacity={this.state.navbarOpacity}>
-        <Text style={{fontSize: size(34), fontWeight: 'bold', color: '#fff', paddingTop: statusBarHeight}}>{planName}</Text>
+      <View style={[styles.navbarStyle, { position: 'absolute', top: 0, left: 0, right: 0, }]} opacity={this.state.navbarOpacity}>
+        <Text style={{ fontSize: size(34), fontWeight: 'bold', color: '#fff', paddingTop: statusBarHeight }}>{planName}</Text>
       </View>
     )
   }
@@ -326,12 +346,12 @@ export default class PlanDetail extends BaseComponent {
   _renderBackIcon() {
     return (
       <TouchableOpacity
-        style={{position: 'absolute', left: size(20), top: isIPhoneXPaddTop(0) + ( Platform.OS === 'android' ? statusBarHeight : 0), width: size(80), height: size(80), justifyContent: 'center', zIndex: 9999}}
+        style={{ position: 'absolute', left: size(20), top: isIPhoneXPaddTop(0) + (Platform.OS === 'android' ? statusBarHeight : 0), width: size(80), height: size(80), justifyContent: 'center', zIndex: 9999 }}
         onPress={() => {
           this.props.navigation.goBack();
         }}>
         <Image source={require('../../img/search/backjt.png')}
-               style={{width: size(36), height: size(36)}}/>
+          style={{ width: size(36), height: size(36) }} />
       </TouchableOpacity>
     )
   }
@@ -346,7 +366,7 @@ export default class PlanDetail extends BaseComponent {
           scrollEventThrottle={4}
           alwaysBounceVertical={false}
           bounces={false}
-          style={{flex: 1}}>
+          style={{ flex: 1 }}>
 
           {this._renderHeader()}
 
@@ -358,7 +378,7 @@ export default class PlanDetail extends BaseComponent {
 
         </ScrollView>
 
-        {this._renderFooter()}
+        {/* {this._renderFooter()} */}
 
         {this._renderAnimationNav()}
 
@@ -392,7 +412,7 @@ const styles = StyleSheet.create({
   },
   navbarStyle: {
     width: '100%',
-    height: size(88) + isIPhoneXPaddTop(0) + ( Platform.OS === 'android' ? statusBarHeight : 0),
+    height: size(88) + isIPhoneXPaddTop(0) + (Platform.OS === 'android' ? statusBarHeight : 0),
     backgroundColor: '#5EB4F1',
     paddingTop: isIPhoneXPaddTop(0),
     justifyContent: 'center',

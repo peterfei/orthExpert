@@ -18,7 +18,7 @@ import UnityView from 'react-native-unity-view';
 import Menus from "./Menus";
 import {getRelationByName, getStructByIds, getVideoByIds, getWebByIds} from "../../realm/RealmManager"
 import {size} from "../../common/ScreenUtil";
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import ETTLightStatus from "../../common/ETTLightStatus";
 import UnityGuideView from './UnityGuideView';
 

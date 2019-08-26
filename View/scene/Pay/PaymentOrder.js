@@ -23,7 +23,7 @@ import {Wxpay} from "../../common";
 import Toast, {DURATION} from "react-native-easy-toast";
 import {storage} from "../../common/storage";
 import _ from "lodash";
-import {NavigationActions} from "react-navigation";
+import {NavigationActions,StackActions} from "react-navigation";
 import {NativeModules} from "react-native";
 import {size, setSpText} from "../../common/ScreenUtil";
 //import ShopSingleShow from '../Shop/ShopSingleShow';
@@ -446,7 +446,7 @@ export default class PaymentOrder extends Component {
                                     // DeviceEventEmitter.emit("HomeListener");
                                     setTimeout(
                                         function () {
-                                            const resetAction = NavigationActions.reset({
+                                            const resetAction = StackActions.reset({
                                                 index: 0,
                                                 actions: [
                                                     NavigationActions.navigate({routeName: "Tab"})
