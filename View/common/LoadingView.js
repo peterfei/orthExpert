@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 const { width, height } = Dimensions.get('window')
 import PropTypes from 'prop-types';
-import loadingImage from '../img/home/loading.gif'
+import loadingImage from '../img/home/launch_screen.png'
 class LoadingView extends Component{
 	constructor(props) {
 		super(props);
