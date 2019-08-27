@@ -60,7 +60,7 @@ export default class ChooseMotionView extends Component {
     const url = NetInterface.motionsList + '?patNo=' + this.props.sick.pat_no + '&business=kfxl';
     HttpTool.GET(url)
             .then(res => {
-              alert(JSON.stringify(res));
+              // alert(JSON.stringify(res));
               if (res.code == 0 && res.msg == 'success') {
                 this.setState({
                   sourceData: res.animationList,

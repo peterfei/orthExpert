@@ -15,7 +15,8 @@ import { color } from "../../widget";
 import ScrollableTabView, {
     DefaultTabBar
 } from "react-native-scrollable-tab-view";
-import RecoveryItem from "./RecoveryItem"
+import RecoveryItem from "./RecoveryItem";
+import MyRecoveryItem from './MyRecoveryItem';
 import { screen, system } from "../../common";
 import { size } from "../../common/ScreenUtil";
 import { storage } from "../../common/storage";
@@ -40,14 +41,13 @@ export default class Recovery extends Component {
                     <View style={styles.textStyle} tabLabel="推荐训练">
                         <RecoveryItem
                          patNo={this.props.navigation.state.params.patNo}
-                          orderState="firstScreen" 
-                          navigation={this.props.navigation} />
+                         navigation={this.props.navigation} />
                     </View>
 
                     <View style={styles.textStyle} tabLabel="我的方案">
-                        <RecoveryItem 
-                        orderState="secondScreen" 
-                        navigation={this.props.navigation} />
+                        <MyRecoveryItem
+                          patNo={this.props.navigation.state.params.patNo}
+                          navigation={this.props.navigation} />
                     </View>
 
                 </ScrollableTabView>
@@ -112,8 +112,8 @@ const styles = StyleSheet.create({
     back: {
         position: 'absolute',
         left: 10,
-        width: size(25),
-        height: size(25)
+        width: size(40),
+        height: size(40)
     },
     backImg: {
         height: '100%',

@@ -65,7 +65,8 @@ const HomeModulInterface = {
 const PlanModuleInterface = {
   planDetail: 'v1/app/trainAnimation/findAmUnityResources',
   motionsList: '/app/kfxl/v1/animation/getAnimationList',
-  createPlan: '/app/kfxl/v1/scheme/saveCustomSchemes',
+  createPlan: '/app/kfxl/v1/scheme/saveCustomSchemesForOrthope',
+
   planBackImgList: '/app/kfxl/v1/scheme/getSchemesBackgroudImg',
 }
 
@@ -80,6 +81,7 @@ const Pay = {
   config: 'v1/app/msg/config',//获取支付方式
   addOrder:"v1/app/order/addOrder",//添加订单, 获取订单号
   wxGetPreyId:"v1/app/pay/wxGetPreyId",//获取微信预付单
+  useActiveCode: 'app/kfxl/v1/combo/useActiveCode', // 激活码接口
 
 }
 

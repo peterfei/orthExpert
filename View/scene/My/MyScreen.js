@@ -14,6 +14,7 @@ import {
 import { storage } from "../../common/storage";
 import { ContainerView, BaseComponent, NavBar, ListCell, Line, MineBuuton, AppDef, isIPhoneXPaddTop, size, FuncUtils, deviceWidth } from '../../common';
 import api from "../../api";
+import MyTouchableOpacity from "../../common/components/MyTouchableOpacity";
 
 const statusBarHeight = StatusBar.currentHeight;
 
@@ -132,16 +133,17 @@ export default class MyScreen extends Component {
   _renderHeader() {
     return (
       <ImageBackground source={require('../../img/kf_mine/mine_topback.png')} style={styles.topImgBack}>
-        <View style={{
-          justifyContent: 'center', alignItems: 'center',//size(25)size(88)
-          paddingTop: isIPhoneXPaddTop(0) + (Platform.OS === 'android' ? statusBarHeight + 0 : 0), height: size(60) + isIPhoneXPaddTop(0)
-        }}>
-          <Text style={{ color: AppDef.White, fontWeight: 'bold', fontSize: AppDef.TitleSize }} allowFontScaling={false}>个人中心</Text>
-          {/*<View style={{position: 'absolute', height: size(88), right: size(32), top: isIPhoneXPaddTop(0), justifyContent: 'center', alignItems: 'center'}}>*/}
-          {/*<Image*/}
-          {/*source={require('../../img/kf_mine/mine_nav_message.png')}*/}
-          {/*style={{width: size(43), height: size(48)}}/>*/}
-          {/*</View>*/}
+
+        <StatusBar />
+        <View style={{justifyContent: 'center', alignItems: 'center',  height: size(88) + isIPhoneXPaddTop(0) + ( Platform.OS === 'android' ? statusBarHeight : 0),
+          paddingTop: isIPhoneXPaddTop(0) + ( Platform.OS === 'android' ? statusBarHeight : 0)}}>
+          <Text style={{color: AppDef.White, fontWeight: 'bold', fontSize: AppDef.TitleSize}} allowFontScaling={false}>个人中心</Text>
+
+          <MyTouchableOpacity style={{height: size(88) + isIPhoneXPaddTop(0) , justifyContent: 'center', alignItems: 'center',
+            position: 'absolute', left: size(20), top: isIPhoneXPaddTop(0) + ( Platform.OS === 'android' ? statusBarHeight : 0)}}
+            onPress={() => {this.props.navigation.goBack()}}>
+            <Image source={require('../../img/public/left.png')} style={{width: size(36), height: size(36)}}/>
+          </MyTouchableOpacity>
         </View>
 
         <View style={{ width: '100%', flexDirection: 'row', marginBottom: size(41), marginTop: (Platform.OS === 'android' ? size(40) : 0) }}>
@@ -228,9 +230,7 @@ export default class MyScreen extends Component {
   render() {
     return (
       <ContainerView ref={r => this.mainView = r}>
-        <StatusBar
-          hidden={false}
-        />
+
         <ScrollView bounces={false} style={{ height: '100%' }}>
 
           {this._renderHeader()}
@@ -255,7 +255,7 @@ export default class MyScreen extends Component {
 const styles = StyleSheet.create({
   topImgBack: {
     width: '100%',
-    height: size(269),
+    height: size(269) + ( Platform.OS === 'android' ? statusBarHeight : 0),
   },
   middleViewStyle: {
     flexDirection: 'row',

@@ -1,32 +1,34 @@
 import React from "react";
 import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    ScrollView,
     Image,
     ImageBackground,
-    DeviceEventEmitter,
-    TextInput
+    Platform,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from "react-native";
 import {
-    ContainerView,
     BaseComponent,
-    NavBar,
-    AppDef,
+    ContainerView,
+    deviceHeight,
+    deviceWidth,
     HttpTool,
+    isIPhoneXPaddTop,
     NetInterface,
-    FuncUtils,
-    size,
-    deviceWidth, deviceHeight,DateUtil
+    size
 } from '../../common';
+import DateUtil from "../../common/DateUtils";
+
+const statusBarHeight = StatusBar.currentHeight;
 
 export default class ActivationCode extends BaseComponent {
     constructor(props){
         super(props)
         this.state = {
-            title: '激活码兑换',
+            title: '激活码',
             code: '',
             showResult: false,
             effective: '',
@@ -47,23 +49,23 @@ export default class ActivationCode extends BaseComponent {
             this.mainView._showLoading("努力激活中...")
             let url = NetInterface.useActiveCode + `?activeCode=${this.state.code}`
             HttpTool.GET(url)
-                .then(res => {
-                    this.mainView._closeLoading()
-                    if (res.code === 0) {
-                        let effective = DateUtil.getAfterDate(res.active.active_days)
-                        this.setState({
-                            effective: effective,
-                            packageName: res.active.title,
-                            showResult: true
-                        })
-                    } else {
-                        this.mainView._toast(res.msg)
-                    }
-                    console.log(JSON.stringify(res))
-                })
-                .catch(err => {
-                    this.mainView._toast(JSON.stringify(err))
-                })
+              .then(res => {
+                  this.mainView._closeLoading()
+                  if (res.code === 0) {
+                      let effective = DateUtil.getAfterDate(res.active.active_days)
+                      this.setState({
+                          effective: effective,
+                          packageName: res.active.title,
+                          showResult: true
+                      })
+                  } else {
+                      this.mainView._toast(res.msg)
+                  }
+                  console.log(JSON.stringify(res))
+              })
+              .catch(err => {
+                  this.mainView._toast(JSON.stringify(err))
+              })
         }
     }
 
@@ -75,50 +77,65 @@ export default class ActivationCode extends BaseComponent {
 
     _renderActiveCode(){
         return (
-            <ImageBackground source={require('../../img/kf_mine/kf_activeCode_activeBackground.png')} style={styles.activeBackground}>
-                <Text style={styles.vipText}>VIP会员</Text>
-                <TextInput ref="textInput"
-                           onChangeText={(value) => this.activationCode(value)}
-                           selectionColor={'#0094e5'}
-                           placeholderTextColor={"#b0b1b4"}
-                           placeholder="请输入激活码"
-                           defaultValue={this.state.code}
-                           autoFocus={true}
-                           style={styles.codeInput}/>
-                <TouchableOpacity style={styles.codeBtn} onPress={() => this.active()}>
-                    <Text style={{fontSize: size(32), color: '#ffffff'}}>立即激活</Text>
-                </TouchableOpacity>
-            </ImageBackground>
+          <ImageBackground source={require('../../img/kf_mine/kf_activeCode_activeBackground.png')} style={styles.activeBackground}>
+              <Text style={styles.vipText}>VIP会员</Text>
+              <TextInput ref="textInput"
+                         onChangeText={(value) => this.activationCode(value)}
+                         selectionColor={'#0094e5'}
+                         placeholderTextColor={"#b0b1b4"}
+                         placeholder="请输入激活码"
+                         defaultValue={this.state.code}
+                         autoFocus={true}
+                         style={styles.codeInput}/>
+              <TouchableOpacity style={styles.codeBtn} onPress={() => this.active()}>
+                  <Text style={{fontSize: size(32), color: '#ffffff'}}>立即激活</Text>
+              </TouchableOpacity>
+          </ImageBackground>
         )
     }
 
     _renderResult() {
         return (
-            <ImageBackground style={styles.resultBackgroundImg} source={require('../../img/kf_mine/kf_activeCode_result_background.png')}>
-                <Text style={styles.resultContentBackgroundText}>激活码兑换成功</Text>
-                <ImageBackground style={styles.resultContentBackgroundImg} source={require('../../img/kf_mine/kf_activeCode_result_content_background.png')}>
-                    <Text style={styles.resultContentBackgroundImgTop}>有效起：{this.state.effective}</Text>
-                    <Text style={styles.resultContentBackgroundImgBot}>{this.state.packageName}</Text>
-                </ImageBackground>
-                <TouchableOpacity style={styles.resultContentBackgroundBtn} onPress={() => this.closeResult()}>
-                    <Text style={{fontSize: size(32), color: '#ffffff'}}>我知道了</Text>
-                </TouchableOpacity>
-            </ImageBackground>
+          <ImageBackground style={styles.resultBackgroundImg} source={require('../../img/kf_mine/kf_activeCode_result_background.png')}>
+              <Text style={styles.resultContentBackgroundText}>激活码兑换成功</Text>
+              <ImageBackground style={styles.resultContentBackgroundImg} source={require('../../img/kf_mine/kf_activeCode_result_content_background.png')}>
+                  <Text style={styles.resultContentBackgroundImgTop}>有效起：{this.state.effective}</Text>
+                  <Text style={styles.resultContentBackgroundImgBot}>{this.state.packageName}</Text>
+              </ImageBackground>
+              <TouchableOpacity style={styles.resultContentBackgroundBtn} onPress={() => this.closeResult()}>
+                  <Text style={{fontSize: size(32), color: '#ffffff'}}>我知道了</Text>
+              </TouchableOpacity>
+          </ImageBackground>
+        )
+    }
+
+    _renderTransparentNavBar() {
+        return (
+          <View style={styles.navbar}>
+              <TouchableOpacity style={styles.leftNav} onPress={() => {this.props.navigation.pop()}}>
+                  <Image style={styles.imgNav} source={require('../../img/search/backjt.png')}/>
+              </TouchableOpacity>
+              <View style={styles.navbarTitle}>
+                  <Text style={styles.navbarTitleText}>{this.state.title}</Text>
+              </View>
+          </View>
         )
     }
 
     render() {
         return (
-            <ContainerView ref={r => this.mainView = r}>
-                <NavBar title={this.state.title} navigation={this.props.navigation} />
-                <ImageBackground source={require('../../img/kf_mine/kf_activeCode_background.png')} style={styles.codeContent}>
-                    {this._renderActiveCode()}
-                </ImageBackground>
-                <View style={[styles.resultCodeContent, {top: this.state.showResult ? 0 : deviceHeight}]}>
-                    {this._renderResult()}
-                </View>
+          <ContainerView ref={r => this.mainView = r}>
 
-            </ContainerView>
+              <ImageBackground resizeMode='stretch' source={require('../../img/kf_mine/kf_activeCode_background.png')} style={styles.codeContent} >
+                  {this._renderTransparentNavBar()}
+                  {this._renderActiveCode()}
+                  <View style={[styles.resultCodeContent, {top: this.state.showResult ? 0 : deviceHeight + (Platform.OS == 'ios' ? 0 : size(148))}]}>
+                      {this._renderResult()}
+                  </View>
+              </ImageBackground>
+
+
+          </ContainerView>
         )
     }
 
@@ -127,20 +144,51 @@ export default class ActivationCode extends BaseComponent {
 const styles = StyleSheet.create({
     codeContent: {
         flex: 1,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     resultCodeContent: {
         position: 'absolute',
         left: 0,
         width: deviceWidth,
-        height: deviceHeight,
+        height: deviceHeight + (Platform.OS == 'ios' ? 0 : size(148)),
         alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.8)'
+    },
+    navbar: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: deviceWidth,
+        height: Platform.OS === 'android' ? size(128) :  size(88) + isIPhoneXPaddTop(0),
+        paddingTop: isIPhoneXPaddTop(0) + ( Platform.OS === 'android' ? statusBarHeight : 0),
+        backgroundColor: 'rgba(0,0,0,0)',
+    },
+    leftNav: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: size(80),
+        height: size(80),
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    imgNav: {
+        width: size(36),
+        height: size(36),
+    },
+    navbarTitle: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    navbarTitleText: {
+        fontSize: size(32),
+        fontWeight: 'bold',
+        color: 'rgba(255,255,255,1)'
     },
     activeBackground: {
         width: size(600),
         height: size(639),
-        marginTop: size(207),
+        marginTop: size(182) + (Platform.OS == 'ios' ? 0 : size(148)),
         alignItems: 'center'
         // marginLeft: size(75)
     },

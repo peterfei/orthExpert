@@ -30,6 +30,7 @@ import {
   NetInterface,
   size,
 } from '../../common';
+import { storage } from "../../common/storage";
 import ChooseMotionView from './ChooseMotionView';
 import EditPlanInfo from './EditPlanInfo';
 import MotionListCell from './MotionListCell';
@@ -39,7 +40,6 @@ import {NavigationActions,StackActions} from "react-navigation";
 const statusBarHeight = StatusBar.currentHeight;
 
 export default class CreatePlan extends BaseComponent {
-
 
   constructor(props) {
     super(props);
@@ -117,7 +117,7 @@ export default class CreatePlan extends BaseComponent {
       })
   }
 
-  requestSavePlan() {
+  async requestSavePlan() {
     let list = [];
     this.state.amList.forEach((motion, index) => {
       let item = {
@@ -126,11 +126,14 @@ export default class CreatePlan extends BaseComponent {
         taTime: motion.taTime,
         taType: motion.taType,
         rest: motion.rest,
-        repetitions: motion.repetitions
+        repetitions: motion.repetitions,
+        time: motion.time,
+        equipNoList: motion.equipNoList
       }
       list.push(item);
     })
 
+    // alert(JSON.stringify(this.state.amList));
 
     if (list.length <= 0) {
       this.mainView._toast('请至少选择一个康复动作!');
@@ -145,29 +148,29 @@ export default class CreatePlan extends BaseComponent {
       planName: this.state.planInfo.planName,
       description: this.state.planInfo.description,
       category:"康复",
-      businessList:"kfxl",
+      businessList:"orthope",
       iconUrl: this.state.planInfo.iconUrl,
       icon2Url: this.state.planInfo.icon2Url,
       isPub:"no",
       labelA: this.state.planInfo.labelA,
-      trainAnimations: list
+      trainAnimations: list,
+      patNo: this.state.sick.pat_no
     }
     this.mainView._showLoading('加载中...');
     // alert(JSON.stringify(params));
     console.log(JSON.stringify(params));
-    const url = NetInterface.createPlan;
+    let tokens = await storage.get("userTokens");
+    let memberInfo = await storage.get("memberInfo")
+    let userName = memberInfo.mbName;
+    const url = NetInterface.createPlan + '?token=' + tokens.token + '&userName=' + userName;
     HttpTool.POST(url, params)
       .then(res => {
         this.mainView._closeLoading();
         if (res.code == 0 && res.msg == 'success') {
           // alert(JSON.stringify(res));
           this.mainView._toast("创建成功, 请前往-'我的定制'-界面查看");
-          const resetAction = StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({routeName: "Tab"})]
-          });
-          DeviceEventEmitter.emit('gotoMyCustom');
-          this.props.navigation.dispatch(resetAction);
+          DeviceEventEmitter.emit('UpdateMyCustom');
+          this.props.navigation.goBack(this.props.navigation.state.params.b_key);
         } else {
           this.mainView._toast(JSON.stringify(res.msg));
         }
@@ -420,13 +423,14 @@ export default class CreatePlan extends BaseComponent {
   }
 
   _renderEditView() {
+    let _this = this;
     return (
       <EditPlanInfo ref={r => this.EditView = r} editComplete={(result) => {
 
-        this.setState({
+        _this.setState({
           planInfo: result
         }, () => {
-          this.EditView.close();
+          _this.EditView.close();
         })
       }}/>
     )
