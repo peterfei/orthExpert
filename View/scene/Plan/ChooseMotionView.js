@@ -59,18 +59,21 @@ export default class ChooseMotionView extends Component {
   requestMotionsData() {
     const url = NetInterface.motionsList + '?patNo=' + this.props.sick.pat_no + '&business=kfxl';
     HttpTool.GET(url)
-            .then(res => {
-              // alert(JSON.stringify(res));
-              if (res.code == 0 && res.msg == 'success') {
-                this.setState({
-                  sourceData: res.animationList,
-                  motionList: res.animationList
-                })
-              }
-            })
-            .catch(error => {
-              console.log(error);
-            })
+      .then(res => {
+        // alert(JSON.stringify(res));
+        if (res.code == 0 && res.msg == 'success') {
+          res.animationList.forEach(item => {
+            item['isSelect'] = false;
+          })
+          this.setState({
+            sourceData: res.animationList,
+            motionList: res.animationList
+          })
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
 
   show() {
@@ -113,11 +116,20 @@ export default class ChooseMotionView extends Component {
     }
   }
 
+  selectCell(motion) {
+    motion.isSelect = !motion.isSelect;
+    this.setState({
+      motionList: this.state.motionList
+    })
+  }
+
   _renderMotions() {
     let arr = [];
     this.state.motionList.forEach((item, index) => {
       arr.push(
-        <MotionSelectCell key={index} motion={item}/>
+        <TouchableOpacity onPress={() => this.selectCell(item)}>
+          <MotionSelectCell key={index} motion={item}/>
+        </TouchableOpacity>
       )
     })
     return arr;

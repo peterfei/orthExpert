@@ -137,7 +137,7 @@ export default class LoginPageForm extends Component {
                 this.refs.toast.show("用户名或密码不能为空");
                 return;
             }
-            this.Loading.show("正在登录");
+            // this.Loading.show("正在登录");
             // storage.clearMap();
             storage.clearMapForKey("mystructList");
             storage.clearMapForKey("versionByInitMyStruct");
@@ -157,6 +157,11 @@ export default class LoginPageForm extends Component {
                 const userDatas = resp;
                 await storage.save("userTokens", "", resp);
                 await storage.save("memberInfo", "", resp.member);
+                let obj = {
+                    userName: this.state.username,
+                    loginType: 'tell'
+                }
+                await storage.save("auth", "", obj);
 
                 if (userDatas.token != undefined) {
                     storage.loadObj("user", userDatas.token);
@@ -345,6 +350,12 @@ export default class LoginPageForm extends Component {
                 .then(resp => resp.json())
                 .then(async result => {
                     this.Loading.close();
+
+                    let obj = {
+                        userName: weixininfo.unionid,
+                        loginType: 'weixin'
+                    }
+                    await storage.save("auth", "", obj);
 
                     if (result.code == 0) {
                         if (result.mbId != 0) {

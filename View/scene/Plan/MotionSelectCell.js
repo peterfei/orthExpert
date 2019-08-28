@@ -13,18 +13,14 @@ export default class MotionSelectCell extends Component {
 
   constructor(props) {
     super(props);
-    let newMotion = props.motion;
-    newMotion['isSelect'] = false;
     this.state = {
-      motion: newMotion
+      motion: props.motion
     }
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    let newMotion = nextProps.motion;
-    newMotion['isSelect'] = false;
     this.setState({
-      motion: newMotion
+      motion: nextProps.motion
     })
   }
 
@@ -32,14 +28,6 @@ export default class MotionSelectCell extends Component {
   }
 
   componentDidMount() {
-  }
-
-  selectCell() {
-    let motion = this.state.motion;
-    motion.isSelect = !motion.isSelect;
-    this.setState({
-      motion: motion
-    })
   }
 
   render() {
@@ -57,10 +45,8 @@ export default class MotionSelectCell extends Component {
               <Text style={{color: AppDef.Black, fontSize: size(26)}}>{name}</Text>
               <Text style={{color: 'rgba(104, 104, 104, 1)', fontSize: size(20), marginTop: size(50)}}>{type}</Text>
             </View>
-            <TouchableOpacity onPress={() => this.selectCell()}>
-              <Image source={this.state.motion.isSelect ? require('../../img/kf_main/kf_plan_selected.png') : require('../../img/kf_main/kf_plan_unselect.png')}
-                     style={{width: size(48), height: size(48)}}/>
-            </TouchableOpacity>
+            <Image source={this.state.motion.isSelect ? require('../../img/kf_main/kf_plan_selected.png') : require('../../img/kf_main/kf_plan_unselect.png')}
+                   style={{width: size(48), height: size(48)}}/>
           </View>
         </View>
         <Line color='rgba(227, 227, 227, 0.5)' height={size(1)}/>

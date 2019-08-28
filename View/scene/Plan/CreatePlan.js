@@ -160,9 +160,10 @@ export default class CreatePlan extends BaseComponent {
     // alert(JSON.stringify(params));
     console.log(JSON.stringify(params));
     let tokens = await storage.get("userTokens");
-    let memberInfo = await storage.get("memberInfo")
-    let userName = memberInfo.mbName;
-    const url = NetInterface.createPlan + '?token=' + tokens.token + '&userName=' + userName;
+    let auth = await storage.get("auth")
+    let userName = auth.userName;
+    let loginType = auth.loginType;
+    const url = NetInterface.createPlan + '?token=' + tokens.token + '&userName=' + userName + '&loginType=' + loginType;
     HttpTool.POST(url, params)
       .then(res => {
         this.mainView._closeLoading();
@@ -207,6 +208,7 @@ export default class CreatePlan extends BaseComponent {
               motion.taType = motion.amType;
               motion.repetitions = '10';
               motion.taTime = '10';
+
           })
           // alert(JSON.stringify(result));
           this.setState({
