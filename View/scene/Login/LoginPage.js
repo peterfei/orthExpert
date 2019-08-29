@@ -9,6 +9,7 @@ import {NavigationActions,StackActions} from "react-navigation";
 import {storage} from "../../common/storage";
 import ETTLightStatus from "../../common/ETTLightStatus";
 import Orientation from 'react-native-orientation';
+import SplashScreen from "react-native-splash-screen";
 
 Orientation.lockToPortrait();//强制竖屏
 
@@ -26,6 +27,7 @@ export default class LoginPage extends Component {
 
 
    async componentWillMount() {
+        SplashScreen.hide();
         let tokens = await storage.get("userTokens", "");
 
         if (!(tokens == -1 || tokens == -2)) {
