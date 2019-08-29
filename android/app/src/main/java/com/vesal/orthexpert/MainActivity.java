@@ -9,6 +9,8 @@ import android.widget.Toast;
 import android.view.KeyEvent;
 import com.umeng.socialize.UMShareAPI;
 import com.vesal.orthexpert.module.*;
+import org.devio.rn.splashscreen.SplashScreen; // import this
+
 public class MainActivity extends ReactActivity {
     private long firstClick;
 
@@ -34,6 +36,7 @@ public class MainActivity extends ReactActivity {
         PushModule.initPushSDK(this);
         PushAgent.getInstance(this).onAppStart();
         ShareModule.initActivity(this);
+        SplashScreen.show(this);
         // MobclickAgent.setSessionContinueMillis(1000);
         // MobclickAgent.setScenarioType(this, EScenarioType.E_DUM_NORMAL);
         // MobclickAgent.openActivityDurationTrack(false);

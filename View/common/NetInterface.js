@@ -100,6 +100,10 @@ const UploadModule = {
   uploadImg: 'app/v1/mbFile/upload'
 }
 
+const Gk = {
+  useActiveCode: '/v1/app/orthope/combo/useActiveCode'
+}
+
 export default {
   ...LoginModule,
   ...HomeModulInterface,
@@ -111,5 +115,6 @@ export default {
   ...settingModule,
   ...Sick,
     ...Combo,
-  ...Pay
+  ...Pay,
+  ...Gk
 }
