@@ -1,4 +1,4 @@
-import {Alert} from 'react-native';
+import {Alert,NativeModules} from 'react-native';
 import {HttpTool, NetInterface} from "./index";
 import {storage} from "./storage";
 import {NavigationActions,StackActions} from "react-navigation";
@@ -17,7 +17,7 @@ export async function CheckAppVersion(item) {
                     const downloadUrl = item.url;
                     NativeModules.DownloadApk.downloading(
                         downloadUrl,
-                        "vesal.apk"
+                        "guke.apk"
                     );
                 }
             }

@@ -28,8 +28,10 @@ export default class ListCell extends Component {
     async checkVersion() {
         const currVersion = DeviceInfo.getVersion();
         const netInterface = NetInterface.getAppVersion + "?version=" + currVersion + "&plat=" + Platform.OS;
+        
         HttpTool.GET(netInterface)
             .then(res => {
+                // alert(JSON.stringify(res))
                 if (res.List.length > 0) {
                     let item = res.List[0];
                     let serverVersion = item.version;
