@@ -11,13 +11,15 @@ let active = "dev";
 let base_url_jiepou ;
 let base_url_sport ;
 
-
+let base_url;
 if (active=='prod'){
      base_url_sport = "http://slb-sport.vesal.cn/vesal-sport-prod/";
      base_url_jiepou = "http://api.vesal.cn:8000/vesal-jiepao-prod/";
+     base_url= "http://api.vesal.cn:8000/vesal-jiepao-prod/"
 } if (active=='test'||active=='dev'){
      base_url_sport = "http://114.115.210.145:8085/vesal-sport-test/";
      base_url_jiepou = "http://118.24.119.234:8087/vesal-jiepao-test/";
+     base_url = "http://118.24.119.234:8087/vesal-jiepao-test/"
 }
 
 let connect = false;
@@ -40,7 +42,7 @@ async function getNetWorkState() {
 
 export async function POST(urlInterface, params) {
   let tokens = await storage.get("userTokens");
-  let url = base_url_sport + urlInterface;
+  let url = base_url + urlInterface;
   return new Promise(function(resolve, reject){
     fetch(url,{
       method: "post",
@@ -68,7 +70,7 @@ export async function POST(urlInterface, params) {
 
 export async function GET(urlInterface) {
   let tokens = await storage.get("userTokens");
-  let url = base_url_sport + urlInterface;
+  let url = base_url + urlInterface;
   return new Promise(function(resolve, reject){
     fetch(url,{
       method: "get",
@@ -83,6 +85,7 @@ export async function GET(urlInterface) {
         resolve(result);
       })
       .catch((error) => {
+        // alert(error)
         let isConnect = getNetWorkState();
         if (!isConnect) {
           error = '检测到你当前无网络连接';
@@ -118,7 +121,7 @@ export async function GETX(urlInterface) {
 }
 
 export async function UploadImg(photos) {
-  let uploadUrl = base_url_sport+NetInterface.uploadImg + '?type=6';
+  let uploadUrl = base_url+NetInterface.uploadImg + '?type=6';
   let tokens = await storage.get("userTokens");
   let formData = new FormData();
   photos.forEach((photo) => {

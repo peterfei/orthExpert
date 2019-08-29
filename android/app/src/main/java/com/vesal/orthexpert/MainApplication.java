@@ -97,7 +97,8 @@ public class MainApplication extends Application implements ReactApplication {
           new DplusReactPackage(),
           new com.vesal.orthexpert.wxapi.WxentryPackage(),
           new com.vesal.orthexpert.wxapi.WxpayPackage(),
-          new SharePackage()
+          new SharePackage(),
+          new DownloadApkPackage()
       );
     }
 
