@@ -63,7 +63,7 @@ export default class PlanDetail extends BaseComponent {
       .then(res => {
         this.mainView._closeLoading();
         if (res.code == 0 && res.msg == 'success') {
-           alert(JSON.stringify(res));
+          //  alert(JSON.stringify(res));
           this.setState({
             planInfo: res.plan,
             amList: res.amList,
