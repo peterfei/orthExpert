@@ -47,7 +47,7 @@ export default class HomeScreen extends Component {
     load_app_id: '',
     numImg: '',
     times:0,
-    unityHeight: screen.height  + (Platform.OS == 'ios' ? 0 : size(148)),
+    unityHeight: screen.height ,
     unityWith: screen.width
   }
 
@@ -225,7 +225,14 @@ export default class HomeScreen extends Component {
   }
   async componentDidMount() {
     let tokens = await storage.get("userTokens", "");
+<<<<<<< HEAD
     if (tokens == -1 || tokens == -2) {
+=======
+    // alert(JSON.stringify(tokens))
+    if ((tokens == -1 || tokens == -2)) {
+        
+
+>>>>>>> c8c813a8fdae6b9508cb8c528beabca9c44daa96
         const resetAction = StackActions.reset({
             index: 0,
             actions: [NavigationActions.navigate({routeName: "LoginPage"})]

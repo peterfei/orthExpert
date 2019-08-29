@@ -10,7 +10,7 @@ export default {
     // height: '100%',
     // width: '100%',
     //justifyContent: 'center',
-    alignItems: 'center',
+    // alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,1)',
   },
   rightMenu: {
