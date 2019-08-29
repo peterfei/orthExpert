@@ -140,14 +140,18 @@ export default class MyScreen extends Component {
       <ImageBackground source={require('../../img/kf_mine/mine_topback.png')} style={styles.topImgBack}>
 
         <StatusBar />
-        <View style={{justifyContent: 'center', alignItems: 'center',  height: size(88) + isIPhoneXPaddTop(0) + ( Platform.OS === 'android' ? statusBarHeight : 0),
-          paddingTop: isIPhoneXPaddTop(0) + ( Platform.OS === 'android' ? statusBarHeight : 0)}}>
-          <Text style={{color: AppDef.White, fontWeight: 'bold', fontSize: AppDef.TitleSize}} allowFontScaling={false}>个人中心</Text>
+        <View style={{
+          justifyContent: 'center', alignItems: 'center', height: size(88) + isIPhoneXPaddTop(0) + (Platform.OS === 'android' ? statusBarHeight : 0),
+          paddingTop: isIPhoneXPaddTop(0) + (Platform.OS === 'android' ? statusBarHeight : 0)
+        }}>
+          <Text style={{ color: AppDef.White, fontWeight: 'bold', fontSize: AppDef.TitleSize }} allowFontScaling={false}>个人中心</Text>
 
-          <MyTouchableOpacity style={{height: size(88) + isIPhoneXPaddTop(0) , justifyContent: 'center', alignItems: 'center',
-            position: 'absolute', left: size(20), top: isIPhoneXPaddTop(0) + ( Platform.OS === 'android' ? statusBarHeight : 0)}}
-            onPress={() => {this.props.navigation.goBack()}}>
-            <Image source={require('../../img/public/left.png')} style={{width: size(36), height: size(36)}}/>
+          <MyTouchableOpacity style={{
+            height: size(88) + isIPhoneXPaddTop(0), justifyContent: 'center', alignItems: 'center',
+            position: 'absolute', left: size(20), top: isIPhoneXPaddTop(0) + (Platform.OS === 'android' ? statusBarHeight : 0)
+          }}
+            onPress={() => { this.props.navigation.goBack() }}>
+            <Image source={require('../../img/public/left.png')} style={{ width: size(36), height: size(36) }} />
           </MyTouchableOpacity>
         </View>
 
@@ -198,14 +202,25 @@ export default class MyScreen extends Component {
 
   _renderVipButton() {
     return (
-      <TouchableOpacity onPress={() => { this.props.navigation.navigate('BuyVip') }}>
+      <TouchableOpacity onPress={() => this.buyVIP()}>
         <View style={{ marginTop: size(39), marginBottom: size(39), marginLeft: size(25), marginRight: size(25) }}>
           <Image source={require('../../img/kf_mine/mine_vipbtn.png')} style={{ width: '100%', height: size(90) }} />
         </View>
       </TouchableOpacity>
     )
   }
-
+  async buyVIP() {
+    let memberInfo = await storage.get("memberInfo")
+    if (memberInfo.isYouke == "yes") {
+      const resetAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: "LoginPage" })]
+      });
+      this.props.navigation.dispatch(resetAction);
+    } else {
+      this.props.navigation.navigate('BuyVip')
+    }
+  }
   _renderMiddle() {
     let arr = [];
     let marginLeft = ((deviceWidth - size(140)) - 4 * size(93)) / 3;
@@ -260,7 +275,7 @@ export default class MyScreen extends Component {
 const styles = StyleSheet.create({
   topImgBack: {
     width: '100%',
-    height: size(269) + ( Platform.OS === 'android' ? statusBarHeight : 0),
+    height: size(269) + (Platform.OS === 'android' ? statusBarHeight : 0),
   },
   middleViewStyle: {
     flexDirection: 'row',

@@ -101,6 +101,7 @@ export default class LoginPageForm extends Component {
             const userDatas = resp
             await storage.save("userTokens", "", resp)
             await storage.save("memberInfo", "", resp.member)
+            alert(JSON.stringify(resp))
             if (userDatas.token != undefined) {
                 storage.loadObj("user", userDatas.token)
                 const resetAction = StackActions.reset({

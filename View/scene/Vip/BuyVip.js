@@ -49,7 +49,7 @@ export default class BuyVip extends BaseComponent {
         let isUse = await FuncUtils.checkPerm('yes', 'GKHY')//检查是否有权限
         let memberInfo = await storage.get("memberInfo")
         let tokens = await storage.get("userTokens");
-        let url = api.base_uri + "/v1/app/orthope/combo/getComboInfo?token=" + tokens.token + "&app_version=1.0.0&plat=android&business=orthope&comboCode=GKHY";
+        let url = api.base_uri + "/v1/app/orthope/combo/getComboInfo?token=" + tokens.token + "&app_version=1.0.0&plat=android&business=orthope&comboCode=ORTHOPE_VIP";
         // alert(url)
         // debugger
         await fetch(url, {
