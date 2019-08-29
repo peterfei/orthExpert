@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Platform, StyleSheet, Text, View,
+  Platform, StyleSheet, Text, View, ScrollView,
   Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter
 } from 'react-native';
 import { screen, system } from "../../common";
@@ -10,9 +10,9 @@ import { queryHistoryAll, insertHistory, deleteHistories, queryRecentlyUse } fro
 import Loading from "../../common/Loading";
 import Toast from "react-native-easy-toast";
 import api from "../../api";
-import historyData from "./History.json";
 import styles from './styles';
 import _ from "lodash";
+import { storage } from "../../common/storage";
 
 export default class SearchComponent extends Component {
   static navigationOptions = {
@@ -29,6 +29,7 @@ export default class SearchComponent extends Component {
     currKeyName: '',
     currKeyId: '',
     keyData: '',
+    searchpathologyList: '',
     showHotAndKey: true,
   }
   listeners = {
@@ -182,13 +183,13 @@ export default class SearchComponent extends Component {
               autoFocus={true}
               onChangeText={(value) => this.queryKey(value)} />
             <TouchableOpacity style={styles.searchImg}
-              onPress={() => this.searchStart()}>
+              onPress={() => { }}>
               <Image style={styles.searchImgMain}
                 source={require('../../img/search/search.png')} />
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{ width: '100%', padding: 10 }}>
+        <ScrollView style={{ width: '100%', padding: 10 }}>
           {this.state.showHotAndKey ?
             <View>
               {
@@ -212,28 +213,14 @@ export default class SearchComponent extends Component {
               </View>
             </View>
             : <View>
-              {this.renderSeachBody()}
+              <View style={styles.histortMain}>
+                {this.renderSeachBody()}
+              </View>
             </View>
           }
-        </View>
+        </ScrollView>
       </View>
     )
-  }
-  searchStart() {
-    // if (this.state.key == '' || this.state == undefined) {
-    //   this.refs.toast.show("请输入搜索内容");
-    // } else {
-    let data = {
-      "keyName": this.state.currKeyName,
-      "keyId": this.state.currKeyId
-    }
-    if (this.state.currKeyId && this.state.currKeyId != '') {
-      this.queryStruct(data, "key");
-    } else {
-      this.queryStruct(data, "not_key");
-    }
-
-    // }
   }
   deleteHistory() {
     this.setState({
@@ -302,51 +289,29 @@ export default class SearchComponent extends Component {
           currKeyName: value,
           showHotAndKey: false
         })
-        // let tokens = await storage.get("userTokens");
-        // let url = api.base_uri + "v1/app/struct/getLenovoKeyWord?key=" + value;
-
-        // await fetch(url, {
-        //   method: "get",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     token: tokens.token
-        //   }
-        // }).then(resp => resp.json())
-        //   .then(result => {
-
-        //     if (result.result) {
-        //       this.setState({
-        //         key: value,
-        //         currKeyName: value,
-        //         currKeyId: "",
-        //         keyData: result.result,
-        //         showHot: false,
-        //         showKey: true,
-        //         showStruct: false,
-        //         btnTitle: "搜索"
-        //       })
-        //     }
-        for (let i = 0; i < historyData.data.length; i++) {
-          if (historyData.data[i].name == value) {
-            let data = historyData.data[i]
-            this.setState({
-              key: value,
-              currKeyName: value,
-              currKeyId: data.id,
-            })
+        let tokens = await storage.get("userTokens");
+        let url = api.base_uri + "v1/app/pathology/searchPathologyList?key=" + value;
+        await fetch(url, {
+          method: "get",
+          headers: {
+            "Content-Type": "application/json",
+            token: tokens.token
           }
-        }
-
-        //   })
+        }).then(resp => resp.json())
+          .then(result => {
+            if (result.msg == "success") {
+              this.setState({
+                key: value,
+                searchpathologyList: result.pathologyList,
+              })
+            }
+          })
 
       } else {
         this.setState({
-          // showHot: true,
-          // showKey: true,
-          // showStruct: false,
           keyData: [],
           showHotAndKey: true,
-          //btnTitle: "取消"
+          searchpathologyList: ''
         })
       }
     } catch (e) {
@@ -364,16 +329,20 @@ export default class SearchComponent extends Component {
     return arr
   }
   renderSeachBody() {
-    for (let i = 0; i < historyData.data.length; i++) {
-      if (this.state.currKeyName == historyData.data[i].keyName) {
-        return (
-          <Text style={styles.histortBody} onPress={() => this.searchChick(historyData.data[i])}>{historyData.data[i].keyName}</Text>
+    let searchpathologyList = this.state.searchpathologyList
+    if (searchpathologyList == null || searchpathologyList == '') {
+      return (
+        <Text style={{ fontSize: 15, color: 'white', textAlign: "center", marginTop: 30 }}>没有找到相关结果,换个关键字试试哟~</Text>
+      )
+    } else {
+      let arr = []
+      for (let i = 0; i < searchpathologyList.length; i++) {
+        arr.push(
+          <Text style={styles.histortBody} onPress={() => this.searchChicks(searchpathologyList[i].patNo, searchpathologyList[i].patName)}>{searchpathologyList[i].patName}</Text>
         )
       }
+      return arr
     }
-    return (
-      <Text style={{ fontSize: 15, color: 'white', textAlign: "center", marginTop: 30 }}>没有找到相关结果,换个关键字试试哟~</Text>
-    )
   }
   getKeyName(keyName) {
     if (keyName != '' && keyName != undefined) {
@@ -428,7 +397,7 @@ export default class SearchComponent extends Component {
             onPress={() => this.showSearch()}>
             <View>
               <TextInput
-                style={{ width: '100%', height: 35, paddingLeft: 40,margin: 0, padding: 0,}}
+                style={{ width: '100%', height: 35, paddingLeft: 40, margin: 0, padding: 0, }}
                 placeholder="请输入病症名称"
                 placeholderTextColor='#757575'
                 editable={false} />
