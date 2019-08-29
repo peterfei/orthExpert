@@ -47,7 +47,7 @@ export default class HomeScreen extends Component {
     load_app_id: '',
     numImg: '',
     times:0,
-    unityHeight: screen.height  + (Platform.OS == 'ios' ? 0 : size(148)),
+    unityHeight: screen.height ,
     unityWith: screen.width
   }
 
