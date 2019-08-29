@@ -148,7 +148,7 @@ export default class CreatePlan extends BaseComponent {
       planName: this.state.planInfo.planName,
       description: this.state.planInfo.description,
       category:"康复",
-      businessList:"orthope",
+      businessList:"kfxl",
       iconUrl: this.state.planInfo.iconUrl,
       icon2Url: this.state.planInfo.icon2Url,
       isPub:"no",
