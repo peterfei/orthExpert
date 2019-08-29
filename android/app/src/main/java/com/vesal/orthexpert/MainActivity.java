@@ -59,20 +59,23 @@ public class MainActivity extends ReactActivity {
     }
 
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // TODO Auto-generated method stub
-        if(keyCode==KeyEvent.KEYCODE_BACK){
-            if(System.currentTimeMillis()-firstClick>2000){
-                firstClick=System.currentTimeMillis();
-                Toast.makeText(this, "再按一次退出", 2000).show();;
-            }else{
-                System.exit(0);
-            }
-            return true;
-        }
-        return false;
-    }
+    // @Override
+    // public boolean onKeyDown(int keyCode, KeyEvent event) {
+    //     // TODO Auto-generated method stub
+    //     if(keyCode==KeyEvent.KEYCODE_BACK){
+    //         if(System.currentTimeMillis()-firstClick>2000){
+    //             firstClick=System.currentTimeMillis();
+    //             Toast.makeText(this, "再按一次退出", 2000).show();;
+    //         }else{
+    //             System.exit(0);
+    //         }
+    //         return true;
+    //     }
+    //     return false;
+    // }
+
+    
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
