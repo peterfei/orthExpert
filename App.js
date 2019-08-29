@@ -80,7 +80,7 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
     ActivationCode:{screen:ActivationCode},
   },
   {
-    initialRouteName: 'LoginPage',     //设置初始路由为Home
+    initialRouteName: 'HomeScreen',     //设置初始路由为Home
     mode: 'modal',
     navigationOptions: {
       header: null,

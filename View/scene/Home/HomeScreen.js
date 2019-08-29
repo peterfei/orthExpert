@@ -20,6 +20,8 @@ import { size } from '../../common/ScreenUtil';
 import { set } from 'mobx';
 import Help from "./help";
 import CodePush from "react-native-code-push"; // 引入code-push
+import {NavigationActions,StackActions} from "react-navigation";
+import {storage} from "../../common/storage";
 
 export default class HomeScreen extends Component {
   static navigationOptions = {
@@ -201,6 +203,7 @@ export default class HomeScreen extends Component {
     BackHandler.removeEventListener("back", this.goBackClicked);
   }
   async componentWillMount() {
+    
     CodePush.notifyAppReady(); //为避免警告
     //Unity 是否已加载
     this.setState({
@@ -221,6 +224,19 @@ export default class HomeScreen extends Component {
     BackHandler.addEventListener("back", this.goBackClicked);
   }
   async componentDidMount() {
+    let tokens = await storage.get("userTokens", "");
+    // alert(JSON.stringify(tokens))
+    if (!(tokens == -1 || tokens == -2)) {
+        if (tokens.member.isYouke == "yes") {
+            return false;
+        }
+
+        const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({routeName: "HomeScreen"})]
+        });
+        this.props.navigation.dispatch(resetAction);
+    }
     await this.syncImmediate(); //开始检查更新
     if (await (UnityModule.isReady())) {
       this.setState({
