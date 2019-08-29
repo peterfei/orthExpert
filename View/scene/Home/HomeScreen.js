@@ -226,14 +226,12 @@ export default class HomeScreen extends Component {
   async componentDidMount() {
     let tokens = await storage.get("userTokens", "");
     // alert(JSON.stringify(tokens))
-    if (!(tokens == -1 || tokens == -2)) {
-        if (tokens.member.isYouke == "yes") {
-            return false;
-        }
+    if ((tokens == -1 || tokens == -2)) {
+        
 
         const resetAction = StackActions.reset({
             index: 0,
-            actions: [NavigationActions.navigate({routeName: "HomeScreen"})]
+            actions: [NavigationActions.navigate({routeName: "LoginPage"})]
         });
         this.props.navigation.dispatch(resetAction);
     }
