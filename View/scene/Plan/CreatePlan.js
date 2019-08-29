@@ -38,6 +38,7 @@ import MotionEditCell from './MotionEditCell';
 import DragTable from '../../common/DragTable';
 import {NavigationActions,StackActions} from "react-navigation";
 const statusBarHeight = StatusBar.currentHeight;
+import Device from "react-native-device-info";
 
 export default class CreatePlan extends BaseComponent {
 
@@ -161,8 +162,9 @@ export default class CreatePlan extends BaseComponent {
     console.log(JSON.stringify(params));
     let tokens = await storage.get("userTokens");
     let auth = await storage.get("auth")
-    let userName = auth.userName;
-    let loginType = auth.loginType;
+    // let userName = (auth.userName==undefined)?Device.getUniqueID():auth.userName;
+    let userName = auth.userName||Device.getUniqueID()
+    let loginType = auth.loginType||'tell';
     const url = NetInterface.createPlan + '?token=' + tokens.token + '&userName=' + userName + '&loginType=' + loginType;
     HttpTool.POST_SP(url, params)
       .then(res => {
