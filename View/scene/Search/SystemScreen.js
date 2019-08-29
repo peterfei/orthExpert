@@ -129,7 +129,7 @@ export default class SystemScreen extends Component<Props> {
         if (this.state.querySystemInfroms.length == 0) {
 
             let whetherloadingornodata = (
-                <View style={{width: screen.width, alignItems: "center"}}>
+                <View style={{height:screen.height*0.7,width: screen.width, justifyContent:'center',alignItems: "center"}}>
                     <Text>暂无任何系统消息哟</Text>
                 </View>
             )

@@ -120,9 +120,10 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     lineStyle: {
-        width: screen.width / 2,
-        height: 2,
-        backgroundColor: color.main
+        width: screen.width / 4,
+        height: size(3),
+        backgroundColor: color.main,
+        marginLeft:screen.width/4/2
     },
     textStyle: {
         flex: 1,

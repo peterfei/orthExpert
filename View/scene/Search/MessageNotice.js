@@ -13,7 +13,7 @@ import {
     DeviceEventEmitter,
     AppState,
     ActivityIndicator,
-    InteractionManager,StatusBar
+    InteractionManager, StatusBar
 } from "react-native";
 import { size } from "../../common/ScreenUtil";
 import ScrollableTabView, {
@@ -22,12 +22,12 @@ import ScrollableTabView, {
 } from "react-native-scrollable-tab-view";
 import { screen, system } from "../../common";
 
-import { NavigationActions,StackActions } from "react-navigation";
+import { NavigationActions, StackActions } from "react-navigation";
 import { storage } from "../../common/storage";
 import api from "../../api";
 import ReplyScreen from "../../scene/Search/ReplyScreen"
 import SystemScreen from "../../scene/Search/SystemScreen";
-
+import TitleBar from '../../scene/Home/TitleBar'
 export default class MessageNotice extends PureComponent {
     static navigationOptions = {
         header: null
@@ -36,8 +36,8 @@ export default class MessageNotice extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-
-        };
+            title: '消息通知'
+        }
     }
 
     async componentDidMount() {
@@ -53,46 +53,32 @@ export default class MessageNotice extends PureComponent {
                 <StatusBar
                     hidden={false}
                 />
-                <View style={styles.titleBar}>
-                    <TouchableOpacity style={{ flex: 2, justifyContent: 'center', alignItems: 'center', height: size(40), }}
-                        onPress={this._onJump.bind(this)}>
-                        <Image source={require('../../img/search/backjt.png')} style={{ width: size(25), height: size(25) }}></Image>
-                    </TouchableOpacity>
-                    <View style={{ flex: 11, alignItems: 'flex-start', justifyContent: 'center', height: size(30), }}>
-                        <Text style={{ fontSize: size(34), color: '#fff', fontWeight: 'bold' }}>消息通知</Text>
-                    </View>
-                </View >
+                {/*消息标题栏*/}
+                <TitleBar navigate={this.props.navigation} title={this.state.title} />
+                {/*消息内容 - 系统通知 - 回复*/}
                 <ScrollableTabView
-                    tabBarActiveTextColor={"#696969"}
-                    tabBarInactiveTextColor={"#A6A6A6"}
-                    tabBarTextStyle={{
-                        fontWeight: "bold",
-                    }}
+                    tabBarActiveTextColor={"#0094e1"}
                     scrollWithoutAnimation={true}
                     tabBarBackgroundColor={"#fff"}
                     tabBarUnderlineStyle={{
-                        width: screen.width / 2,
-                        backgroundColor: "#fff",
-                        alignItems: "center",
+                        width: screen.width / 4,
                         height: size(3),
-
+                        backgroundColor: '#0094e1',
+                        marginLeft: screen.width / 4 / 2
                     }}
                     renderTabBar={() => (
                         <DefaultTabBar
-                            style={{ borderWidth: 0, elevation: 0 }}
+                           // style={{ borderWidth: 0, elevation: 0 }}
                         />
                     )}
                 >
-                    <SystemScreen tabLabel='系统通知'{...this.props} style={{ backgroundColor: "#f0f2f6" }}>
-                        {/*  */}
 
-                    </SystemScreen>
-                    {/* </ScrollView> */}
+                    <SystemScreen tabLabel='系统通知'{...this.props} style={{ backgroundColor: "#f0f2f6" }} />
 
-                    <ReplyScreen tabLabel='回复'{...this.props} style={{ backgroundColor: "#f0f2f6" }}>
+                    <ReplyScreen tabLabel='回复'{...this.props} style={{ backgroundColor: "#f0f2f6" }} />
 
-                    </ReplyScreen>
                 </ScrollableTabView>
+
             </View>
 
         );
@@ -102,35 +88,17 @@ export default class MessageNotice extends PureComponent {
 // define your styles
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#f0f2f6",
-        flex: 1
+        flex: 1,
+        backgroundColor: '#F5FCFF',
     },
     titleBar: {
-        height: size(130),
+        height: size(148),
         paddingTop: size(70),
         flexDirection: "row",
         backgroundColor: "#0094e5",
         width: '100%',
 
     },
-    messageTotalView: {
-        backgroundColor: '#fff',
-        marginTop: size(8),
-        alignItems: "center"
-    },
-    titleViewSty: {
-        flexDirection: "row",
-        width: screen.width * 0.93,
-        //backgroundColor:'yellow'
-    },
-    imgSty: {
-        width: screen.width / 9.5,
-        height: screen.width / 9.5,
-    },
-    messageTxtSty: {
-        color: "#434549",
-        fontSize: size(27)
-    }
 });
 
 

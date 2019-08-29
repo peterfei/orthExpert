@@ -126,7 +126,7 @@ export default class ReplyScreen extends Component<Props> {
         if (this.state.relyList.length == 0) {
 
             let whetherloadingornodata = (
-                <View style={{width: screen.width, alignItems: "center"}}>
+                <View style={{height:screen.height*0.7,width: screen.width, justifyContent:'center',alignItems: "center"}}>
                     <Text>暂无回复任何消息哟</Text>
                 </View>
             )

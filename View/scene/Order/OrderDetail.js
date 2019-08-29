@@ -237,7 +237,7 @@ export default class OrderDetail extends Component {
                         onPress={this.cancelOrder.bind(this)}>
                         <Text style={styles.cancel}>取消订单</Text>
                     </TouchableOpacity>
-                  {Platform.OS == 'ios' ?
+                  {/* {Platform.OS == 'ios' ?
                     null
                     :
                     <TouchableOpacity
@@ -245,7 +245,7 @@ export default class OrderDetail extends Component {
                       onPress={this.payOrder.bind(this)}>
                       <Text style={styles.pay}> 继续支付</Text>
                     </TouchableOpacity>
-                  }
+                  } */}
 
                 </View>
             );
