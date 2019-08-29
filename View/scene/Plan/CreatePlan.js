@@ -164,7 +164,7 @@ export default class CreatePlan extends BaseComponent {
     let userName = auth.userName;
     let loginType = auth.loginType;
     const url = NetInterface.createPlan + '?token=' + tokens.token + '&userName=' + userName + '&loginType=' + loginType;
-    HttpTool.POST(url, params)
+    HttpTool.POST_SP(url, params)
       .then(res => {
         this.mainView._closeLoading();
         if (res.code == 0 && res.msg == 'success') {

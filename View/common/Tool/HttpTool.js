@@ -68,6 +68,34 @@ export async function POST(urlInterface, params) {
   });
 }
 
+export async function POST_SP(urlInterface, params) {
+  let tokens = await storage.get("userTokens");
+  let url = base_url_sport + urlInterface;
+  return new Promise(function(resolve, reject){
+    fetch(url,{
+      method: "post",
+      body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+        accept: "*/*",
+        token: tokens.token
+      }
+    })
+        .then((resp) => resp.json())
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((error) => {
+          console.log(error);
+          let isConnect = getNetWorkState();
+          if (!isConnect) {
+            error = '检测到你当前无网络连接';
+          }
+          reject(error);
+        });
+  });
+}
+
 export async function GET(urlInterface) {
   let tokens = await storage.get("userTokens");
   let url = base_url_sport + urlInterface;
