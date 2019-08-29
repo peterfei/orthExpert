@@ -22,6 +22,7 @@ import Help from "./help";
 import CodePush from "react-native-code-push"; // 引入code-push
 import {NavigationActions,StackActions} from "react-navigation";
 import {storage} from "../../common/storage";
+import SplashScreen from "react-native-splash-screen";
 
 export default class HomeScreen extends Component {
   static navigationOptions = {
@@ -40,7 +41,7 @@ export default class HomeScreen extends Component {
     loading: true,
     isUnityReady: false,
     iArr: '',//有效i值,
-    showLoading: false,
+    // showLoading: false,
     nowIndex: 0,//当前数据下标
     help: false,
     patNo: '',
@@ -98,14 +99,15 @@ export default class HomeScreen extends Component {
           times:this.state.times+1
         })
         if(this.state.times==1){
+          SplashScreen.hide();
           this.setState({
             isUnityReady: true,
-            showLoading: false
+            // showLoading: false
           })
         }else{
-          this.setState({
-            showLoading: false
-          })
+          // this.setState({
+          //   showLoading: false
+          // })
         }
       }
       if (handler.name == "clickBlank") {
@@ -208,17 +210,17 @@ export default class HomeScreen extends Component {
     //Unity 是否已加载
     this.setState({
       isUnityReady: await (UnityModule.isReady()),
-      showLoading: true
+      // showLoading: true
     })
     this.BackHandler()
     /**
      * 30秒后关闭Loading
      */
-    setTimeout(() => {
-      this.setState({
-        showLoading: false
-      })
-    }, 5000)
+    // setTimeout(() => {
+    //   this.setState({
+    //     showLoading: false
+    //   })
+    // }, 5000)
   }
   BackHandler() {
     BackHandler.addEventListener("back", this.goBackClicked);
@@ -237,9 +239,9 @@ export default class HomeScreen extends Component {
     }
     await this.syncImmediate(); //开始检查更新
     if (await (UnityModule.isReady())) {
-      this.setState({
-        showLoading: false
-      })
+      // this.setState({
+      //   showLoading: false
+      // })
     }
   }
   /**
@@ -324,7 +326,7 @@ export default class HomeScreen extends Component {
           fadeOutDuration={1000}
           opacity={0.8}
         />
-        <LoadingView showLoading={this.state.showLoading} />
+        {/* <LoadingView showLoading={this.state.showLoading} /> */}
         <View style={{
           width: size(10),
           position: 'absolute',
