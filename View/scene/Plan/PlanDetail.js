@@ -162,7 +162,7 @@ export default class PlanDetail extends BaseComponent {
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: size(40) }}>
         <ImageBackground source={require('../../img/kf_main/kf_plan_banner_back.png')} style={{ width: size(713), height: size(237) }}>
 
-          <TouchableOpacity onPress={() => { this.gotoSharePlan() }}>
+          {/* <TouchableOpacity onPress={() => { this.gotoSharePlan() }}>
             <View style={{
               marginLeft: size(57), marginRight: size(57), height: size(70), flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
               borderWidth: size(1), borderRadius: size(10), borderColor: 'rgba(158, 122, 92, 1)'
@@ -170,7 +170,7 @@ export default class PlanDetail extends BaseComponent {
               <Image source={require('../../img/kf_main/kf_plan_share_icon.png')} style={{ width: size(33), height: size(28) }} />
               <Text style={{ color: 'rgba(150, 125, 100, 1)', fontSize: size(28), marginLeft: size(30) }} >点击一下，分享此方案吧！</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
 
