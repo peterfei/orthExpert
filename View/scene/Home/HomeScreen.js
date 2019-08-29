@@ -362,7 +362,9 @@ export default class HomeScreen extends Component {
       patNo: pat_no
     })
     //获取搜索后数据
-    let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + pat_no;
+    let mbId = await storage.get("memberInfo");
+    let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + pat_no+"&business=orthope&mbId="+mbId.mbId;
+   
     await fetch(url, {
       method: "get",
       headers: {
@@ -398,7 +400,7 @@ export default class HomeScreen extends Component {
     DeviceEventEmitter.emit("getData", { getData: this.state.getData });
   }
   async getPathologyAndArea(patAreaNo) {//点击区域获取右侧疾病数据
-    let url = api.base_uri + "v1/app/pathology/getPathologyAndArea?patAreaNo=" + patAreaNo;
+    let url = api.base_uri + "v1/app/pathology/getPathologyAndArea?patAreaNo=" + patAreaNo+"&business=orthope";
     await fetch(url, {
       method: "get",
       headers: {
