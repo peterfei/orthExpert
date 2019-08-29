@@ -50,6 +50,8 @@ export default class BuyVip extends BaseComponent {
         let memberInfo = await storage.get("memberInfo")
         let tokens = await storage.get("userTokens");
         let url = api.base_uri + "/v1/app/orthope/combo/getComboInfo?token=" + tokens.token + "&app_version=1.0.0&plat=android&business=orthope&comboCode=GKHY";
+        // alert(url)
+        // debugger
         await fetch(url, {
             method: "get",
             headers: {
@@ -263,25 +265,32 @@ export default class BuyVip extends BaseComponent {
 
     renderPackageDetail() {
         let packageList = []
-        this.state.packageDetail.forEach((item, index) => {
-            let packageItem = (
-                <TouchableOpacity
-                    style={this.state.packageSelected === index ? styles.packageDetailItemChoose : styles.packageDetailItem}
-                    onPress={() => {
-                        this.changeSelect(index)
-                    }}>
-                    {/* {DateUtil.getMonthOrYearByDays(item.timeValue)} */}
-                    <Text style={styles.packageDetailItemTime}>{item.labelA}</Text>
-                    <Text style={styles.packageDetailItemOldPrice}>原价： {item.oldPrice.toFixed(2)} </Text>
-                    <Text style={styles.packageDetailItemPrice}>
-                        <Text
-                            style={styles.packageDetailItemPriceRMB}>RMB </Text>
-                        {item.sellPrice.toFixed(2)}
-                    </Text>
-                </TouchableOpacity>
-            )
-            packageList.push(packageItem)
-        })
+        // debugger
+        if(this.state.packageDetail!=undefined){
+            if(this.state.packageDetail.length>0){
+                this.state.packageDetail.forEach((item, index) => {
+                    let packageItem = (
+                        <TouchableOpacity
+                            style={this.state.packageSelected === index ? styles.packageDetailItemChoose : styles.packageDetailItem}
+                            onPress={() => {
+                                this.changeSelect(index)
+                            }}>
+                            {/* {DateUtil.getMonthOrYearByDays(item.timeValue)} */}
+                            <Text style={styles.packageDetailItemTime}>{item.labelA}</Text>
+                            <Text style={styles.packageDetailItemOldPrice}>原价： {item.oldPrice.toFixed(2)} </Text>
+                            <Text style={styles.packageDetailItemPrice}>
+                                <Text
+                                    style={styles.packageDetailItemPriceRMB}>RMB </Text>
+                                {item.sellPrice.toFixed(2)}
+                            </Text>
+                        </TouchableOpacity>
+                    )
+                    packageList.push(packageItem)
+                })
+            }
+        }
+        
+        
 
         return (
             <View style={styles.packageDetail}>

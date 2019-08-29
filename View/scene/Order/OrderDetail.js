@@ -67,7 +67,6 @@ export default class OrderDetail extends Component {
                     combo: result.List.combo,
                     ordNo: info.ord_no
                 });
-
             });
     }
 
@@ -175,11 +174,20 @@ export default class OrderDetail extends Component {
                 }
             });
     }
-
     async payOrder() {
-        this.props.navigation.navigate("PaymentOrder", {
-            infos: this.state.combo,
-            ordNo: this.state.ordNo
+        // this.props.navigation.navigate("PaymentOrder", {
+        //     infos: this.state.combo,
+        //     ordNo: this.state.ordNo
+        // });
+        let {info} = this.props.navigation.state.params;
+
+        this.props.navigation.navigate("Pay", {
+            combo: {
+                priceId:this.state.combo.priceId,
+                comboId:this.state.combo.combo_id,
+                deadline:info.combo_time_value,
+                sellPrice:info.pay_price
+            },
         });
     }
 

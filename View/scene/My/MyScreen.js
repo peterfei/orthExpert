@@ -31,6 +31,11 @@ export default class MyScreen extends Component {
     }
     this.listData = [
       {
+        title: '我的订单',
+        imgPath: require('../../img/kf_mine/mine_myorder.png'),
+        route: 'MyOrder',
+      },
+      {
         title: '意见反馈',
         imgPath: require('../../img/kf_mine/mine_yjfk.png'),
         route: 'MessageBoard',
@@ -57,7 +62,7 @@ export default class MyScreen extends Component {
       },
       {
         title: '激活码兑换',
-        imgPath: require('../../img/kf_mine/mine_bzzx.png'),
+        imgPath: require('../../img/kf_mine/mine_jhm.png'),
         route: 'ActivationCode'
       }
     ]

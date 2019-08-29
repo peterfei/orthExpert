@@ -39,10 +39,11 @@ export default class OrderItem extends Component {
     let data = {
       page: 1,
       limit: 100,
-      ordState: orderState
+      ordState: orderState,
+      business: "orthope"
     };
 
-    const url = api.base_uri + "v1/app/order/myOrder";
+    const url = api.base_uri + "/v1/app/orthope/order/myOrder";
     try {
       let responseData = await fetch(url, {
         method: "post",
