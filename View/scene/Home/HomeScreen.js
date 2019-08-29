@@ -691,7 +691,7 @@ export default class HomeScreen extends Component {
       () => this.setState({
         rightMenu: false,
         willCloseAnimated: false
-      }), 500
+      }), 300
     );
   }
 }
