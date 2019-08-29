@@ -10,8 +10,7 @@
 
 import React, {Component} from "react";
 import {TouchableOpacity, View, Text, TextInput, StyleSheet, Image} from "react-native";
-import {screen} from '../index'
-import {size} from '../ScreenUtil';
+import {deviceWidth, size} from '../Tool/ScreenUtil';
 import api from "../../api";
 
 var that = null;
@@ -106,22 +105,22 @@ export default class GraphicValidate extends Component {
         for (let i = 0; i < 5; i++) {
             let code = codeArr.length >= i ? codeArr[i] : '';
             arr.push(
-              <TouchableOpacity activeOpacity={1} onPress={() => {this.inputView.focus()}}>
-                  <View style={{
-                      width: size(79),
-                      height: size(79),
-                      borderRadius: size(10),
-                      borderColor: 'rgba(216,216,216, 0.7)',
-                      borderWidth: size(0.5),
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                      margin: size(15)}}>
-                      <Text style={{fontSize: size(48), fontWeight: 'bold'}}>
-                          {code}
-                      </Text>
-                  </View>
-              </TouchableOpacity>
+                <TouchableOpacity activeOpacity={1} onPress={() => {this.inputView.focus()}}>
+                    <View style={{
+                        width: size(79),
+                        height: size(79),
+                        borderRadius: size(10),
+                        borderColor: 'rgba(216,216,216, 0.7)',
+                        borderWidth: size(0.5),
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'row',
+                        margin: size(15)}}>
+                        <Text style={{fontSize: size(48), fontWeight: 'bold'}}>
+                            {code}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
 
             )
         }
@@ -131,7 +130,7 @@ export default class GraphicValidate extends Component {
     render() {
         let width = 5 * size(110);
         return (
-            <View style={[styles.container, {right: this.state.isShow ? 0 : 2 * screen.width, ZIndex: this.state.isShow ? 9999 : -1}]}>
+            <View style={[styles.container, {right: this.state.isShow ? 0 : 2 * deviceWidth, ZIndex: this.state.isShow ? 9999 : -1}]}>
                 <View style={{backgroundColor: 'white', width: width, borderRadius: size(20), overflow: 'hidden'}}>
                     <View style={{width: width, height: size(80),justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{fontSize: size(36), fontWeight: 'bold'}}>
@@ -146,12 +145,12 @@ export default class GraphicValidate extends Component {
                         {this._renderTexts()}
                     </View>
                     <TextInput
-                      ref={(view) => {this.inputView = view}}
-                      // keyboardType='numeric'
-                      maxLength={5}
-                      onChange={(event) => {this._onChange(event)}}
-                      value = {this.state.value}
-                      style={{width: size(1), height: size(1), fontSize: size(1), position: 'absolute', top: 0, left: 0}}
+                        ref={(view) => {this.inputView = view}}
+                        // keyboardType='numeric'
+                        maxLength={5}
+                        onChange={(event) => {this._onChange(event)}}
+                        value = {this.state.value}
+                        style={{width: size(1), height: size(1), fontSize: size(1), position: 'absolute', top: 0, left: 0}}
                     />
                 </View>
             </View>
@@ -161,7 +160,7 @@ export default class GraphicValidate extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        width: screen.width,
+        width: deviceWidth,
         height: '100%',
         backgroundColor: 'rgba(0,0,0,0.3)',
         position: 'absolute',
