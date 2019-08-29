@@ -1,13 +1,7 @@
 import React from "react";
 import {
     View,
-    Text,
-    ScrollView,
     StyleSheet,
-    TouchableOpacity,
-    Image,
-    ImageBackground,
-    TouchableHighlight,
     TextInput
 } from "react-native";
 import {
@@ -32,12 +26,14 @@ export default class UserInfoDetail extends BaseComponent {
         this.props.navigation.state.params.returnData(name);
         this.props.navigation.goBack();
     }
+
     render() {
         return (
             <View style={{flex: 1, backgroundColor: '#ffffff'}}>
                 <NavBar title='设置昵称' navigation={this.props.navigation} rightAction={() => this.saveNickName()} rightTitle={'保存'}/>
                 <TextInput
                     autoFocus={true}
+                    maxLength={30}
                     style={{
                         height: size(80),
                         borderBottomColor: '#e0e0e0',

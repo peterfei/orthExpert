@@ -67,6 +67,13 @@ export async function  getComboByCode(comboCode){
    return  result;
 
 }
+export function validatePwd(s) {
+    var patrn=/^(\w){6,20}$/;
+    if (!patrn.exec(s)) {
+        return false
+    }
+    return true
+}
 
 export async function  checkPerm(isFree, comboCode) {
     //isFree 是否收费 yes no
@@ -262,7 +269,7 @@ export async function  logout(that) {
     const resetAction = StackActions.reset({
         index: 0,
         actions: [
-            NavigationActions.navigate({routeName: "kfLogin"})
+            NavigationActions.navigate({routeName: "LoginPage"})
         ]
     });
     that.props.navigation.dispatch(resetAction);

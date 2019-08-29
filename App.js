@@ -18,6 +18,7 @@ import showMessages from "./View/scene/My/showMessages";
 import Help from "./View/scene/Help/help";
 import problemDetails from "./View/scene/Help/problemDetails";
 import kfMineUserInfo from "./View/scene/My/UserInfoDetail";//EditMember
+
 import MemberComplete from "./View/scene/Register/MemberComplete";
 import RegisterPage from "./View/scene/Register/RegisterPage";
 import ForgetPasswordPage from "./View/scene/Register/ForgetPasswordPage";
@@ -39,6 +40,8 @@ import kfSickPlanList from './View/scene/Plan/SickPlanList';
 import kfCreatePlan from './View/scene/Plan/CreatePlan';
 import kfModifyData from './View/scene/My/ModifyData';
 import ActivationCode from './View/scene/My/ActivationCode';
+import ModifyPassword from './View/scene/My/ModifyPassword'
+
 
 /**消息通知页面 */
 import MessageNotice from './View/scene/Search/MessageNotice';
@@ -78,6 +81,7 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
     TrainPlay: { screen: TrainPlay },
     kfModifyData: { screen: kfModifyData },
     ActivationCode:{screen:ActivationCode},
+    ModifyPassword:{screen:ModifyPassword}
   },
   {
     initialRouteName: 'HomeScreen',     //设置初始路由为Home

@@ -21,7 +21,8 @@ import {
 } from '../../common';
 import {storage} from "../../common/storage";
 import SYImagePicker from 'react-native-syan-image-picker'
-import {NavigationActions,StackActions} from "react-navigation";
+import {NavigationActions, StackActions} from "react-navigation";
+import api from "../../api";
 
 export default class UserInfoDetail extends BaseComponent {
 
@@ -40,7 +41,7 @@ export default class UserInfoDetail extends BaseComponent {
             sectionSexData: [{title: '性别', content: '', type: 'select',}],
             sectionIdentityData: [{title: '选择身份', content: '', type: 'select',}]
         };
-        this.modifyPassword = [{title: '修改密码', content: 'kfModifyPassword', type: 'page'}];
+        this.modifyPassword = [{title: '修改密码', content: 'ModifyPassword', type: 'page'}];
     }
 
     async componentDidMount() {
@@ -56,19 +57,23 @@ export default class UserInfoDetail extends BaseComponent {
     }
 
     async getAllIdentity() {
-        const netInterface = NetInterface.getAllIdentity;
-        HttpTool.GET(netInterface)
-            .then(res => {
-                if (res.code == 0) {
+        let tokens = await storage.get("userTokens");
+        let url = api.base_uri + "v1/app/member/getAllIdentity";
+        await fetch(url, {
+            method: 'get',
+            headers: {
+                "Content-Type": "application/json",
+                token: tokens.token
+            }
+        }).then(resp => resp.json())
+            .then(result => {
+                if (result.code == 0) {
                     this.setState({
-                        identityList: res.List
-                    });
+                        identityList: result.List
+                    })
                 } else {
-                    this.mainView._toast(res.msg);
+                    console.log(result.msg)
                 }
-            })
-            .catch(err => {
-                this.mainView._toast(JSON.stringify(err));
             })
     }
 
@@ -82,13 +87,21 @@ export default class UserInfoDetail extends BaseComponent {
             mbHeadUrl: memberInfo.mbHeadUrl,
             mbId: this.state.getMemberId
         };
-        // alert(JSON.stringify(body))
-        const netInterface = NetInterface.updateMemberInfo;
-        HttpTool.POST(netInterface, body)
-            .then(async res => {
-                if (res.code == 0) {
-                    // alert("code==0" + JSON.stringify(res.member));
-                    let memberInfo = res.member;
+        console.log("--------------body---------" + JSON.stringify(body))
+
+        let tokens = await storage.get("userTokens");
+        let url = api.base_uri + "v1/app/member/updateMemberInfo";
+        await fetch(url, {
+            method: 'post',
+            body: JSON.stringify(body),
+            headers: {
+                "Content-Type": "application/json",
+                token: tokens.token,
+            }
+        }).then(resp => resp.json())
+            .then(async result => {
+                if (result.code == 0) {
+                    let memberInfo = result.member;
                     this.setState({
                         getMemberInfo: memberInfo,
                         getMemberId: memberInfo.mbId,
@@ -96,14 +109,10 @@ export default class UserInfoDetail extends BaseComponent {
                         sectionSexData: [{title: '性别', content: memberInfo.mbSex, type: 'select'}],
                         sectionIdentityData: [{title: '选择身份', content: memberInfo.identityTitle, type: 'select'}]
                     })
-                    await storage.save("memberInfo", "", res.member);
+                    await storage.save("memberInfo", "", result.member);
                     DeviceEventEmitter.emit(AppDef.kNotify_UpdateUserInfoSuccess);
                 }
             })
-            .catch(
-                err => {
-                    this.mainView._toast(JSON.stringify(err));
-                })
     }
 
     async logout() {
@@ -112,7 +121,7 @@ export default class UserInfoDetail extends BaseComponent {
         // await storage.clearMapForKey("versionByInitMyStruct");
         // await storage.clearMapForKey("initMyStruct");
         await storage.clearMapForKey("memberInfo");
-        await storage.clearMapForKey("memberCombo");
+        await storage.clearMapForKey("memberCgetombo");
         const resetAction = StackActions.reset({
             index: 0,
             actions: [
@@ -120,6 +129,40 @@ export default class UserInfoDetail extends BaseComponent {
             ]
         });
         this.props.navigation.dispatch(resetAction);
+    }
+
+     async UploadImg(photos){
+         this.mainView._showLoading("正在上传...")
+         let uploadUrl = api.base_uri+'app/v1/mbFile/upload?token=1&type=6';
+         let tokens = await storage.get("userTokens");
+         let formData = new FormData();
+         photos.forEach((photo) => {
+             let file = { uri:  photo.uri, type: 'multipart/form-data', name: 'image.png'};
+             formData.append('file', file);
+         })
+             fetch(uploadUrl, {
+                 method: "post",
+                 body: formData,
+                 headers: {
+                     'Content-Type': 'multipart/form-data',
+                     token: tokens.token
+                 }
+             })
+                 .then(resp => resp.json())
+                 .then(res => {
+                     this.mainView._closeLoading();
+                     if (res.code == 0) {
+                            let memberInfo = this.state.getMemberInfo;
+                            memberInfo.mbHeadUrl = res.url;
+                            this.updateMemberInfo();
+                        }
+                        this.setState({
+                            getImageUrl: res.url
+                        })
+                 })
+                 .catch(error => {
+                     console.log(error)
+                 })
     }
 
     handlePromiseSelectPhoto() {
@@ -131,21 +174,7 @@ export default class UserInfoDetail extends BaseComponent {
         }, (err, photos) => {
             console.log('开启', err, photos);
             if (!err) {
-                this.mainView._showLoading("正在上传...")
-                HttpTool.UploadImg(photos)
-                  .then(res => {
-                      this.mainView._closeLoading();
-                      if(res.code == 0){
-                          let memberInfo = this.state.getMemberInfo;
-                          memberInfo.mbHeadUrl = res.url;
-                          this.updateMemberInfo();
-                      }
-                      this.setState({
-                          getImageUrl: res.url
-                      })
-                  }).catch(err => {
-                    console.log(JSON.stringify(err))
-                })
+                this.UploadImg(photos);
             } else {
                 console.log(err)
             }
@@ -321,7 +350,7 @@ export default class UserInfoDetail extends BaseComponent {
             <ContainerView ref={r => this.mainView = r} selectDialogAction={(result) => {
                 this.handleSelectionAction(result)
             }}>
-                <NavBar title='个人资料' navigation={this.props.navigation}/>
+                <NavBar title='' navigation={this.props.navigation}/>
                 {this._renderHeader()}
                 <Line height={size(14)}/>
                 {this._renderNickName()}

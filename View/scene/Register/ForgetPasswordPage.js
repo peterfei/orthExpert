@@ -108,7 +108,7 @@ export default class ForgetPasswordPage extends Component {
 
     async onConfirmRegister() {
         if (this.state.username) {
-            this.Loading.show('正在修改密码...');
+            this.Loading.show('正在...');
             try {
                 let data = {
                     tellAndEmail: this.state.username,
