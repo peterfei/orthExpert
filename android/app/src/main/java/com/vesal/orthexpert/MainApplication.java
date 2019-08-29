@@ -3,6 +3,7 @@ package com.vesal.orthexpert;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.microsoft.codepush.react.CodePush;
 import com.syanpicker.RNSyanImagePickerPackage;
 import fr.greweb.reactnativeviewshot.RNViewShotPackage;
 import com.zmxv.RNSound.RNSoundPackage;
@@ -62,6 +63,11 @@ public class MainApplication extends Application implements ReactApplication {
   private Handler handler;
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
+    protected String getJSBundleFile(){
+      return CodePush.getJSBundleFile();
+    }
+
+    @Override
     public boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
     }
@@ -70,6 +76,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
             new RNSyanImagePickerPackage(),
             new RNViewShotPackage(),
             new RNSoundPackage(),

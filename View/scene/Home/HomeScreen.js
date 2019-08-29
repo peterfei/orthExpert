@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   Platform, StyleSheet, Text, View, BackHandler,
@@ -27,6 +19,7 @@ import LoadingView from '../../common/LoadingView.js'
 import { size } from '../../common/ScreenUtil';
 import { set } from 'mobx';
 import Help from "./help";
+import CodePush from "react-native-code-push"; // 引入code-push
 
 export default class HomeScreen extends Component {
   static navigationOptions = {
@@ -54,6 +47,25 @@ export default class HomeScreen extends Component {
     times:0,
     unityHeight: screen.height  + (Platform.OS == 'ios' ? 0 : size(148)),
     unityWith: screen.width
+  }
+
+  syncImmediate() {
+    CodePush.sync(
+      {
+        installMode: CodePush.InstallMode.IMMEDIATE, //启动模式三种：ON_NEXT_RESUME、ON_NEXT_RESTART、IMMEDIATE
+        updateDialog: {
+          appendReleaseDescription: true, //是否显示更新description，默认为false
+          descriptionPrefix: "更新内容：", //更新说明的前缀。 默认是” Description:
+          mandatoryContinueButtonLabel: "立即更新", //强制更新的按钮文字，默认为continue
+          mandatoryUpdateMessage: "发现新版本，请确认更新", //- 强制更新时，更新通知. Defaults to “An update is available that must be installed.”.
+          optionalIgnoreButtonLabel: "稍后", //非强制更新时，取消按钮文字,默认是ignore
+          optionalInstallButtonLabel: "后台更新", //非强制更新时，确认文字. Defaults to “Install”
+          optionalUpdateMessage: "发现新版本，是否更新？", //非强制更新时，更新通知. Defaults to “An update is available. Would you like to install it?”.
+          title: "更新提示" //要显示的更新通知的标题. Defaults to “Update available”.,
+        }
+      }
+      // this._codePushDownloadDidProgress.bind(this)
+    );
   }
 
   Animated() {
@@ -189,6 +201,7 @@ export default class HomeScreen extends Component {
     BackHandler.removeEventListener("back", this.goBackClicked);
   }
   async componentWillMount() {
+    CodePush.notifyAppReady(); //为避免警告
     //Unity 是否已加载
     this.setState({
       isUnityReady: await (UnityModule.isReady()),
@@ -208,7 +221,7 @@ export default class HomeScreen extends Component {
     BackHandler.addEventListener("back", this.goBackClicked);
   }
   async componentDidMount() {
-
+    await this.syncImmediate(); //开始检查更新
     if (await (UnityModule.isReady())) {
       this.setState({
         showLoading: false
@@ -359,18 +372,12 @@ export default class HomeScreen extends Component {
       )
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
     } else if (img == "noImg") {
-      // alert(111)
+      alert(111)
 
       this.setState({
         img: false,
       })
-      // setTimeout(function(){
-      //   this.setState({
-      //     img: false,
-      //     isUnityReady:true
-      //   })
-      // }.bind(this),2000)
-      // DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
+      
 
     }
     DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
@@ -593,7 +600,6 @@ export default class HomeScreen extends Component {
     arr.push(
       <View style={{ width: 10, height: 8 }}></View>
     )
-    //alert(JSON.stringify(this.state.rightMenuData.pathologyList) )
     for (let i = 0; i < this.state.rightMenuData.pathologyList.length; i++) {
       let sick = this.state.rightMenuData.pathologyList[i];
       arr.push(

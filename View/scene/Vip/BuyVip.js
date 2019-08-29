@@ -13,7 +13,6 @@ import api from "../../api";
 
 import { NativeModules } from 'react-native'
 const Wxpay= NativeModules.Wxpay
-// import {Wxpay} from "../../common/Wxpay";
 import Toast, { DURATION } from "react-native-easy-toast";
 
 

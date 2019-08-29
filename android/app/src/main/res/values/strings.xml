@@ -1,3 +1,4 @@
 <resources>
+	<string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">q4YE8sCIJ4Xepd6gaJA1qWTza76x4ksvOXqog</string>
     <string name="app_name">骨科专家</string>
 </resources>
