@@ -39,6 +39,7 @@ export default class Details extends Component {
         textOpen: false,//底部unity-ui
         intro: false,//简介
         towScreenName: '',//第二界面骨名
+        paused:false,
         bottomIcon: [
             { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
             { img: require('../../img/home/xinxi.png'), title: '简介' },
@@ -270,6 +271,34 @@ export default class Details extends Component {
             reason: false
         })
     }
+
+    checkPage(page){
+        // alert(JSON.stringify(page))
+        let videoData = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))
+        videoData.forEach((data,index)=>{
+            if(page == index){
+                this.setState({
+                    paused: false,
+                })
+            }else {
+                this.setState({
+                    paused: true
+                })
+            }
+        })
+    }
+
+    _onScrollEnd(e) {
+        let width = screen.width;
+        let currentOffsetX = e.nativeEvent.contentOffset.x;
+        let page = parseInt(currentOffsetX / width);
+        this.scrollPage = page;
+        this.checkPage(page)
+        // alert("滚动时，页数为"+page)
+        // select new dropdown item
+    }
+
+
     renderVideo() {
         return (
             <ScrollView
@@ -277,6 +306,7 @@ export default class Details extends Component {
                 pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
                 horizontal={true}
+                onMomentumScrollEnd={this._onScrollEnd.bind(this)}
                 style={{ width: screen.width, height: screen.height * 2, paddingTop: screen.height + 50 }}>
 
                 {this.renderVideoBody('more')}
@@ -301,6 +331,7 @@ export default class Details extends Component {
                     <View style={{ width: screen.width, height: screen.height - 50, justifyContent: 'center', alignItems: 'center' }}>
                         <Video
                             //autoPlay
+                            autoPlay={this.state.paused}
                             scrollBounce
                             volume={0.8}
                             inlineOnly
@@ -326,7 +357,11 @@ export default class Details extends Component {
                             flexDirection: 'row',
                             alignItems: 'center',
                             zIndex: 9999999999,
-                        }} onPress={() => this.closeVideo(num)}>
+                        }} onPress={() => {
+                            this.setState({
+                                paused:false
+                            })
+                            this.closeVideo(num)}}>
                             <Image source={require('../../img/unity/close.png')} style={{
                                 width: 25,
                                 height: 25,
