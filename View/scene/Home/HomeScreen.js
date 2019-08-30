@@ -289,7 +289,8 @@ export default class HomeScreen extends Component {
           onUnityMessage={this.onUnityMessage.bind(this)}
           style={{
             width: this.state.unityWith,
-            height: this.state.unityHeight + (Platform.OS == 'ios' ? 0 : size(35))
+            height: this.state.unityHeight + (Platform.OS == 'ios' ? 0 : size(35)),
+            marginTop:25
 
           }} />
 
