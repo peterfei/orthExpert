@@ -570,6 +570,7 @@ export default class Details extends Component {
                     reason: true,
                     //title: false,
                     video: false,
+                    openVideoDetail:false,
                     intro: false,
                     bottomIcon: this.state.bottomIconNo,
                 })
@@ -583,6 +584,7 @@ export default class Details extends Component {
                 title: false,
                 reason: false,
                 video: false,
+                openVideoDetail:false,
                 textOpen: false,
                 bottomIcon: this.state.bottomIconNo,
             })
@@ -593,6 +595,7 @@ export default class Details extends Component {
                 if (this.state.video || this.state.reason || this.state.intro) {
                     this.setState({
                         video: false,
+                        openVideoDetail:false,
                         reason: false,
                         title: true,
                         bottomIcon: this.state.bottomIconNo,
@@ -611,6 +614,7 @@ export default class Details extends Component {
                 if (this.state.video || this.state.reason || this.state.intro) {
                     this.setState({
                         video: false,
+                        openVideoDetail:false,
                         reason: false,
                         intro: false,
                         bottomIcon: this.state.bottomIconNo,
@@ -648,6 +652,7 @@ export default class Details extends Component {
                 this.props.navigation.navigate('Recovery', { patNo: this.props.patNo, sick: this.state.getData });
                 this.setState({
                     video: false,
+                    openVideoDetail:false,
                     title: false,
                     reason: false,
                     intro: false,
@@ -688,6 +693,7 @@ export default class Details extends Component {
                     this.setState({
                         EnterNowScreen: "isNotMainScreen",
                         video: false,
+                        openVideoDetail:false,
                         reason: false,
                         title: false,
                         details: false,
