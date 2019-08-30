@@ -41,7 +41,7 @@ export default class HomeScreen extends Component {
     loading: true,
     isUnityReady: false,
     iArr: '',//有效i值,
-    // showLoading: false,
+    showLoading: false,
     nowIndex: 0,//当前数据下标
     help: false,
     patNo: '',
@@ -102,12 +102,12 @@ export default class HomeScreen extends Component {
           SplashScreen.hide();
           this.setState({
             isUnityReady: true,
-            // showLoading: false
+            showLoading: false
           })
         }else{
-          // this.setState({
-          //   showLoading: false
-          // })
+          this.setState({
+            showLoading: false
+          })
         }
       }
       if (handler.name == "clickBlank") {
@@ -210,17 +210,17 @@ export default class HomeScreen extends Component {
     //Unity 是否已加载
     this.setState({
       isUnityReady: await (UnityModule.isReady()),
-      // showLoading: true
+      showLoading: true
     })
     this.BackHandler()
     /**
      * 30秒后关闭Loading
      */
-    // setTimeout(() => {
-    //   this.setState({
-    //     showLoading: false
-    //   })
-    // }, 5000)
+    setTimeout(() => {
+      this.setState({
+        showLoading: false
+      })
+    }, 5000)
   }
   BackHandler() {
     BackHandler.addEventListener("back", this.goBackClicked);
@@ -236,9 +236,9 @@ export default class HomeScreen extends Component {
     }
     await this.syncImmediate(); //开始检查更新
     if (await (UnityModule.isReady())) {
-      // this.setState({
-      //   showLoading: false
-      // })
+      this.setState({
+        showLoading: false
+      })
     }
   }
   /**
@@ -289,7 +289,7 @@ export default class HomeScreen extends Component {
           onUnityMessage={this.onUnityMessage.bind(this)}
           style={{
             width: this.state.unityWith,
-            height: this.state.unityHeight + (Platform.OS == 'ios' ? 0 : size(35)),
+            height: this.state.unityHeight -size(30),
             marginTop:25
 
           }} />
@@ -324,7 +324,7 @@ export default class HomeScreen extends Component {
           fadeOutDuration={1000}
           opacity={0.8}
         />
-        {/* <LoadingView showLoading={this.state.showLoading} /> */}
+        <LoadingView showLoading={this.state.showLoading} />
         <View style={{
           width: size(10),
           position: 'absolute',
@@ -388,7 +388,7 @@ export default class HomeScreen extends Component {
       )
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
     } else if (img == "noImg") {
-      alert(111)
+      // alert(111)
 
       this.setState({
         img: false,
@@ -435,7 +435,7 @@ export default class HomeScreen extends Component {
                   color: 'green',
                 }}
                 src={this.state.getData.img_url}
-                placeholder='http://res.vesal.site/pathology/img/T_JBGK001.jpg'
+                // placeholder='http://res.vesal.site/pathology/img/T_JBGK001.jpg'
               />
             </View>
           </View>

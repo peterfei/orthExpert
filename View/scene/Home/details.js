@@ -495,7 +495,7 @@ export default class Details extends Component {
 
     }
 
-    clickBack(title) {
+    async clickBack(title) {
         //alert(this.props.load_app_id)
         //alert(this.state.getData.open_model)
         let msg = {
@@ -521,7 +521,9 @@ export default class Details extends Component {
 
 
         if (title == "成因") {
-            let isUse = this.checkPerm();
+            let isUse = await this.checkPerm();
+            // alert(isUse)
+            // return
             if(isUse){
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip')
@@ -544,7 +546,7 @@ export default class Details extends Component {
 
         }
         if (title == "简介") {
-            let isUse = this.checkPerm();
+            let isUse =await this.checkPerm();
             if(isUse){
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip')
@@ -613,7 +615,7 @@ export default class Details extends Component {
         if (title == "康复") {
 
             // alert(JSON.stringify(this.state.getData));
-            let isUse = this.checkPerm();
+            let isUse =await this.checkPerm();
             if(isUse){
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip')
@@ -631,7 +633,7 @@ export default class Details extends Component {
 
         }
         if (title == "治疗") {
-            let isUse = this.checkPerm();
+            let isUse =await this.checkPerm();
             if(isUse){
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip')
@@ -648,7 +650,7 @@ export default class Details extends Component {
 
         }
         if (title == "3D模型") {
-            let isUse = this.checkPerm();
+            let isUse =await this.checkPerm();
             if(isUse){
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip')
