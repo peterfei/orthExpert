@@ -98,7 +98,7 @@ export default class MessageBoard extends Component {
       .then(resp => resp.json())
       .then(
         result => {
-          alert(JSON.stringify(result));
+          //alert(JSON.stringify(result));
           if (result && result.page) {
             // alert(JSON.stringify(result.page));
             this.setState({

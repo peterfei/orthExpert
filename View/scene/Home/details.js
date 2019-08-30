@@ -39,7 +39,9 @@ export default class Details extends Component {
         textOpen: false,//底部unity-ui
         intro: false,//简介
         towScreenName: '',//第二界面骨名
-        paused:false,
+        paused: false,
+        openVideoDetail: false,
+        videoNum: '',
         bottomIcon: [
             { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
             { img: require('../../img/home/xinxi.png'), title: '简介' },
@@ -234,13 +236,13 @@ export default class Details extends Component {
         if (JSON.parse(this.state.getData.menus)[0].type == 'video') {
             return (
                 <ScrollView
-                //horizontal={true}
-                pagingEnabled={true}
-                showsHorizontalScrollIndicator={false}
-                horizontal={true}
-                style={{ width: screen.width, height: screen.height * 2, paddingTop: screen.height + 50 }}>
-                {this.renderVideoBody('one')}
-            </ScrollView>
+                    //horizontal={true}
+                    pagingEnabled={true}
+                    showsHorizontalScrollIndicator={false}
+                    horizontal={true}
+                    style={{ width: screen.width, height: screen.height * 2, paddingTop: screen.height + 50 }}>
+                    {this.renderVideoBody()}
+                </ScrollView>
             )
         }
     }
@@ -272,15 +274,15 @@ export default class Details extends Component {
         })
     }
 
-    checkPage(page){
+    checkPage(page) {
         // alert(JSON.stringify(page))
         let videoData = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))
-        videoData.forEach((data,index)=>{
-            if(page == index){
+        videoData.forEach((data, index) => {
+            if (page == index) {
                 this.setState({
                     paused: false,
                 })
-            }else {
+            } else {
                 this.setState({
                     paused: true
                 })
@@ -302,78 +304,103 @@ export default class Details extends Component {
     renderVideo() {
         return (
             <ScrollView
-                //horizontal={true}
-                pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
-                horizontal={true}
-                onMomentumScrollEnd={this._onScrollEnd.bind(this)}
-                style={{ width: screen.width, height: screen.height * 2, paddingTop: screen.height + 50 }}>
-
-                {this.renderVideoBody('more')}
-
-
+                //horizontal={true}
+                style={{ backgroundColor: 'black', width: screen.width, height: screen.height, paddingTop: 50 }}>
+                <View style={{ width: screen.width, margin: screen.width * 0.023, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+                    {this.state.openVideoDetail ? this.renderVideoBody( this.state.videoNum) : this.renderVideoAll()}
+                </View>
             </ScrollView>
         )
     }
-    renderVideoBody(num) {
+    renderVideoAll() {
+        let arr = []
+        let videoData = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))
+        arr.push(
+            <View style={{ height: 20, width: screen.width }}></View>
+        )
+        for (let i = 0; i < videoData.length; i++) {
+            let url = videoData[i].url
+            let name = videoData[i].name
+            arr.push(
+                <TouchableOpacity style={{
+                    width: screen.width * 0.43,
+                    height: screen.width * 0.43 * 140 / 245,
+                    margin: screen.width * 0.023,
+                    marginTop: 30,
+                }}
+                    onPress={() => this.openVideoDetail(i)} >
+                    <Image style={{ width: '100%', height: '100%' }}
+                        source={{ uri: 'http://res.vesal.site/pathology/img/T_JBGK001.jpg' }} />
+                    <Text style={{ color: 'white', fontSize: size(23) }}>{name}</Text>
+                </TouchableOpacity>
+            )
+        }
+        arr.push(
+            <View style={{ height: 80, width: screen.width }}></View>
+        )
+        return arr
+    }
+    openVideoDetail(i) {
+        this.setState({
+            openVideoDetail: true,
+            videoNum: i
+        })
+        DeviceEventEmitter.emit("closeHomeModule", { closeUnity: true });
+    }
+    renderVideoBody(i) {
         let arr = []
         let url = ''
         try {
             let videoData = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))
-            for (let i = 0; i < videoData.length; i++) {
-                if (num == 'more') {
-                    url = videoData[i].url
-                }
-                if (num == 'one') {
-                    url = JSON.parse(this.state.getData.menus)[0].content
-                }
-                arr.push(
-                    <View style={{ width: screen.width, height: screen.height - 50, justifyContent: 'center', alignItems: 'center' }}>
-                        <Video
-                            //autoPlay
-                            autoPlay={this.state.paused}
-                            scrollBounce
-                            volume={0.8}
-                            inlineOnly
-                            key={i}
-                            style={{ width: '100%', height: '100%' }}
-                            url={url}
-                            ref={(ref) => {
-                                this.video = ref
-                            }}
-                            onError={(msg) => {
-                                this.playVideoError(msg)
-                            }}
-                            onFullScreen={(status) => {
-                                status ? this.props.sendMsgToUnity('landscape', '', '') : this.props.sendMsgToUnity('portrait', '', '');
-                            }}
-                        />
-                        <MyTouchableOpacity style={{
-                            position: 'absolute',
-                            height: size(60),
-                            width: size(60),
-                            left: 10,
-                            top: 27,
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            zIndex: 9999999999,
-                        }} onPress={() => {
-                            this.setState({
-                                paused:false
-                            })
-                            this.closeVideo(num)}}>
-                            <Image source={require('../../img/unity/close.png')} style={{
-                                width: 25,
-                                height: 25,
-                                resizeMode: 'contain'
-                            }} />
-                        </MyTouchableOpacity>
-                    </View>
-                )
-                if (num == 'one') {
-                    break
-                }
+            if (i !== undefined&&i!==''&&i!==null) {
+                url = videoData[i].url
+            }else {
+                url = JSON.parse(this.state.getData.menus)[0].content
             }
+            arr.push(
+                <View style={{ width: screen.width, height: screen.height - 50, justifyContent: 'center', alignItems: 'center' }}>
+                    <Video
+                        //autoPlay
+                        autoPlay={this.state.paused}
+                        scrollBounce
+                        volume={0.8}
+                        inlineOnly
+                        style={{ width: '100%', height: '100%' }}
+                        url={url}
+                        ref={(ref) => {
+                            this.video = ref
+                        }}
+                        onError={(msg) => {
+                            this.playVideoError(msg)
+                        }}
+                        onFullScreen={(status) => {
+                            status ? this.props.sendMsgToUnity('landscape', '', '') : this.props.sendMsgToUnity('portrait', '', '');
+                        }}
+                    />
+                    <MyTouchableOpacity style={{
+                        position: 'absolute',
+                        height: size(60),
+                        width: size(60),
+                        left: 10,
+                        top: 27,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        zIndex: 9999999999,
+                    }} onPress={() => {
+                        this.setState({
+                            paused: false
+                        })
+                        this.closeVideo(i)
+                    }}>
+                        <Image source={require('../../img/unity/close.png')} style={{
+                            width: 25,
+                            height: 25,
+                            resizeMode: 'contain'
+                        }} />
+                    </MyTouchableOpacity>
+                </View>
+            )
         } catch (e) {
             Alert.alert('', '该视频暂未开放, 敬请期待.', [{ text: '我知道了' }])
             this.clickBack('返回')
@@ -381,20 +408,20 @@ export default class Details extends Component {
 
         return arr
     }
-    closeVideo(num) {
+    closeVideo(i) {
         if (this.state.EnterNowScreen == "isMainScreen") {
             {
-                num == 'more' ?
-                this.setState({ video: false, title: true, bottomIcon: this.state.bottomIconNo, })
-                :
-                this.setState({ reason: false, title: true })
+                i !== undefined&&i!==''&&i!==null ?
+                    this.setState({ openVideoDetail: false })
+                    :
+                    this.setState({ reason: false, title: true })
             }
         } else {
             {
-                num == 'more' ?
-                this.setState({ video: false, bottomIcon: this.state.bottomIconNo, })
-                :
-                this.setState({ reason: false, })
+                i !== undefined&&i!==''&&i!==null ?
+                    this.setState({  openVideoDetail: false})
+                    :
+                    this.setState({ reason: false, })
             }
         }
         DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
