@@ -521,6 +521,7 @@ export default class Details extends Component {
             }
         }).then(resp => resp.json())
             .then(result => {
+                // debugger
                 if (result.code == 0 && result.result == 'yes') {
                     isUse = true;
                 }
@@ -556,7 +557,8 @@ export default class Details extends Component {
 
         if (title == "成因") {
             let isUse = await this.checkPerm();
-            if (isUse) {
+            // alert(isUse)
+            if (!isUse) {
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip', { title: title })
             } else {
@@ -645,7 +647,7 @@ export default class Details extends Component {
 
             // alert(JSON.stringify(this.state.getData));
             let isUse =await this.checkPerm();
-            if(isUse){
+            if(!isUse){
 
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip', { title: title })
@@ -664,7 +666,7 @@ export default class Details extends Component {
         }
         if (title == "治疗") {
             let isUse =await this.checkPerm();
-            if(isUse){
+            if(!isUse){
 
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip', { title: title })
@@ -682,7 +684,7 @@ export default class Details extends Component {
         }
         if (title == "3D模型") {
             let isUse =await this.checkPerm();
-            if(isUse){
+            if(!isUse){
 
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip', { title: title })
