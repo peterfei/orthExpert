@@ -177,7 +177,7 @@ export default class SearchComponent extends Component {
           </TouchableOpacity>
           <View style={{ width: "85%" }}>
             <TextInput
-              style={[styles.input, { width: "100%" }]}
+              style={[styles.input, { width: "100%",color:'white' }]}
               placeholder="请输入病症名称"
               placeholderTextColor='#757575'
               autoFocus={true}

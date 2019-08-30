@@ -668,7 +668,7 @@ export default class HomeScreen extends Component {
         } >
         <TouchableOpacity style={{ height: 40, width: 40 }} onPress={() => this.closeRightMenu()}>
           <View>
-            <Image style={{ width: 20, position: 'absolute', left: -3, top: -44 }} resizeMode="contain"
+            <Image style={{ width: 25, position: 'absolute', left: -8, top: -44 }} resizeMode="contain"
               source={require('../../img/home/memuOne.png')} />
           </View>
 

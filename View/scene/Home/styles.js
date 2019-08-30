@@ -25,22 +25,22 @@ export default {
     borderRadius: 5,
     zIndex: 999
   },
-  closeButton:{
-    alignItems:'flex-end',
-    width:screen.width,
-    borderBottomWidth:1,
-    borderBottomColor:'#343434',
-    borderTopLeftRadius:size(20),
-    borderTopRightRadius:size(20),
+  closeButton: {
+    alignItems: 'flex-end',
+    width: screen.width,
+    borderBottomWidth: 1,
+    borderBottomColor: '#343434',
+    borderTopLeftRadius: size(20),
+    borderTopRightRadius: size(20),
     backgroundColor: 'rgba(0,0,0,0.8)',
-    height:30
+    height: 30
   },
-  information:{
-    height:100,
-    borderBottomWidth:1,
-    borderBottomColor:'#343434',
+  information: {
+    height: 100,
+    borderBottomWidth: 1,
+    borderBottomColor: '#343434',
     backgroundColor: 'rgba(0,0,0,0.8)',
-    padding:10,
+    padding: 10,
   },
   deleteStyle: {
     position: "absolute",
@@ -58,16 +58,29 @@ export default {
     alignItems: 'center',
     justifyContent: 'center'
   },
+  theme: {
+    title: 'rgba(0,0,0,0)',
+    more: 'rgba(0,0,0,0)',
+    center: 'rgba(0,0,0,0)',
+    fullscreen: 'rgba(0,0,0,0)',
+    volume: 'rgba(0,0,0,0)',
+    scrubberThumb: 'rgba(0,0,0,0)',
+    scrubberBar: 'rgba(0,0,0,0)',
+    seconds: 'rgba(0,0,0,0)',
+    duration: 'rgba(0,0,0,0)',
+    progress: 'rgba(0,0,0,0)',
+    loading: 'rgba(0,0,0,0)'
+  },
   searchImgMain: {
     width: 15,
     height: 15,
   },
-  reasonStyle:{
-    width:'100%',
+  reasonStyle: {
+    width: '100%',
   },
   videoSourceStyle: {
     width: screen.width,
-    height: screen.height-50,
+    height: screen.height - 50,
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.6)',
     overflow: 'hidden',
@@ -94,13 +107,13 @@ export default {
     left: 0,
     backgroundColor: 'rgba(250,250,250,0)',
   },
-  detailsImage:{
-    position:'absolute',
-    top:'50%',
-    transform: [{ translateY: -screen.height*2*0.5 }],
-    width:screen.width,
-    height:screen.height*2,
-    backgroundColor:'rgba(0,0,0,1)'
+  detailsImage: {
+    position: 'absolute',
+    top: '50%',
+    transform: [{ translateY: -screen.height * 2 * 0.5 }],
+    width: screen.width,
+    height: screen.height * 2,
+    backgroundColor: 'rgba(0,0,0,1)'
   },
   btnImgStyle: {
     width: size(35),
@@ -120,16 +133,16 @@ export default {
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
-    padding:13,
-    marginTop:10,
-    marginBottom:10,
+    padding: 13,
+    marginTop: 10,
+    marginBottom: 10,
     flexWrap: 'wrap',
   },
   boneDisease: {
     width: screen.width * 0.4,
     color: 'white',
     textAlign: 'center',
-    padding:13,
+    padding: 13,
     flexWrap: 'wrap',
   },
   closeRightMenuStyle: {
@@ -224,13 +237,13 @@ export default {
   },
   activityIndicator: {
     position: "absolute",
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        opacity: 0.7,
-        backgroundColor: "black",
-        justifyContent: "center",
-        alignItems: "center",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    opacity: 0.7,
+    backgroundColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
   }
 };

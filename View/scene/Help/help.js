@@ -43,7 +43,7 @@ export default class help extends Component<Props> {
     getHelpList = async () => {
         this.Loading.show("查询中...");
         let tokens = await storage.get("userTokens");
-        let url = api.base_uri + "v2/app/help/getHelpList?appVersion=3.3.0";
+        let url = api.base_uri + "/app/orthope/v1/helpcenter/getHelpList?business=orthope";
         await fetch(url, {
             method: "get",
             headers: {
@@ -57,7 +57,7 @@ export default class help extends Component<Props> {
                 // alert(JSON.stringify(result));
                 if (result.code == 0) {
                   this.setState({
-                    questionLists: result.helpList
+                    questionLists: result.list
                   })
                 }
             })
