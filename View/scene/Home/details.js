@@ -20,7 +20,8 @@ import styles from './styles';
 import _ from "lodash";
 let index = 0;
 import LoadingView from '../../common/LoadingView.js'
-
+import api from "../../api";
+import { storage } from "../../common/storage";
 export default class Details extends Component {
     static navigationOptions = {
         header: null,
@@ -40,6 +41,7 @@ export default class Details extends Component {
         intro: false,//简介
         towScreenName: '',//第二界面骨名
         paused:false,
+        isCheckPerm: null,
         bottomIcon: [
             { img: require('../../img/unity/fanhuiyuan.png'), title: '返回' },
             { img: require('../../img/home/xinxi.png'), title: '简介' },
@@ -472,6 +474,27 @@ export default class Details extends Component {
         }
         return Arr
     }
+
+    async checkPerm(){
+        let isUse = false;
+        let url = api.base_uri + "/v1/app/orthope/combo/checkComboisExpire?comboCode=ORTHOPE_VIP";
+        let tokens = await storage.get("userTokens");
+       await fetch(url,{
+            method: "get",
+            headers: {
+                "Content-Type": "application/json",
+                token: tokens.token
+            }
+        }).then(resp => resp.json())
+            .then(result =>{
+                if(result.code == 0 && result.result == 'yes'){
+                    isUse = true;
+                }
+            })
+        return isUse;
+
+    }
+
     clickBack(title) {
         //alert(this.props.load_app_id)
         //alert(this.state.getData.open_model)
@@ -495,31 +518,48 @@ export default class Details extends Component {
             "app_id": `${this.props.load_app_id}_GK`,
             "showModelList": this.state.getData.open_model
         }
+
+
         if (title == "成因") {
-            if (JSON.parse(this.state.getData.menus)[0].type == 'video') {
-                DeviceEventEmitter.emit("closeHomeModule", { closeUnity: true });
+            let isUse = this.checkPerm();
+            if(isUse){
+                Alert.alert("提醒", "请先购买套餐后使用~");
+                this.props.navigation.navigate('BuyVip')
+            }else {
+                if (JSON.parse(this.state.getData.menus)[0].type == 'video') {
+                    DeviceEventEmitter.emit("closeHomeModule", { closeUnity: true });
+                }
+                if (JSON.parse(this.state.getData.menus)[0].type == 'text') {
+                    DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
+                }
+                this.setState({
+                    reason: true,
+                    //title: false,
+                    video: false,
+                    intro: false,
+                    bottomIcon: this.state.bottomIconNo,
+                })
             }
-            if (JSON.parse(this.state.getData.menus)[0].type == 'text') {
-                DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
-            }
-            this.setState({
-                reason: true,
-                //title: false,
-                video: false,
-                intro: false,
-                bottomIcon: this.state.bottomIconNo,
-            })
+
+
         }
         if (title == "简介") {
-            this.setState({
-                intro: true,
-                title: false,
-                reason: false,
-                video: false,
-                textOpen: false,
-                bottomIcon: this.state.bottomIconNo,
-            })
-            DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
+            let isUse = this.checkPerm();
+            if(isUse){
+                Alert.alert("提醒", "请先购买套餐后使用~");
+                this.props.navigation.navigate('BuyVip')
+            }else {
+                this.setState({
+                    intro: true,
+                    title: false,
+                    reason: false,
+                    video: false,
+                    textOpen: false,
+                    bottomIcon: this.state.bottomIconNo,
+                })
+                DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
+            }
+
         }
         if (title == "返回") {
             if (this.state.EnterNowScreen == 'isMainScreen') {
@@ -571,48 +611,70 @@ export default class Details extends Component {
             }
         }
         if (title == "康复") {
-            // alert(JSON.stringify(this.state.getData));
-            this.props.navigation.navigate('Recovery', { patNo: this.props.patNo, sick: this.state.getData });
-            this.setState({
-                video: false,
-                title: false,
-                reason: false,
-                intro: false,
-                bottomIcon: this.state.bottomIconNo,
-            })
-            DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
-        }
-        if (title == "治疗") {
-            this.setState({
-                video: true,
-                title: false,
-                reason: false,
-                intro: false,
-                bottomIcon: this.state.bottomIconTab2,
-            })
-            DeviceEventEmitter.emit("closeHomeModule", { closeUnity: true });
-        }
-        if (title == "3D模型") {
-            if (this.state.EnterNowScreen == 'isMainScreen') {
 
-                this.props.sendMsgToUnity("app", msg, 'json')
-                DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
-                DeviceEventEmitter.emit("closeHomeModule", { onlyCloseBigImg: true });
+            // alert(JSON.stringify(this.state.getData));
+            let isUse = this.checkPerm();
+            if(isUse){
+                Alert.alert("提醒", "请先购买套餐后使用~");
+                this.props.navigation.navigate('BuyVip')
+            }else {
+                this.props.navigation.navigate('Recovery', { patNo: this.props.patNo, sick: this.state.getData });
                 this.setState({
-                    EnterNowScreen: "isNotMainScreen",
                     video: false,
-                    reason: false,
                     title: false,
-                    details: false,
-                    //showLoading:true,
-                    lastImgState: this.props.img,
+                    reason: false,
+                    intro: false,
                     bottomIcon: this.state.bottomIconNo,
                 })
                 DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
-                this.props.setScreen("isNotMainScreen")
-            } else {
-                alert('您已处于3D模型')
             }
+
+        }
+        if (title == "治疗") {
+            let isUse = this.checkPerm();
+            if(isUse){
+                Alert.alert("提醒", "请先购买套餐后使用~");
+                this.props.navigation.navigate('BuyVip')
+            }else {
+                this.setState({
+                    video: true,
+                    title: false,
+                    reason: false,
+                    intro: false,
+                    bottomIcon: this.state.bottomIconTab2,
+                })
+                DeviceEventEmitter.emit("closeHomeModule", { closeUnity: true });
+            }
+
+        }
+        if (title == "3D模型") {
+            let isUse = this.checkPerm();
+            if(isUse){
+                Alert.alert("提醒", "请先购买套餐后使用~");
+                this.props.navigation.navigate('BuyVip')
+            }else {
+                if (this.state.EnterNowScreen == 'isMainScreen') {
+
+                    this.props.sendMsgToUnity("app", msg, 'json')
+                    DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
+                    DeviceEventEmitter.emit("closeHomeModule", { onlyCloseBigImg: true });
+                    this.setState({
+                        EnterNowScreen: "isNotMainScreen",
+                        video: false,
+                        reason: false,
+                        title: false,
+                        details: false,
+                        //showLoading:true,
+                        lastImgState: this.props.img,
+                        bottomIcon: this.state.bottomIconNo,
+                    })
+                    DeviceEventEmitter.emit("closeHomeModule", { closeUnity: false });
+                    this.props.setScreen("isNotMainScreen")
+                } else {
+                    alert('您已处于3D模型')
+                }
+            }
+
         }
     }
     showDetails() {
