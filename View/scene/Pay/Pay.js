@@ -1,9 +1,9 @@
 import React from "react";
-import { Image, NativeModules, Platform, StyleSheet, Text, TouchableOpacity, View, ImageBackground } from "react-native";
+import { Image, NativeModules, Platform, StyleSheet, Text, TouchableOpacity, View, ImageBackground, DeviceEventEmitter } from "react-native";
 import { BaseComponent, ContainerView, HttpTool, NavBar, NetInterface, Line } from '../../common';
 import * as FuncUtils from '../../common/Tool/FuncUtils'
 import { size } from "../../common/Tool/ScreenUtil";
-import {storage} from "../../common/storage";
+import { storage } from "../../common/storage";
 import api from "../../api";
 
 let Wxpay = NativeModules.Wxpay;
@@ -141,9 +141,19 @@ export default class Pay extends BaseComponent {
             this.mainView._toast("支付成功");
             //TODO 处理支付成功逻辑
 
+            this.props.navigation.goBack(this.props.navigation.state.params.goOutPay_key, { payState: true });//返回支付前一界面
+            if (this.props.navigation.state.params.title !== null) {
+                DeviceEventEmitter.emit("goNext", { title: this.props.navigation.state.params.title })
+                alert(this.props.navigation.state.params.title)
+            }
+
         } else {
             this.mainView._toast("支付失败,请重新支付");
-
+            this.props.navigation.goBack(this.props.navigation.state.params.goOutPay_key, { payState: true });//返回支付前一界面
+            if (this.props.navigation.state.params.title !== null) {
+                DeviceEventEmitter.emit("goNext", { title: this.props.navigation.state.params.title })
+                alert(this.props.navigation.state.params.title)
+            }
         }
 
 
@@ -158,7 +168,7 @@ export default class Pay extends BaseComponent {
             "remark": "测试",
             "business": "orthope"
         }
-        let url = api.base_uri +"/v1/app/orthope/order/newAddOrder?token="+tokens.token
+        let url = api.base_uri + "/v1/app/orthope/order/newAddOrder?token=" + tokens.token
         await fetch(url, {
             method: "post",
             headers: {
@@ -171,27 +181,27 @@ export default class Pay extends BaseComponent {
                     OrderNo: result.order.ordNo
                 })
             })
-            
-        // const url = NetInterface.addOrder;
 
-        // let params = {
-        //     comboId: this.state.combo.comboId,
-        //     ordRes: Platform.OS,
-        //     lang: "ch",
-        //     business: 'kfxl',
-        //     priceId: this.state.combo.priceId
-        // };
+            // const url = NetInterface.addOrder;
 
-        // await HttpTool.POST(url, params)
-        //     .then(result => {
+            // let params = {
+            //     comboId: this.state.combo.comboId,
+            //     ordRes: Platform.OS,
+            //     lang: "ch",
+            //     business: 'kfxl',
+            //     priceId: this.state.combo.priceId
+            // };
 
-        //         if (result.code == 0) {
-        //             this.setState({
-        //                 OrderNo: result.order.ordNo
-        //             });
-        //         }
+            // await HttpTool.POST(url, params)
+            //     .then(result => {
 
-        //     })
+            //         if (result.code == 0) {
+            //             this.setState({
+            //                 OrderNo: result.order.ordNo
+            //             });
+            //         }
+
+            //     })
             .catch(error => {
                 this.mainView._closeLoading();
                 this.mainView._toast(JSON.stringify(error));

@@ -254,11 +254,13 @@ export default class BuyVip extends BaseComponent {
         })
     }
     gotoPay() {
-
+        let title=this.props.navigation.state.params!==undefined?this.props.navigation.state.params.title:null
         // Wxpay.registerApp(api.APPID);
         // this.payment(this.state.packageDetail[this.state.packageSelected].priceId,this.state.packageDetail[this.state.packageSelected].comboId)
         this.props.navigation.navigate("Pay", {
-            combo: this.state.packageDetail[this.state.packageSelected]
+            combo: this.state.packageDetail[this.state.packageSelected],
+            goOutPay_key:this.props.navigation.state.key,
+            title:title
         });
         //this.newAddOrder(this.state.packageDetail[this.state.packageSelected].priceId,this.state.packageDetail[this.state.packageSelected].comboId)
    }
