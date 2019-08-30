@@ -360,18 +360,22 @@ export default class Details extends Component {
     renderVideoBody(i) {
         let arr = []
         let url = ''
+        let autoPlay=false
         try {
             let videoData = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))
+            alert(JSON.stringify(videoData))
             if (i !== undefined && i !== '' && i !== null) {
                 url = videoData[i].url
+                autoPlay=false
             } else {
                 url = JSON.parse(this.state.getData.menus)[0].content
+                autoPlay=true
             }
             arr.push(
                 <View style={{ width: screen.width, height: screen.height - 50, justifyContent: 'center', alignItems: 'center' }}>
                     <Video
-                        //autoPlay
-                        autoPlay={this.state.paused}
+                        autoPlay={autoPlay}
+                        //autoPlay={this.state.paused}
                         scrollBounce
                         volume={0.8}
                         inlineOnly
@@ -557,7 +561,6 @@ export default class Details extends Component {
 
         if (title == "成因") {
             let isUse = await this.checkPerm();
-            // alert(isUse)
             if (!isUse) {
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip', { title: title })
@@ -572,6 +575,7 @@ export default class Details extends Component {
                     reason: true,
                     //title: false,
                     video: false,
+                    openVideoDetail:false,
                     intro: false,
                     bottomIcon: this.state.bottomIconNo,
                 })
@@ -593,12 +597,14 @@ export default class Details extends Component {
             
 
 
+
         }
         if (title == "返回") {
             if (this.state.EnterNowScreen == 'isMainScreen') {
                 if (this.state.video || this.state.reason || this.state.intro) {
                     this.setState({
                         video: false,
+                        openVideoDetail:false,
                         reason: false,
                         title: true,
                         bottomIcon: this.state.bottomIconNo,
@@ -617,6 +623,7 @@ export default class Details extends Component {
                 if (this.state.video || this.state.reason || this.state.intro) {
                     this.setState({
                         video: false,
+                        openVideoDetail:false,
                         reason: false,
                         intro: false,
                         bottomIcon: this.state.bottomIconNo,
@@ -655,6 +662,7 @@ export default class Details extends Component {
                 this.props.navigation.navigate('Recovery', { patNo: this.props.patNo, sick: this.state.getData });
                 this.setState({
                     video: false,
+                    openVideoDetail:false,
                     title: false,
                     reason: false,
                     intro: false,
@@ -667,6 +675,7 @@ export default class Details extends Component {
         if (title == "治疗") {
             let isUse =await this.checkPerm();
             if(!isUse){
+
 
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip', { title: title })
@@ -697,6 +706,7 @@ export default class Details extends Component {
                     this.setState({
                         EnterNowScreen: "isNotMainScreen",
                         video: false,
+                        openVideoDetail:false,
                         reason: false,
                         title: false,
                         details: false,
