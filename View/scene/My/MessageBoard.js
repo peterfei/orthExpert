@@ -29,33 +29,7 @@ export default class MessageBoard extends Component {
   static navigationOptions = {
     header: null
   };
-  /* static navigationOptions = ({navigation}: any) => {
-    const {params = {}} = navigation.state;
-    return {
-      title: "用户评价反馈",
-      headerStyle: {
-        backgroundColor: color.main
-      },
-      headerTintColor: "#fff",
-      headerRight: (
-        <TouchableOpacity
-          onPress={() => {
-            params.handleChangeType();
-          }}
-          style={{marginRight: 10}}
-        >
-          <Icon name="pencil-square-o" color="white" size={16}>
-           意见反馈
-          </Icon>
-        </TouchableOpacity>
-      )
-    };
-  }; */
   componentDidMount() {
-    /* this.props.navigation.setParams({
-      handleChangeType: this.onShowMessage
-    }); */
-    // this.onShowMessage()
   }
   onShowMessage = () => {
     console.log(`=============`);
@@ -108,22 +82,23 @@ export default class MessageBoard extends Component {
     console.log(`
       \n传入的请求数据:${JSON.stringify(data)}\n
     `);
-    const url = api.base_uri + "/v1/app/msg/msgList";
+    const url = api.base_uri + "/app/orthope/v1/msg/msgList?business=orthope";
     console.log(`
       \n当前请求的url:${url}
     `);
     let tokens = await storage.get("userTokens", "");
     let responseData = await fetch(url, {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         token: tokens.token
       },
-      body: JSON.stringify(data)
+     // body: JSON.stringify(data)
     })
       .then(resp => resp.json())
       .then(
         result => {
+          alert(JSON.stringify(result));
           if (result && result.page) {
             // alert(JSON.stringify(result.page));
             this.setState({

@@ -178,7 +178,7 @@ export default class showMessages extends Component {
     if (this.state.content != "") {
       curr.Loading.show("正在提交...");
       // 提交数据
-      let url = api.base_uri + "/v1/app/msg/pushMsg";
+      let url = api.base_uri + "/app/orthope/v1/msg/pushMsg";
       console.info("url is " + url);
       let deviceInfo = "手机型号:" + DeviceInfo.getModel() + ",品牌:" + DeviceInfo.getBrand() + ",手机版本:" + DeviceInfo.getSystemVersion() + ",维萨里软件版本:" + DeviceInfo.getVersion();
 
@@ -190,7 +190,8 @@ export default class showMessages extends Component {
           msgGrade: this.state.starCount,
           plat: Platform.OS,
           contact: this.state.phone,
-          deviceInfo: deviceInfo
+          deviceInfo: deviceInfo,
+          business:'orthope'
         }),
         headers: {
           "Content-Type": "application/json",
@@ -201,7 +202,6 @@ export default class showMessages extends Component {
         .then(
           result => {
             // debugger;
-
             if (result.code == 0) {
               curr.Loading.close();
               this.refs.toast.show("反馈信息提交成功! ");

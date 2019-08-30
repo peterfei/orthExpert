@@ -36,14 +36,7 @@ export default class OrderItem extends Component {
     this.setState({ refreshState: RefreshState.HeaderRefreshing });
     let { orderState } = this.props;
     let tokens = await storage.get("userTokens");
-    let data = {
-      page: 1,
-      limit: 100,
-      ordState: orderState,
-      business: "orthope"
-    };
-
-    const url = api.base_uri + "/v1/app/orthope/order/myOrder";
+    const url = api.base_uri + "/v1/app/orthope/order/myOrder?page=1&limit=10&business=orthope&ordState="+orderState;
     try {
       let responseData = await fetch(url, {
         method: "post",
@@ -51,7 +44,6 @@ export default class OrderItem extends Component {
           "Content-Type": "application/json",
           token: tokens.token
         },
-        body: JSON.stringify(data)
       })
         .then(resp => resp.json())
         .then(result => {
