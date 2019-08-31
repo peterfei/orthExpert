@@ -332,6 +332,7 @@ export default class Details extends Component {
             let url = videoData[i].url
             let name = videoData[i].name
             let img = videoData[i].img
+            alert(img)
             arr.push(
                 <TouchableOpacity style={{
                     width: screen.width * 0.43,
