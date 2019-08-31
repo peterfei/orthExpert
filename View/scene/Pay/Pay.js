@@ -149,11 +149,6 @@ export default class Pay extends BaseComponent {
 
         } else {
             this.mainView._toast("支付失败,请重新支付");
-            this.props.navigation.goBack(this.props.navigation.state.params.goOutPay_key, { payState: true });//返回支付前一界面
-            if (this.props.navigation.state.params.title !== null) {
-                DeviceEventEmitter.emit("goNext", { title: this.props.navigation.state.params.title })
-                alert(this.props.navigation.state.params.title)
-            }
         }
 
 

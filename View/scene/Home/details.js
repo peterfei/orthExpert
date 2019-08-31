@@ -361,21 +361,18 @@ export default class Details extends Component {
     renderVideoBody(i) {
         let arr = []
         let url = ''
-        let autoPlay=false
         try {
             let videoData = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))
-            alert(JSON.stringify(videoData))
+            //alert(JSON.stringify(videoData))
             if (i !== undefined && i !== '' && i !== null) {
                 url = videoData[i].url
-                autoPlay=false
             } else {
                 url = JSON.parse(this.state.getData.menus)[0].content
-                autoPlay=true
             }
             arr.push(
                 <View style={{ width: screen.width, height: screen.height - 50, justifyContent: 'center', alignItems: 'center' }}>
                     <Video
-                        autoPlay={autoPlay}
+                        autoPlay
                         //autoPlay={this.state.paused}
                         scrollBounce
                         volume={0.8}
@@ -561,7 +558,7 @@ export default class Details extends Component {
 
         if (title == "成因") {
             let isUse = this.checkPerm();
-            if (!isUse) {
+            if (isUse) {
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip', { title: title })
             } else {
@@ -669,7 +666,7 @@ export default class Details extends Component {
         }
         if (title == "治疗") {
             let isUse = this.checkPerm();
-            if (!isUse) {
+            if (isUse) {
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip', { title: title })
             } else {
