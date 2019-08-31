@@ -331,6 +331,7 @@ export default class Details extends Component {
         for (let i = 0; i < videoData.length; i++) {
             let url = videoData[i].url
             let name = videoData[i].name
+            let img = videoData[i].img
             arr.push(
                 <TouchableOpacity style={{
                     width: screen.width * 0.43,
@@ -340,7 +341,7 @@ export default class Details extends Component {
                 }}
                     onPress={() => this.openVideoDetail(i)} >
                     <Image style={{ width: '100%', height: '100%' }}
-                        source={{ uri: 'http://res.vesal.site/pathology/img/T_JBGK001.jpg' }} />
+                        source={{ uri: img }} />
                     <Text style={{ color: 'white', fontSize: size(23) }}>{name}</Text>
                 </TouchableOpacity>
             )
