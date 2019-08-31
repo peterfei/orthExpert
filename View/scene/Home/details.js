@@ -332,6 +332,7 @@ export default class Details extends Component {
             let url = videoData[i].url
             let name = videoData[i].name
             let img = videoData[i].img
+            alert(img)
             arr.push(
                 <TouchableOpacity style={{
                     width: screen.width * 0.43,
@@ -558,7 +559,7 @@ export default class Details extends Component {
 
         if (title == "成因") {
             let isUse = this.checkPerm();
-            if (isUse) {
+            if (!isUse) {
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip', { title: title })
             } else {
@@ -647,7 +648,7 @@ export default class Details extends Component {
 
             // alert(JSON.stringify(this.state.getData));
             let isUse = this.checkPerm();
-            if (isUse) {
+            if (!isUse) {
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip', { title: title })
             } else {
@@ -666,7 +667,7 @@ export default class Details extends Component {
         }
         if (title == "治疗") {
             let isUse = this.checkPerm();
-            if (isUse) {
+            if (!isUse) {
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip', { title: title })
             } else {
@@ -683,7 +684,7 @@ export default class Details extends Component {
         }
         if (title == "3D模型") {
             let isUse = this.checkPerm();
-            if (isUse) {
+            if (!isUse) {
                 Alert.alert("提醒", "请先购买套餐后使用~");
                 this.props.navigation.navigate('BuyVip', { title: title })
             } else {
