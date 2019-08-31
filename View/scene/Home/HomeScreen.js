@@ -384,7 +384,7 @@ export default class HomeScreen extends Component {
       this.setState({
         img: true,
         nowIndex: num
-      }, () => { this.defaultLocation(num)}
+      }, () => { this.defaultLocation(num) }
       )
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
     } else if (img == "noImg") {
@@ -469,7 +469,7 @@ export default class HomeScreen extends Component {
   onScrollAnimationEnd(e) {
     let i = Math.floor(e.nativeEvent.contentOffset.x / (screen.width - 0.01));
     let num = this.state.iArr[i]
-    this.pushDetails(this.state.rightMenuData.pathologyList[num].pat_no, "img",num)
+    this.pushDetails(this.state.rightMenuData.pathologyList[num].pat_no, "img", num)
   }
   MenuBody() {
     return (
@@ -537,16 +537,19 @@ export default class HomeScreen extends Component {
           }
         </View>
       )
-      if (this.state.rightMenuData.pathologyList[i].img_url == null ||
+      if (
         !(this.state.nowIndex == i
-          || this.state.nowIndex == i-1
-          || this.state.nowIndex == i+ 1)
+          || this.state.nowIndex == i - 1
+          || this.state.nowIndex == i + 1)
       ) {
         arr.pop()
         arr.push(
           <View key={i} style={{ marginTop: screen.height * 0.5, width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
           </View>
         )
+      }
+      if (this.state.rightMenuData.pathologyList[i].img_url == null) {
+        arr.pop()
       }
     }
     // inRenderArr=false
@@ -557,7 +560,7 @@ export default class HomeScreen extends Component {
   }
   changeImg(num) {
     this._scrollView.scrollTo({ x: num * screen.width, y: 0, animated: true })
-    this.pushDetails(this.state.rightMenuData.pathologyList[num].pat_no, "img",num)
+    this.pushDetails(this.state.rightMenuData.pathologyList[num].pat_no, "img", num)
     // alert(num)
   }
   _onLoadEnd = () => {
