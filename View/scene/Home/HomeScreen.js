@@ -6,7 +6,7 @@ import {
   TouchableHighlight, Image, TouchableOpacity, DeviceEventEmitter, ScrollView,
 
 } from 'react-native';
-import {deviceHeight, screen, system} from "../../common";
+import { deviceHeight, screen, system } from "../../common";
 import SearchComponent from "./search";
 import Details from "./details"
 import UnityView, { UnityModule } from 'react-native-unity-view';
@@ -20,8 +20,8 @@ import { size } from '../../common/ScreenUtil';
 import { set } from 'mobx';
 import Help from "./help";
 import CodePush from "react-native-code-push"; // 引入code-push
-import {NavigationActions,StackActions} from "react-navigation";
-import {storage} from "../../common/storage";
+import { NavigationActions, StackActions } from "react-navigation";
+import { storage } from "../../common/storage";
 import SplashScreen from "react-native-splash-screen";
 
 export default class HomeScreen extends Component {
@@ -47,8 +47,8 @@ export default class HomeScreen extends Component {
     patNo: '',
     load_app_id: '',
     numImg: '',
-    times:0,
-    unityHeight: screen.height ,
+    times: 0,
+    unityHeight: screen.height,
     unityWith: screen.width
   }
 
@@ -96,15 +96,15 @@ export default class HomeScreen extends Component {
     if (this.state.EnterNowScreen == 'isMainScreen') {
       if (handler.name == "title") {  //只运行一次初始化判断
         this.setState({
-          times:this.state.times+1
+          times: this.state.times + 1
         })
-        if(this.state.times==1){
+        if (this.state.times == 1) {
           SplashScreen.hide();
           this.setState({
             isUnityReady: true,
             // showLoading: false
           })
-        }else{
+        } else {
           // this.setState({
           //   showLoading: false
           // })
@@ -205,7 +205,7 @@ export default class HomeScreen extends Component {
     BackHandler.removeEventListener("back", this.goBackClicked);
   }
   async componentWillMount() {
-    
+
     CodePush.notifyAppReady(); //为避免警告
     //Unity 是否已加载
     this.setState({
@@ -228,11 +228,11 @@ export default class HomeScreen extends Component {
   async componentDidMount() {
     let tokens = await storage.get("userTokens", "");
     if (tokens == -1 || tokens == -2) {
-        const resetAction = StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({routeName: "LoginPage"})]
-        });
-        this.props.navigation.dispatch(resetAction);
+      const resetAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: "LoginPage" })]
+      });
+      this.props.navigation.dispatch(resetAction);
     }
     await this.syncImmediate(); //开始检查更新
     if (await (UnityModule.isReady())) {
@@ -290,7 +290,7 @@ export default class HomeScreen extends Component {
           style={{
             width: this.state.unityWith,
             height: this.state.unityHeight + (Platform.OS == 'ios' ? 0 : size(35)),
-            marginTop:25
+            marginTop: 25
 
           }} />
 
@@ -363,8 +363,8 @@ export default class HomeScreen extends Component {
     })
     //获取搜索后数据
     let mbId = await storage.get("memberInfo");
-    let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + pat_no+"&business=orthope&mbId="+mbId.mbId;
-   
+    let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + pat_no + "&business=orthope&mbId=" + mbId.mbId;
+
     await fetch(url, {
       method: "get",
       headers: {
@@ -375,7 +375,7 @@ export default class HomeScreen extends Component {
         // alert(JSON.stringify(result));
         this.setState({
           getData: result.pathology,
-          load_app_id:result.pathology.app_id,
+          load_app_id: result.pathology.app_id,
         }
           //, () => alert(JSON.stringify(result))
         )
@@ -384,7 +384,7 @@ export default class HomeScreen extends Component {
       this.setState({
         img: true,
         nowIndex: num
-      }, () => { this.defaultLocation(num) }
+      }, () => { this.defaultLocation(num)}
       )
       DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "closeAllsearch" });
     } else if (img == "noImg") {
@@ -393,14 +393,14 @@ export default class HomeScreen extends Component {
       this.setState({
         img: false,
       })
-      
+
 
     }
     DeviceEventEmitter.emit("DetailsWinEmitter", { details: true });
     DeviceEventEmitter.emit("getData", { getData: this.state.getData });
   }
   async getPathologyAndArea(patAreaNo) {//点击区域获取右侧疾病数据
-    let url = api.base_uri + "v1/app/pathology/getPathologyAndArea?patAreaNo=" + patAreaNo+"&business=orthope";
+    let url = api.base_uri + "v1/app/pathology/getPathologyAndArea?patAreaNo=" + patAreaNo + "&business=orthope";
     await fetch(url, {
       method: "get",
       headers: {
@@ -423,7 +423,7 @@ export default class HomeScreen extends Component {
     if (this.state.numImg == "one") {
       return (
         <View style={styles.detailsImage}>
-          <View style={{ marginTop:screen.height*0.5,width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ marginTop: screen.height * 0.5, width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
             <View style={{ width: '90%', height: '70%', justifyContent: 'center', alignItems: 'center' }}>
               <ImagePlaceholder
                 style={{ width: '100%', height: '100%' }}
@@ -469,7 +469,7 @@ export default class HomeScreen extends Component {
   onScrollAnimationEnd(e) {
     let i = Math.floor(e.nativeEvent.contentOffset.x / (screen.width - 0.01));
     let num = this.state.iArr[i]
-    this.pushDetails(this.state.rightMenuData.pathologyList[num].pat_no, "img")
+    this.pushDetails(this.state.rightMenuData.pathologyList[num].pat_no, "img",num)
   }
   MenuBody() {
     return (
@@ -502,7 +502,7 @@ export default class HomeScreen extends Component {
       let src = this.state.rightMenuData.pathologyList[i].img_url !== null && this.state.rightMenuData.pathologyList[i].img_url !== '' ? this.state.rightMenuData.pathologyList[i].img_url : 'http://filetest1.vesal.site/image/slt/flowers-small.jpg'
       //alert(src)
       arr.push(
-        <View key={i} style={{  marginTop:screen.height*0.5,width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
+        <View key={i} style={{ marginTop: screen.height * 0.5, width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ width: '90%', height: '70%', justifyContent: 'center', alignItems: 'center' }}>
             <ImagePlaceholder
               style={{ width: '100%', height: '100%' }}
@@ -537,8 +537,16 @@ export default class HomeScreen extends Component {
           }
         </View>
       )
-      if (this.state.rightMenuData.pathologyList[i].img_url == null) {
+      if (this.state.rightMenuData.pathologyList[i].img_url == null ||
+        !(this.state.nowIndex == i
+          || this.state.nowIndex == i-1
+          || this.state.nowIndex == i+ 1)
+      ) {
         arr.pop()
+        arr.push(
+          <View key={i} style={{ marginTop: screen.height * 0.5, width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
+          </View>
+        )
       }
     }
     // inRenderArr=false
@@ -549,7 +557,8 @@ export default class HomeScreen extends Component {
   }
   changeImg(num) {
     this._scrollView.scrollTo({ x: num * screen.width, y: 0, animated: true })
-    this.pushDetails(this.state.rightMenuData.pathologyList[num].pat_no, "img")
+    this.pushDetails(this.state.rightMenuData.pathologyList[num].pat_no, "img",num)
+    // alert(num)
   }
   _onLoadEnd = () => {
     this.setState({
@@ -620,9 +629,9 @@ export default class HomeScreen extends Component {
       let sick = this.state.rightMenuData.pathologyList[i];
       arr.push(
         <Text style={styles.boneDisease} key={i}
-         onPress={() => this.showDetailsRight(sick.pat_no, "img", i)}>
-         {sick.pat_name}
-         </Text>
+          onPress={() => this.showDetailsRight(sick.pat_no, "img", i)}>
+          {sick.pat_name}
+        </Text>
       )
     }
     //alert(this.state.rightMenuData.pathologyList[1])
