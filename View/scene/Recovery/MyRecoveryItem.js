@@ -41,7 +41,7 @@ export default class MyRecoveryItem extends Component {
 
     async getData() {
         let tokens = await storage.get('userTokens');
-        let url = "http://118.24.119.234:8087/vesal-jiepao-test/v1/app/orthope/scheme/myCreateSchemes?token=" + tokens.token + "&patNo=" + this.props.patNo + "&page=1&limit=100&business=orthope";
+        let url = api.base_uri+"v1/app/orthope/scheme/myCreateSchemes?token=" + tokens.token + "&patNo=" + this.props.patNo + "&page=1&limit=100&business=orthope";
         // alert(url)
         await fetch(url, {
             method: "get",

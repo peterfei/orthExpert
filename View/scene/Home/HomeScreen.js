@@ -425,17 +425,12 @@ export default class HomeScreen extends Component {
         <View style={styles.detailsImage}>
           <View style={{ marginTop:screen.height*0.5,width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
             <View style={{ width: '90%', height: '70%', justifyContent: 'center', alignItems: 'center' }}>
-              <ImagePlaceholder
+              <Image
                 style={{ width: '100%', height: '100%' }}
-                duration={1000}
-                // imageStyle={{ borderRadius:20 }}
-                // placeholderStyle={{ borderRadius:20 }}
-                activityIndicatorProps={{
-                  size: 'large',
-                  color: 'green',
-                }}
-                src={this.state.getData.img_url}
-                // placeholder='http://res.vesal.site/pathology/img/T_JBGK001.jpg'
+                
+                
+                source={{uri:this.state.getData.img_url}}
+                defaultSource={{uri:src,scale:0.1}}
               />
             </View>
           </View>
@@ -504,17 +499,12 @@ export default class HomeScreen extends Component {
       arr.push(
         <View key={i} style={{  marginTop:screen.height*0.5,width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ width: '90%', height: '70%', justifyContent: 'center', alignItems: 'center' }}>
-            <ImagePlaceholder
+            <Image
               style={{ width: '100%', height: '100%' }}
-              duration={1000}
-              // imageStyle={{ borderRadius:20 }}
-              // placeholderStyle={{ borderRadius:20 }}
-              activityIndicatorProps={{
-                size: 'large',
-                color: 'green',
-              }}
-              src={src}
-              placeholder='http://res.vesal.site/pathology/img/T_JBGK001.jpg'
+              
+              source={{uri:src}}
+              defaultSource={{uri:src,scale:0.1}}
+              // placeholder='http://res.vesal.site/pathology/img/T_JBGK001.jpg'
             />
           </View>
           {i != fristiArr ?

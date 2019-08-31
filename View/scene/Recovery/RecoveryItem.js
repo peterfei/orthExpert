@@ -31,7 +31,7 @@ export default class RecoveryItem extends Component {
         this.getSchemesByPatNo()
     }
     async getSchemesByPatNo() {
-        let url = "http://114.115.210.145:8085/vesal-sport-test/app/kfxl/v1/scheme/getSchemesByPatNo?patNo=" + this.props.patNo + "&page=1&limit=10&planType=sysTpl";
+        let url = api.base_url_sport+"app/kfxl/v1/scheme/getSchemesByPatNo?patNo=" + this.props.patNo + "&page=1&limit=10&planType=sysTpl";
         // alert(url)
         await fetch(url, {
             method: "get",
