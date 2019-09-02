@@ -342,6 +342,8 @@ export default class Details extends Component {
                     onPress={() => this.openVideoDetail(i)} >
                     <Image style={{ width: '100%', height: '100%' }}
                         source={{ uri: img }} />
+                    <Image style={styles.imageStyle}
+                        source={require('../../img/home/video.png')} />
                     <Text style={{ color: 'white', fontSize: size(23) }}>{name}</Text>
                 </TouchableOpacity>
             )

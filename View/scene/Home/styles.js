@@ -199,6 +199,15 @@ export default {
     width: screen.width,
     height: screen.height
   },
+  imageStyle: {
+    width: screen.width * 0.43 * 0.15,
+    height: screen.width * 0.43 * 0.15,
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: [{ translateY: -screen.width * 0.43 * 0.15*0.5 },
+      { translateX: -screen.width * 0.43 * 0.15*0.5 }],
+  },
   icon: {
     width: 20,
     height: 20,
