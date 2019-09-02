@@ -362,10 +362,9 @@ export default class Details extends Component {
         let arr = []
         let url = ''
         try {
-            let videoData = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))
-            //alert(JSON.stringify(videoData))
+            //alert(JSON.stringify(JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))))
             if (i !== undefined && i !== '' && i !== null) {
-                url = videoData[i].url
+                url = JSON.parse(JSON.parse(JSON.stringify(JSON.parse(this.state.getData.menus)[1].content)))[i].url
             } else {
                 url = JSON.parse(this.state.getData.menus)[0].content
             }
@@ -498,7 +497,7 @@ export default class Details extends Component {
             if (this.state.EnterNowScreen == "isNotMainScreen" && data[i].title == "3D模型") {
                 Arr.pop()
             }
-            if (data[i].title == "成因" && (getData0 == '' || (getData0 !== 'text' && getData0 !== 'video'))) {
+            if (data[i].title == "成因" && (getData0 == '' || (getData0 !== 'text' && getData0 !== 'video')||JSON.parse(this.state.getData.menus)[0].content=='' )) {
                 Arr.pop()
             }
             if (data[i].title == "治疗" && (getData1 == '' || getData1 !== 'zhiliao')) {
@@ -574,7 +573,7 @@ export default class Details extends Component {
                     reason: true,
                     //title: false,
                     video: false,
-                    openVideoDetail:false,
+                    openVideoDetail: false,
                     intro: false,
                     bottomIcon: this.state.bottomIconNo,
                 })
@@ -588,7 +587,7 @@ export default class Details extends Component {
                 title: false,
                 reason: false,
                 video: false,
-                openVideoDetail:false,
+                openVideoDetail: false,
                 textOpen: false,
                 bottomIcon: this.state.bottomIconNo,
             })
@@ -599,7 +598,7 @@ export default class Details extends Component {
                 if (this.state.video || this.state.reason || this.state.intro) {
                     this.setState({
                         video: false,
-                        openVideoDetail:false,
+                        openVideoDetail: false,
                         reason: false,
                         title: true,
                         bottomIcon: this.state.bottomIconNo,
@@ -618,7 +617,7 @@ export default class Details extends Component {
                 if (this.state.video || this.state.reason || this.state.intro) {
                     this.setState({
                         video: false,
-                        openVideoDetail:false,
+                        openVideoDetail: false,
                         reason: false,
                         intro: false,
                         bottomIcon: this.state.bottomIconNo,
@@ -656,7 +655,7 @@ export default class Details extends Component {
                 this.props.navigation.navigate('Recovery', { patNo: this.props.patNo, sick: this.state.getData });
                 this.setState({
                     video: false,
-                    openVideoDetail:false,
+                    openVideoDetail: false,
                     title: false,
                     reason: false,
                     intro: false,
@@ -697,7 +696,7 @@ export default class Details extends Component {
                     this.setState({
                         EnterNowScreen: "isNotMainScreen",
                         video: false,
-                        openVideoDetail:false,
+                        openVideoDetail: false,
                         reason: false,
                         title: false,
                         details: false,
