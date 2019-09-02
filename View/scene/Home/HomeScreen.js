@@ -419,24 +419,25 @@ export default class HomeScreen extends Component {
   }
   imgOpen() {
     let _that = this
-    //alert(this.state.numImg)
+    //alert(this.state.getData.img_url)
     if (this.state.numImg == "one") {
       return (
         <View style={styles.detailsImage}>
           <View style={{ marginTop: screen.height * 0.5, width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
             <View style={{ width: '90%', height: '70%', justifyContent: 'center', alignItems: 'center' }}>
               <ImagePlaceholder
-                style={{ width: '100%', height: '100%' }}
-                duration={1000}
-                // imageStyle={{ borderRadius:20 }}
-                // placeholderStyle={{ borderRadius:20 }}
-                // activityIndicatorProps={{
-                //   size: 'large',
-                //   color: 'green',
-                // }}
-                src={this.state.getData.img_url}
-                // placeholder='http://res.vesal.site/pathology/img/T_JBGK001.jpg'
-              />
+              style={{ width: '100%', height: '100%' }}
+              duration={500}
+              // imageStyle={{ borderRadius:20 }}
+              // placeholderStyle={{ borderRadius:20 }}
+              // activityIndicatorProps={{
+              //   size: 'large',
+              //   color: 'green',
+              // }}
+              showActivityIndicator={false}
+              src={this.state.getData.img_url}
+              // placeholder='http://res.vesal.site/pathology/img/T_JBGK001.jpg'
+            />
             </View>
           </View>
         </View>
