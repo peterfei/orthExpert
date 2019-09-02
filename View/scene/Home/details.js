@@ -499,7 +499,7 @@ export default class Details extends Component {
             if (this.state.EnterNowScreen == "isNotMainScreen" && data[i].title == "3D模型") {
                 Arr.pop()
             }
-            if (data[i].title == "成因" && (getData0 == '' || (getData0 !== 'text' && getData0 !== 'video')||JSON.parse(this.state.getData.menus)[0].content=='' )) {
+            if (data[i].title == "成因" && (getData0 == '' || (getData0 !== 'text' && getData0 !== 'video') || JSON.parse(this.state.getData.menus)[0].content == '')) {
                 Arr.pop()
             }
             if (data[i].title == "治疗" && (getData1 == '' || getData1 !== 'zhiliao')) {
@@ -559,7 +559,7 @@ export default class Details extends Component {
 
 
         if (title == "成因") {
-            
+
             let isUse = this.checkPerm();
             if (!isUse) {
                 Alert.alert("提醒", "请先购买套餐后使用~");
@@ -613,6 +613,7 @@ export default class Details extends Component {
                     title: true,
                     bottomIcon: this.state.bottomIconNo,
                 })
+                DeviceEventEmitter.emit("EnterNowScreen", { search: false });
                 DeviceEventEmitter.emit("closeHomeModule", { closeBigImg: true });
                 DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
             } else {

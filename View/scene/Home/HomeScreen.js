@@ -246,25 +246,16 @@ export default class HomeScreen extends Component {
    * 修复闪退
    */
   goBackClicked = () => {
-    if (this.state.EnterNowScreen == 'isMainScreen') {
-      this.closeRightMenu();
-      this.setState({
-        img: false,
-        isUnityReady: true
-      })
-      DeviceEventEmitter.emit("DetailsWinEmitter", { details: false });
-      DeviceEventEmitter.emit("EnterNowScreen", { EnterNowScreen: "showAllsearch" });
-      DeviceEventEmitter.emit("EnterNowScreen", { search: false });
-      this.props.navigation.goBack();
-      if (!this.state.rightMenu) {
-        this.refs.toast.show("再次点击退出");
-        BackHandler.removeEventListener("back", this.goBackClicked);
-        this.timer = setTimeout(
-          () => this.reconfirm(), 1000
-        );
-      }
-    } else if (this.state.EnterNowScreen == 'isNotMainScreen') {
-      this.sendMsgToUnity('back', '', '')
+    this.props.navigation.goBack(null);
+    this.details.clickBack('返回');
+    if (this.state.rightMenu) {
+      this.closeRightMenu()
+    } else {
+      this.refs.toast.show("再次点击退出");
+      BackHandler.removeEventListener("back", this.goBackClicked);
+      this.timer = setTimeout(
+        () => this.reconfirm(), 1000
+      );
     }
     return true;
   };
@@ -298,7 +289,7 @@ export default class HomeScreen extends Component {
         {this.state.img && !this.state.search ? this.imgOpen() : null}
 
         {/* 底部详情 */}
-        <Details patNo={this.state.patNo} load_app_id={this.state.load_app_id} navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })} setImg={() => this.setImg()}
+        <Details ref={details => this.details = details} patNo={this.state.patNo} load_app_id={this.state.load_app_id} navigation={this.props.navigation} setScreen={(Screen) => this.setState({ EnterNowScreen: Screen })} setImg={() => this.setImg()}
           img={this.state.img}
           sendMsgToUnity={(name, info, type) => this.sendMsgToUnity(name, info, type)} />
         {/* 顶部/搜索 */}
@@ -426,18 +417,18 @@ export default class HomeScreen extends Component {
           <View style={{ marginTop: screen.height * 0.5, width: screen.width, height: screen.height, justifyContent: 'center', alignItems: 'center' }}>
             <View style={{ width: '90%', height: '70%', justifyContent: 'center', alignItems: 'center' }}>
               <ImagePlaceholder
-              style={{ width: '100%', height: '100%' }}
-              duration={500}
-              // imageStyle={{ borderRadius:20 }}
-              // placeholderStyle={{ borderRadius:20 }}
-              // activityIndicatorProps={{
-              //   size: 'large',
-              //   color: 'green',
-              // }}
-              showActivityIndicator={false}
-              src={this.state.getData.img_url}
+                style={{ width: '100%', height: '100%' }}
+                duration={500}
+                // imageStyle={{ borderRadius:20 }}
+                // placeholderStyle={{ borderRadius:20 }}
+                // activityIndicatorProps={{
+                //   size: 'large',
+                //   color: 'green',
+                // }}
+                showActivityIndicator={false}
+                src={this.state.getData.img_url}
               // placeholder='http://res.vesal.site/pathology/img/T_JBGK001.jpg'
-            />
+              />
             </View>
           </View>
         </View>
@@ -516,7 +507,7 @@ export default class HomeScreen extends Component {
               //   color: 'green',
               // }}
               src={src}
-              // placeholder='http://res.vesal.site/pathology/img/T_JBGK001.jpg'
+            // placeholder='http://res.vesal.site/pathology/img/T_JBGK001.jpg'
             />
           </View>
           {i != fristiArr ?
