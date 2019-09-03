@@ -1,0 +1,334 @@
+/**
+ * Created by xzh on 11:29 2019-09-03
+ *
+ * @Description:
+ */
+
+import React from "react";
+import {ScrollView, StyleSheet, View, Image, TouchableOpacity, Text, ImageBackground} from "react-native";
+import {
+  BaseComponent,
+  ContainerView,
+  NavBar,
+  Line,
+  size,
+  screen, deviceWidth, AppDef
+} from '../../common';
+import api from "../../api";
+import { storage } from "../../common/storage";
+import Video from 'react-native-af-video-player';
+
+export default class SickDetail extends BaseComponent {
+
+
+  constructor(props) {
+    super(props);
+    let selectIndex = this.findSickIndex();
+    this.state = {
+      selectIndex: selectIndex,
+      sick: props.navigation.state.params.sick,
+      areaSickList: props.navigation.state.params.areaSickList,
+      menus: [],
+      selectBtnIndex: '',
+      selectImgIndex: 0,
+      showSourceType: 'img',
+      playVideoUrl: '',
+    }
+  }
+
+  componentDidMount() {
+    this.requestSickData();
+  }
+
+  findSickIndex() {
+    let sick = this.props.navigation.state.params.sick;
+    let areaSickList = this.props.navigation.state.params.areaSickList;
+    for(let i = 0; i < areaSickList.length; i++) {
+      if (areaSickList[i].pat_no === sick.pat_no) {
+        return i
+      }
+    }
+  }
+
+  async requestSickData() {
+    let memberInfo = await storage.get("memberInfo");
+    let sick = this.state.sick;
+    let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + sick.pat_no + "&business=orthope&mbId=" + memberInfo.mbId;
+    this.mainView._showLoading('加载中...');
+    await fetch(url, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(resp => resp.json())
+      .then(result => {
+        this.mainView._closeLoading();
+        if (result.msg == 'success' && result.code == 0) {
+          let pathology = result.pathology;
+          let menus = JSON.parse(pathology.menus);
+          let kf = {
+            res_fy_icon_url: require('../../img/home/kangfu_d.png'),
+            select_icon_url: require('../../img/home/kangfu_s.png'),
+            secondFyName: '康复',
+            type: 'static'
+          }
+          let model = {
+            res_fy_icon_url: require('../../img/home/model_d.png'),
+            select_icon_url: require('../../img/home/model_s.png'),
+            secondFyName: '3D模型',
+            type: 'static'
+          }
+          menus.push(kf);
+          menus.push(model);
+          this.setState({
+            menus: menus,
+            selectBtnIndex: '',
+
+          })
+          // alert(JSON.stringify(menus));
+        }
+      })
+      .catch(err => {
+        this.mainView._closeLoading();
+        this.mainView._toast(JSON.stringify(err));
+      })
+  }
+
+  changeImg(type) {
+    let index;
+    if (type) { // next
+      index = this.state.selectImgIndex + 1;
+    } else { // perious
+      index = this.state.selectImgIndex - 1;
+    }
+    let sick = this.state.areaSickList[index];
+    this.setState({
+      selectImgIndex: index,
+      sick: sick
+    }, () => {
+      this._scrollView.scrollTo({x: this.state.selectImgIndex * size(510), y: 0, animated: true});
+      this.requestSickData();
+    })
+  }
+
+  onScrollAnimationEnd(e) {
+    let i = Math.floor(e.nativeEvent.contentOffset.x / size(509));
+    let sick = this.state.areaSickList[i];
+    this.setState({
+      selectImgIndex: i,
+      sick: sick
+    }, () => {
+      this.requestSickData();
+    })
+  }
+
+  selectBtn(index) {
+    if (this.state.selectBtnIndex === index) {
+      this.setState({
+        selectBtnIndex: '',
+        showSourceType: 'img'
+      })
+    } else {
+      let menuBtn = this.state.menus[index];
+      alert(JSON.stringify(menuBtn));
+      let type = 'img';
+      if (menuBtn.type == 'zhiliao') {
+        this.setState({
+          showSourceType: 'videoList'
+        })
+      } else if (menuBtn.type == 'video') {
+        this.setState({
+          showSourceType: 'video'
+        })
+      } else { //static 跳转unity 或者 跳转康复
+        if (menuBtn.secondFyName == '康复') {
+
+        } else {
+          alert('跳转Unity');
+        }
+      }
+      this.setState({
+        selectBtnIndex: index
+      })
+    }
+  }
+
+  _renderContent() {
+    if (this.state.showSourceType == 'videoList') { // 视频列表
+      return (
+        this._renderVideoList()
+      )
+    } else if (this.state.showSourceType == 'video') { // 视频播放
+      return (
+        this._renderVideo()
+      )
+    } else {
+      return (
+        this._renderImages()
+      )
+    }
+
+  }
+
+  _renderVideoList() {
+    let arr = [];
+    let menuBtn = this.state.menus[this.state.selectBtnIndex];
+    let videoList = JSON.parse(menuBtn.content);
+    let width = (screen.width - size(75)) / 2;
+    videoList.forEach((item, index) => {
+
+      arr.push(
+        <TouchableOpacity style={{marginBottom: size(30)}} onPress={() => {
+          this.setState({
+            playVideoUrl: item.url,
+            showSourceType: 'video'
+          })
+        }}>
+          <ImageBackground
+            source={{uri: item.img}}
+            style={{width: width - 1, height: size(210), marginRight: size(25), marginBottom: size(20), justifyContent: 'center', alignItems: 'center'}}>
+            <Image source={require('../../img/home/video.png')} style={{width: size(78), height: size(78)}}/>
+          </ImageBackground>
+          <Text style={{color: AppDef.Black, fontSize: size(24), width: width,}}>{item.name}</Text>
+        </TouchableOpacity>
+      )
+    })
+
+    return (
+
+      <View style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1, marginLeft: size(25), marginTop: size(30)}}>
+        {arr}
+      </View>
+    );
+  }
+
+  _renderVideo() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Video
+          autoPlay
+          scrollBounce
+          fullScreenOnly
+          volume={0.8}
+          inlineOnly
+          style={{width: '100%', height: '100%'}}
+          url={this.state.playVideoUrl}
+          ref={(ref) => {
+            this.video = ref
+          }}
+
+          onError={(msg) => {
+            this.playVideoError(msg)
+          }}
+        />
+      </View>
+    )
+  }
+
+  _renderImages() {
+    let arr = [];
+    this.state.areaSickList.forEach((item, index) => {
+      arr.push(
+        <View style={{width: size(510), height: size(850), backgroundColor: index%2 == 0 ? 'orange':'blue'}}>
+          <Image
+            style={{width: size(510), height: size(850)}}
+            source={{uri: item.img_url}}
+          />
+        </View>
+      )
+    })
+
+    let isFirst = this.state.selectImgIndex == 0 ? true : false;
+    let isLast = this.state.selectImgIndex == this.state.areaSickList.length - 1 ? true : false;
+
+    let periousImg = isFirst ? {uri: ''} : require('../../img/home/img_l.png');
+    let nextImg = isLast ? {uri: ''} : require('../../img/home/img_r.png');
+
+    return (
+      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+
+        <TouchableOpacity style={styles.arrowStyle} onPress={() => {
+          if (!isFirst) {
+            this.changeImg(false)
+          }
+        }}>
+          <Image
+            style={{ height: size(53), width: size(29) }}
+            source={periousImg}
+          />
+        </TouchableOpacity>
+
+        <ScrollView
+          ref={r => this._scrollView = r}
+          horizontal={true}
+          pagingEnabled={true}
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={this.onScrollAnimationEnd.bind(this)}
+          style={{width: size(510), height: size(850)}}
+        >
+          {arr}
+        </ScrollView>
+
+        <TouchableOpacity style={styles.arrowStyle} onPress={() => {
+          if (!isLast) {
+            this.changeImg(true)
+          }
+        }}>
+          <Image
+            style={{ height: size(53), width: size(29) }}
+            source={nextImg}
+          />
+        </TouchableOpacity>
+
+      </View>
+    )
+  }
+
+  _renderBottom() {
+    let arr = [];
+    this.state.menus.forEach((item, index) => {
+      let isSelect = this.state.selectBtnIndex === index ? true : false;
+      let color = isSelect ? AppDef.Blue : 'rgba(212, 212, 212, 1)';
+      let img = isSelect ? {uri: item.select_icon_url} : {uri: item.res_fy_icon_url};
+      if (item.secondFyName == '康复' || item.secondFyName == '3D模型') {
+        img = isSelect ? item.select_icon_url : item.res_fy_icon_url;
+      }
+      arr.push(
+        <TouchableOpacity style={{alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104)}} onPress={() => {this.selectBtn(index)}}>
+          <Image resizeMode={'contain'} source={img} style={{width: size(44), height: size(44)}}/>
+          <Text style={{fontSize: size(24), color: color, marginTop: size(8)}}>{item.secondFyName}</Text>
+        </TouchableOpacity>
+      )
+    })
+
+    return (
+      <View style={{height: size(104),  }}>
+        <Line color={'rgba(213, 213, 213, 1)'}/>
+        <View style={{flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
+          {arr}
+        </View>
+      </View>
+    )
+  }
+
+  render() {
+    return (
+      <ContainerView ref={r => this.mainView = r}>
+        <NavBar title={this.state.sick.pat_name} navigation={this.props.navigation}/>
+        {this._renderContent()}
+        {this._renderBottom()}
+      </ContainerView>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  arrowStyle: {
+    marginLeft: size(20),
+    marginRight: size(20),
+    width: size(80),
+    height: size(80),
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+});

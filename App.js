@@ -9,7 +9,9 @@
 import React, { Component } from 'react';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 
-import HomeScreen from "./View/scene/Home/HomeScreen";
+// import HomeScreen from "./View/scene/Home/HomeScreen";
+import NewHome from './View/scene/Home/index';
+import SickDetail from './View/scene/Home/SickDetail';
 import MyScreen from "./View/scene/My/MyScreen";
 import MyOrder from "./View/scene/Order/MyOrder";
 import OrderDetail from "./View/scene/Order/OrderDetail";
@@ -49,7 +51,9 @@ import MessageDetails from './View/scene/Search/MessageDetails';
 
 const RootStack = createAppContainer(createStackNavigator( //跟路由
   {//定义模块
-    HomeScreen: { screen: HomeScreen },
+    // HomeScreen: { screen: HomeScreen },
+    NewHome: { screen: NewHome },
+    SickDetail: {screen: SickDetail},
     MyScreen: { screen: MyScreen },
     MyOrder: { screen: MyOrder },
     OrderDetail: { screen: OrderDetail },
@@ -84,8 +88,8 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
     ModifyPassword:{screen:ModifyPassword}
   },
   {
-    initialRouteName: 'HomeScreen',     //设置初始路由为Home
-    mode: 'modal',
+    initialRouteName: 'NewHome',     //设置初始路由为Home
+    mode: 'card',
     navigationOptions: {
       header: null,
       headerStyle: {
