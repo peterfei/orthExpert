@@ -23,6 +23,7 @@ import CodePush from "react-native-code-push"; // 引入code-push
 import { NavigationActions, StackActions } from "react-navigation";
 import { storage } from "../../common/storage";
 import SplashScreen from "react-native-splash-screen";
+import ChooseSick from './ChooseSick';
 
 export default class HomeScreen extends Component {
   static navigationOptions = {
@@ -275,7 +276,7 @@ export default class HomeScreen extends Component {
         <StatusBar
           hidden={true}
         />
-        <UnityView
+        {/* <UnityView
           ref={(ref) => this.unity = ref}
           onUnityMessage={this.onUnityMessage.bind(this)}
           style={{
@@ -283,7 +284,8 @@ export default class HomeScreen extends Component {
             height: this.state.unityHeight + (Platform.OS == 'ios' ? 0 : size(35)),
             marginTop: 25
 
-          }} />
+          }} /> */}
+        <ChooseSick/>
 
         {/* 点击疾病后图片 */}
         {this.state.img && !this.state.search ? this.imgOpen() : null}
