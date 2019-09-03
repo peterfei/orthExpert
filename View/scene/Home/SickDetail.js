@@ -25,14 +25,14 @@ export default class SickDetail extends BaseComponent {
     super(props);
     let selectIndex = this.findSickIndex();
     this.state = {
-      selectIndex: selectIndex,
-      sick: props.navigation.state.params.sick,
-      areaSickList: props.navigation.state.params.areaSickList,
-      menus: [],
-      selectBtnIndex: '',
-      selectImgIndex: 0,
-      showSourceType: 'img',
-      playVideoUrl: '',
+      selectIndex: selectIndex,        // 当前疾病在  疾病列表 中的下标
+      sick: props.navigation.state.params.sick, // 当前疾病
+      areaSickList: props.navigation.state.params.areaSickList,  // 从上个页面查出来的所有疾病
+      menus: [],           // 当前疾病的所有按钮数据
+      selectBtnIndex: '',  // 当前底部选中的按钮
+      selectImgIndex: 0,   // 当前页面显示的疾病对应的图片
+      showSourceType: 'img', // 当前显示的内容类型  img 图片  video播放视频  videoList 视频列表
+      playVideoUrl: '',    // 当前播放的视频的url
     }
   }
 
@@ -130,7 +130,7 @@ export default class SickDetail extends BaseComponent {
       })
     } else {
       let menuBtn = this.state.menus[index];
-      alert(JSON.stringify(menuBtn));
+      // alert(JSON.stringify(menuBtn));
       let type = 'img';
       if (menuBtn.type == 'zhiliao') {
         this.setState({
