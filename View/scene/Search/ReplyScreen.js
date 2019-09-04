@@ -45,8 +45,7 @@ export default class ReplyScreen extends Component<Props> {
         });
         let tokens = await storage.get("userTokens");
         let url =
-            api.base_uri + "v1/app/msg/getMessageOfApp?token=" + tokens.token + "&version=" + DeviceInfo.getVersion();
-
+            api.base_uri + "v1/app/msg/getMessageOfApp?token=" + tokens.token + "&version=" + DeviceInfo.getVersion()+'&business=orthope';
         let response = await fetch(url, {
             method: "get",
             headers: {
@@ -54,12 +53,12 @@ export default class ReplyScreen extends Component<Props> {
             }
         }).then(resp => resp.json())
             .then(result => {
-                // alert(JSON.stringify(result))
-                this.setState({
-
-                    relyList: result.reply,
-                    refreshstate: RefreshState.Idle,
-                })
+                if (result.code == 0 && result.msg == 'success') {
+                    this.setState({
+                        relyList: result.reply ,
+                        refreshstate: RefreshState.Idle,
+                    })
+                }
             })
             .catch(error => {
                 this.setState({
