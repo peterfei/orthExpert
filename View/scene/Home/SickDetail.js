@@ -129,40 +129,32 @@ export default class SickDetail extends BaseComponent {
         showSourceType: 'img'
       })
     } else {
+
       let menuBtn = this.state.menus[index];
-      
-      // alert(index)
-      // alert(JSON.stringify(menuBtn));
-      let type = 'img';
       if (menuBtn.type == 'zhiliao') {
         this.setState({
-          showSourceType: 'videoList'
+          showSourceType: 'videoList',
+          selectBtnIndex: index
         })
-      } else if (menuBtn.type == 'video') {
-        
-        // alert(menuBtn)
+      }
+
+      if (menuBtn.type == 'video') {
+
         this.setState({
           showSourceType: 'video',
-        //  playVideoUrl:content
+          selectBtnIndex: index,
+          playVideoUrl: menuBtn.content
         })
-      } else { //static 跳转unity 或者 跳转康复
+      }
+
+      if (menuBtn.type == 'static') { //static 跳转unity 或者 跳转康复
         if (menuBtn.secondFyName == '康复') {
-          this.setState({
-            selectBtnIndex: -1,
-          })
+
           this.props.navigation.navigate('Recovery', { patNo: this.state.sick.pat_no, sick: this.state.sick });
-          return
         } else {
           alert('跳转Unity');
-          this.setState({
-            selectBtnIndex: -1,
-          })
-          return
         }
       }
-      this.setState({
-        selectBtnIndex: index
-      })
     }
   }
 
@@ -216,13 +208,11 @@ export default class SickDetail extends BaseComponent {
   }
 
   _renderVideo() {
-     alert(this.state.playVideoUrl)
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Video
           autoPlay
           scrollBounce
-          fullScreenOnly
           volume={0.8}
           inlineOnly
           style={{ width: '100%', height: '100%' }}
