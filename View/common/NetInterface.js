@@ -83,6 +83,8 @@ const Pay = {
   wxGetPreyId:"v1/app/pay/wxGetPreyId",//获取微信预付单
   useActiveCode: 'app/kfxl/v1/combo/useActiveCode', // 激活码接口
 
+    checkComboisExpire:'v1/app/orthope/combo/checkComboisExpire'
+
 }
 
 

@@ -116,6 +116,22 @@ export async function  checkPerm(isFree, comboCode) {
 
 }
 
+/**
+ *     检查骨科vip  使用权限
+ */
+export function checkKfPerm(){
+    const url = NetInterface.checkComboisExpire + '?comboCode=ORTHOPE_VIP';
+    return new Promise((reslove, reject) => {
+        HttpTool.GET_JP(url)
+            .then(result =>{
+                reslove(result)
+            })
+            .catch(error => {
+                reject(error)
+            });
+    })
+}
+
 //检测手机号或邮箱是否合法
 export function CheckIsPhoneEmail(poneInput) {
     let rs = false;

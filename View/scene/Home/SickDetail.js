@@ -5,14 +5,14 @@
  */
 
 import React from "react";
-import { ScrollView, StyleSheet, View, Image, TouchableOpacity, Text, ImageBackground } from "react-native";
+import { ScrollView, StyleSheet, View, Image, TouchableOpacity, Text, ImageBackground ,DeviceEventEmitter} from "react-native";
 import {
   BaseComponent,
   ContainerView,
   NavBar,
   Line,
   size,
-  screen, deviceWidth, AppDef, NetInterface, HttpTool
+  screen, deviceWidth, AppDef,FuncUtils,NetInterface, HttpTool
 } from '../../common';
 import { storage } from "../../common/storage";
 import Video from 'react-native-af-video-player';
@@ -40,6 +40,15 @@ export default class SickDetail extends BaseComponent {
 
   componentDidMount() {
     this.requestSickData();
+      this.emitter = DeviceEventEmitter.addListener('updatePermission',
+          () => {
+              FuncUtils.checkKfPerm()
+          }
+      )
+  }
+
+  componentWillUnmount(){
+    this.emitter.remove()
   }
 
   findSickIndex() {
@@ -247,7 +256,7 @@ export default class SickDetail extends BaseComponent {
           scrollBounce
           volume={0.8}
           inlineOnly
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: screen.width, height: screen.height }}
           url={this.state.playVideoUrl}
           ref={(ref) => {
             this.video = ref
@@ -346,6 +355,25 @@ export default class SickDetail extends BaseComponent {
     )
   }
 
+
+
+  //判断是否开始使用
+  async  startIsUse(index){
+    this.selectBtn(index)
+    return
+      FuncUtils.checkKfPerm()
+          .then(res => {
+              if(res.code  == 0 && res.result == 'yes'){
+                  this.props.navigation.navigate('BuyVip')
+              }else {
+                  this.selectBtn(index)
+              }
+          })
+          .catch(err => {
+            this.mainView._toast(JSON.stringify(err))
+          })
+    }
+
   _renderBottom() {
     let arr = [];
     this.state.menus.forEach((item, index) => {
@@ -356,7 +384,10 @@ export default class SickDetail extends BaseComponent {
         img = isSelect ? item.select_icon_url : item.res_fy_icon_url;
       }
       arr.push(
-        <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104) }} onPress={() => { this.selectBtn(index) }}>
+        <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104) }} onPress={() => {
+          // this.selectBtn(index)
+            this.startIsUse(index)
+        }}>
           <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44) }} />
           <Text style={{ fontSize: size(24), color: color, marginTop: size(8) }}>{item.secondFyName}</Text>
         </TouchableOpacity>

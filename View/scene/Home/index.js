@@ -32,19 +32,36 @@ export default class Custom extends BaseComponent {
     }
   }
 
+  async checkLoginStatus() {
+    let tokens = await storage.get("userTokens");
+    let status = false;
+    if (!(tokens == -1 || tokens == -2)) { // 有token
+      if (tokens.member.isYouke == "yes") { // 游客
+        status = false;
+      } else {
+        status = true;
+      }
+    } else {
+      status = false;
+    }
+
+    if (!status) {
+      this.gotoLogin();
+    }
+  }
+
+  gotoLogin() {
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: "LoginPage" })]
+    });
+    this.props.navigation.dispatch(resetAction);
+  }
+
   async componentDidMount() {
 
     SplashScreen.hide();
-    let tokens = await storage.get("userTokens", "");
-    if (tokens == -1 || tokens == -2) {
-      const resetAction = StackActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: "LoginPage" })]
-      });
-      this.props.navigation.dispatch(resetAction);
-    } else {
-      this.getSickData()
-    }
+    this.getSickData()
   }
 
   getSickData() {
@@ -73,6 +90,9 @@ export default class Custom extends BaseComponent {
   }
 
   selectArea(item, index) { // 选择了某个部位
+
+    this.checkLoginStatus();
+
     this.setState({
       selectId: item.id
     }, () => {
@@ -159,18 +179,27 @@ export default class Custom extends BaseComponent {
   _renderNav() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={[styles.messageView, {marginLeft: size(30)}]} onPress={() => {this.props.navigation.navigate('MyScreen')}}>
+        <TouchableOpacity style={[styles.messageView, {marginLeft: size(30)}]} onPress={() => {
+          this.checkLoginStatus();
+          this.props.navigation.navigate('MyScreen')
+        }}>
           <Image source={require('../../img/home/sick_l.png')} style={styles.messageLeftIcon}/>
         </TouchableOpacity>
         <StatusBar translucent={true}  backgroundColor='rgba(0, 0, 0, 0)' barStyle="light-content" />
         <View style={{flex: 1, backgroundColor: 'white', height: size(60), marginLeft: size(35), marginRight: size(35), borderRadius: size(30), overflow: 'hidden'}}>
-          <TouchableOpacity style={styles.searchBar} onPress={() => {this.props.navigation.navigate('Search')}}>
+          <TouchableOpacity style={styles.searchBar} onPress={() => {
+            this.checkLoginStatus();
+            this.props.navigation.navigate('Search');
+          }}>
             <Image source={require('../../img/home/search_icon.png')} style={styles.searchIcon}/>
             <Text style={styles.searchText}>请输入疾病名称</Text>
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={[styles.messageView, {marginRight: size(30)}]} onPress={() => {this.props.navigation.navigate('MessageNotice')}}>
+        <TouchableOpacity style={[styles.messageView, {marginRight: size(30)}]} onPress={() => {
+          this.checkLoginStatus();
+          this.props.navigation.navigate('MessageNotice');
+        }}>
           <Image source={require('../../img/home/sick_r.png')} style={styles.messageRightIcon}/>
         </TouchableOpacity>
       </View>

@@ -11,12 +11,13 @@ import {
     Platform, TouchableHighlight,ScrollView
 } from "react-native";
 import { color } from "../../widget";
-import {AppDef, deviceWidth, HttpTool, NetInterface, screen, system} from "../../common";
+import {AppDef, deviceWidth, HttpTool, NetInterface, screen, system, Line} from "../../common";
 import { size } from "../../common/ScreenUtil";
 import { storage } from "../../common/storage";
 import StarRating from "react-native-star-rating";
 import api from "../../api";
 import CardCell from './CardCell';
+import Device from "react-native-device-info";
 
 export default class MyRecoveryItem extends Component {
 
@@ -39,19 +40,18 @@ export default class MyRecoveryItem extends Component {
         this.listener.remove();
     }
 
-    getData() {
-
-        const url = NetInterface.myCreatePlanList+ "?patNo=" + this.props.patNo + "&page=1&limit=100&business=kfxl";
+    async getData() {
+        let auth = await storage.get("auth")
+        let loginType = auth.loginType||'tell';
+        const url = NetInterface.myCreatePlanList+ "?patNo=" + this.props.patNo + "&page=1&limit=100&business=kfxl&loginType=" + loginType;
         console.log(JSON.stringify(url));
         HttpTool.GET_JP(url)
           .then(result => {
-            //   alert(JSON.stringify(result));
               this.setState({
                   CardCellData: result.page.list == null ? [] : result.page.list
               })
           })
           .catch(err => {
-            //   alert(JSON.stringify(err));
               console.log(JSON.stringify(err))
           })
     }
@@ -62,6 +62,7 @@ export default class MyRecoveryItem extends Component {
                 <ScrollView style={{width:'100%'}}>
                     {this.showKeyList()}
                     <View style={{height: size(30),width:'100%'}}></View>
+                    <Line height={size(100)} color={'white'}/>
                 </ScrollView>
             </View>
         )
