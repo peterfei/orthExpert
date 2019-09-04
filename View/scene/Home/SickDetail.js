@@ -113,7 +113,7 @@ export default class SickDetail extends BaseComponent {
   }
 
   onScrollAnimationEnd(e) {
-    let i = Math.floor(e.nativeEvent.contentOffset.x / size(509));
+    let i = Math.floor(e.nativeEvent.contentOffset.x / size(508));
     let sick = this.state.areaSickList[i];
     this.setState({
       selectImgIndex: i,
@@ -200,10 +200,11 @@ export default class SickDetail extends BaseComponent {
     })
 
     return (
-
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', flex: 1, marginLeft: size(25), marginTop: size(30) }}>
-        {arr}
-      </View>
+      <ScrollView style={{flex: 1}}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', flex: 1, marginLeft: size(25), marginTop: size(30) }}>
+          {arr}
+        </View>
+      </ScrollView>
     );
   }
 
