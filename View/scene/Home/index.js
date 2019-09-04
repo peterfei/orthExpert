@@ -159,7 +159,7 @@ export default class Custom extends BaseComponent {
   _renderNav() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={[styles.messageView, {marginLeft: size(30)}]} onPress={() => {alert('左边按钮');}}>
+        <TouchableOpacity style={[styles.messageView, {marginLeft: size(30)}]} onPress={() => {this.props.navigation.navigate('MyScreen')}}>
           <Image source={require('../../img/home/sick_l.png')} style={styles.messageLeftIcon}/>
         </TouchableOpacity>
         <StatusBar translucent={true}  backgroundColor='rgba(0, 0, 0, 0)' barStyle="light-content" />
@@ -170,7 +170,7 @@ export default class Custom extends BaseComponent {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={[styles.messageView, {marginRight: size(30)}]} onPress={() => {alert('右边按钮');}}>
+        <TouchableOpacity style={[styles.messageView, {marginRight: size(30)}]} onPress={() => {this.props.navigation.navigate('MessageNotice')}}>
           <Image source={require('../../img/home/sick_r.png')} style={styles.messageRightIcon}/>
         </TouchableOpacity>
       </View>

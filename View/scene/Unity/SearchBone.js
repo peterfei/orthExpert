@@ -2,7 +2,8 @@ import React, {Component} from "react";
 import {Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import Loading from "../../common/Loading";
 import {size} from "../../common/ScreenUtil";
-
+import UnityView, { UnityModule } from 'react-native-unity-view';
+import Video from 'react-native-af-video-player';
 
 export default class SearchBone extends Component {
 

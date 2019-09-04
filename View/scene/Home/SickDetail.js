@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import {ScrollView, StyleSheet, View, Image, TouchableOpacity, Text, ImageBackground} from "react-native";
+import { ScrollView, StyleSheet, View, Image, TouchableOpacity, Text, ImageBackground } from "react-native";
 import {
   BaseComponent,
   ContainerView,
@@ -29,7 +29,7 @@ export default class SickDetail extends BaseComponent {
       sick: props.navigation.state.params.sick, // 当前疾病
       areaSickList: props.navigation.state.params.areaSickList,  // 从上个页面查出来的所有疾病
       menus: [],           // 当前疾病的所有按钮数据
-      selectBtnIndex: '',  // 当前底部选中的按钮
+      selectBtnIndex: -1,  // 当前底部选中的按钮
       selectImgIndex: 0,   // 当前页面显示的疾病对应的图片
       showSourceType: 'img', // 当前显示的内容类型  img 图片  video播放视频  videoList 视频列表
       playVideoUrl: '',    // 当前播放的视频的url
@@ -43,7 +43,7 @@ export default class SickDetail extends BaseComponent {
   findSickIndex() {
     let sick = this.props.navigation.state.params.sick;
     let areaSickList = this.props.navigation.state.params.areaSickList;
-    for(let i = 0; i < areaSickList.length; i++) {
+    for (let i = 0; i < areaSickList.length; i++) {
       if (areaSickList[i].pat_no === sick.pat_no) {
         return i
       }
@@ -82,7 +82,7 @@ export default class SickDetail extends BaseComponent {
           menus.push(model);
           this.setState({
             menus: menus,
-            selectBtnIndex: '',
+            selectBtnIndex: -1
 
           })
           // alert(JSON.stringify(menus));
@@ -106,7 +106,7 @@ export default class SickDetail extends BaseComponent {
       selectImgIndex: index,
       sick: sick
     }, () => {
-      this._scrollView.scrollTo({x: this.state.selectImgIndex * size(510), y: 0, animated: true});
+      this._scrollView.scrollTo({ x: this.state.selectImgIndex * size(510), y: 0, animated: true });
       this.requestSickData();
     })
   }
@@ -125,11 +125,13 @@ export default class SickDetail extends BaseComponent {
   selectBtn(index) {
     if (this.state.selectBtnIndex === index) {
       this.setState({
-        selectBtnIndex: '',
+        selectBtnIndex: -1,
         showSourceType: 'img'
       })
     } else {
       let menuBtn = this.state.menus[index];
+      
+      // alert(index)
       // alert(JSON.stringify(menuBtn));
       let type = 'img';
       if (menuBtn.type == 'zhiliao') {
@@ -137,14 +139,25 @@ export default class SickDetail extends BaseComponent {
           showSourceType: 'videoList'
         })
       } else if (menuBtn.type == 'video') {
+        
+        // alert(menuBtn)
         this.setState({
-          showSourceType: 'video'
+          showSourceType: 'video',
+        //  playVideoUrl:content
         })
       } else { //static 跳转unity 或者 跳转康复
         if (menuBtn.secondFyName == '康复') {
-
+          this.setState({
+            selectBtnIndex: -1,
+          })
+          this.props.navigation.navigate('Recovery', { patNo: this.state.sick.pat_no, sick: this.state.sick });
+          return
         } else {
           alert('跳转Unity');
+          this.setState({
+            selectBtnIndex: -1,
+          })
+          return
         }
       }
       this.setState({
@@ -178,40 +191,41 @@ export default class SickDetail extends BaseComponent {
     videoList.forEach((item, index) => {
 
       arr.push(
-        <TouchableOpacity style={{marginBottom: size(30)}} onPress={() => {
+        <TouchableOpacity style={{ marginBottom: size(30) }} onPress={() => {
           this.setState({
             playVideoUrl: item.url,
             showSourceType: 'video'
           })
         }}>
           <ImageBackground
-            source={{uri: item.img}}
-            style={{width: width - 1, height: size(210), marginRight: size(25), marginBottom: size(20), justifyContent: 'center', alignItems: 'center'}}>
-            <Image source={require('../../img/home/video.png')} style={{width: size(78), height: size(78)}}/>
+            source={{ uri: item.img }}
+            style={{ width: width - 1, height: size(210), marginRight: size(25), marginBottom: size(20), justifyContent: 'center', alignItems: 'center' }}>
+            <Image source={require('../../img/home/video.png')} style={{ width: size(78), height: size(78) }} />
           </ImageBackground>
-          <Text style={{color: AppDef.Black, fontSize: size(24), width: width,}}>{item.name}</Text>
+          <Text style={{ color: AppDef.Black, fontSize: size(24), width: width, }}>{item.name}</Text>
         </TouchableOpacity>
       )
     })
 
     return (
 
-      <View style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1, marginLeft: size(25), marginTop: size(30)}}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', flex: 1, marginLeft: size(25), marginTop: size(30) }}>
         {arr}
       </View>
     );
   }
 
   _renderVideo() {
+     alert(this.state.playVideoUrl)
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Video
           autoPlay
           scrollBounce
           fullScreenOnly
           volume={0.8}
           inlineOnly
-          style={{width: '100%', height: '100%'}}
+          style={{ width: '100%', height: '100%' }}
           url={this.state.playVideoUrl}
           ref={(ref) => {
             this.video = ref
@@ -229,10 +243,10 @@ export default class SickDetail extends BaseComponent {
     let arr = [];
     this.state.areaSickList.forEach((item, index) => {
       arr.push(
-        <View style={{width: size(510), height: size(850), backgroundColor: index%2 == 0 ? 'orange':'blue'}}>
+        <View style={{ width: size(510), height: size(850), backgroundColor: index % 2 == 0 ? 'orange' : 'blue' }}>
           <Image
-            style={{width: size(510), height: size(850)}}
-            source={{uri: item.img_url}}
+            style={{ width: size(510), height: size(850) }}
+            source={{ uri: item.img_url }}
           />
         </View>
       )
@@ -241,11 +255,11 @@ export default class SickDetail extends BaseComponent {
     let isFirst = this.state.selectImgIndex == 0 ? true : false;
     let isLast = this.state.selectImgIndex == this.state.areaSickList.length - 1 ? true : false;
 
-    let periousImg = isFirst ? {uri: ''} : require('../../img/home/img_l.png');
-    let nextImg = isLast ? {uri: ''} : require('../../img/home/img_r.png');
+    let periousImg = isFirst ? { uri: '' } : require('../../img/home/img_l.png');
+    let nextImg = isLast ? { uri: '' } : require('../../img/home/img_r.png');
 
     return (
-      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 
         <TouchableOpacity style={styles.arrowStyle} onPress={() => {
           if (!isFirst) {
@@ -264,7 +278,7 @@ export default class SickDetail extends BaseComponent {
           pagingEnabled={true}
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={this.onScrollAnimationEnd.bind(this)}
-          style={{width: size(510), height: size(850)}}
+          style={{ width: size(510), height: size(850) }}
         >
           {arr}
         </ScrollView>
@@ -289,22 +303,22 @@ export default class SickDetail extends BaseComponent {
     this.state.menus.forEach((item, index) => {
       let isSelect = this.state.selectBtnIndex === index ? true : false;
       let color = isSelect ? AppDef.Blue : 'rgba(212, 212, 212, 1)';
-      let img = isSelect ? {uri: item.select_icon_url} : {uri: item.res_fy_icon_url};
+      let img = isSelect ? { uri: item.select_icon_url } : { uri: item.res_fy_icon_url };
       if (item.secondFyName == '康复' || item.secondFyName == '3D模型') {
         img = isSelect ? item.select_icon_url : item.res_fy_icon_url;
       }
       arr.push(
-        <TouchableOpacity style={{alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104)}} onPress={() => {this.selectBtn(index)}}>
-          <Image resizeMode={'contain'} source={img} style={{width: size(44), height: size(44)}}/>
-          <Text style={{fontSize: size(24), color: color, marginTop: size(8)}}>{item.secondFyName}</Text>
+        <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104) }} onPress={() => { this.selectBtn(index) }}>
+          <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44) }} />
+          <Text style={{ fontSize: size(24), color: color, marginTop: size(8) }}>{item.secondFyName}</Text>
         </TouchableOpacity>
       )
     })
 
     return (
-      <View style={{height: size(104),  }}>
-        <Line color={'rgba(213, 213, 213, 1)'}/>
-        <View style={{flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
+      <View style={{ height: size(104), }}>
+        <Line color={'rgba(213, 213, 213, 1)'} />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
           {arr}
         </View>
       </View>
@@ -314,7 +328,7 @@ export default class SickDetail extends BaseComponent {
   render() {
     return (
       <ContainerView ref={r => this.mainView = r}>
-        <NavBar title={this.state.sick.pat_name} navigation={this.props.navigation}/>
+        <NavBar title={this.state.sick.pat_name} navigation={this.props.navigation} />
         {this._renderContent()}
         {this._renderBottom()}
       </ContainerView>
