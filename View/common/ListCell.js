@@ -29,7 +29,7 @@ export default class ListCell extends Component {
         const currVersion = DeviceInfo.getVersion();
         const netInterface = NetInterface.getAppVersion + "?version=" + currVersion + "&plat=" + Platform.OS;
 
-        HttpTool.GET(netInterface)
+        HttpTool.GET_JP(netInterface)
             .then(res => {
                 // alert(JSON.stringify(res))
                 if (res.List.length > 0) {

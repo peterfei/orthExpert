@@ -91,7 +91,7 @@ export default class CreatePlan extends BaseComponent {
     let planId = this.props.navigation.state.params.planId;
     const url = NetInterface.planDetail + '?planId=' + planId + '&plat=android';
     this.mainView._showLoading('加载中...');
-    HttpTool.GET(url)
+    HttpTool.GET_JP(url)
       .then(res => {
         this.mainView._closeLoading();
         if (res.code == 0 && res.msg == 'success') {
@@ -160,15 +160,17 @@ export default class CreatePlan extends BaseComponent {
       patNo: this.state.sick.pat_no
     }
     this.mainView._showLoading('加载中...');
-    // alert(JSON.stringify(params));
-    console.log(JSON.stringify(params));
+    alert(JSON.stringify(params));
+    // console.log(JSON.stringify(params));
     let tokens = await storage.get("userTokens");
     let auth = await storage.get("auth")
     // let userName = (auth.userName==undefined)?Device.getUniqueID():auth.userName;
     let userName = auth.userName||Device.getUniqueID()
     let loginType = auth.loginType||'tell';
     const url = NetInterface.createPlan + '?token=' + tokens.token + '&userName=' + userName + '&loginType=' + loginType;
-    HttpTool.POST_SP(url, params)
+    console.log(JSON.stringify(url));
+    console.log(JSON.stringify(params));
+    HttpTool.POST(url, params)
       .then(res => {
         this.mainView._closeLoading();
         if (res.code == 0 && res.msg == 'success') {

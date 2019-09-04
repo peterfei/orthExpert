@@ -4,7 +4,7 @@ import {NetInfo} from 'react-native';
 
 //dev 开发   prod 产品
 
-let active = "prod";
+let active = "dev";
 
 let base_url_jiepou ;
 let base_url_sport ;
@@ -154,6 +154,7 @@ export async function POST_JP(urlInterface, params) {
 export async function GET_JP(urlInterface) {
   let tokens = await storage.get("userTokens");
   let url = base_url_jiepou + urlInterface;
+  console.log(JSON.stringify(url));
   return new Promise(function(resolve, reject){
     fetch(url,{
       method: "get",

@@ -68,6 +68,7 @@ const PlanModuleInterface = {
   createPlan: '/app/kfxl/v1/scheme/saveCustomSchemesForOrthope',
 
   planBackImgList: '/app/kfxl/v1/scheme/getSchemesBackgroudImg',
+  myCreatePlanList: 'v1/app/orthope/scheme/myCreateSchemes',
 }
 
 //小人相关

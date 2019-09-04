@@ -149,8 +149,10 @@ export default class LoginPageForm extends Component {
             this.store.params_data["tellAndEmail"] = this.state.username;
             this.store.params_data["password"] = this.state.password;
             this.store.params_data["device_id"] = DeviceInfo.getUniqueID();
+            this.store.params_data["business"] = 'orthope';
             let resp = await this.store.LoginAction();
             if (resp.code == 0) {
+                alert(JSON.stringify(resp));
                 //进入登录页面就清掉缓存
                 this.store.props = this.props;
                 this.Loading.close();

@@ -11,7 +11,7 @@ import {
     Platform, TouchableHighlight,ScrollView
 } from "react-native";
 import { color } from "../../widget";
-import { screen, system } from "../../common";
+import {screen, system, HttpTool, NetInterface} from "../../common";
 import { size } from "../../common/ScreenUtil";
 import { storage } from "../../common/storage";
 import StarRating from "react-native-star-rating";
@@ -30,21 +30,23 @@ export default class RecoveryItem extends Component {
     componentDidMount() {
         this.getSchemesByPatNo()
     }
-    async getSchemesByPatNo() {
-        let url = api.base_url_sport+"app/kfxl/v1/scheme/getSchemesByPatNo?patNo=" + this.props.patNo + "&page=1&limit=10&planType=sysTpl";
-        // alert(url)
-        await fetch(url, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }).then(resp => resp.json())
-            .then(result => {
-                // alert(JSON.stringify(result))
-                this.setState({
-                    CardCellData: result.page.list
-                })
-            })
+    getSchemesByPatNo() {
+        // let url = api.base_url_sport+"app/kfxl/v1/scheme/getSchemesByPatNo?patNo=" + this.props.patNo + "&page=1&limit=10&planType=sysTpl";
+        const url = NetInterface.planListWithSick + '?patNo=' + this.props.navigation.state.params.sick.pat_no + '&page=1&limit=10&planType=sysTpl';
+        alert(url)
+        HttpTool.GET(url)
+          .then(result => {
+              alert(JSON.stringify(result))
+              this.setState({
+                  CardCellData: result.page.list
+              })
+          })
+          .catch(err => {
+              alert(JSON.stringify(result))
+              console.log(JSON.stringify(err));
+          })
+
+
     }
     render() {
         return (

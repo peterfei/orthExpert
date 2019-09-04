@@ -17,7 +17,7 @@ import ScrollableTabView, {
 } from "react-native-scrollable-tab-view";
 import RecoveryItem from "./RecoveryItem";
 import MyRecoveryItem from './MyRecoveryItem';
-import { screen, system } from "../../common";
+import {AppDef, deviceHeight, deviceWidth, screen, system} from "../../common";
 import { size } from "../../common/ScreenUtil";
 import { storage } from "../../common/storage";
 
@@ -25,7 +25,6 @@ export default class Recovery extends Component {
     static navigationOptions = {
         header: null,
     }
-
     render() {
         return (
             <View style={styles.container}>
@@ -52,6 +51,23 @@ export default class Recovery extends Component {
                     </View>
 
                 </ScrollableTabView>
+
+                <TouchableOpacity
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    backgroundColor: AppDef.Blue,
+                    width: deviceWidth,
+                    height: size(100),
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
+                  onPress={() => {
+                      this.props.navigation.navigate('kfSickPlanList', {'sick': this.props.navigation.state.params.sick, 'currArea': this.props.navigation.state.params.currArea})
+                  }}>
+                    <Text style={{fontSize: size(32), color: 'white'}}>创建方案</Text>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -65,19 +81,7 @@ export default class Recovery extends Component {
                             source={require('../../img/public/left.png')} />
                     </TouchableHighlight>
                     <Text style={styles.title}>康复方案</Text>
-                    <TouchableHighlight
-                      style={{
-                        position: 'absolute',
-                        right: 10,
-                        width: size(40),
-                        height: size(40)
-                      }}
-                      onPress={() => {
-                          this.props.navigation.navigate('kfSickPlanList', {'sick': this.props.navigation.state.params.sick, 'currArea': this.props.navigation.state.params.currArea})
-                      }}>
-                        <Image style={styles.backImg}
-                            source={require('../../img/kf_main/kf_plan_add.png')} />
-                    </TouchableHighlight>
+
                 </View>
             </View>
         )
