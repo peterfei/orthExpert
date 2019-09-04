@@ -42,13 +42,15 @@ export default class ChooseMotionView extends Component {
       listViewY: new Animated.Value(deviceHeight),
       sourceData: [],
       motionList: [],
-      sick: props.sick
+      sick: props.sick,
+      currArea: props.currArea
     }
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     this.setState({
-      sick: nextProps.sick
+      sick: nextProps.sick,
+      currArea: nextProps.currArea
     })
   }
 
@@ -57,10 +59,9 @@ export default class ChooseMotionView extends Component {
   }
 
   requestMotionsData() {
-    const url = NetInterface.motionsList + '?patNo=' + this.props.sick.pat_no + '&business=kfxl';
+    const url = NetInterface.motionsList + '?patAreaNo=' + this.state.currArea.pat_area_no + '&business=kfxl';
     HttpTool.GET(url)
       .then(res => {
-        // alert(JSON.stringify(res));
         if (res.code == 0 && res.msg == 'success') {
           res.animationList.forEach(item => {
             item['isSelect'] = false;

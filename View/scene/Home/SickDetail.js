@@ -25,6 +25,7 @@ export default class SickDetail extends BaseComponent {
     super(props);
     let selectIndex = this.findSickIndex();
     this.state = {
+      currArea: props.navigation.state.params.currArea, // 当前疾病所在区域
       selectIndex: selectIndex,        // 当前疾病在  疾病列表 中的下标
       sick: props.navigation.state.params.sick, // 当前疾病
       areaSickList: props.navigation.state.params.areaSickList,  // 从上个页面查出来的所有疾病
@@ -149,8 +150,7 @@ export default class SickDetail extends BaseComponent {
 
       if (menuBtn.type == 'static') { //static 跳转unity 或者 跳转康复
         if (menuBtn.secondFyName == '康复') {
-
-          this.props.navigation.navigate('Recovery', { patNo: this.state.sick.pat_no, sick: this.state.sick });
+          this.props.navigation.navigate('Recovery', { patNo: this.state.sick.pat_no, sick: this.state.sick, currArea: this.state.currArea });
         } else {
           alert('跳转Unity');
         }

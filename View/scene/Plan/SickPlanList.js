@@ -30,7 +30,6 @@ export default class SickPlanList extends BaseComponent {
       sick: props.navigation.state.params.sick,
       data: []
     }
-    // alert(JSON.stringify( props.navigation.state.params.sick));
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -68,7 +67,12 @@ export default class SickPlanList extends BaseComponent {
   }
 
   selectCard(plan) {
-    this.props.navigation.navigate('kfCreatePlan', {'isMB': true, 'sick': this.props.navigation.state.params.sick, 'planId': plan.planId});
+    this.props.navigation.navigate('kfCreatePlan', {
+      'isMB': true,
+      'sick': this.props.navigation.state.params.sick,
+      'planId': plan.planId,
+      'currArea': this.props.navigation.state.params.currArea
+    });
   }
 
   _renderTitle() {
@@ -96,7 +100,12 @@ export default class SickPlanList extends BaseComponent {
 
   _renderCreateButton() {
     return (
-      <TouchableOpacity onPress={() => {this.props.navigation.navigate('kfCreatePlan', {'isMB': false, 'sick': this.props.navigation.state.params.sick, 'planId': '', 'b_key': this.props.navigation.state.key});}}>
+      <TouchableOpacity onPress={() => {this.props.navigation.navigate('kfCreatePlan', {
+        'isMB': false,
+        'sick': this.props.navigation.state.params.sick,
+        'planId': '',
+        'currArea': this.props.navigation.state.params.currArea,
+        'b_key': this.props.navigation.state.key});}}>
         <View style={{width: deviceWidth - size(50), height: size(80), marginLeft: size(25), marginTop: size(40),
           borderColor: AppDef.Blue, borderWidth: size(0.5), borderRadius: size(20),
           flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>

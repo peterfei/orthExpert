@@ -31,7 +31,8 @@ export default class ContainerView extends Component {
     this.state = {
       selectDialogData: [],
       selectDialogType: 'Default',
-      selectDialogName: 'Default'
+      selectDialogName: 'Default',
+      selectDialogTitle: '请选择',
     }
 
     that = this;
@@ -60,8 +61,9 @@ export default class ContainerView extends Component {
     this.refs.toast.show(content);
   }
 
-  _showSelectDialog(name, list, type) {
+  _showSelectDialog(name, list, type, title) {
     this.setState({
+      selectDialogTitle: title ? title : '请选择',
       selectDialogName: name,
       selectDialogData: list,
       selectDialogType: type == 'Mutilple' ? type : 'Default',
@@ -86,6 +88,7 @@ export default class ContainerView extends Component {
         {this.props.children}
         <SelectDialog
           ref={r=>{this.SelectDialog = r}}
+          title={this.state.selectDialogTitle}
           type={this.state.selectDialogType}
           data={this.state.selectDialogData}
           name={this.state.selectDialogName}

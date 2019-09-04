@@ -25,6 +25,7 @@ export default class Recovery extends Component {
     static navigationOptions = {
         header: null,
     }
+
     render() {
         return (
             <View style={styles.container}>
@@ -64,13 +65,16 @@ export default class Recovery extends Component {
                             source={require('../../img/public/left.png')} />
                     </TouchableHighlight>
                     <Text style={styles.title}>康复方案</Text>
-                    <TouchableHighlight style={{
+                    <TouchableHighlight
+                      style={{
                         position: 'absolute',
                         right: 10,
                         width: size(40),
                         height: size(40)
-                    }}
-                        onPress={() => {this.props.navigation.navigate('kfSickPlanList', {'sick': this.props.navigation.state.params.sick})}}>
+                      }}
+                      onPress={() => {
+                          this.props.navigation.navigate('kfSickPlanList', {'sick': this.props.navigation.state.params.sick, 'currArea': this.props.navigation.state.params.currArea})
+                      }}>
                         <Image style={styles.backImg}
                             source={require('../../img/kf_main/kf_plan_add.png')} />
                     </TouchableHighlight>

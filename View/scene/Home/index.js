@@ -109,7 +109,8 @@ export default class Custom extends BaseComponent {
           item['title'] = item.pat_name;
         })
         this.setState({
-          areaSickList:sickList
+          areaSickList:sickList,
+          currArea:item
         })
         if (sickList.length <= 0) {
           this.mainView._toast('此部位暂无疾病内容.');
@@ -125,7 +126,7 @@ export default class Custom extends BaseComponent {
 
   recieveSelectResult(result) {
     let sick = result.value;
-    this.props.navigation.navigate('SickDetail', {sick: sick, areaSickList: this.state.areaSickList});
+    this.props.navigation.navigate('SickDetail', {sick: sick, areaSickList: this.state.areaSickList, currArea: this.state.currArea});
   }
 
   getImgMap(value) {
