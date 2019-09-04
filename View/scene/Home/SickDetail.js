@@ -261,7 +261,7 @@ export default class SickDetail extends BaseComponent {
           scrollBounce
           volume={0.8}
           inlineOnly
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: screen.width, height: screen.height }}
           url={this.state.playVideoUrl}
           ref={(ref) => {
             this.video = ref
@@ -353,6 +353,8 @@ export default class SickDetail extends BaseComponent {
 
   //判断是否开始使用
   async  startIsUse(index){
+    this.selectBtn(index)
+    return
       FuncUtils.checkKfPerm()
           .then(res => {
               if(res.code  == 0 && res.result == 'yes'){

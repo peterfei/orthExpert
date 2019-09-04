@@ -16,7 +16,7 @@ import {
 import { screen, ScreenUtil } from "../../common/index";
 import UnityLoading from './Components/UnityLoading';
 import Toast from "react-native-easy-toast";
-import UnityView from 'react-native-unity-view';
+import UnityView,{ UnityModule } from 'react-native-unity-view';
 import { size, deviceWidth, deviceHeight } from "../../common/ScreenUtil";
 import ActionSheet from "react-native-actionsheet";
 import UShare from "../../share/share";
@@ -128,6 +128,7 @@ export default class BonesScene extends Component {
             isPro: true,
 
             arTipShow: false,
+            isUnityReady:false,
         }
     }
 
@@ -161,11 +162,23 @@ export default class BonesScene extends Component {
      * ui渲染完后的操作
      */
     async componentDidMount() {
-
+        
         let info = this.state.info;
 
         let changeInfo = this.changeInfo(info)
-
+        if( (await (UnityModule.isReady())) ){
+            this.setState({
+                isUnityReady:true
+            })
+            // let changeInfo = this.changeInfo(this.state.info)
+            // this.sendMsgToUnity("app", changeInfo, 'json');
+            // this.checkSearch();
+        }else{
+            // alert(11111111)
+            setTimeout(function(){
+                this.sendMsgToUnity("app", changeInfo, 'json');
+            }.bind(this),2000)
+        }
         this.sendMsgToUnity("app", changeInfo, 'json');//发消息给unity
 
         let isConnect = await checkConnect(info.struct_id);
@@ -303,16 +316,26 @@ export default class BonesScene extends Component {
      * @param event
      */
     async onUnityMessage(event) {
+        // if((await (UnityModule.isReady())) ){
+        //     let changeInfo = this.changeInfo(this.state.info)
+        //     this.sendMsgToUnity("app", changeInfo, 'json');
+        //     // this.checkSearch();
+        // }
         // alert(JSON.stringify(event))
         if (event.name == 'title') { // 模型已加载完毕
             this.setState({
-                unityReady: true
+                unityReady: true,
+                // info:
             });
-            this.checkSearch();
+            
+            // let info = this.state.info;
+            
         } else if (event.name == 'exit') {
             this.props.navigation.goBack();
         } else if (event.name == 'back') {//返回
+            // alert(1111)
             this.back()
+            UnityModule.pause()
         } else if (event.name == 'model') {//点击模型  选中骨骼
             let name = hexToStr(event.data.Chinese);
             // this.refs.toast.show(name);
@@ -1205,14 +1228,18 @@ export default class BonesScene extends Component {
 
                     }}
                 />
-                <View style={{
-                    backgroundColor: "black", width: '100%', height: size(0.0001),
+                {
+                !this.state.unityReady? <View style={{
+                    backgroundColor: "rgba(0,0,0,0.1)", width: '100%', height: '100%',
                     position: 'relative',
-                    top: 0,
+                    bottom: 0,
                     left: 0,
                     right: 0
                 }}>
-                </View>
+                </View>:null
+
+                }
+               
                 {this.state.unityReady ?
                     <View style={[styles.rnView, { left: this.state.showRnView ? 0 : deviceWidth * 0.99 }]}>
                         {/****  选中骨骼后的底部条 || 默认展示的底部条  *****/}
@@ -1388,6 +1415,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: size(-0.01),
         left: 0,
+       
     },
     defaultBarStyle: {
         backgroundColor: 'rgba(0,0,0,0.8)',
