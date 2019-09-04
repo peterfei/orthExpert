@@ -1,80 +1,45 @@
-import React, { Component } from 'react';
+import React from "react";
+import { ScrollView, StyleSheet, View, Image, TouchableOpacity,StatusBar, Text,Platform , ImageBackground, TextInput } from "react-native";
 import {
-  Platform, StyleSheet, Text, View, ScrollView,
-  Dimensions, TouchableHighlight, TextInput, Image, TouchableOpacity, DeviceEventEmitter
-} from 'react-native';
-import { screen, system } from "../../common";
-import { size } from '../../common/ScreenUtil';
-import { groupBy, changeArr } from "../../common/fun";
+  BaseComponent,
+  ContainerView,
+  NavBar,
+  Line,
+  size,
+  screen, deviceWidth, AppDef,isIPhoneXPaddTop
+} from '../../common';
+import api from "../../api";
 import { queryHistoryAll, insertHistory, deleteHistories, queryRecentlyUse } from "../../realm/RealmManager";
 import Loading from "../../common/Loading";
 import Toast from "react-native-easy-toast";
-import api from "../../api";
-import styles from './styles';
-import _ from "lodash";
+import { groupBy, changeArr } from "../../common/fun";
 import { storage } from "../../common/storage";
 
-export default class SearchComponent extends Component {
-  static navigationOptions = {
-    header: null,
+
+const statusBarHeight = StatusBar.currentHeight;
+
+export default class SearchComponent extends BaseComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      search: false,
+      allSearch: true,
+      sourceData: '',
+      hotData: '',
+      historyData: '',
+      linceList: '',
+      key: '',
+      currKeyName: '',
+      currKeyId: '',
+      keyData: '',
+      searchpathologyList: '',
+      showHotAndKey: true,
+    }
   }
-  state = {
-    search: false,
-    allSearch: true,
-    sourceData: '',
-    hotData: '',
-    historyData: '',
-    linceList: '',
-    key: '',
-    currKeyName: '',
-    currKeyId: '',
-    keyData: '',
-    searchpathologyList: '',
-    showHotAndKey: true,
-  }
-  listeners = {
-    update: DeviceEventEmitter.addListener("EnterNowScreen",
-      ({ ...passedArgs }) => {
-        let EnterNowScreen = passedArgs.EnterNowScreen
-        let search = passedArgs.search
-        if (EnterNowScreen == "closeAllsearch") {
-          this.setState({
-            allSearch: false
-          })
-        }
-        if (EnterNowScreen == "showAllsearch") {
-          this.setState({
-            allSearch: true
-          })
-        }
-        if (search == false) {
-          this.setState({
-            search: false
-          })
-        }
-      }
-    )
-  };
   componentWillMount() {
     //获取热词
     this.getHotKey();
     this.getHistory();
-    //this.refreshDetail()
-    // this.emitter = DeviceEventEmitter.addListener('queryStructRefresh',
-    //   () => {
-    //     this.refreshDetail();
-    //     this.refs.toast.show("刷新成功");
-    //   }
-    // )
-  }
-  componentWillUnmount() {
-    _.each(this.listeners, listener => {
-      listener.remove();
-    });
-    this.timer && clearInterval(this.timer);
-    if (this.emitter) {
-      this.emitter.remove()
-    }
   }
   async getHistory() {
     let arr = await queryHistoryAll();
@@ -83,7 +48,6 @@ export default class SearchComponent extends Component {
     })
   }
   async getHotKey() {
-
     //获取热门搜索数据
     let url = api.base_uri + "v1/app/pathology/getSearchHot?size=6";
     await fetch(url, {
@@ -97,79 +61,107 @@ export default class SearchComponent extends Component {
           hotData: result.pathologyList
         })
       })
-    // let tokens = await storage.get("userTokens");
-    // if (tokens != -1 && tokens) {
-    //   let url = api.base_uri + "v1/app/struct/selectHotProduct?token=1";
-    //   await fetch(url, {
-    //     method: "get",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       token: tokens.token
-    //     }
-    //   }).then(resp => resp.json())
-    //     .then(result => {
-
-    //       this.setState({
-    //         hotData: result.hotList
-    //       })
-
-    //     })
-    // } else {
-    //   Alert.alert("会话过期,请重新登录");
-    //   setTimeout(
-    //     function () {
-    //       const resetAction = StackActions.reset({
-    //         index: 0,
-    //         actions: [NavigationActions.navigate({ routeName: "LoginPage" })]
-    //       });
-    //       this.props.navigation.dispatch(resetAction);
-    //     }.bind(this), 1000
-    //   );
-    // }
-
   }
-  // async refreshDetail() {
-  //   let that = this;
-  //   let linceList = await getLinceList();
-  //   that.setState({
-  //     linceList: linceList
-  //   });
-  // }
-  render() {
-    return (
-      <View style={{ position: 'absolute', width: screen.width }}>
 
-        {this.state.allSearch ?
-          <View style={{ width: screen.width }}>
-            {!this.state.search ? this.renderTop() : this.searchScreen()}
-          </View>
-          :
-          <View style={{
-            width: size(10),
-            position: 'absolute',
-            bottom: 0,
-            height: size(10),
-            backgroundColor: "#FFF",
-            left: 0,
-          }} />
+  async queryStruct(data, type) {
+    this.Loading.show("查询中...");
+    this.saveHistory(data, type);
 
-        }
-        <Loading
-          ref={r => {
-            this.Loading = r;
-          }}
-          hudHidden={false}
-        />
-        <Toast style={{ backgroundColor: '#343434' }} ref="toast" opacity={1} position='top'
-          positionValue={size(100)} fadeInDuration={750} textStyle={{ color: '#FFF' }}
-          fadeOutDuration={1000} />
-      </View>
-    )
+    this.Loading.close();
   }
-  searchScreen() {
+
+  async queryKey(value) {
+    try {
+      if (value != '') {
+        this.setState({
+          key: value,
+          currKeyName: value,
+          showHotAndKey: false
+        })
+        let tokens = await storage.get("userTokens");
+        let url = api.base_uri + "v1/app/pathology/searchPathologyList?key=" + value;
+        await fetch(url, {
+          method: "get",
+          headers: {
+            "Content-Type": "application/json",
+            token: tokens.token
+          }
+        }).then(resp => resp.json())
+          .then(result => {
+            if (result.msg == "success") {
+              this.setState({
+                key: value,
+                searchpathologyList: result.pathologyList,
+              })
+            }
+          })
+      } else {
+        this.setState({
+          keyData: [],
+          showHotAndKey: true,
+          searchpathologyList: ''
+        })
+      }
+    } catch (e) {
+
+    }
+  }
+
+  
+  deleteHistory() {
+    this.setState({
+      historyData: []
+    })
+    deleteHistories()
+  }
+
+  closeSearch() {
+    this.props.navigation.goBack()
+    this.setState({
+      showHotAndKey: true,
+    })
+  }
+  
+  My() {
+    this.props.navigation.navigate('MyScreen');
+  }
+
+  Message() {
+    this.props.navigation.navigate('MessageNotice');
+  }
+
+  getKeyName(keyName) {
+    if (keyName != '' && keyName != undefined) {
+      return keyName.replace('#', '');
+    } else {
+      return "";
+    }
+  }
+
+  searchChicks(pat_no, pat_name) {
+    let data = { "keyName": pat_name, "ketNo": pat_no }
+    this.saveHistory(data, "key")
+    this.getHistory()
+    this.props.pushRightMune(pat_no, "img")
+    this.closeSearch()
+  }
+  
+  saveHistory(data, type) {
+    if ("key" == type) {
+      let temp = {
+        keyName: data.keyName,
+        ketNo: data.ketNo + "",
+        type: type,
+        addTime: new Date().getTime()
+      }
+      insertHistory(temp)
+    }
+  }
+
+  _renderTop() {
     return (
-      <View style={styles.searchBackground}>
-        <View style={[styles.top, { justifyContent: 'flex-start' }]}>
+        <View style={styles.container}>
+          <StatusBar translucent={true}  backgroundColor='rgba(0, 0, 0, 0)' barStyle="light-content" />
           <TouchableOpacity style={[styles.icon, { marginLeft: 10, marginRight: 10 }]}
             onPress={() => this.closeSearch()}>
             <Image style={styles.icon}
@@ -189,7 +181,13 @@ export default class SearchComponent extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <ScrollView style={{ width: '100%', padding: 10 }}>
+        
+    )
+  }
+
+  _renderBottom(){
+    return(
+      <ScrollView style={{ width: '100%', padding: 10 }}>
           {this.state.showHotAndKey ?
             <View>
               {
@@ -219,105 +217,10 @@ export default class SearchComponent extends Component {
             </View>
           }
         </ScrollView>
-      </View>
     )
   }
-  deleteHistory() {
-    this.setState({
-      historyData: []
-    })
-    deleteHistories()
-  }
-  async queryStruct(data, type) {
-    this.Loading.show("查询中...");
-    //this.refs.textInput.blur();
-    // let tokens = await storage.get("userTokens");
-    // let url = api.base_uri + "v1/app/struct/getStructByKeyWord";
-    this.saveHistory(data, type);
 
-    this.Loading.close();
-    // let params = {
-
-    //     "keyName": data.keyName,
-    //     "keyId": data.keyId,
-    //     "type": type,
-    //     "plat": Platform.OS,
-    //     "appVersion": DeviceInfo.getVersion()
-
-    // }
-
-    // await fetch(url, {
-    //     method: "post",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //         token: tokens.token
-    //     },
-    //     body: JSON.stringify(params)
-    // }).then(resp => resp.json())
-    //     .then(result => {
-    //         this.Loading.close();
-    //         if (result.code == 0) {
-    //             let currkey = "";
-    //             let currKeyId = "";
-    //             if (data.keyId != '' && data.keyId != undefined) {
-    //                 currkey = data.keyName;
-    //                 currKeyId = data.keyId;
-    //             }
-    //             if (result.keyId && result.keyId != '') {
-    //                 currkey = data.keyName;
-    //             }
-
-    //             this.setState({
-    //                 structData: groupBy(result.result, "parent_name").sort(compare("parent_sort")),
-    //                 showStruct: true,
-    //                 showKey: false,
-    //                 showHot: false,
-    //                 key: this.getKeyName(data.keyName),
-    //                 currKeyName: currkey,
-    //                 currKeyId: currKeyId,
-    //                 btnTitle: "搜索"
-    //             })
-    //         }
-    //     })
-
-  }
-  async queryKey(value) {
-    try {
-      if (value != '') {
-        this.setState({
-          key: value,
-          currKeyName: value,
-          showHotAndKey: false
-        })
-        let tokens = await storage.get("userTokens");
-        let url = api.base_uri + "v1/app/pathology/searchPathologyList?key=" + value;
-        await fetch(url, {
-          method: "get",
-          headers: {
-            "Content-Type": "application/json",
-            token: tokens.token
-          }
-        }).then(resp => resp.json())
-          .then(result => {
-            if (result.msg == "success") {
-              this.setState({
-                key: value,
-                searchpathologyList: result.pathologyList,
-              })
-            }
-          })
-
-      } else {
-        this.setState({
-          keyData: [],
-          showHotAndKey: true,
-          searchpathologyList: ''
-        })
-      }
-    } catch (e) {
-
-    }
-  }
+  
   renderHistory() {
     let arr = []
     for (let i = 0; i < this.state.historyData.length; i++) {
@@ -328,6 +231,7 @@ export default class SearchComponent extends Component {
     }
     return arr
   }
+
   renderSeachBody() {
     let searchpathologyList = this.state.searchpathologyList
     if (searchpathologyList == null || searchpathologyList == '') {
@@ -344,32 +248,7 @@ export default class SearchComponent extends Component {
       return arr
     }
   }
-  getKeyName(keyName) {
-    if (keyName != '' && keyName != undefined) {
-      return keyName.replace('#', '');
-    } else {
-      return "";
-    }
-  }
 
-  searchChicks(pat_no, pat_name) {
-    let data = { "keyName": pat_name, "ketNo": pat_no }
-    this.saveHistory(data, "key")
-    this.getHistory()
-    this.props.pushRightMune(pat_no, "img")
-    this.closeSearch()
-  }
-  saveHistory(data, type) {
-    if ("key" == type) {
-      let temp = {
-        keyName: data.keyName,
-        ketNo: data.ketNo + "",
-        type: type,
-        addTime: new Date().getTime()
-      }
-      insertHistory(temp)
-    }
-  }
   renderHot() {
     let arr = []
     for (let i = 0; i < this.state.hotData.length; i++) {
@@ -379,64 +258,98 @@ export default class SearchComponent extends Component {
     }
     return arr
   }
-  renderTop() {
+
+  render() {
     return (
-      <View style={styles.body}>
-        <Image style={{ position: 'absolute', top: 0, width: '100%', height: 90, resizeMode: 'stretch' }}
-          source={require('../../img/home/topBg.png')} />
-        <View style={styles.top}>
-          <TouchableOpacity
-            onPress={() => this.My()}>
-            <View style={[styles.button, { marginLeft: 10 }]}>
-              <Image style={styles.icon}
-                source={require('../../img/home/left.png')} />
-              <Text style={styles.iconTitle}>我的</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.input, { paddingLeft: 0 }]}
-            onPress={() => this.showSearch()}>
-            <View>
-              <TextInput
-                style={{ width: '100%', height: 35, paddingLeft: 40, margin: 0, padding: 0, }}
-                placeholder="请输入病症名称"
-                placeholderTextColor='#757575'
-                editable={false} />
-              <View style={styles.searchImg}>
-                <Image style={styles.searchImgMain}
-                  source={require('../../img/search/search.png')} />
-              </View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => this.Message()}>
-            <View style={[styles.button, { marginRight: 10 }]}>
-              <Image style={styles.icon}
-                source={require('../../img/home/right.png')} />
-              <Text style={styles.iconTitle}>消息</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <ContainerView ref={r => this.mainView = r}>
+        {this._renderTop()}
+        {this._renderBottom()}
+        <Loading
+          ref={r => {
+            this.Loading = r;
+          }}
+          hudHidden={false}
+        />
+        <Toast style={{ backgroundColor: '#343434' }} ref="toast" opacity={1} position='top'
+          positionValue={size(100)} fadeInDuration={750} textStyle={{ color: '#FFF' }}
+          fadeOutDuration={1000} />
+      </ContainerView>
     )
   }
-  showSearch() {
-    this.setState({
-      search: true
-    })
-    this.props.setSearch(true)
-  }
-  closeSearch() {
-    this.setState({
-      search: false,
-      showHotAndKey: true,
-    })
-    this.props.setSearch(false)
-  }
-  My() {
-    this.props.navigation.navigate('MyScreen');
-  }
-  Message() {
-    this.props.navigation.navigate('MessageNotice');
-  }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: Platform.OS === 'android' ? size(148) :  size(88) + isIPhoneXPaddTop(0),
+    paddingTop: isIPhoneXPaddTop(0) +  ( Platform.OS === 'android' ? statusBarHeight : 0),
+    flexDirection: "row",
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor: '#00BDF1'
+  },
+  top: {
+    marginTop: 25,
+    width: screen.width,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  icon: {
+    width: 20,
+    height: 20,
+  },
+  input: {
+    height: 35,
+    width: '70%',
+    backgroundColor: 'rgba(121, 121, 121, 0.3)',
+    borderRadius: 3,
+    margin: 0, padding: 0,
+    paddingLeft: 40,
+  },
+  searchImg: {
+    width: 40,
+    height: 35,
+    position: "absolute",
+    left: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  searchImgMain: {
+    width: 15,
+    height: 15,
+  },
+  histortTitle: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    color: '#C8C8C8',
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#343434',
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
+  deleteStyle: {
+    position: "absolute",
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 60,
+    width: 55
+  },
+  histortMain: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingBottom: 10,
+    paddingTop: 10,
+  },
+  histortBody: {
+    padding: 5,
+    margin: 7,
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: '#C8C8C8',
+    //fontSize: 15,
+    color: '#C8C8C8'
+  },
+});
 

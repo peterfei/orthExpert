@@ -21,7 +21,7 @@ import Help from "./View/scene/Help/help";
 import problemDetails from "./View/scene/Help/problemDetails";
 import kfMineUserInfo from "./View/scene/My/UserInfoDetail";//EditMember
 
-// import Search from './View/scene/Home/Search';
+import Search from './View/scene/Home/search';
 import MemberComplete from "./View/scene/Register/MemberComplete";
 import RegisterPage from "./View/scene/Register/RegisterPage";
 import ForgetPasswordPage from "./View/scene/Register/ForgetPasswordPage";
@@ -55,7 +55,7 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
   {//定义模块
     // HomeScreen: { screen: HomeScreen },
     NewHome: { screen: NewHome },
-    SickDetail: {screen: SickDetail},
+    SickDetail: { screen: SickDetail },
     MyScreen: { screen: MyScreen },
     MyOrder: { screen: MyOrder },
     OrderDetail: { screen: OrderDetail },
@@ -86,9 +86,10 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
     RenTi: { screen: RenTi },
     TrainPlay: { screen: TrainPlay },
     kfModifyData: { screen: kfModifyData },
-    ActivationCode:{screen:ActivationCode},
-    ModifyPassword:{screen:ModifyPassword},
-    BonesScene:{screen:BonesScene}
+    ActivationCode: { screen: ActivationCode },
+    ModifyPassword: { screen: ModifyPassword },
+    BonesScene: { screen: BonesScene },
+    Search: { screen: Search }
   },
   {
     initialRouteName: 'NewHome',     //设置初始路由为Home
