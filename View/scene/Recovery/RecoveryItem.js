@@ -11,7 +11,7 @@ import {
     Platform, TouchableHighlight,ScrollView
 } from "react-native";
 import { color } from "../../widget";
-import {screen, system, HttpTool, NetInterface} from "../../common";
+import {screen, system, HttpTool, NetInterface, Line} from "../../common";
 import { size } from "../../common/ScreenUtil";
 import { storage } from "../../common/storage";
 import StarRating from "react-native-star-rating";
@@ -54,6 +54,7 @@ export default class RecoveryItem extends Component {
                 <ScrollView style={{width:'100%'}}>
                     {this.showKeyList()}
                     <View style={{height: size(30),width:'100%'}}></View>
+                    <Line height={size(100)} color={'white'}/>
                 </ScrollView>
             </View>
         )
