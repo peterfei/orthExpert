@@ -142,8 +142,7 @@ export default class SearchComponent extends BaseComponent {
     let data = { "keyName": pat_name, "ketNo": pat_no }
     this.saveHistory(data, "key")
     this.getHistory()
-    this.props.pushRightMune(pat_no, "img")
-    this.closeSearch()
+    this.props.navigation.goBack()
   }
   
   saveHistory(data, type) {
@@ -169,7 +168,7 @@ export default class SearchComponent extends BaseComponent {
           </TouchableOpacity>
           <View style={{ width: "85%" }}>
             <TextInput
-              style={[styles.input, { width: "100%",color:'white' }]}
+              style={[styles.input, { width: "100%" }]}
               placeholder="请输入病症名称"
               placeholderTextColor='#757575'
               autoFocus={true}
@@ -220,7 +219,6 @@ export default class SearchComponent extends BaseComponent {
     )
   }
 
-  
   renderHistory() {
     let arr = []
     for (let i = 0; i < this.state.historyData.length; i++) {
@@ -232,11 +230,21 @@ export default class SearchComponent extends BaseComponent {
     return arr
   }
 
+  renderHot() {
+    let arr = []
+    for (let i = 0; i < this.state.hotData.length; i++) {
+      arr.push(
+        <Text style={styles.histortBody} onPress={() => this.searchChicks(this.state.hotData[i].pat_no, this.state.hotData[i].pat_name, this.state.hotData[i].pat_id)}>{this.state.hotData[i].pat_name}</Text>
+      )
+    }
+    return arr
+  }
+  
   renderSeachBody() {
     let searchpathologyList = this.state.searchpathologyList
     if (searchpathologyList == null || searchpathologyList == '') {
       return (
-        <Text style={{ fontSize: 15, color: 'white', textAlign: "center", marginTop: 30 }}>没有找到相关结果,换个关键字试试哟~</Text>
+        <Text style={{ fontSize: 15, textAlign: "center", marginTop: 30 }}>没有找到相关结果,换个关键字试试哟~</Text>
       )
     } else {
       let arr = []
@@ -247,16 +255,6 @@ export default class SearchComponent extends BaseComponent {
       }
       return arr
     }
-  }
-
-  renderHot() {
-    let arr = []
-    for (let i = 0; i < this.state.hotData.length; i++) {
-      arr.push(
-        <Text style={styles.histortBody} onPress={() => this.searchChicks(this.state.hotData[i].pat_no, this.state.hotData[i].pat_name, this.state.hotData[i].pat_id)}>{this.state.hotData[i].pat_name}</Text>
-      )
-    }
-    return arr
   }
 
   render() {
@@ -299,10 +297,10 @@ const styles = StyleSheet.create({
     height: 20,
   },
   input: {
-    height: 35,
+    height: size(60),
+    borderRadius: size(20),
     width: '70%',
-    backgroundColor: 'rgba(121, 121, 121, 0.3)',
-    borderRadius: 3,
+    backgroundColor: 'white',
     margin: 0, padding: 0,
     paddingLeft: 40,
   },
@@ -321,12 +319,12 @@ const styles = StyleSheet.create({
   histortTitle: {
     fontWeight: 'bold',
     fontSize: 15,
-    color: '#C8C8C8',
     width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: '#343434',
     paddingTop: 15,
     paddingBottom: 15,
+    color:'black'
   },
   deleteStyle: {
     position: "absolute",
@@ -347,9 +345,9 @@ const styles = StyleSheet.create({
     margin: 7,
     borderRadius: 3,
     borderWidth: 1,
+    color:'black',
     borderColor: '#C8C8C8',
     //fontSize: 15,
-    color: '#C8C8C8'
   },
 });
 

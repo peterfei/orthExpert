@@ -48,7 +48,7 @@ export default class ActivationCode extends BaseComponent {
             this.mainView._toast("请输入激活码")
         } else {
             this.mainView._showLoading("努力激活中...")
-            let url = NetInterface.useActiveCode + `?activeCode=${this.state.code}`
+            let url = NetInterface.gk_useActiveCode + `?activeCode=${this.state.code}`
             HttpTool.GET_JP(url)
                 .then(res => {
                     this.mainView._closeLoading()

@@ -97,11 +97,11 @@ const WkModule = {}
 
 // 图片上传接口
 const UploadModule = {
-  uploadImg: 'app/v1/mbFile/upload'
+  uploadImg: 'app/v1/mbFile/upload',
 }
 
 const Gk = {
-  useActiveCode: '/v1/app/orthope/combo/useActiveCode'
+  gk_useActiveCode: '/v1/app/orthope/combo/useActiveCode',
 }
 
 export default {
