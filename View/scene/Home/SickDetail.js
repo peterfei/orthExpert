@@ -17,6 +17,7 @@ import {
 import api from "../../api";
 import { storage } from "../../common/storage";
 import Video from 'react-native-af-video-player';
+import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
 
 export default class SickDetail extends BaseComponent {
 
@@ -34,6 +35,7 @@ export default class SickDetail extends BaseComponent {
       selectImgIndex: 0,   // 当前页面显示的疾病对应的图片
       showSourceType: 'img', // 当前显示的内容类型  img 图片  video播放视频  videoList 视频列表
       playVideoUrl: '',    // 当前播放的视频的url
+      open_model: '',  //当前发送unity模型信息
     }
   }
 
@@ -83,8 +85,8 @@ export default class SickDetail extends BaseComponent {
           menus.push(model);
           this.setState({
             menus: menus,
-            selectBtnIndex: -1
-
+            selectBtnIndex: -1,
+            open_model: pathology.open_model
           })
           // alert(JSON.stringify(menus));
         }
@@ -123,8 +125,15 @@ export default class SickDetail extends BaseComponent {
     })
   }
 
+  closeVideo() {
+    this.setState({
+      selectBtnIndex: -1,
+      showSourceType: 'img',
+      playVideoUrl: ''
+    })
+  }
+
   selectBtn(index) {
-alert(JSON.stringify(this.state.sick))
     let msg = {
       "struct_version": "1",
       "app_type": "medical",
@@ -141,15 +150,16 @@ alert(JSON.stringify(this.state.sick))
       // "struct_name": "颈部",
       "struct_sort": null,
       "noun_id": null,
-      "struct_code": this.props.load_app_id,
-      "app_id": `${this.props.load_app_id}_GK`,
-      "showModelList": this.state.getData.open_model
-  }
-  
+      "struct_code": this.state.sick.app_id,
+      "app_id": `${this.state.sick.app_id}_GK`,
+      "showModelList": this.state.open_model
+    }
+
     if (this.state.selectBtnIndex === index) {
       this.setState({
         selectBtnIndex: -1,
-        showSourceType: 'img'
+        showSourceType: 'img',
+        playVideoUrl: ''
       })
     } else {
 
@@ -174,7 +184,7 @@ alert(JSON.stringify(this.state.sick))
         if (menuBtn.secondFyName == '康复') {
           this.props.navigation.navigate('Recovery', { patNo: this.state.sick.pat_no, sick: this.state.sick, currArea: this.state.currArea });
         } else {
-          this.props.navigation.navigate('BonesScene');
+          this.props.navigation.navigate('BonesScene', { info: msg });
           this.setState({
             selectBtnIndex: -1,
           })
@@ -226,7 +236,7 @@ alert(JSON.stringify(this.state.sick))
     })
 
     return (
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{ flex: 1 }}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', flex: 1, marginLeft: size(25), marginTop: size(30) }}>
           {arr}
         </View>
@@ -247,11 +257,26 @@ alert(JSON.stringify(this.state.sick))
           ref={(ref) => {
             this.video = ref
           }}
-
           onError={(msg) => {
             this.playVideoError(msg)
           }}
         />
+        <MyTouchableOpacity style={{
+          position: 'absolute',
+          height: size(60),
+          width: size(60),
+          left: 10,
+          top: 27,
+          flexDirection: 'row',
+          alignItems: 'center',
+          zIndex: 9999999999,
+        }} onPress={() => { this.closeVideo() }}>
+          <Image source={require('../../img/unity/close.png')} style={{
+            width: 25,
+            height: 25,
+            resizeMode: 'contain'
+          }} />
+        </MyTouchableOpacity>
       </View>
     )
   }

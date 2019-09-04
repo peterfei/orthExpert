@@ -91,7 +91,7 @@ export default class Pay extends BaseComponent {
         const url = NetInterface.wxGetPreyId + "?ordNo=" + this.state.OrderNo + "&business=orthope";
 
 
-        let result = await HttpTool.GETX(url)
+        let result = await HttpTool.GET_JP(url)
             .then(result => {
 
 

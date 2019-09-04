@@ -1,8 +1,6 @@
-
 import NetInterface from '../NetInterface';
 import {storage} from "../storage";
 import {NetInfo} from 'react-native';
-import api from '../../api';
 
 //dev 开发   prod 产品
 
@@ -18,8 +16,8 @@ if (active=='prod'){
      base_url= "http://api.vesal.cn:8000/vesal-jiepao-prod/"
 } if (active=='test'||active=='dev'){
      base_url_sport = "http://114.115.210.145:8085/vesal-sport-test/";
-     base_url_jiepou = "http://118.24.119.234:8087/vesal-jiepao-test/";
-     base_url = "http://118.24.119.234:8087/vesal-jiepao-test/"
+     base_url_jiepou = "http://118.24.119.234:8003/vesal-jiepao-test/";
+     base_url = "http://118.24.119.234:8003/vesal-jiepao-test/"
 }
 
 let connect = false;
@@ -115,31 +113,6 @@ export async function GET(urlInterface) {
       })
       .catch((error) => {
         // alert(error)
-        let isConnect = getNetWorkState();
-        if (!isConnect) {
-          error = '检测到你当前无网络连接';
-        }
-        reject(error);
-      });
-  });
-}
-export async function GETX(urlInterface) {
-  let tokens = await storage.get("userTokens");
-  let url = api.base_uri + urlInterface;
-  return new Promise(function(resolve, reject){
-    fetch(url,{
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-        accept: "*/*",
-        token: tokens.token
-      }
-    })
-      .then((resp) => resp.json())
-      .then((result) => {
-        resolve(result);
-      })
-      .catch((error) => {
         let isConnect = getNetWorkState();
         if (!isConnect) {
           error = '检测到你当前无网络连接';

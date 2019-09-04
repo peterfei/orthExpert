@@ -21,6 +21,7 @@ import Help from "./View/scene/Help/help";
 import problemDetails from "./View/scene/Help/problemDetails";
 import kfMineUserInfo from "./View/scene/My/UserInfoDetail";//EditMember
 
+import Search from './View/scene/Home/search';
 import MemberComplete from "./View/scene/Register/MemberComplete";
 import RegisterPage from "./View/scene/Register/RegisterPage";
 import ForgetPasswordPage from "./View/scene/Register/ForgetPasswordPage";

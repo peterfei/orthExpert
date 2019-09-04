@@ -164,7 +164,7 @@ export default class Custom extends BaseComponent {
         </TouchableOpacity>
         <StatusBar translucent={true}  backgroundColor='rgba(0, 0, 0, 0)' barStyle="light-content" />
         <View style={{flex: 1, backgroundColor: 'white', height: size(60), marginLeft: size(35), marginRight: size(35), borderRadius: size(30), overflow: 'hidden'}}>
-          <TouchableOpacity style={styles.searchBar} onPress={() => {alert('中间搜索');}}>
+          <TouchableOpacity style={styles.searchBar} onPress={() => {this.props.navigation.navigate('Search')}}>
             <Image source={require('../../img/home/search_icon.png')} style={styles.searchIcon}/>
             <Text style={styles.searchText}>请输入疾病名称</Text>
           </TouchableOpacity>

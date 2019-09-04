@@ -127,16 +127,7 @@ export default class BonesScene extends Component {
             showRnView: true,
             isPro: true,
 
-            result: '', // 语音识别
-            speechIng: false, // 识别中
-            asrText: '按下说话',
-
-            arTipMsg: '该设备暂不支持 AR 体验',
             arTipShow: false,
-            displayDialogShow: false, // 语音输入按钮
-            currYuyinPic: '01',
-            currYuyinNum: 1,
-            currPic: ''
         }
     }
 
@@ -144,8 +135,6 @@ export default class BonesScene extends Component {
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.androidBackAction);
 
-        // 语音识别关闭
-        SpeechRecognizer.end()
     }
 
     changeInfo(info) {
@@ -196,58 +185,13 @@ export default class BonesScene extends Component {
         }
     }
 
-    chImg() {
-        let curr = this.state.currYuyinNum
-        this.setState({
-            currYuyinPic: curr < 10 ? '0' + curr : curr,
-            currYuyinNum: curr++
-        })
-        let uri = gifArr[curr];
-        let suffix = 'yuyin_dynamic-'
-        this.setState({
-            currPic: (suffix + this.state.currYuyinPic + '.jpg').toString()
-        })
-        if (curr >= 62) {
-            this.setState({
-                currYuyinNum: 1
-            })
-        }
-        setTimeout(() => null, 200)
-
-        // this.chImg()
-    }
 
 
     componentWillMount() {
-        // 语音识别初始化
-        SpeechRecognizer.init(result => {
-            this.setState({ result }, () => {
-                this._renderASRActionBtn()
-            })
-
-        })
-
+        
         BackHandler.addEventListener('hardwareBackPress', this.androidBackAction)
     }
 
-    // 语音识别开始、结束功能
-    startP() {
-        this.setState({
-            asrText: '松开 结束',
-            speechIng: true
-        })
-        this.chImg()
-        SpeechRecognizer.start('zh')
-    }
-
-    stopP() {
-        this.setState({
-            asrText: '按下 说话',
-            speechIng: false
-        })
-        SpeechRecognizer.finish()
-        this.state.result = ''
-    }
 
     checkSearch() {
 
@@ -494,14 +438,6 @@ export default class BonesScene extends Component {
         // alert('调用收藏接口');
     }
 
-    // 打开语音对话框界面
-    displayDialog() {
-        let curr = this.state.displayDialogShow
-        this.setState({
-            displayDialogShow: !curr
-        })
-    }
-
     // 打开评论界面
     commentAction() {
         this.setState({
@@ -608,25 +544,6 @@ export default class BonesScene extends Component {
                 <View style={styles.dbRightStyle}>
 
 
-                    <TouchableOpacity style={styles.btnStyle} onPress={() => {
-                        this.displayDialog()
-                    }}>
-                        <Image style={styles.btnImgAsrStyle} source={this.state.displayDialogShow ? require('../../img/unity/yuyin_hold.png') : require('../../img/unity/yuyin_release.png')} />
-                    </TouchableOpacity>
-
-                    {this.state.displayDialogShow ?
-                        <TouchableOpacity activeOpacity={0.7} style={styles.btnAsrStyle}
-                            onPressIn={() => this.startP()}
-                            onPressOut={() => {
-                                this.stopP()
-                            }}
-                        >
-                            <Text style={styles.btnTextAsrStyle}>{this.state.asrText}</Text>
-                        </TouchableOpacity> :
-                        <Text style={styles.dbTitleStyle}>{this.state.info.struct_name}</Text>
-                    }
-
-
 
 
                     {/*  <MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {
@@ -679,30 +596,6 @@ export default class BonesScene extends Component {
                 {this.state.isPro ? this._renderSBBtn() : null}
             </View>
         )
-    }
-
-    // 语音识别发送相关指令给unity
-    _renderASRActionBtn() {
-        let result = this.state.result
-        let info = this.state.info
-        let order = [{ key: 'selectModels', val: '选中' }, { key: 'selectModels', val: '选择' }, { key: 'modelList', val: '显示' }, { key: 'hideModels', val: '隐藏' }, { key: 'autoRot', val: '旋转' }]
-        let filterResult = order.filter(item => result.indexOf(item.val) !== -1)
-        if (filterResult.length !== 0) {
-            if (result.length > 2) {
-                let showModel = getChildNode(boneData, info.app_id, result.substring(2)).toString()
-                if (showModel.length === 0) {
-                    let arr = []
-                    arr.push(result.substring(2))
-                    arr.push('_左')
-                    showModel = getChildNode(boneData, info.app_id, arr.join('')).toString()
-                }
-                if (showModel.length !== 0) {
-                    this.sendMsgToUnity(filterResult[0].key, showModel, null)
-                }
-            } else {
-                this.sendMsgToUnity(filterResult[0].key, null, 'json')
-            }
-        }
     }
 
     // 选中骨骼后操作unity的功能按钮
