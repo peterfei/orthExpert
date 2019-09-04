@@ -12,9 +12,8 @@ import {
   NavBar,
   Line,
   size,
-  screen, deviceWidth, AppDef
+  screen, deviceWidth, AppDef, NetInterface, HttpTool
 } from '../../common';
-import api from "../../api";
 import { storage } from "../../common/storage";
 import Video from 'react-native-af-video-player';
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
@@ -35,7 +34,7 @@ export default class SickDetail extends BaseComponent {
       selectImgIndex: 0,   // 当前页面显示的疾病对应的图片
       showSourceType: 'img', // 当前显示的内容类型  img 图片  video播放视频  videoList 视频列表
       playVideoUrl: '',    // 当前播放的视频的url
-      open_model: '',  //当前发送unity模型信息
+      details: '',  //当前疾病所有数据
     }
   }
 
@@ -56,15 +55,11 @@ export default class SickDetail extends BaseComponent {
   async requestSickData() {
     let memberInfo = await storage.get("memberInfo");
     let sick = this.state.sick;
-    let url = api.base_uri + "v1/app/pathology/getPathologyRes?patNo=" + sick.pat_no + "&business=orthope&mbId=" + memberInfo.mbId;
+    let url = NetInterface.gk_getPathologyRes + "?patNo=" + sick.pat_no + "&business=orthope&mbId=" + memberInfo.mbId
     this.mainView._showLoading('加载中...');
-    await fetch(url, {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(resp => resp.json())
+    HttpTool.GET_JP(url)
       .then(result => {
+        // alert(JSON.stringify(result))
         this.mainView._closeLoading();
         if (result.msg == 'success' && result.code == 0) {
           let pathology = result.pathology;
@@ -86,7 +81,7 @@ export default class SickDetail extends BaseComponent {
           this.setState({
             menus: menus,
             selectBtnIndex: -1,
-            open_model: pathology.open_model
+            details: result
           })
           // alert(JSON.stringify(menus));
         }
@@ -150,11 +145,10 @@ export default class SickDetail extends BaseComponent {
       // "struct_name": "颈部",
       "struct_sort": null,
       "noun_id": null,
-      "struct_code": this.state.sick.app_id,
-      "app_id": `${this.state.sick.app_id}_GK`,
-      "showModelList": this.state.open_model
+      "struct_code": this.state.details.pathology.load_app_id,
+      "app_id": `${this.state.details.pathology.load_app_id}_GK`,
+      "showModelList": this.state.details.pathology.open_model
     }
-
     if (this.state.selectBtnIndex === index) {
       this.setState({
         selectBtnIndex: -1,
@@ -182,6 +176,7 @@ export default class SickDetail extends BaseComponent {
 
       if (menuBtn.type == 'static') { //static 跳转unity 或者 跳转康复
         if (menuBtn.secondFyName == '康复') {
+          // alert(JSON.stringify(this.state.currArea))
           this.props.navigation.navigate('Recovery', { patNo: this.state.sick.pat_no, sick: this.state.sick, currArea: this.state.currArea });
         } else {
           this.props.navigation.navigate('BonesScene', { info: msg });
@@ -283,16 +278,27 @@ export default class SickDetail extends BaseComponent {
 
   _renderImages() {
     let arr = [];
-    this.state.areaSickList.forEach((item, index) => {
+    if (this.state.areaSickList[0].img_url) {
+      this.state.areaSickList.forEach((item, index) => {
+        arr.push(
+          <View style={{ width: size(510), height: size(850), backgroundColor: index % 2 == 0 ? 'orange' : 'blue' }}>
+            <Image
+              style={{ width: size(510), height: size(850) }}
+              source={{ uri: item.img_url }}
+            />
+          </View>
+        )
+      })
+    }else if(this.state.details){
       arr.push(
-        <View style={{ width: size(510), height: size(850), backgroundColor: index % 2 == 0 ? 'orange' : 'blue' }}>
+        <View style={{ width: size(510), height: size(850), backgroundColor: 'orange' }}>
           <Image
             style={{ width: size(510), height: size(850) }}
-            source={{ uri: item.img_url }}
+            source={{ uri: this.state.details.pathology.img_url }}
           />
         </View>
       )
-    })
+    }
 
     let isFirst = this.state.selectImgIndex == 0 ? true : false;
     let isLast = this.state.selectImgIndex == this.state.areaSickList.length - 1 ? true : false;

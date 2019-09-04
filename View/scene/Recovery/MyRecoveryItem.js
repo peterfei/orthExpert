@@ -45,13 +45,13 @@ export default class MyRecoveryItem extends Component {
         console.log(JSON.stringify(url));
         HttpTool.GET_JP(url)
           .then(result => {
-              alert(JSON.stringify(result));
+            //   alert(JSON.stringify(result));
               this.setState({
                   CardCellData: result.page.list == null ? [] : result.page.list
               })
           })
           .catch(err => {
-              alert(JSON.stringify(err));
+            //   alert(JSON.stringify(err));
               console.log(JSON.stringify(err))
           })
     }

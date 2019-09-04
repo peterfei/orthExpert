@@ -68,7 +68,6 @@ const PlanModuleInterface = {
   createPlan: '/app/kfxl/v1/scheme/saveCustomSchemesForOrthope',
 
   planBackImgList: '/app/kfxl/v1/scheme/getSchemesBackgroudImg',
-  myCreatePlanList: 'v1/app/orthope/scheme/myCreateSchemes',
 }
 
 //小人相关
@@ -103,6 +102,10 @@ const UploadModule = {
 
 const Gk = {
   gk_useActiveCode: '/v1/app/orthope/combo/useActiveCode',
+  gk_getPathologyRes:'v1/app/pathology/getPathologyRes',
+  gk_getSearchHot:"v1/app/pathology/getSearchHot",
+  gk_searchPathologyList:"v1/app/pathology/searchPathologyList",
+  
 }
 
 export default {

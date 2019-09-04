@@ -1,19 +1,17 @@
 import React from "react";
-import { ScrollView, StyleSheet, View, Image, TouchableOpacity,StatusBar, Text,Platform , ImageBackground, TextInput } from "react-native";
+import { ScrollView, StyleSheet, View, Image, TouchableOpacity,StatusBar, Text,Platform , ImageBackground,DeviceEventEmitter , TextInput } from "react-native";
 import {
   BaseComponent,
   ContainerView,
   NavBar,
   Line,
   size,
-  screen, deviceWidth, AppDef,isIPhoneXPaddTop
+  screen, deviceWidth, AppDef,isIPhoneXPaddTop,NetInterface,HttpTool
 } from '../../common';
-import api from "../../api";
 import { queryHistoryAll, insertHistory, deleteHistories, queryRecentlyUse } from "../../realm/RealmManager";
 import Loading from "../../common/Loading";
 import Toast from "react-native-easy-toast";
 import { groupBy, changeArr } from "../../common/fun";
-import { storage } from "../../common/storage";
 
 
 const statusBarHeight = StatusBar.currentHeight;
@@ -49,14 +47,10 @@ export default class SearchComponent extends BaseComponent {
   }
   async getHotKey() {
     //获取热门搜索数据
-    let url = api.base_uri + "v1/app/pathology/getSearchHot?size=6";
-    await fetch(url, {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(resp => resp.json())
+    let url = NetInterface.gk_getSearchHot + "?size=6";
+    HttpTool.GET_JP(url)
       .then(result => {
+        // alert(JSON.stringify(result))
         this.setState({
           hotData: result.pathologyList
         })
@@ -78,15 +72,8 @@ export default class SearchComponent extends BaseComponent {
           currKeyName: value,
           showHotAndKey: false
         })
-        let tokens = await storage.get("userTokens");
-        let url = api.base_uri + "v1/app/pathology/searchPathologyList?key=" + value;
-        await fetch(url, {
-          method: "get",
-          headers: {
-            "Content-Type": "application/json",
-            token: tokens.token
-          }
-        }).then(resp => resp.json())
+        let url = NetInterface.gk_searchPathologyList + "?key=" + value;
+        HttpTool.GET_JP(url)
           .then(result => {
             if (result.msg == "success") {
               this.setState({
@@ -139,10 +126,11 @@ export default class SearchComponent extends BaseComponent {
   }
 
   searchChicks(pat_no, pat_name) {
+    let sick={'pat_no':pat_no,'pat_name':pat_name}
     let data = { "keyName": pat_name, "ketNo": pat_no }
     this.saveHistory(data, "key")
     this.getHistory()
-    this.props.navigation.goBack()
+    this.props.navigation.navigate('SickDetail',{sick:sick,areaSickList:[sick]});
   }
   
   saveHistory(data, type) {
@@ -221,6 +209,7 @@ export default class SearchComponent extends BaseComponent {
 
   renderHistory() {
     let arr = []
+    // alert(JSON.stringify(this.state.historyData))
     for (let i = 0; i < this.state.historyData.length; i++) {
       let historyData = this.state.historyData[i]
       arr.push(
@@ -320,10 +309,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 15,
     width: '100%',
-    borderBottomWidth: 1,
-    borderBottomColor: '#343434',
     paddingTop: 15,
-    paddingBottom: 15,
+    paddingBottom: 5,
     color:'black'
   },
   deleteStyle: {
