@@ -140,7 +140,7 @@ export default class Pay extends BaseComponent {
             this.mainView._closeLoading();
             this.mainView._toast("支付成功");
             //TODO 处理支付成功逻辑
-
+            DeviceEventEmitter.emit("updatePermission");
             this.props.navigation.goBack(this.props.navigation.state.params.goOutPay_key, { payState: true });//返回支付前一界面
             if (this.props.navigation.state.params.title !== null) {
                 DeviceEventEmitter.emit("goNext", { title: this.props.navigation.state.params.title })

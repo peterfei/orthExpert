@@ -27,7 +27,8 @@ export default class MyScreen extends Component {
     this.state = {
       isUse: false,//vip是否可以使用
       vipTitle: "开通会员",
-      memberInfo: {}
+      memberInfo: {},
+        combo:{}
     }
     this.listData = [
       {
@@ -91,23 +92,27 @@ export default class MyScreen extends Component {
   }
 
   async componentDidMount() {
-    let combo = await FuncUtils.getComboByCode(AppDef.KFXL_VIP);
-    let memberInfo = await storage.get("memberInfo");
-
-    if (combo != null) {
-      let isUse = await FuncUtils.checkPerm("yes", AppDef.KFXL_VIP);
-
-      this.setState({
-        isUse: isUse,
-        combo: combo,
-        memberInfo: memberInfo
-      })
-    } else {
-      this.setState({
-        memberInfo: memberInfo
-      })
-    }
+      let memberInfo = await storage.get("memberInfo");
+      FuncUtils.checkKfPerm()
+          .then(res => {
+              if (res.code == 0 && res.result == 'yes') {
+                  this.setState({
+                      memberInfo: memberInfo,
+                      isUse: false,
+                  })
+              } else {
+                  this.setState({
+                      memberInfo: memberInfo,
+                      isUse: true,
+                      combo: res.memberCombo
+                  })
+              }
+          })
+          .catch(err => {
+              this.mainView._toast(JSON.stringify(err))
+          })
   }
+
 
   async componentWillMount() {
     this.emit = DeviceEventEmitter.addListener(AppDef.kNotify_UpdateUserInfoSuccess, async () => {
@@ -174,7 +179,7 @@ export default class MyScreen extends Component {
                     : null
                 }
               </View>
-              <Text style={{ fontSize: size(18), color: AppDef.White, }} allowFontScaling={false}>{this.state.isUse ? this.state.combo.end_time.substring(0, 10) + "到期" : ""}</Text>
+              <Text style={{ fontSize: size(18), color: AppDef.White, }} allowFontScaling={false}>{this.state.isUse ? this.state.combo.endTime.substring(0, 10) + "到期" : ""}</Text>
             </View>
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>

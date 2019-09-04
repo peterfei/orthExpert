@@ -5,14 +5,14 @@
  */
 
 import React from "react";
-import { ScrollView, StyleSheet, View, Image, TouchableOpacity, Text, ImageBackground } from "react-native";
+import { ScrollView, StyleSheet, View, Image, TouchableOpacity, Text, ImageBackground ,DeviceEventEmitter} from "react-native";
 import {
   BaseComponent,
   ContainerView,
   NavBar,
   Line,
   size,
-  screen, deviceWidth, AppDef
+  screen, deviceWidth, AppDef,FuncUtils
 } from '../../common';
 import api from "../../api";
 import { storage } from "../../common/storage";
@@ -41,6 +41,15 @@ export default class SickDetail extends BaseComponent {
 
   componentDidMount() {
     this.requestSickData();
+      this.emitter = DeviceEventEmitter.addListener('updatePermission',
+          () => {
+              FuncUtils.checkKfPerm()
+          }
+      )
+  }
+
+  componentWillUnmount(){
+    this.emitter.remove()
   }
 
   findSickIndex() {
@@ -340,6 +349,23 @@ export default class SickDetail extends BaseComponent {
     )
   }
 
+
+
+  //判断是否开始使用
+  async  startIsUse(index){
+      FuncUtils.checkKfPerm()
+          .then(res => {
+              if(res.code  == 0 && res.result == 'yes'){
+                  this.props.navigation.navigate('BuyVip')
+              }else {
+                  this.selectBtn(index)
+              }
+          })
+          .catch(err => {
+            this.mainView._toast(JSON.stringify(err))
+          })
+    }
+
   _renderBottom() {
     let arr = [];
     this.state.menus.forEach((item, index) => {
@@ -350,7 +376,10 @@ export default class SickDetail extends BaseComponent {
         img = isSelect ? item.select_icon_url : item.res_fy_icon_url;
       }
       arr.push(
-        <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104) }} onPress={() => { this.selectBtn(index) }}>
+        <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104) }} onPress={() => {
+          // this.selectBtn(index)
+            this.startIsUse(index)
+        }}>
           <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44) }} />
           <Text style={{ fontSize: size(24), color: color, marginTop: size(8) }}>{item.secondFyName}</Text>
         </TouchableOpacity>
