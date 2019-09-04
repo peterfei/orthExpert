@@ -1,7 +1,6 @@
 import React from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View, StatusBar, Platform} from "react-native";
-import {AppDef, BaseComponent, ContainerView, FuncUtils, HttpTool, NavBar, NetInterface, size, isIPhoneXPaddTop} from '../../common';
-import ImageMapper from 'react-native-image-mapper';
+import {AppDef, BaseComponent, ContainerView, FuncUtils, HttpTool, NavBar, NetInterface, size, isIPhoneXPaddTop, ImageMapper} from '../../common';
 import api from "../../api";
 import {deviceWidth} from "../../common/ScreenUtil";
 import SplashScreen from "react-native-splash-screen";
