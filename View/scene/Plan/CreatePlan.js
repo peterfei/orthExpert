@@ -160,7 +160,7 @@ export default class CreatePlan extends BaseComponent {
       patNo: this.state.sick.pat_no
     }
     this.mainView._showLoading('加载中...');
-    alert(JSON.stringify(params));
+    // alert(JSON.stringify(params));
     // console.log(JSON.stringify(params));
     let tokens = await storage.get("userTokens");
     let auth = await storage.get("auth")
