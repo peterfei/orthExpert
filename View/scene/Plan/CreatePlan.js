@@ -91,7 +91,7 @@ export default class CreatePlan extends BaseComponent {
     let planId = this.props.navigation.state.params.planId;
     const url = NetInterface.planDetail + '?planId=' + planId + '&plat=android';
     this.mainView._showLoading('加载中...');
-    HttpTool.GET_JP(url)
+    HttpTool.GET(url)
       .then(res => {
         this.mainView._closeLoading();
         if (res.code == 0 && res.msg == 'success') {
