@@ -66,7 +66,10 @@ export default class Recovery extends Component {
                   onPress={() => {
                       this.props.navigation.navigate('kfSickPlanList', {'sick': this.props.navigation.state.params.sick, 'currArea': this.props.navigation.state.params.currArea})
                   }}>
-                    <Text style={{fontSize: size(32), color: 'white'}}>创建方案</Text>
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                        <Image source={require('../../img/kf_main/createplanadd.png')} style={{width: size(28), height: size(28)}}/>
+                        <Text style={{fontSize: size(32), color: 'white', marginLeft: size(20)}}>创建方案</Text>
+                    </View>
                 </TouchableOpacity>
             </View>
         )
@@ -81,7 +84,6 @@ export default class Recovery extends Component {
                             source={require('../../img/public/left.png')} />
                     </TouchableHighlight>
                     <Text style={styles.title}>康复方案</Text>
-
                 </View>
             </View>
         )
