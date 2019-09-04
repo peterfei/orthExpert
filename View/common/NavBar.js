@@ -5,11 +5,13 @@ import {
   Image,
   StyleSheet,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
+  StatusBar
 } from 'react-native';
 import { size, isIPhoneXPaddTop } from "./Tool/ScreenUtil"
 import leftImage from '../img/search/backjt.png';
 import AppDef from './Defined';
+const statusBarHeight = StatusBar.currentHeight;
 
 export default class NavBar extends Component {
   constructor(props) {
@@ -21,14 +23,21 @@ export default class NavBar extends Component {
     const { hideback, title, leftTitle, leftAction, rightTitle, navigation, rightImage, rightAction, rightBothShow } = this.props;
     return (
       <View style={[styles.barView, this.props.style]}>
+        <StatusBar translucent={true} backgroundColor='rgba(0, 0, 0, 0)' barStyle="light-content" />
         <View style={ styles.showView }>
           {
             !hideback
               ?
               (
                 leftImage
-                    ?
-                  <TouchableOpacity style={styles.leftNav} onPress={() => {this.props.navigation.pop()}}>
+                  ?
+                  <TouchableOpacity style={styles.leftNav} onPress={() => {
+                    if (this.props.gobackAction) {
+                      this.props.gobackAction();
+                    } else {
+                      this.props.navigation.pop()
+                    }
+                  }}>
                     <Image style={styles.imgNav} source={leftImage}/>
                   </TouchableOpacity>
                   :
@@ -55,20 +64,20 @@ export default class NavBar extends Component {
           }
           {
             !rightBothShow ?
-                (rightImage ?
+              (rightImage ?
                 <TouchableOpacity style={styles.rightNav} onPress={ ()=>{rightAction()} }>
                   <Image style={styles.imgNav} source={ rightImage }/>
                 </TouchableOpacity>
                 : (rightTitle ?
-                <TouchableOpacity style={styles.rightNav} onPress={ ()=>{rightAction()} }>
-                  <Text style={styles.barButton}>{rightTitle}</Text>
-                </TouchableOpacity>
-                  : null
+                    <TouchableOpacity style={styles.rightNav} onPress={ ()=>{rightAction()} }>
+                      <Text style={styles.barButton}>{rightTitle}</Text>
+                    </TouchableOpacity>
+                    : null
                 )) :
-                <TouchableOpacity style={styles.rightNav} onPress={ ()=>{rightAction()} }>
-                  <Image style={styles.imgNav} source={ rightImage }/>
-                  <Text style={styles.barButton}>{ rightTitle }</Text>
-                </TouchableOpacity>
+              <TouchableOpacity style={styles.rightNav} onPress={ ()=>{rightAction()} }>
+                <Image style={styles.imgNav} source={ rightImage }/>
+                <Text style={styles.barButton}>{ rightTitle }</Text>
+              </TouchableOpacity>
           }
         </View>
       </View>
@@ -79,7 +88,7 @@ export default class NavBar extends Component {
 const styles = StyleSheet.create({
   barView: {
     height: Platform.OS === 'android' ? size(128) :  size(88) + isIPhoneXPaddTop(0),
-    paddingTop: isIPhoneXPaddTop(0),
+    paddingTop: isIPhoneXPaddTop(0) + ( Platform.OS === 'android' ? statusBarHeight : 0),
     backgroundColor: AppDef.Blue,
   },
   showView: {

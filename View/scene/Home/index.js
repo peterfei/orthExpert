@@ -1,7 +1,6 @@
 import React from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View, StatusBar, Platform} from "react-native";
-import {AppDef, BaseComponent, ContainerView, FuncUtils, HttpTool, NavBar, NetInterface, size, isIPhoneXPaddTop} from '../../common';
-import ImageMapper from 'react-native-image-mapper';
+import {AppDef, BaseComponent, ContainerView, FuncUtils, HttpTool, NavBar, NetInterface, size, isIPhoneXPaddTop, ImageMapper} from '../../common';
 import api from "../../api";
 import {deviceWidth} from "../../common/ScreenUtil";
 import SplashScreen from "react-native-splash-screen";
@@ -110,7 +109,8 @@ export default class Custom extends BaseComponent {
           item['title'] = item.pat_name;
         })
         this.setState({
-          areaSickList:sickList
+          areaSickList:sickList,
+          currArea:item
         })
         if (sickList.length <= 0) {
           this.mainView._toast('此部位暂无疾病内容.');
@@ -126,7 +126,7 @@ export default class Custom extends BaseComponent {
 
   recieveSelectResult(result) {
     let sick = result.value;
-    this.props.navigation.navigate('SickDetail', {sick: sick, areaSickList: this.state.areaSickList});
+    this.props.navigation.navigate('SickDetail', {sick: sick, areaSickList: this.state.areaSickList, currArea: this.state.currArea});
   }
 
   getImgMap(value) {

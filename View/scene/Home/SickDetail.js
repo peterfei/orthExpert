@@ -25,6 +25,7 @@ export default class SickDetail extends BaseComponent {
     super(props);
     let selectIndex = this.findSickIndex();
     this.state = {
+      currArea: props.navigation.state.params.currArea, // 当前疾病所在区域
       selectIndex: selectIndex,        // 当前疾病在  疾病列表 中的下标
       sick: props.navigation.state.params.sick, // 当前疾病
       areaSickList: props.navigation.state.params.areaSickList,  // 从上个页面查出来的所有疾病
@@ -112,7 +113,7 @@ export default class SickDetail extends BaseComponent {
   }
 
   onScrollAnimationEnd(e) {
-    let i = Math.floor(e.nativeEvent.contentOffset.x / size(509));
+    let i = Math.floor(e.nativeEvent.contentOffset.x / size(508));
     let sick = this.state.areaSickList[i];
     this.setState({
       selectImgIndex: i,
@@ -151,29 +152,27 @@ alert(JSON.stringify(this.state.sick))
         showSourceType: 'img'
       })
     } else {
+
       let menuBtn = this.state.menus[index];
-      
-      // alert(index)
-      // alert(JSON.stringify(menuBtn));
-      let type = 'img';
       if (menuBtn.type == 'zhiliao') {
         this.setState({
-          showSourceType: 'videoList'
+          showSourceType: 'videoList',
+          selectBtnIndex: index
         })
-      } else if (menuBtn.type == 'video') {
-        
-        // alert(menuBtn)
+      }
+
+      if (menuBtn.type == 'video') {
+
         this.setState({
           showSourceType: 'video',
-        //  playVideoUrl:content
+          selectBtnIndex: index,
+          playVideoUrl: menuBtn.content
         })
-      } else { //static 跳转unity 或者 跳转康复
+      }
+
+      if (menuBtn.type == 'static') { //static 跳转unity 或者 跳转康复
         if (menuBtn.secondFyName == '康复') {
-          this.setState({
-            selectBtnIndex: -1,
-          })
-          this.props.navigation.navigate('Recovery', { patNo: this.state.sick.pat_no, sick: this.state.sick });
-          return
+          this.props.navigation.navigate('Recovery', { patNo: this.state.sick.pat_no, sick: this.state.sick, currArea: this.state.currArea });
         } else {
           this.props.navigation.navigate('BonesScene');
           this.setState({
@@ -182,9 +181,6 @@ alert(JSON.stringify(this.state.sick))
           return
         }
       }
-      this.setState({
-        selectBtnIndex: index
-      })
     }
   }
 
@@ -230,21 +226,20 @@ alert(JSON.stringify(this.state.sick))
     })
 
     return (
-
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', flex: 1, marginLeft: size(25), marginTop: size(30) }}>
-        {arr}
-      </View>
+      <ScrollView style={{flex: 1}}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', flex: 1, marginLeft: size(25), marginTop: size(30) }}>
+          {arr}
+        </View>
+      </ScrollView>
     );
   }
 
   _renderVideo() {
-     alert(this.state.playVideoUrl)
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Video
           autoPlay
           scrollBounce
-          fullScreenOnly
           volume={0.8}
           inlineOnly
           style={{ width: '100%', height: '100%' }}

@@ -58,6 +58,7 @@ export default class CreatePlan extends BaseComponent {
       planId: props.navigation.state.params.planId,
       scrollEnabled: true,
       sick: props.navigation.state.params.sick,
+      currArea: props.navigation.state.params.currArea
     }
 
     this.offsetY = 0;
@@ -72,6 +73,7 @@ export default class CreatePlan extends BaseComponent {
       isMB: nextProps.navigation.state.params.isMB,
       planId: nextProps.navigation.state.params.planId,
       sick: nextProps.navigation.state.params.sick,
+      currArea: nextProps.navigation.state.params.currArea
     })
   }
 
@@ -422,6 +424,7 @@ export default class CreatePlan extends BaseComponent {
       <ChooseMotionView
           ref={r => this.ChooseMotionView = r}
           sick={this.state.sick}
+          currArea={this.state.currArea}
           selectMotions={(result) => {this.confirmSelectMotions(result)}}/>
     )
   }

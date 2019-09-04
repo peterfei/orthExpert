@@ -14,6 +14,7 @@ import ListCell from './ListCell'
 import MineBuuton from './MineButton'
 import DateUtil from './DateUtils'
 import ListEditCell from './ListEditCell'
+import ImageMapper from './components/ImageMapper';
 import {deviceWidth, deviceHeight, isIPhoneXPaddTop, isIPhoneXFooter, isIPhoneX, setSpText, size} from './Tool/ScreenUtil';
 // import show from './ToastUtils'
-export { screen, system, Wxpay,ContainerView ,BaseComponent,NavBar,AppDef,HttpTool,NetInterface,FuncUtils,Line,deviceWidth,ListEditCell,DateUtil,MineBuuton,ListCell, deviceHeight, isIPhoneXPaddTop, isIPhoneXFooter, isIPhoneX, setSpText, size, NullData}
+export { screen, system, Wxpay,ContainerView ,BaseComponent,NavBar,AppDef,HttpTool,NetInterface,FuncUtils,Line,deviceWidth,ListEditCell,DateUtil,MineBuuton,ListCell, deviceHeight, isIPhoneXPaddTop, isIPhoneXFooter, isIPhoneX, setSpText, size, NullData, ImageMapper}

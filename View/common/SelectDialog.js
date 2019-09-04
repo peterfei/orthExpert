@@ -22,7 +22,7 @@
  */
 
 import React, {Component} from "react";
-import {View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, ImageBackground} from "react-native";
+import {View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, ImageBackground, Platform} from "react-native";
 import {deviceHeight, deviceWidth, size} from "./Tool/ScreenUtil";
 import Line from './Line';
 import AppDef from './Defined';
@@ -36,12 +36,11 @@ export default class SelectDialog extends Component {
     this.state = {
       isShow: false,
       data: props.data,
+      title: props.title ? props.title : '请选择',
       type: props.type ? props.type : 'Default',
       name: props.name,
       current: props.type == 'Mutilple' ? [] : {}
     }
-
-    this.title = '请选择';
 
     this._gestureHandlers = {
       onStartShouldSetResponder: () => true,
@@ -59,6 +58,7 @@ export default class SelectDialog extends Component {
   componentWillReceiveProps(nextProps, nextContext) {
     this.setState({
       data: nextProps.data,
+      title: nextProps.title ? nextProps.title : '请选择',
       type: nextProps.type ? nextProps.type : 'Default',
       name: nextProps.name,
       current: nextProps.type == 'Mutilple' ? [] : {},
@@ -66,6 +66,7 @@ export default class SelectDialog extends Component {
   }
 
   show() {
+    this.scrollView.scrollTo({x: 0, y: 0, animated: false});
     this.setState({
       isShow: true
     })
@@ -112,7 +113,7 @@ export default class SelectDialog extends Component {
   _renderHeader() {
     return (
       <View style={{width: '100%', height: size(80), justifyContent: 'center', alignItems: 'center', backgroundColor: AppDef.Blue}}>
-        <Text style={{color: AppDef.White, fontSize: size(32), fontWeight: 'bold'}}>{this.title}</Text>
+        <Text style={{color: AppDef.White, fontSize: size(32), fontWeight: 'bold'}}>{this.state.title}</Text>
       </View>
     )
   }
@@ -176,14 +177,14 @@ export default class SelectDialog extends Component {
     return (
       <View
         {...this._gestureHandlers}
-        style={[styles.back, {position: 'absolute', top: 0, right: this.state.isShow ? 0 : deviceWidth * 2}]}>
+        style={[styles.back, {position: 'absolute', right: 0, top: this.state.isShow ? 0 : deviceHeight + (Platform.OS === 'ios' ? 0 : size(148))}]}>
         <View style={styles.dialog}>
-
           {this._renderHeader()}
-          <ScrollView style={[styles.scrollStyle, {height: this.state.data.length >= 7 ? size(520) : 'auto'}]}>
+          <ScrollView
+            ref={r => this.scrollView = r}
+            style={[styles.scrollStyle, {height: this.state.data.length >= 7 ? size(520) : 'auto'}]}>
             {this._renderSelectList()}
           </ScrollView>
-
           {
             isMutil
               ?
@@ -193,8 +194,6 @@ export default class SelectDialog extends Component {
               :
               null
           }
-
-
         </View>
       </View>
     );
@@ -204,7 +203,7 @@ export default class SelectDialog extends Component {
 const styles = StyleSheet.create({
   back: {
     width: deviceWidth,
-    height: deviceHeight,
+    height: deviceHeight + (Platform.OS === 'ios' ? 0 : size(148)),
     backgroundColor: 'rgba(0,0,0,0.1)',
     justifyContent: 'center',
     alignItems: 'center'
