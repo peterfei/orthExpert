@@ -14,14 +14,8 @@ if (active=='prod'){
   base_url_sport = "http://slb-sport.vesal.cn/vesal-sport-prod/";
   base_url_jiepou = "http://api.vesal.cn:8000/vesal-jiepao-prod/";
 } if (active=='test'||active=='dev'){
-<<<<<<< HEAD
-     base_url_sport = "http://114.115.210.145:8085/vesal-sport-test/";
-     base_url_jiepou = "http://118.24.119.234:8003/vesal-jiepao-test/";
-     base_url = "http://118.24.119.234:8003/vesal-jiepao-test/"
-=======
   base_url_sport = "http://114.115.210.145:8085/vesal-sport-test/";
   base_url_jiepou = "http://118.24.119.234:8003/vesal-jiepao-test/";
->>>>>>> ae90e7c21b21fdf802532b17d34ecd097699a352
 }
 
 let connect = false;
@@ -74,10 +68,6 @@ export async function GET(urlInterface) {
   let tokens = await storage.get("userTokens");
   let url = base_url_sport + urlInterface;
   return new Promise(function(resolve, reject){
-<<<<<<< HEAD
-=======
-
->>>>>>> ae90e7c21b21fdf802532b17d34ecd097699a352
     fetch(url,{
       method: "get",
       headers: {
@@ -91,10 +81,6 @@ export async function GET(urlInterface) {
         resolve(result);
       })
       .catch((error) => {
-<<<<<<< HEAD
-        // alert(error)
-=======
->>>>>>> ae90e7c21b21fdf802532b17d34ecd097699a352
         let isConnect = getNetWorkState();
         if (!isConnect) {
           error = '检测到你当前无网络连接';
