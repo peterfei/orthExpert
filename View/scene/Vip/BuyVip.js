@@ -302,6 +302,7 @@ export default class BuyVip extends BaseComponent {
     }
 
     render() {
+        let userIcon = this.state.memberInfo.mbHeadUrl ? {uri: this.state.memberInfo.mbHeadUrl} : require('../../img/kf_mine/defalutHead.png');
         return (
             <ContainerView>
                 <NavBar title='我的VIP会员' hideback={false} navigation={this.props.navigation} />
@@ -314,7 +315,7 @@ export default class BuyVip extends BaseComponent {
                                 <View style={styles.memberImageTop}>
                                     <View style={styles.memberImage}>
                                         <Image style={{ width: 48, height: 48, borderRadius: 24 }}
-                                            source={require('../../img/my/icon_userreview_defaultavatar.png')}></Image>
+                                            source={userIcon}/>
                                     </View>
                                     <View style={styles.memberInfoDetail}>
                                         <View style={styles.memberInfoDetailTop}>
@@ -322,7 +323,7 @@ export default class BuyVip extends BaseComponent {
                                             {
                                                 this.state.isUse ? (
                                                     <Image style={{ width: 15, height: 15, marginLeft: 15 }}
-                                                        source={require('../../img/vip/member_vip.png')}></Image>
+                                                        source={require('../../img/vip/member_vip.png')}/>
                                                 ) : null
                                             }
                                         </View>
