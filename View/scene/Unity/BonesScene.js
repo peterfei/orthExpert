@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import {
     Image,
     Platform,
@@ -13,28 +13,28 @@ import {
     TouchableOpacity,
     Alert, DeviceEventEmitter
 } from "react-native";
-import {screen, ScreenUtil} from "../../common/index";
+import { screen, ScreenUtil } from "../../common/index";
 import UnityLoading from './Components/UnityLoading';
 import Toast from "react-native-easy-toast";
 import UnityView from 'react-native-unity-view';
-import {size, deviceWidth, deviceHeight} from "../../common/ScreenUtil";
+import { size, deviceWidth, deviceHeight } from "../../common/ScreenUtil";
 import ActionSheet from "react-native-actionsheet";
 import UShare from "../../share/share";
 import SharePlatform from "../../share/SharePlatform";
-import {hexToStr, checkConnect, addConnect} from "./LCE";
+import { hexToStr, checkConnect, addConnect } from "./LCE";
 import Comment from "./Comment";
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
 import SearchBone from './SearchBone';
-import {VoiceUtils} from "../../common/VoiceUtils";
-import {queryRelationBySmName, queryMarkNailByNoun} from '../../realm/RealmManager';
+import { VoiceUtils } from "../../common/VoiceUtils";
+import { queryRelationBySmName, queryMarkNailByNoun } from '../../realm/RealmManager';
 import MyScrollView from './MyScrollView';
 import Orientation from 'react-native-orientation';
-import Video, {Container} from 'react-native-af-video-player';
-import {boneData} from "./BoneData"
-import {storage} from "../../common/storage";
-import {NavigationActions,StackActions} from "react-navigation";
+import Video, { Container } from 'react-native-af-video-player';
+import { boneData } from "./BoneData"
+import { storage } from "../../common/storage";
+import { NavigationActions, StackActions } from "react-navigation";
 import UnityGuideView from './UnityGuideView';
-import {isAvailableString, ConvertString, analysis, getChildNode} from '../../common/fun'
+import { isAvailableString, ConvertString, analysis, getChildNode } from '../../common/fun'
 import SpeechRecognizer from "../../common/SpeechUtils"
 
 
@@ -62,26 +62,26 @@ const BaseScript =
     `
 
 const gifArr = [
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0001.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0002.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0003.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0004.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0005.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0006.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0007.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0008.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0009.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0010.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0011.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0012.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0013.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0014.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0015.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0016.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0017.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0018.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0019.jpg'),
-  require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0020.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0001.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0002.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0003.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0004.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0005.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0006.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0007.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0008.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0009.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0010.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0011.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0012.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0013.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0014.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0015.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0016.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0017.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0018.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0019.jpg'),
+    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0020.jpg'),
 ]
 
 export default class BonesScene extends Component {
@@ -199,7 +199,7 @@ export default class BonesScene extends Component {
     chImg() {
         let curr = this.state.currYuyinNum
         this.setState({
-            currYuyinPic: curr < 10 ? '0'+curr : curr,
+            currYuyinPic: curr < 10 ? '0' + curr : curr,
             currYuyinNum: curr++
         })
         let uri = gifArr[curr];
@@ -221,7 +221,7 @@ export default class BonesScene extends Component {
     componentWillMount() {
         // 语音识别初始化
         SpeechRecognizer.init(result => {
-            this.setState({result}, () => {
+            this.setState({ result }, () => {
                 this._renderASRActionBtn()
             })
 
@@ -231,7 +231,7 @@ export default class BonesScene extends Component {
     }
 
     // 语音识别开始、结束功能
-    startP(){
+    startP() {
         this.setState({
             asrText: '松开 结束',
             speechIng: true
@@ -240,7 +240,7 @@ export default class BonesScene extends Component {
         SpeechRecognizer.start('zh')
     }
 
-    stopP(){
+    stopP() {
         this.setState({
             asrText: '按下 说话',
             speechIng: false
@@ -269,7 +269,7 @@ export default class BonesScene extends Component {
         try {
             const action = JSON.parse(event.nativeEvent.data)
             if (action.type === 'setHeight') {
-                this.setState({height: action.height + size(80)})
+                this.setState({ height: action.height + size(80) })
             }
         } catch (error) {
             // pass
@@ -422,7 +422,7 @@ export default class BonesScene extends Component {
             this.setState({
                 showRnView: true
             })
-        } else if(event.name == 'arErrorMessage') {
+        } else if (event.name == 'arErrorMessage') {
             this.setState({
                 arTipShow: true
             })
@@ -595,7 +595,7 @@ export default class BonesScene extends Component {
                     <TouchableOpacity style={styles.btnStyle} onPress={() => {
                         this.clickBack()
                     }}>
-                        <Image style={styles.btnImgStyle} source={require('../../img/unity/fanhuiyuan.png')}/>
+                        <Image style={styles.btnImgStyle} source={require('../../img/unity/fanhuiyuan.png')} />
                         <Text style={styles.btnTextStyle}>返回</Text>
                     </TouchableOpacity>
                     {/*<MyTouchableOpacity style={styles.btnStyle} onPress={() => {*/}
@@ -611,19 +611,19 @@ export default class BonesScene extends Component {
                     <TouchableOpacity style={styles.btnStyle} onPress={() => {
                         this.displayDialog()
                     }}>
-                        <Image style={styles.btnImgAsrStyle} source={this.state.displayDialogShow ? require('../../img/unity/yuyin_hold.png') : require('../../img/unity/yuyin_release.png')}/>
+                        <Image style={styles.btnImgAsrStyle} source={this.state.displayDialogShow ? require('../../img/unity/yuyin_hold.png') : require('../../img/unity/yuyin_release.png')} />
                     </TouchableOpacity>
 
                     {this.state.displayDialogShow ?
-                      <TouchableOpacity activeOpacity={0.7} style={styles.btnAsrStyle}
-                                        onPressIn={()=> this.startP()}
-                                        onPressOut={()=> {
-                                            this.stopP()
-                                        }}
-                      >
-                          <Text style={styles.btnTextAsrStyle}>{this.state.asrText}</Text>
-                      </TouchableOpacity> :
-                      <Text style={styles.dbTitleStyle}>{this.state.info.struct_name}</Text>
+                        <TouchableOpacity activeOpacity={0.7} style={styles.btnAsrStyle}
+                            onPressIn={() => this.startP()}
+                            onPressOut={() => {
+                                this.stopP()
+                            }}
+                        >
+                            <Text style={styles.btnTextAsrStyle}>{this.state.asrText}</Text>
+                        </TouchableOpacity> :
+                        <Text style={styles.dbTitleStyle}>{this.state.info.struct_name}</Text>
                     }
 
 
@@ -641,19 +641,19 @@ export default class BonesScene extends Component {
                     <MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {
                         this.commentAction()
                     }}>
-                        <Image style={styles.btnImgStyle} source={require('../../img/unity/yijian.png')}/>
+                        <Image style={styles.btnImgStyle} source={require('../../img/unity/yijian.png')} />
                         <Text style={styles.btnTextStyle}>评论</Text>
                     </MyTouchableOpacity>
                     <MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {
                         this.cundang()
                     }}>
-                        <Image style={styles.btnImgStyle} source={require('../../img/unity/cundang.png')}/>
+                        <Image style={styles.btnImgStyle} source={require('../../img/unity/cundang.png')} />
                         <Text style={styles.btnTextStyle}>存档</Text>
                     </MyTouchableOpacity>
                     <MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {
                         this.setFrist()
                     }}>
-                        <Image style={styles.btnImgStyle} source={require('../../img/unity/frist-set.png')}/>
+                        <Image style={styles.btnImgStyle} source={require('../../img/unity/frist-set.png')} />
                         <Text style={styles.btnTextStyle}>设为首页</Text>
                     </MyTouchableOpacity>
                 </View>
@@ -664,7 +664,7 @@ export default class BonesScene extends Component {
     // 初始化选中后的页面展示
     _renderSelectBar() {
         return (
-            <View style={{width: '100%'}}>
+            <View style={{ width: '100%' }}>
 
 
                 {this.isShowSource('html') ? this._renderHtmlSource() : null}
@@ -685,7 +685,7 @@ export default class BonesScene extends Component {
     _renderASRActionBtn() {
         let result = this.state.result
         let info = this.state.info
-        let order = [{key: 'selectModels', val: '选中'}, {key: 'selectModels', val: '选择'}, {key: 'modelList', val: '显示'}, {key: 'hideModels', val: '隐藏'}, {key: 'autoRot', val: '旋转'}]
+        let order = [{ key: 'selectModels', val: '选中' }, { key: 'selectModels', val: '选择' }, { key: 'modelList', val: '显示' }, { key: 'hideModels', val: '隐藏' }, { key: 'autoRot', val: '旋转' }]
         let filterResult = order.filter(item => result.indexOf(item.val) !== -1)
         if (filterResult.length !== 0) {
             if (result.length > 2) {
@@ -739,7 +739,7 @@ export default class BonesScene extends Component {
 
         return (
             <View
-                style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', height: size(60)}}>
+                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', height: size(60) }}>
                 {arr}
             </View>
         );
@@ -759,35 +759,35 @@ export default class BonesScene extends Component {
                 alignItems: 'center',
                 backgroundColor: 'rgba(0,0,0,0.8)',
             }}>
-                <Text style={[styles.dbTitleStyle, {marginLeft: size(20)}]}>{title}</Text>
+                <Text style={[styles.dbTitleStyle, { marginLeft: size(20) }]}>{title}</Text>
                 <MyTouchableOpacity
                     onPress={() => {
                         this.fayin(title + "。" + enTitle)
                     }}
-                    style={{flex: 1, flexDirection: 'row', justifyContent: "center", alignItems: "center"}}>
+                    style={{ flex: 1, flexDirection: 'row', justifyContent: "center", alignItems: "center" }}>
                     <Image
-                        style={{width: size(30), height: size(30), marginRight: size(10)}}
-                        source={require('../../img/unity/laba.png')}/>
-                    <Text style={{color: "#bababa",}}>{enTitle}</Text>
+                        style={{ width: size(30), height: size(30), marginRight: size(10) }}
+                        source={require('../../img/unity/laba.png')} />
+                    <Text style={{ color: "#bababa", }}>{enTitle}</Text>
                 </MyTouchableOpacity>
-                <MyTouchableOpacity style={{marginRight: size(20), alignItems: 'center'}} onPress={() => {
+                <MyTouchableOpacity style={{ marginRight: size(20), alignItems: 'center' }} onPress={() => {
                     this.commentAction()
                 }}>
                     <Image
                         source={require('../../img/unity/yijian.png')}
-                        style={{width: size(30), height: size(30)}}/>
-                    <Text style={{fontSize: size(18), color: "#FFF"}}>评论</Text>
+                        style={{ width: size(30), height: size(30) }} />
+                    <Text style={{ fontSize: size(18), color: "#FFF" }}>评论</Text>
                 </MyTouchableOpacity>
                 <MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {
                     this.cundang()
                 }}>
-                    <Image style={styles.btnImgStyle} source={require('../../img/unity/cundang.png')}/>
+                    <Image style={styles.btnImgStyle} source={require('../../img/unity/cundang.png')} />
                     <Text style={styles.btnTextStyle}>存档</Text>
                 </MyTouchableOpacity>
                 <MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {
                     this.setFrist()
                 }}>
-                    <Image style={styles.btnImgStyle} source={require('../../img/unity/frist-set.png')}/>
+                    <Image style={styles.btnImgStyle} source={require('../../img/unity/frist-set.png')} />
                     <Text style={styles.btnTextStyle}>设为首页</Text>
                 </MyTouchableOpacity>
             </View>
@@ -801,7 +801,7 @@ export default class BonesScene extends Component {
             <TouchableOpacity style={styles.btnStyle} onPress={() => {
                 this.clickBack()
             }}>
-                <Image style={styles.btnImgStyle} source={require('../../img/unity/fanhuiyuan.png')}/>
+                <Image style={styles.btnImgStyle} source={require('../../img/unity/fanhuiyuan.png')} />
                 <Text style={styles.btnTextStyle}>返回</Text>
             </TouchableOpacity>
         )
@@ -814,8 +814,8 @@ export default class BonesScene extends Component {
                     <MyTouchableOpacity style={styles.btnStyle} onPress={() => {
                         this.handleActionSource(item)
                     }} key={index}>
-                        <Image style={[styles.btnImgStyle, {tintColor: color}]} source={{uri: icon}}/>
-                        <Text style={[styles.btnTextStyle, {color: color}]}>{item.secondFyName}</Text>
+                        <Image style={[styles.btnImgStyle, { tintColor: color }]} source={{ uri: icon }} />
+                        <Text style={[styles.btnTextStyle, { color: color }]}>{item.secondFyName}</Text>
                     </MyTouchableOpacity>
                 )
         })
@@ -961,7 +961,7 @@ export default class BonesScene extends Component {
                             height: size(36),
                             marginRight: size(20),
                             resizeMode: 'contain'
-                        }}/>
+                        }} />
                     </MyTouchableOpacity>
                 </View>
                 <WebView
@@ -972,9 +972,9 @@ export default class BonesScene extends Component {
                     javaScriptEnabled
                     decelerationRate='normal'
                     scalesPageToFit={Platform.OS === 'ios' ? true : false}
-                    source={{uri: this.state.currentShowSource.content}}
+                    source={{ uri: this.state.currentShowSource.content }}
                     startInLoadingState={true}
-                    style={{width: '100%', height: this.state.height}}
+                    style={{ width: '100%', height: this.state.height }}
                     renderError={() => {
                         return <View style={styles.loadWeb}><Text
                             style={{
@@ -1011,10 +1011,10 @@ export default class BonesScene extends Component {
                             height: size(36),
                             marginRight: size(20),
                             resizeMode: 'contain'
-                        }}/>
+                        }} />
                     </MyTouchableOpacity>
                 </View>
-                <View style={{width: '100%', height: size(140)}}>
+                <View style={{ width: '100%', height: size(140) }}>
                     <ScrollView style={{
                         height: size(140),
                         paddingLeft: size(20),
@@ -1058,7 +1058,7 @@ export default class BonesScene extends Component {
                             height: size(36),
                             marginRight: size(20),
                             resizeMode: 'contain'
-                        }}/>
+                        }} />
                     </MyTouchableOpacity>
 
                 </View>
@@ -1086,7 +1086,7 @@ export default class BonesScene extends Component {
     }
 
     playVideoError(msg) {
-        Alert.alert('', '该视频暂未开放, 敬请期待.', [{text: '我知道了'}])
+        Alert.alert('', '该视频暂未开放, 敬请期待.', [{ text: '我知道了' }])
         this.setState({
             currentShowSource: ''
         })
@@ -1112,10 +1112,10 @@ export default class BonesScene extends Component {
                             height: size(36),
                             marginRight: size(20),
                             resizeMode: 'contain'
-                        }}/>
+                        }} />
                     </MyTouchableOpacity>
                 </View>
-                <Image style={{resizeMode: 'contain', width: size(200), height: size(200)}} source={{uri: sourceURL}}/>
+                <Image style={{ resizeMode: 'contain', width: size(200), height: size(200) }} source={{ uri: sourceURL }} />
             </View>
         )
     }
@@ -1130,7 +1130,7 @@ export default class BonesScene extends Component {
                 <MyTouchableOpacity onPress={() => {
                     this.selectPage(index)
                 }}>
-                    <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center',}}>
+                    <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', }}>
                         <Text style={{
                             fontSize: size(24),
                             color: '#fff',
@@ -1147,7 +1147,7 @@ export default class BonesScene extends Component {
     // 渲染基础结构类型资源 --- 下拉视图背景
     _renderJGSourceDropdown() {
         return (
-            <View style={{justifyContent: 'center', alignItems: 'center', width: '100%', marginBottom: size(-16)}}>
+            <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%', marginBottom: size(-16) }}>
                 <View style={{
                     flex: 1,
                     zIndex: 9999,
@@ -1162,7 +1162,7 @@ export default class BonesScene extends Component {
                         height: size(300),
                         width: size(300)
                     }}>
-                        <ScrollView style={{width: '100%', height: '100%'}}>
+                        <ScrollView style={{ width: '100%', height: '100%' }}>
                             {this._renderJSSourceSubList()}
                         </ScrollView>
                     </View>
@@ -1207,7 +1207,7 @@ export default class BonesScene extends Component {
                 }}>
 
                     <MyTouchableOpacity activeOpacity={1} onPress={() => {
-                        this.setState({showJGList: !this.state.showJGList})
+                        this.setState({ showJGList: !this.state.showJGList })
                     }}>
                         <View style={{
                             height: size(60),
@@ -1215,11 +1215,11 @@ export default class BonesScene extends Component {
                             justifyContent: 'center',
                             alignItems: 'center'
                         }}>
-                            <Text style={{color: '#fff', fontSize: size(24)}}>
+                            <Text style={{ color: '#fff', fontSize: size(24) }}>
                                 {nail_name}
                             </Text>
-                            <Image style={{width: size(30), height: size(30)}}
-                                   source={this.state.showJGList ? selectArrow : defaultArrow}/>
+                            <Image style={{ width: size(30), height: size(30) }}
+                                source={this.state.showJGList ? selectArrow : defaultArrow} />
                         </View>
                     </MyTouchableOpacity>
                     <MyTouchableOpacity style={{
@@ -1238,15 +1238,15 @@ export default class BonesScene extends Component {
                             height: size(36),
                             marginRight: size(20),
                             resizeMode: 'contain'
-                        }}/>
+                        }} />
                     </MyTouchableOpacity>
                 </View>
 
 
                 <MyScrollView ref="MyScrollView" sourceData={this.state.currentShowSource.JGSourceData}
-                              setPage={(page) => {
-                                  this.setPage(page)
-                              }}/>
+                    setPage={(page) => {
+                        this.setPage(page)
+                    }} />
 
             </View>
         )
@@ -1280,10 +1280,10 @@ export default class BonesScene extends Component {
     // 渲染评论页面
     _renderCommentView() {
         return (
-            <View style={{height: '100%', position: 'absolute', bottom: size(0.00001), left: 0, right: 0}}>
+            <View style={{ height: '100%', position: 'absolute', bottom: size(0.00001), left: 0, right: 0 }}>
                 <Comment
                     hideWin={() => {
-                        this.setState({showComment: !this.state.showComment})
+                        this.setState({ showComment: !this.state.showComment })
                     }}
                     navigation={this.props.navigation}
                     currModel={this.state.selectData}
@@ -1295,7 +1295,7 @@ export default class BonesScene extends Component {
 
     render() {
         return (
-            <View style={{width: '100%', height: '100%',}}>
+            <View style={{ width: '100%', height: '100%', }}>
 
 
                 <UnityView
@@ -1320,62 +1320,8 @@ export default class BonesScene extends Component {
                     right: 0
                 }}>
                 </View>
-
-                {
-                    // ar 提示
-                    this.state.speechIng ?
-                      <View style={{position: 'absolute', bottom: 0, left: 0, right: 0, top: 0, justifyContent: 'center', alignItems: 'center'}}>
-                          <View style={{borderRadius: size(10), overflow: 'hidden', justifyContent: 'center', alignItems: 'center'}}>
-                              <ImageBackground
-                                source={require('../../img/unity/yuyin_dynamic.gif')}
-                                style={{
-                                    backgroundColor: 'rgba(0,0,0,0.8)',
-                                    borderRadius: size(10),
-                                    width: screen.width * 0.7,
-                                    height: size(300),
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between'
-                                }}>
-                                  <View style={{alignItems: 'center'}}>
-                                      <Text style={{width: '100%', color: 'white', fontWeight: 'bold', fontSize: size(28), marginTop: size(10)}}>
-                                          请说出以下命令
-                                      </Text>
-                                      <Text style={{width: '100%', color: 'white', fontSize: size(20), marginTop: size(10), marginBottom: size(10)}}>
-                                          支持命令:旋转、([选中、选择、显示、隐藏]+结构名称)
-                                      </Text>
-                                  </View>
-
-                                  <Text style={{height: size(60), color: 'white', lineHeight: size(60), marginBottom: size(10)}}>
-                                      识别结果：{this.state.result}
-                                  </Text>
-                                  {/*<Image style={{height: size(200), width: screen.width * 0.6}} source={require('../../img/unity/yuyin_dynamic.gif')} />*/}
-                              </ImageBackground>
-                          </View>
-                      </View> : null
-                }
-
-                {
-                    // ar 提示
-                    this.state.arTipShow ?
-                      <View
-                        style={{
-                            position: 'absolute', bottom: 0, left: 0, right: 0, top: 0,
-                            backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'center', alignItems: 'center'
-                        }}
-                      >
-                          <View style={{
-                              backgroundColor: 'rgba(0,0,0,0.8)',
-                              borderRadius: size(20),
-                              width: '70%',
-                              alignItems: 'center'
-                          }}>
-                              <Text style={{height: size(60), color: 'white', lineHeight: size(60)}}>{this.state.arTipMsg}</Text>
-                          </View>
-                      </View> : null
-                }
-
                 {this.state.unityReady ?
-                    <View style={[styles.rnView, {left: this.state.showRnView ? 0 : deviceWidth * 0.99}]}>
+                    <View style={[styles.rnView, { left: this.state.showRnView ? 0 : deviceWidth * 0.99 }]}>
                         {/****  选中骨骼后的底部条 || 默认展示的底部条  *****/}
                         {this.state.showSelectBar && !this.state.branshIsOpen ? this._renderSelectBar() : this._renderDefaultBar()}
                     </View>
@@ -1386,7 +1332,7 @@ export default class BonesScene extends Component {
                         height: size(10),
                         backgroundColor: "#FFF",
                         left: 0,
-                    }}/>}
+                    }} />}
 
                 {/****  评论  *****/}
                 {this.state.showComment && !this.state.branshIsOpen ? this._renderCommentView() : null}
@@ -1424,8 +1370,8 @@ export default class BonesScene extends Component {
                             width: '70%',
                             alignItems: 'center'
                         }}>
-                            <Text style={{height: size(60), lineHeight: size(60)}}>是否要退出到维萨里平台?</Text>
-                            <MyTouchableOpacity style={[styles.shareBtnStyle, {marginTop: size(20)}]} onPress={() => {
+                            <Text style={{ height: size(60), lineHeight: size(60) }}>是否要退出到维萨里平台?</Text>
+                            <MyTouchableOpacity style={[styles.shareBtnStyle, { marginTop: size(20) }]} onPress={() => {
                                 this.handleBack(1)
                             }}>
                                 <Text style={styles.shareTextStyle}>
@@ -1443,7 +1389,7 @@ export default class BonesScene extends Component {
                                 onPress={() => {
                                     this.handleBack(0)
                                 }}>
-                                <Text style={{height: size(60), lineHeight: size(60), flex: 1}}>取消</Text>
+                                <Text style={{ height: size(60), lineHeight: size(60), flex: 1 }}>取消</Text>
                             </MyTouchableOpacity>
                         </View>
                     </View> : null
@@ -1464,12 +1410,12 @@ export default class BonesScene extends Component {
                         }}>
                             <UnityGuideView
                                 closeAction={() => {
-                                    this.setState({showGuide: false})
+                                    this.setState({ showGuide: false })
                                 }}
                                 btnAction={() => {
-                                    this.setState({showVideo: true})
+                                    this.setState({ showVideo: true })
                                 }}
-                                navigation={this.props.navigation}/>
+                                navigation={this.props.navigation} />
                         </View>
                         :
                         null
@@ -1504,7 +1450,7 @@ export default class BonesScene extends Component {
                         ?
                         <TouchableOpacity
                             onPress={() => {
-                                this.setState({showVideo: false})
+                                this.setState({ showVideo: false })
                             }}
                             style={{
                                 position: 'absolute',
@@ -1518,7 +1464,7 @@ export default class BonesScene extends Component {
                                 zIndex: 99999
                             }}>
                             <Image source={require('../../img/unity/close.png')}
-                                   style={{width: size(48), height: size(48)}}/>
+                                style={{ width: size(48), height: size(48) }} />
                         </TouchableOpacity>
                         :
                         null
@@ -1526,10 +1472,10 @@ export default class BonesScene extends Component {
 
                 <UnityLoading ref={r => {
                     this.UnityLoading = r
-                }}/>
+                }} />
 
                 <Toast ref="toast" opacity={0.5} position='top' positionValue={100} fadeInDuration={750}
-                       fadeOutDuration={1000}/>
+                    fadeOutDuration={1000} />
 
             </View>
         );

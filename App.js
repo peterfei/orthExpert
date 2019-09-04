@@ -37,6 +37,7 @@ import kfPlanDetail from './View/scene/Plan/PlanDetail';
 import kfSharingPlan from './View/scene/Plan/SharingPlan';
 import kfPlanDescHtml from './View/scene/Plan/PlanDescHtml';
 import RenTi from './View/scene/Unity/RenTi';//底部按钮转跳商城
+import BonesScene from './View/scene/Unity/BonesScene';
 import TrainPlay from './View/scene/Unity/TrainPlay';
 import kfSickPlanList from './View/scene/Plan/SickPlanList';
 import kfCreatePlan from './View/scene/Plan/CreatePlan';
@@ -85,7 +86,8 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
     TrainPlay: { screen: TrainPlay },
     kfModifyData: { screen: kfModifyData },
     ActivationCode:{screen:ActivationCode},
-    ModifyPassword:{screen:ModifyPassword}
+    ModifyPassword:{screen:ModifyPassword},
+    BonesScene:{screen:BonesScene}
   },
   {
     initialRouteName: 'NewHome',     //设置初始路由为Home

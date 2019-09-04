@@ -123,6 +123,28 @@ export default class SickDetail extends BaseComponent {
   }
 
   selectBtn(index) {
+alert(JSON.stringify(this.state.sick))
+    let msg = {
+      "struct_version": "1",
+      "app_type": "medical",
+      "app_version": "1",
+      "ab_path": "http://fileprod.vesal.site/upload/unity3D/android/zip/medical/v330/RA0801014.zip",
+      "youke_use": "disabled",
+      // "cate_id": 42,
+      "platform": "android",
+      "first_icon_url": "http://fileprod.vesal.site/upload/unity3D/android/img/medical/v240/v2/RA0801014.png",
+      "visible_identity": null,
+      "is_charge": "yes",
+      "ab_list": null,
+      "struct_id": 606,
+      // "struct_name": "颈部",
+      "struct_sort": null,
+      "noun_id": null,
+      "struct_code": this.props.load_app_id,
+      "app_id": `${this.props.load_app_id}_GK`,
+      "showModelList": this.state.getData.open_model
+  }
+  
     if (this.state.selectBtnIndex === index) {
       this.setState({
         selectBtnIndex: -1,
@@ -153,7 +175,7 @@ export default class SickDetail extends BaseComponent {
           this.props.navigation.navigate('Recovery', { patNo: this.state.sick.pat_no, sick: this.state.sick });
           return
         } else {
-          alert('跳转Unity');
+          this.props.navigation.navigate('BonesScene');
           this.setState({
             selectBtnIndex: -1,
           })
