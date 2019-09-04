@@ -11,7 +11,7 @@ import {
     Platform, TouchableHighlight,ScrollView
 } from "react-native";
 import { color } from "../../widget";
-import { screen, system } from "../../common";
+import {AppDef, deviceWidth, HttpTool, NetInterface, screen, system} from "../../common";
 import { size } from "../../common/ScreenUtil";
 import { storage } from "../../common/storage";
 import StarRating from "react-native-star-rating";
@@ -39,38 +39,30 @@ export default class MyRecoveryItem extends Component {
         this.listener.remove();
     }
 
-    async getData() {
-        let tokens = await storage.get('userTokens');
-        let url = api.base_uri+"v1/app/orthope/scheme/myCreateSchemes?token=" + tokens.token + "&patNo=" + this.props.patNo + "&page=1&limit=100&business=orthope";
-        // alert(url)
-        await fetch(url, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }).then(resp => resp.json())
-            .then(result => {
-                // alert(JSON.stringify(result))
-                this.setState({
-                    CardCellData: result.page.list
-                })
-            })
+    getData() {
+
+        const url = NetInterface.myCreatePlanList+ "?patNo=" + this.props.patNo + "&page=1&limit=100&business=kfxl";
+        console.log(JSON.stringify(url));
+        HttpTool.GET_JP(url)
+          .then(result => {
+              alert(JSON.stringify(result));
+              this.setState({
+                  CardCellData: result.page.list == null ? [] : result.page.list
+              })
+          })
+          .catch(err => {
+              alert(JSON.stringify(err));
+              console.log(JSON.stringify(err))
+          })
     }
 
     render() {
         return (
             <View style={styles.container}>
-                {this.state.CardCellData.length > 0 ?
-                    <ScrollView style={{width:'100%'}}>
-                        {this.showKeyList()}
-                        <View style={{height: size(30),width:'100%'}}></View>
-                    </ScrollView>
-                    :
-                    <View style={{ width: '100%', height: "100%", alignItems: 'center' }}>
-                        <Image style={{ width: '100%', height: screen.height - 100 - size(130), resizeMode: 'stretch' }}
-                            source={require('../../img/recovery/customization.png')} />
-                    </View>
-                }
+                <ScrollView style={{width:'100%'}}>
+                    {this.showKeyList()}
+                    <View style={{height: size(30),width:'100%'}}></View>
+                </ScrollView>
             </View>
         )
     }

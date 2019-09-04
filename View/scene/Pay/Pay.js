@@ -35,7 +35,7 @@ export default class Pay extends BaseComponent {
         const url = NetInterface.config + "?key=pay_method_" + Platform.OS;
         this.mainView._showLoading('加载中');
 
-        HttpTool.GET(url)
+        HttpTool.GET_JP(url)
             .then(result => {
                 this.mainView._closeLoading();
                 if (result.code == 0) {

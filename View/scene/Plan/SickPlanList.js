@@ -46,7 +46,7 @@ export default class SickPlanList extends BaseComponent {
   }
 
   requestData() {
-    const url = NetInterface.planListWithSick + '?patNo=' + this.props.navigation.state.params.sick.pat_no + '&planType=';
+    const url = NetInterface.planListWithSick + '?patNo=' + this.props.navigation.state.params.sick.pat_no + '&page=1&limit=100&planType=sysTpl';
   //  alert(url)
     this.mainView._showLoading('加载中...');
     HttpTool.GET(url)

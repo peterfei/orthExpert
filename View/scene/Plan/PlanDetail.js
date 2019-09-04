@@ -59,7 +59,7 @@ export default class PlanDetail extends BaseComponent {
   requestDetailData() {
     const url = NetInterface.planDetail + '?planId=' + this.state.planId + '&plat=android';
     this.mainView._showLoading('加载中');
-    HttpTool.GET(url)
+    HttpTool.GET_JP(url)
       .then(res => {
         this.mainView._closeLoading();
         if (res.code == 0 && res.msg == 'success') {
