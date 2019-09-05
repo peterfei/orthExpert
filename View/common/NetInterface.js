@@ -108,6 +108,12 @@ const Gk = {
   gk_getPathologyRes:'v1/app/pathology/getPathologyRes',
   gk_getSearchHot:"v1/app/pathology/getSearchHot",
   gk_searchPathologyList:"v1/app/pathology/searchPathologyList",
+  gk_orderDetail:"/v1/app/order/orderDetail",
+  gk_deleteMemberOrder:"/v1/app/order/deleteMemberOrder",
+  gk_cancelOrder:"/v1/app/order/cancelOrder",
+  gk_msgList:"/app/orthope/v1/msg/msgList",
+  gk_pushMsg:'/app/orthope/v1/msg/pushMsg',
+  gk_getMessageOfApp:"v1/app/msg/getMessageOfApp",
   
 }
 

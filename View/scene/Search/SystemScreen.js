@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import api from "../../api";
 import {
     StyleSheet,
     View,
@@ -11,7 +10,7 @@ import {
 
 } from 'react-native';
 import {size} from "../../common/ScreenUtil";
-import {screen, system} from "../../common";
+import {screen, system,NetInterface, HttpTool} from "../../common";
 import {storage} from "../../common/storage";
 import RefreshListView, {RefreshState} from "react-native-refresh-list-view";
 import {
@@ -104,13 +103,8 @@ export default class SystemScreen extends Component<Props> {
             let version = localVersion && localVersion.length > 0 ? localVersion[0].version : -1;
 
             let tokens = await storage.get("userTokens");
-            let url = api.base_uri + "v1/app/msg/getMessageOfApp?token=" + tokens.token + "&version=" + version;
-            await fetch(url, {
-                method: "get",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then(resp => resp.json())
+            let url = NetInterface.gk_getMessageOfApp + "?version=" + version;
+            HttpTool.GET_JP(url)
                 .then(result => {
                   //  alert("请求url:" + url + ",返回结果:" + JSON.stringify(result.system))
 

@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { storage } from "../../common/storage";
 import { ContainerView, BaseComponent, NavBar, ListCell, Line, MineBuuton, AppDef, isIPhoneXPaddTop, size, FuncUtils, deviceWidth } from '../../common';
-import api from "../../api";
 import MyTouchableOpacity from "../../common/components/MyTouchableOpacity";
 
 const statusBarHeight = StatusBar.currentHeight;

@@ -11,7 +11,7 @@ import {
     Alert,DeviceEventEmitter,
     Platform
 } from "react-native";
-import {screen} from "../../common";
+import {screen,NetInterface, HttpTool} from "../../common";
 import {color} from "../../widget";
 import ScrollableTabView, {
     DefaultTabBar
@@ -22,7 +22,6 @@ import {NavigationActions,StackActions} from "react-navigation";
 import {storage} from "../../common/storage";
 import {RadioGroup, RadioButton} from "react-native-flexi-radio-button";
 import Toast, {DURATION} from "react-native-easy-toast";
-import api from "../../api";
 //import Icon from "react-native-vector-icons/FontAwesome";
 import TitleBar from '../../scene/Home/TitleBar';
 export default class OrderDetail extends Component {
@@ -51,15 +50,8 @@ export default class OrderDetail extends Component {
         let {info} = this.props.navigation.state.params;
         let tokens = await storage.get("userTokens");
         this.Loading.show("查询中...");
-        const url = api.base_uri + "/v1/app/order/orderDetail?ordId=" + info.ord_id;
-        await fetch(url, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                token: tokens.token
-            }
-        })
-            .then(resp => resp.json())
+        const url = NetInterface.gk_orderDetail + "?ordId=" + info.ord_id;
+        HttpTool.GET_JP(url)
             .then(result => {
                 this.Loading.close();
                 this.setState({
@@ -97,15 +89,8 @@ export default class OrderDetail extends Component {
         let {info} = this.props.navigation.state.params;
         let tokens = await storage.get("userTokens");
         const url =
-            api.base_uri + "/v1/app/order/deleteMemberOrder?ordId=" + info.ord_id;
-        await fetch(url, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                token: tokens.token
-            }
-        })
-            .then(resp => resp.json())
+        NetInterface.gk_deleteMemberOrder + "?ordId=" + info.ord_id;
+        HttpTool.GET_JP(url)
             .then(result => {
                 if (result.code == 0) {
                     this.refs.toast.show("删除成功");
@@ -145,15 +130,8 @@ export default class OrderDetail extends Component {
         let _this = this;
         let {info} = this.props.navigation.state.params;
         let tokens = await storage.get("userTokens");
-        const url = api.base_uri + "/v1/app/order/cancelOrder?ordId=" + info.ord_id;
-        await fetch(url, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                token: tokens.token
-            }
-        })
-            .then(resp => resp.json())
+        const url = NetInterface.gk_cancelOrder + "?ordId=" + info.ord_id;
+        HttpTool.GET_JP(url)
             .then(result => {
                 if (result.code == 0) {
 
