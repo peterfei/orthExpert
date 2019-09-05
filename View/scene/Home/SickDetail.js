@@ -286,6 +286,7 @@ export default class SickDetail extends BaseComponent {
   }
 
   _renderImages() {
+    
     let arr = [];
     if (this.state.areaSickList[0].img_url) {
       this.state.areaSickList.forEach((item, index) => {
