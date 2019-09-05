@@ -5,14 +5,14 @@
  */
 
 import React from "react";
-import { ScrollView, StyleSheet, View, Image, TouchableOpacity, Text, ImageBackground ,DeviceEventEmitter} from "react-native";
+import { ScrollView, StyleSheet, View, Image, TouchableOpacity, Text, ImageBackground, DeviceEventEmitter } from "react-native";
 import {
   BaseComponent,
   ContainerView,
   NavBar,
   Line,
   size,
-  screen, deviceWidth, AppDef,FuncUtils,NetInterface, HttpTool
+  screen, deviceWidth, AppDef, FuncUtils, NetInterface, HttpTool
 } from '../../common';
 import { storage } from "../../common/storage";
 import Video from 'react-native-af-video-player';
@@ -40,14 +40,14 @@ export default class SickDetail extends BaseComponent {
 
   componentDidMount() {
     this.requestSickData();
-      this.emitter = DeviceEventEmitter.addListener('updatePermission',
-          () => {
-              FuncUtils.checkKfPerm()
-          }
-      )
+    this.emitter = DeviceEventEmitter.addListener('updatePermission',
+      () => {
+        FuncUtils.checkKfPerm()
+      }
+    )
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.emitter.remove()
   }
 
@@ -175,9 +175,16 @@ export default class SickDetail extends BaseComponent {
       }
 
       if (menuBtn.type == 'video') {
-
         this.setState({
           showSourceType: 'video',
+          selectBtnIndex: index,
+          playVideoUrl: menuBtn.content
+        })
+      }
+
+      if (menuBtn.type == 'text') {
+        this.setState({
+          showSourceType: 'text',
           selectBtnIndex: index,
           playVideoUrl: menuBtn.content
         })
@@ -206,6 +213,11 @@ export default class SickDetail extends BaseComponent {
     } else if (this.state.showSourceType == 'video') { // 视频播放
       return (
         this._renderVideo()
+      )
+    } else if (this.state.showSourceType == 'text') { // 文本
+      return (
+        [this._renderImages(),
+        this._renderText()]
       )
     } else {
       return (
@@ -285,6 +297,35 @@ export default class SickDetail extends BaseComponent {
     )
   }
 
+  _renderText() {
+    return (
+      <View style={{
+        position: 'absolute',
+        width: screen.width, height: screen.height,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        zIndex: 999999999, justifyContent: 'center', alignItems: 'center'
+      }}>
+        <View style={{
+          position: 'absolute', bottom: 0,
+          backgroundColor: 'white',
+          height: size(250),
+          borderTopLeftRadius: 15, borderTopRightRadius: 15
+        }}>
+          <View style={{margin:10}}>
+            <TouchableOpacity onPress={()=>{this.closeVideo()}}>
+            <Image style={{width:size(23),height:size(23)}}
+              source={require('../../img/kf_main/kf_plan_close.png')} />
+            </TouchableOpacity>
+            <Text style={{position:'absolute',left:screen.width*0.5-size(50),width:size(100)}}>成因</Text>
+          </View>
+          <ScrollView style={{padding:10}}>
+            <Text style={{marginBottom:15}}>{this.state.playVideoUrl}</Text>
+          </ScrollView>
+        </View>
+      </View>
+    )
+  }
+
   _renderImages() {
 
     let arr = [];
@@ -299,7 +340,7 @@ export default class SickDetail extends BaseComponent {
           </View>
         )
       })
-    }else if(this.state.details){
+    } else if (this.state.details) {
       arr.push(
         <View style={{ width: size(510), height: size(850) }}>
           <Image
@@ -359,21 +400,21 @@ export default class SickDetail extends BaseComponent {
 
 
   //判断是否开始使用
-  async  startIsUse(index){
+  async  startIsUse(index) {
     this.selectBtn(index)
     return
-      FuncUtils.checkKfPerm()
-          .then(res => {
-              if(res.code  == 0 && res.result == 'yes'){
-                  this.props.navigation.navigate('BuyVip')
-              }else {
-                  this.selectBtn(index)
-              }
-          })
-          .catch(err => {
-            this.mainView._toast(JSON.stringify(err))
-          })
-    }
+    FuncUtils.checkKfPerm()
+      .then(res => {
+        if (res.code == 0 && res.result == 'yes') {
+          this.props.navigation.navigate('BuyVip')
+        } else {
+          this.selectBtn(index)
+        }
+      })
+      .catch(err => {
+        this.mainView._toast(JSON.stringify(err))
+      })
+  }
 
   _renderBottom() {
     let arr = [];
@@ -387,7 +428,7 @@ export default class SickDetail extends BaseComponent {
       arr.push(
         <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104) }} onPress={() => {
           // this.selectBtn(index)
-            this.startIsUse(index)
+          this.startIsUse(index)
         }}>
           <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44) }} />
           <Text style={{ fontSize: size(24), color: color, marginTop: size(8) }}>{item.secondFyName}</Text>
