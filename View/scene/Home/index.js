@@ -1,20 +1,22 @@
 import React from "react";
-import {Image, StyleSheet, Text, TouchableOpacity, View, StatusBar, Platform} from "react-native";
+import {Image, StyleSheet, Text, TouchableOpacity, View, StatusBar, Platform,AppState,Modal,} from "react-native";
 import {AppDef, BaseComponent, ContainerView, FuncUtils, HttpTool, NavBar, NetInterface, size, isIPhoneXPaddTop, ImageMapper} from '../../common';
 import api from "../../api";
-import {deviceWidth} from "../../common/ScreenUtil";
+import {deviceWidth,deviceHeight} from "../../common/ScreenUtil";
 import SplashScreen from "react-native-splash-screen";
 import {storage} from "../../common/storage";
 import {NavigationActions, StackActions} from "react-navigation";
 import CodePush from "react-native-code-push"; // 引入code-push
-
+import Progress from '../../common/ProgressBar'
+import Icon from '../../common/Icon'
 const DefaultColor = 'rgba(68, 180, 233, 0.5)';
 const DefaultLineColor = 'rgba(68, 180, 233, 1)';
 const SelectColor = 'rgba(231, 176, 176, 0.5)';
 const SelectLineColor = 'rgba(231, 176, 176, 1)';
 const statusBarHeight = StatusBar.currentHeight;
+const CODE_PUSH_KEY = 'q4YE8sCIJ4Xepd6gaJA1qWTza76x4ksvOXqog'
 
-export default class Custom extends BaseComponent {
+class Custom extends BaseComponent {
 
   constructor(props) {
     super(props);
@@ -29,8 +31,14 @@ export default class Custom extends BaseComponent {
       MAPPING: this.MAPPING,
       title:'方案', //props.navigation.state.params.title,
       sickData: [],
-      areaSickList: []
+      areaSickList: [],
+      modalVisible: false,
+      isMandatory: false,
+      immediateUpdate: false,
+      updateInfo: {}
     }
+    this.currProgress = 0.0
+    this.syncMessage = ''
   }
 
   async checkLoginStatus() {
@@ -50,7 +58,7 @@ export default class Custom extends BaseComponent {
       this.gotoLogin();
     }
   }
-
+  
   gotoLogin() {
     const resetAction = StackActions.reset({
       index: 0,
@@ -59,9 +67,170 @@ export default class Custom extends BaseComponent {
     this.props.navigation.dispatch(resetAction);
   }
 
+  _immediateUpdate() {
+    this.setState({immediateUpdate: true})
+    CodePush.sync(
+        {deploymentKey: CODE_PUSH_KEY, updateDialog: {}, installMode: CodePush.InstallMode.IMMEDIATE},
+        this.codePushStatusDidChange.bind(this),
+        this.codePushDownloadDidProgress.bind(this)
+    )
+  }
+
+
+  codePushDownloadDidProgress(progress) {
+    if (this.state.immediateUpdate) {
+      this.currProgress = parseFloat(progress.receivedBytes / progress.totalBytes).toFixed(2)
+      if(this.currProgress >= 1) {
+        this.setState({modalVisible: false})
+      } else {
+        this.refs.progressBar.progress = this.currProgress
+      }
+    }
+  }
+
+  codePushStatusDidChange(syncStatus) {
+    if (this.state.immediateUpdate) {
+      switch(syncStatus) {
+        case CodePush.SyncStatus.CHECKING_FOR_UPDATE:
+          this.syncMessage = 'Checking for update'
+          break;
+        case CodePush.SyncStatus.DOWNLOADING_PACKAGE:
+          this.syncMessage = 'Downloading package'
+          break;
+        case CodePush.SyncStatus.AWAITING_USER_ACTION:
+          this.syncMessage = 'Awaiting user action'
+          break;
+        case CodePush.SyncStatus.INSTALLING_UPDATE:
+          this.syncMessage = 'Installing update'
+          break;
+        case CodePush.SyncStatus.UP_TO_DATE:
+          this.syncMessage = 'App up to date.'
+          break;
+        case CodePush.SyncStatus.UPDATE_IGNORED:
+          this.syncMessage = 'Update cancelled by user'
+          break;
+        case CodePush.SyncStatus.UPDATE_INSTALLED:
+          this.syncMessage = 'Update installed and will be applied on restart.'
+          break;
+        case CodePush.SyncStatus.UNKNOWN_ERROR:
+          this.syncMessage = 'An unknown error occurred'
+          Toast.showError('更新出错，请重启应用！')
+          this.setState({modalVisible: false})
+          break;
+      }
+    }
+  }
+
+  renderModal() {
+    return (
+        <Modal
+            animationType={"none"}
+            transparent={true}
+            visible={this.state.modalVisible}
+            onRequestClose={() => alert("Modal has been closed.")}>
+          <View style={styles.modal}>
+            <View style={styles.modalContainer}>
+              {
+                   !this.state.immediateUpdate ?
+                   <View>
+                     {/* <Image style={{width: deviceWidth - 60}} source={require('../../../assets/images/me/updateBg.png')} resizeMode={'stretch'}/> */}
+                     <View style={{backgroundColor: "white"}}>
+                       <View style={{marginHorizontal: 15}}>
+                         <Text style={{marginVertical: 20, fontSize: 17, color: "#000", fontWeight: 'bold'}}>更新内容</Text>
+                         <Text style={{lineHeight: 20}}>{this.state.updateInfo.description}</Text>
+                       </View>
+                       <View style={{alignItems: "center", marginTop: 20}}>
+                         <Text style={{fontSize: 14, color:"gray"}}>wifi情况下更新不到30秒</Text>
+                       </View>
+                       {
+                         !this.state.isMandatory ?
+                             <View style={{flexDirection: "row", height: 50, alignItems: "center", marginTop: 20, borderTopColor: "#E6E6E6", borderTopWidth: 1 }}>
+                               <TouchableOpacity
+                                   onPress={() => this.setState({modalVisible: false})}>
+                                 <View style={{flexDirection: "row", alignItems: "center", width: (deviceWidth - 60) / 2, height: 50, borderRightColor: "#E6E6E6", borderRightWidth: 1, alignItems: "center", justifyContent: "center"}}>
+                                   {/* <Icon name={'oneIcon|reject_o'} size={20} color={'#B6B6B6'}/> */}
+                                   <Text style={{fontSize: 17, fontWeight: 'bold', color:"gray", marginLeft: 10}}>残忍拒绝</Text>
+                                 </View>
+                               </TouchableOpacity>
+                               <TouchableOpacity
+                                   style={{flexDirection: "row", alignItems: "center", width: (deviceWidth - 60) / 2, height: 50, alignItems: "center", justifyContent: "center"}}
+                                   onPress={() => this._immediateUpdate()}
+                               >
+                                 <View style={{backgroundColor: '#3496FA', flex: 1, height: 40, alignItems: "center", justifyContent: "center", margin: 10, borderRadius: 20}}>
+                                   <Text style={{fontSize: 17, color: "white", fontWeight: 'bold'}}>极速下载</Text>
+                                 </View>
+                               </TouchableOpacity>
+                             </View> :
+                             <View style={{flexDirection: "row", height: 60, alignItems: "center", marginTop: 20, borderTopColor: "#E6E6E6", borderTopWidth: 1, width: deviceWidth - 60}}>
+                               <TouchableOpacity
+                                   style={{flexDirection: "row", alignItems: "center", width: (deviceWidth - 60), height: 50, alignItems: "center", justifyContent: "center"}}
+                                   onPress={() => this._immediateUpdate()}
+                               >
+                                 <View style={{backgroundColor: '#3496FA', flex: 1, height: 40, alignItems: "center", justifyContent: "center", borderRadius: 20, marginHorizontal: 40}}>
+                                   <Text style={{fontSize: 17, color: "white", fontWeight: 'bold'}}>立即更新</Text>
+                                 </View>
+                               </TouchableOpacity>
+                             </View>
+                       }
+                     </View>
+                   </View> :
+                   <View>
+                     {/* <Image style={{width: deviceWidth - 60}} source={require('../../../assets/images/me/updateBg.png')} resizeMode={'stretch'}/> */}
+                     <View style={{backgroundColor: "white", paddingVertical: 20, backgroundColor: "white", alignItems: "center"}}>
+                       <Progress
+                           ref="progressBar"
+                           progressColor={'#89C0FF'}
+                           style={{
+                             marginTop: 20,
+                             height: 10,
+                             width: deviceWidth - 100,
+                             backgroundColor: "blue",
+                             borderRadius: 10,
+                           }}
+                       />
+                       <View style={{alignItems: "center", marginVertical: 20}}>
+                         <Text style={{fontSize: 14, color:"gray"}}>版本正在努力更新中，请等待</Text>
+                       </View>
+                     </View>
+                   </View>
+              }
+            </View>
+          </View>
+        </Modal>
+    )
+  }
+
+  componentWillUnmount() {
+    
+    AppState.removeEventListener("change", this._handleAppStateChange);
+  }
+
+  _handleAppStateChange = nextAppState => {
+    if (nextAppState != null && nextAppState === "active") {
+      
+      CodePush.checkForUpdate(CODE_PUSH_KEY).then((update) => {
+        if (!update) {
+          // this.mainView._toast('已是最新版本！')
+          this.setState({modalVisible: false})
+        } else {
+          // alert(111)
+          this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory})
+          // this.syncImmediate()
+        }
+      })
+
+      // this.flage = false;
+    } else if (nextAppState != null && nextAppState === "background") {
+      // this.flage = true;
+    }
+    
+  };
   async componentDidMount() {
-    CodePush.sync();
     SplashScreen.hide();
+    AppState.addEventListener("change", this._handleAppStateChange);
+    // this.syncImmediate()
+    // CodePush.sync();
+    
     this.getSickData()
   }
 
@@ -255,6 +424,7 @@ export default class Custom extends BaseComponent {
       }}>
         {this._renderNav()}
         {this._renderSubPage()}
+        {this.renderModal()}
       </ContainerView>
     );
   }
@@ -308,5 +478,21 @@ const styles = StyleSheet.create({
     backgroundColor: AppDef.White,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+
+  modal: {
+    height:deviceHeight,
+    width: deviceWidth,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.3)'
+  },
+  modalContainer: {
+    marginHorizontal: 60,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   }
+
 })
+
+export default  CodePush(Custom)

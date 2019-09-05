@@ -3,6 +3,7 @@ package com.vesal.orthexpert;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.syanpicker.RNSyanImagePickerPackage;
