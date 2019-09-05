@@ -186,7 +186,7 @@ export default class Custom extends BaseComponent {
           <Image source={require('../../img/home/sick_l.png')} style={styles.messageLeftIcon}/>
         </TouchableOpacity>
         <StatusBar translucent={true}  backgroundColor='rgba(0, 0, 0, 0)' barStyle="light-content" />
-        <View style={{flex: 1, backgroundColor: 'white', height: size(60), marginLeft: size(35), marginRight: size(35), borderRadius: size(30), overflow: 'hidden'}}>
+        <View style={{flex: 1, backgroundColor: 'white', height: size(60), marginLeft: size(20), marginRight: size(20), borderRadius: size(30), overflow: 'hidden'}}>
           <TouchableOpacity style={styles.searchBar} onPress={() => {
             this.checkLoginStatus();
             this.props.navigation.navigate('Search');
