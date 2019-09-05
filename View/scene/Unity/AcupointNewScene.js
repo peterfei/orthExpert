@@ -814,7 +814,7 @@ export default class AcupointNewScene extends Component {
                   <View style={{position: 'absolute', bottom: 0,left: 0, right: 0, top: 0,
                       backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'center', alignItems: 'center'}}>
                       <View style={{backgroundColor: 'white', borderRadius: size(20), width: '70%', alignItems: 'center'}}>
-                          <Text style={{height: size(60), lineHeight: size(60)}}>是否要退出到维萨里平台?</Text>
+                          <Text style={{height: size(60), lineHeight: size(60)}}>是否要退出到维萨里骨科平台?</Text>
                           <MyTouchableOpacity style={[styles.shareBtnStyle, {marginTop: size(20)}]} onPress={() => {this.handleBack(1)}}>
                               <Text style={styles.shareTextStyle}>
                                   确定

@@ -177,7 +177,7 @@ export default class BonesScene extends Component {
             // alert(11111111)
             setTimeout(function(){
                 this.sendMsgToUnity("app", changeInfo, 'json');
-            }.bind(this),2000)
+            }.bind(this),500)
         }
         this.sendMsgToUnity("app", changeInfo, 'json');//发消息给unity
 
@@ -1290,7 +1290,7 @@ export default class BonesScene extends Component {
                             width: '70%',
                             alignItems: 'center'
                         }}>
-                            <Text style={{ height: size(60), lineHeight: size(60) }}>是否要退出到维萨里平台?</Text>
+                            <Text style={{ height: size(60), lineHeight: size(60) }}>是否要退出到维萨里骨科平台?</Text>
                             <MyTouchableOpacity style={[styles.shareBtnStyle, { marginTop: size(20) }]} onPress={() => {
                                 this.handleBack(1)
                             }}>

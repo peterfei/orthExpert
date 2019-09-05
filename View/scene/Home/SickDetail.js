@@ -156,7 +156,8 @@ export default class SickDetail extends BaseComponent {
       "noun_id": null,
       "struct_code": this.state.details.pathology.load_app_id,
       "app_id": `${this.state.details.pathology.load_app_id}_GK`,
-      "showModelList": this.state.details.pathology.open_model
+      "showModelList": this.state.details.pathology.open_model,
+      "greenModelList":this.state.details.pathology.highlight_model
     }
     if (this.state.selectBtnIndex === index) {
       this.setState({
@@ -401,21 +402,21 @@ export default class SickDetail extends BaseComponent {
 
 
   //判断是否开始使用
-  async  startIsUse(index) {
-    this.selectBtn(index)
-    return
-    FuncUtils.checkKfPerm()
-      .then(res => {
-        if (res.code == 0 && res.result == 'yes') {
-          this.props.navigation.navigate('BuyVip')
-        } else {
-          this.selectBtn(index)
-        }
-      })
-      .catch(err => {
-        this.mainView._toast(JSON.stringify(err))
-      })
-  }
+  async  startIsUse(index){
+    // this.selectBtn(index)
+    // return
+      FuncUtils.checkKfPerm()
+          .then(res => {
+              if(res.code  == 0 && res.result == 'yes'){
+                  this.props.navigation.navigate('BuyVip')
+              }else {
+                  this.selectBtn(index)
+              }
+          })
+          .catch(err => {
+            this.mainView._toast(JSON.stringify(err))
+          })
+    }
 
   _renderBottom() {
     let arr = [];

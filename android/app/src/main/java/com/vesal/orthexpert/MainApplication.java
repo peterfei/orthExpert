@@ -3,6 +3,7 @@ package com.vesal.orthexpert;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.syanpicker.RNSyanImagePickerPackage;
@@ -78,7 +79,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new SplashScreenReactPackage(),
-            new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
+            new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG,"http://39.96.179.14:3000"),
             new RNSyanImagePickerPackage(),
             new RNViewShotPackage(),
             new RNSoundPackage(),
