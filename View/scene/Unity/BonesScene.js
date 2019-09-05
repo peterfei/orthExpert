@@ -177,7 +177,7 @@ export default class BonesScene extends Component {
             // alert(11111111)
             setTimeout(function(){
                 this.sendMsgToUnity("app", changeInfo, 'json');
-            }.bind(this),2000)
+            }.bind(this),500)
         }
         this.sendMsgToUnity("app", changeInfo, 'json');//发消息给unity
 

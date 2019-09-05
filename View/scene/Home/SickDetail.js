@@ -156,7 +156,8 @@ export default class SickDetail extends BaseComponent {
       "noun_id": null,
       "struct_code": this.state.details.pathology.load_app_id,
       "app_id": `${this.state.details.pathology.load_app_id}_GK`,
-      "showModelList": this.state.details.pathology.open_model
+      "showModelList": this.state.details.pathology.open_model,
+      "greenModelList":this.state.details.pathology.highlight_model
     }
     if (this.state.selectBtnIndex === index) {
       this.setState({
