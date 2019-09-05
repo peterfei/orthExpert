@@ -3,6 +3,7 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import ScrollableTabView, {ScrollableTabBar} from "react-native-scrollable-tab-view";
 import {AppDef, BaseComponent, ContainerView, FuncUtils, HttpTool, NavBar, NetInterface, size} from '../../common';
 import ImageMapper from 'react-native-image-mapper';
+import api from "../../api";
 
 const DefaultColor = 'rgba(68, 180, 233, 0.5)';
 const DefaultLineColor = 'rgba(68, 180, 233, 1)';
@@ -80,9 +81,14 @@ export default class Custom extends BaseComponent {
   }
 
   async getAreaPathology(item) {  //获取区域下疾病
-    let url = NetInterface.gk_getPathologyAndArea + "?patAreaNo=" + item.pat_area_no + "&business=orthope";
+    let url = api.base_uri + "v1/app/pathology/getPathologyAndArea?patAreaNo=" + item.pat_area_no + "&business=orthope";
     this.mainView._showLoading('加载中');
-    HttpTool.GET_JP(url)
+    await fetch(url, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(resp => resp.json())
       .then(result => {
         this.mainView._closeLoading();
         //alert(JSON.stringify(result))

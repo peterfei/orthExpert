@@ -1,9 +1,10 @@
 import React from "react";
 import { Image, NativeModules, Platform, StyleSheet, Text, TouchableOpacity, View, ImageBackground, DeviceEventEmitter } from "react-native";
-import { BaseComponent, ContainerView, HttpTool, NavBar,AppDef, NetInterface, Line } from '../../common';
+import { BaseComponent, ContainerView, HttpTool, NavBar, NetInterface, Line } from '../../common';
 import * as FuncUtils from '../../common/Tool/FuncUtils'
 import { size } from "../../common/Tool/ScreenUtil";
 import { storage } from "../../common/storage";
+import api from "../../api";
 
 let Wxpay = NativeModules.Wxpay;
 
@@ -81,7 +82,7 @@ export default class Pay extends BaseComponent {
 
     checkPay() {
         //TODO 检测手机号是否绑定
-        Wxpay.registerApp(AppDef.WXEntryAppID);
+        Wxpay.registerApp(api.APPID);
         //微信支付
         this.wxPay()
     }
@@ -154,6 +155,7 @@ export default class Pay extends BaseComponent {
     }
 
     getOrderId = async () => {
+        let tokens = await storage.get("userTokens");
         let body = {
             "priceId": this.state.combo.priceId,
             "comboId": this.state.combo.comboId,
@@ -161,8 +163,14 @@ export default class Pay extends BaseComponent {
             "remark": "测试",
             "business": "orthope"
         }
-        let url = NetInterface.gk_newAddOrder 
-        HttpTool.POST_JP(url,body)
+        let url = api.base_uri + "/v1/app/orthope/order/newAddOrder?token=" + tokens.token
+        await fetch(url, {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        }).then(resp => resp.json())
             .then(result => {
                 this.setState({
                     OrderNo: result.order.ordNo

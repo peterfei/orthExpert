@@ -26,6 +26,7 @@ import {
 import { screen, system } from "../../common";
 import CountdownView from "rn-countdown";
 import UserStore from "../../mobx/User";
+import api, { encryptionWithStr } from "../../api";
 import { NavigationActions,StackActions } from "react-navigation";
 import { RadioGroup, RadioButton } from "react-native-flexi-radio-button";
 import _ from "lodash";
@@ -33,7 +34,7 @@ import { storage } from "../../common/storage";
 import Toast, { DURATION } from "react-native-easy-toast";
 //公共标题栏
 import TitleBar from '../../scene/Home/TitleBar';
-import {size,NetInterface,HttpTool} from "../../common";
+import {size} from "../../common/ScreenUtil";
 import CountDownButton from './countDownButton.js'
 
 export default class ChangePassword extends Component {
@@ -65,8 +66,7 @@ export default class ChangePassword extends Component {
             var n = Math.floor(Math.random() * 16.0).toString(16);
             guid += n;
         }
-
-        let url = NetInterface.gk_appCaptcha + "?uuid=" + guid;
+        let url = api.base_uri + "/appCaptcha?uuid=" + guid;
         this.setState({
             imgURL: url,
             uuid: guid
@@ -89,11 +89,17 @@ export default class ChangePassword extends Component {
             // alert(333)
 
             const url =
-              NetInterface.gk_getCodeAndCheckCapt +
-              "?tellAndEmail=" +
+              api.base_uri +
+              "/v1/app/member/getCodeAndCheckCapt?tellAndEmail=" +
               this.state.username + "&uuid=" + this.state.uuid + "&captchaCode=" + this.state.code;
             try {
-                let responseData = HttpTool.GET_JP(url)
+                let responseData = await fetch(url, {
+                    method: "get",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                  .then(resp => resp.json())
                   .then(result => {
                       // alert(JSON.stringify(result));
                       if (result.code == 0) {
@@ -115,6 +121,7 @@ export default class ChangePassword extends Component {
     async onConfirmRegister() {
 
         if (this.state.username) {
+            let tokens = await storage.get("userTokens");
             let data = {
                 tellAndEmail: this.state.username,
                 password: this.state.password,
@@ -123,9 +130,15 @@ export default class ChangePassword extends Component {
 
             }
             console.log(data)
-            const url = NetInterface.gk_forgetPwd
+            const url = api.base_uri + "/v1/app/member/forgetPwd";
             try {
-                let responseData = HttpTool.POST_JP(url,data).then(result => {
+                let responseData = await fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                }).then(resp => resp.json()).then(result => {
                     if (result.code == 0) {
                         this.refs.toast.show("密码修改成功!");
                         // debugger

@@ -15,6 +15,7 @@ import {screen, system, HttpTool, NetInterface, Line} from "../../common";
 import { size } from "../../common/ScreenUtil";
 import { storage } from "../../common/storage";
 import StarRating from "react-native-star-rating";
+import api from "../../api";
 import CardCell from './CardCell';
 
 export default class RecoveryItem extends Component {
@@ -30,6 +31,7 @@ export default class RecoveryItem extends Component {
         this.getSchemesByPatNo()
     }
     getSchemesByPatNo() {
+        // let url = api.base_url_sport+"app/kfxl/v1/scheme/getSchemesByPatNo?patNo=" + this.props.patNo + "&page=1&limit=10&planType=sysTpl";
         const url = NetInterface.planListWithSick + '?patNo=' + this.props.navigation.state.params.sick.pat_no + '&page=1&limit=10&planType=sysTpl';
         // alert(url)
       // 确认为使用GET

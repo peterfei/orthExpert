@@ -33,11 +33,12 @@ import IconMoney from "react-native-vector-icons/MaterialCommunityIcons";
 // import iconFont from 'react-native-vector-icons/Fonts/FontAwesome.ttf';
 import {RadioGroup, RadioButton} from "react-native-flexi-radio-button";
 
+import api, {encryptionWithStr} from "../../api";
 
 // import {insertUser, queryUser, deleteUser} from '../../realm/RealmManager';
 import TitleBar from '../../scene/Home/TitleBar';
 import xml2js from "react-native-xml2js/lib/parser";
-import {Wxpay,NetInterface,HttpTool} from "../../common";
+import {Wxpay} from "../../common";
 import Toast, {DURATION} from "react-native-easy-toast";
 import {storage} from "../../common/storage";
 import _ from "lodash";
@@ -90,8 +91,14 @@ export default class ConfirmPayScreen extends Component {
 
     getPayMethod = async () => {
         const url =
-        NetInterface.gk_config + "?key=pay_method_" + Platform.OS;
-        HttpTool.GET_JP(url)
+            api.base_uri + "/v1/app/msg/config?key=pay_method_" + Platform.OS;
+        await fetch(url, {
+            method: "get",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(resp => resp.json())
             .then(result => {
                 console.log("---接口获取支持的支付方式---");
                 console.log(result);
@@ -137,7 +144,7 @@ export default class ConfirmPayScreen extends Component {
         //获取CartId
         console.log("---------------");
         // debugger
-        Wxpay.registerApp('wxa452dfe169d3c11c');
+        Wxpay.registerApp(api.APPID);
 
         // this.requestCartData();
 
@@ -239,9 +246,16 @@ export default class ConfirmPayScreen extends Component {
         // debugger
         const orderNo = this.state.OrderNo;
         let tokens = await storage.get("userTokens");
-        const url = NetInterface.gk_wxGetPreyId + "?ordNo=" + orderNo;
+        const url = api.base_uri + "/v1/app/pay/wxGetPreyId?ordNo=" + orderNo;
         // debugger;
-        let responseData = HttpTool.GET_JP(url)
+        let responseData = await fetch(url, {
+            method: "get",
+            headers: {
+                "Content-Type": "application/json",
+                token: tokens.token
+            }
+        })
+            .then(resp => resp.json())
             .then(result => {
                 // debugger
                 return new Promise((resolve, reject) => {
@@ -269,16 +283,23 @@ export default class ConfirmPayScreen extends Component {
             console.log(`================\n 进入getOrderId`);
             let tokens = await storage.get("userTokens");
             console.log(`================\n tokens is ${tokens}`);
-            const url = NetInterface.addOrder
+            const url = api.base_uri + "/v1/app/order/addOrder";
             console.log(`================\n url is ${url}`);
             // debugger;
-            let body={
-                comboId: this.state.infos.combo_id,
-                ordRes: Platform.OS,
-                lang: "ch",
-                remark: this.state.remark
-            }
-            let responseData = HttpTool.POST_JP(url,body)
+            let responseData = await fetch(url, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    token: tokens.token
+                },
+                body: JSON.stringify({
+                    comboId: this.state.infos.combo_id,
+                    ordRes: Platform.OS,
+                    lang: "ch",
+                    remark: this.state.remark
+                })
+            })
+                .then(resp => resp.json())
                 .then(result => {
                     return new Promise((resolve, reject) => {
                         // debugger;
@@ -307,13 +328,21 @@ export default class ConfirmPayScreen extends Component {
             // 生成OrderId
             await this.getOrderId();
             const orderNo = this.state.OrderNo;
+            let tokens = await storage.get("userTokens");
             const url =
-                NetInterface.gk_alipayGetPreyId +
-                "?ordNo=" +
+                api.base_uri +
+                "/v1/app/pay/alipayGetPreyId?ordNo=" +
                 orderNo +
                 "&business=anatomy";
             // debugger;
-            let responseData = HttpTool.GET_JP(url)
+            let responseData = await fetch(url, {
+                method: "get",
+                headers: {
+                    "Content-Type": "application/json",
+                    token: tokens.token
+                }
+            })
+                .then(resp => resp.json())
                 .then(result => {
                     // debugger;
                     return new Promise((resolve, reject) => {
@@ -564,8 +593,20 @@ export default class ConfirmPayScreen extends Component {
                             console.log("response" + JSON.stringify(response));
                             // NOTE for v3.0: User can cancel the payment which will be available as error object here.
                             if (response && response.productIdentifier) {
-                                const url = NetInterface.gk_applyPayNotify;
-                                let responseData =HttpTool.POST_JP(url,{ordNo: this.state.OrderNo,transactionReceipt: response.transactionReceipt})
+                                let tokens = await storage.get("userTokens");
+                                const url = api.base_uri + "/v1/app/pay/applyPayNotify";
+                                let responseData = await fetch(url, {
+                                    method: "POST",
+                                    body: JSON.stringify({
+                                        ordNo: this.state.OrderNo,
+                                        transactionReceipt: response.transactionReceipt
+                                    }),
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        token: tokens.token
+                                    }
+                                })
+                                    .then(resp => resp.json())
                                     .then(result => {
 
 

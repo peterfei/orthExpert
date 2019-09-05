@@ -1,6 +1,6 @@
 import { observable, computed, action, runInAction } from "mobx";
 import { RefreshState } from "react-native-refresh-list-view";
-import {NetInterface,HttpTool} from "../common";
+import api from "../api";
 import { get } from "../common/httpTool";
 import xml2js from "react-native-xml2js/lib/parser";
 
@@ -31,8 +31,10 @@ class OrderStore {
     console.log("传入的currentPage" + this.currentPage);
     try {
       this.isRefreshing;
-      const url =NetInterface.gk_Ry_Store_Order_List +
-        "?&rykjKey=" +
+      const url =
+        api.base_uri +
+        "Ry_Store_Order_List?" +
+        "&rykjKey=" +
         this.api_key +
         "&currentPage=" +
         this.currentPage +
@@ -48,7 +50,8 @@ class OrderStore {
         this.orderState;
       console.log("url is " + url);
       const parseString = require("react-native-xml2js").parseString;
-      let responseData = HttpTool.GET_JP(url)
+      let responseData = await fetch(url)
+        .then(res => res.text())
         .then(response => {
           // return response;
           return new Promise(function(resolve, reject) {

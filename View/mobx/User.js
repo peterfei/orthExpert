@@ -1,6 +1,6 @@
 import { observable, computed, action, runInAction, autorun } from "mobx";
 import { RefreshState } from "react-native-refresh-list-view";
-import {NetInterface,HttpTool} from '../common'
+import api from "../api";
 import { get } from "../common/httpTool";
 //import xml2js from "react-native-xml2js/lib/parser";
 
@@ -18,8 +18,16 @@ export default class UserStore {
   @action
   LoginAction = async () => {
     try {
-      const url = NetInterface.gk_login
-      let responseData = HttpTool.POST_JP(url,this.params_data)
+      const url = api.base_uri + "v1/app/member/login";
+      let responseData = await fetch(url, {
+        method: "post",
+        body: JSON.stringify(this.params_data),
+        headers: {
+          "Content-Type": "application/json",
+          accept: "*/*"
+        }
+      })
+        .then(resp => resp.json())
         .then(result => {
           return result;
         });
@@ -38,7 +46,7 @@ export default class UserStore {
   @action
   sendVeryCode = async () => {
     try {
-      const url = "http://rykj-service.vesal.cn/Rykj_VesalService.asmx/Ry_Vip_Member_CAPTCHASend";
+      const url = api.verify_url;
       const parseString = require("react-native-xml2js").parseString;
       // const _data = this.params_data;
       const paramArr = [];
@@ -80,8 +88,16 @@ export default class UserStore {
   @action
   modifyPassword = async () => {
     try {
-      const url = NetInterface.gk_forgetPwd
-      let responseData = HttpTool.POST_JP(url,this.params_data)
+      const url = api.base_uri + "/v1/app/member/forgetPwd";
+      let responseData = await fetch(url, {
+        method: "post",
+        body: JSON.stringify(this.params_data),
+        headers: {
+          "Content-Type": "application/json",
+          accept: "*/*"
+        }
+      })
+        .then(resp => resp.json())
         .then(
           result => {
             return result;
@@ -106,8 +122,16 @@ export default class UserStore {
   @action
   registerUser = async () => {
     try {
-      const url = NetInterface.gk_register
-      let responseData = HttpTool.POST_JP(url,this.params_data)
+      const url = api.base_uri + "v1/app/member/register";
+      let responseData = await fetch(url, {
+        method: "post",
+        body: JSON.stringify(this.params_data),
+        headers: {
+          "Content-Type": "application/json",
+          accept: "*/*"
+        }
+      })
+        .then(resp => resp.json())
         .then(
           result => {
             return result;
@@ -132,8 +156,16 @@ export default class UserStore {
   @action
   loginWithTourist = async () => {
     try {
-      const url = NetInterface.gk_youkeLogin
-      let responseData = HttpTool.POST_JP(url,this.params_data)
+      const url = api.base_uri + "v1/app/member/youkeLogin";
+      let responseData = await fetch(url, {
+        method: "post",
+        body: JSON.stringify(this.params_data),
+        headers: {
+          "Content-Type": "application/json",
+          accept: "*/*"
+        }
+      })
+        .then(resp => resp.json())
         .then(
           result => {
             return result;

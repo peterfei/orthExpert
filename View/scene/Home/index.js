@@ -278,6 +278,7 @@ class Custom extends BaseComponent {
 
   async getAreaPathology(item) {  //获取区域下疾病
     const url = NetInterface.getSickArea + '?patAreaNo=' + item.pat_area_no + "&business=orthope";
+    // let url = api.base_uri + "v1/app/pathology/getPathologyAndArea?patAreaNo=" + item.pat_area_no + "&business=orthope";
     this.mainView._showLoading('加载中');
     HttpTool.GET_JP(url)
       .then(result => {

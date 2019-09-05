@@ -4,7 +4,7 @@ import { DeviceEventEmitter, StyleSheet, View, Alert } from "react-native";
 import RefreshListView, { RefreshState } from "react-native-refresh-list-view";
 import Cell from "./Cell";
 import { storage } from "../../common/storage";
-import {NetInterface,HttpTool} from "../../common";
+import api from "../../api";
 import { NavigationActions,StackActions } from "react-navigation";
 
 export default class OrderItem extends Component {
@@ -36,9 +36,16 @@ export default class OrderItem extends Component {
     this.setState({ refreshState: RefreshState.HeaderRefreshing });
     let { orderState } = this.props;
     let tokens = await storage.get("userTokens");
-    const url = NetInterface.gk_myOrder + "?page=1&limit=10&business=orthope&ordState="+orderState;
+    const url = api.base_uri + "/v1/app/orthope/order/myOrder?page=1&limit=10&business=orthope&ordState="+orderState;
     try {
-      let responseData = HttpTool.POST_JP(url)
+      let responseData = await fetch(url, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          token: tokens.token
+        },
+      })
+        .then(resp => resp.json())
         .then(result => {
           if (result.code == 0) {
             this.setState({

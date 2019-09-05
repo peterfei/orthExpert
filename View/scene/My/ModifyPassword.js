@@ -18,6 +18,7 @@ import {
     size,
 } from '../../common';
 import CountDownButton from '../../common/components/countDownButton'
+import api from "../../api";
 import {storage} from "../../common/storage";
 
 
@@ -47,10 +48,16 @@ export default class ModifyPassword extends BaseComponent {
         } else {
             this.mainView._showLoading('发送中...');
             const url =
-                NetInterface.gk_getCodeCheck +
-                "?tellAndEmail=" + this.state.username;
+                api.base_uri +
+                "/v1/app/member/getCodeCheck?tellAndEmail=" + this.state.username;
             try {
-                let responseData = HttpTool.GET_JP(url)
+                let responseData = await fetch(url, {
+                    method: "get",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(resp => resp.json())
                     .then(result => {
                         this.mainView._closeLoading();
                         if (result.code == 0) {
@@ -71,10 +78,18 @@ export default class ModifyPassword extends BaseComponent {
     async _resetPd(){
         this.mainView._showLoading('正在修改密码...');
         let tokens = await storage.get("userTokens");
-        let url =  NetInterface.gk_updateTellPassword+"?tell=" + this.state.username + "&code=" + this.state.verify_code + "&password=" + this.state.password;
+        let url =  api.base_uri+ 'v1/app/member/updateTellPassword' + "?tell=" + this.state.username + "&code=" + this.state.verify_code + "&password=" + this.state.password;
         alert(JSON.stringify(this.props.navigation.state))
 
-        HttpTool.POST_JP(url)
+        await  fetch(url,{
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+                accept: "*/*",
+                token: tokens.token
+            }
+        })
+            .then((resp) => resp.json())
             .then((res) => {
                 console.log(res)
                 this.mainView._closeLoading();
