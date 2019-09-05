@@ -27,7 +27,7 @@ export default class ListCell extends Component {
 
     async checkVersion() {
         const currVersion = DeviceInfo.getVersion();
-        const netInterface = NetInterface.getAppVersion + "?version=" + currVersion + "&plat=" + Platform.OS;
+        const netInterface = NetInterface.getAppVersion + "?version=" + currVersion + "&plat=" + Platform.OS+"&business=orthope";
 
         HttpTool.GET_JP(netInterface)
             .then(res => {
