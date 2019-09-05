@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import {DeviceEventEmitter, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import { DeviceEventEmitter, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import {
     AppDef,
     BaseComponent,
@@ -19,10 +19,9 @@ import {
     NetInterface,
     size,
 } from '../../common';
-import {storage} from "../../common/storage";
+import { storage } from "../../common/storage";
 import SYImagePicker from 'react-native-syan-image-picker'
-import {NavigationActions, StackActions} from "react-navigation";
-import api from "../../api";
+import { NavigationActions, StackActions } from "react-navigation";
 
 export default class UserInfoDetail extends BaseComponent {
 
@@ -37,11 +36,11 @@ export default class UserInfoDetail extends BaseComponent {
             identityList: [],
             identityId: '',
             getImageUrl: '',
-            modifyNickName: [{title: '昵称', content: '', type: 'input',}],
-            sectionSexData: [{title: '性别', content: '', type: 'select',}],
-            sectionIdentityData: [{title: '选择身份', content: '', type: 'select',}]
+            modifyNickName: [{ title: '昵称', content: '', type: 'input', }],
+            sectionSexData: [{ title: '性别', content: '', type: 'select', }],
+            sectionIdentityData: [{ title: '选择身份', content: '', type: 'select', }]
         };
-        this.modifyPassword = [{title: '修改密码', content: 'ModifyPassword', type: 'page'}];
+        this.modifyPassword = [{ title: '修改密码', content: 'ModifyPassword', type: 'page' }];
     }
 
     async componentDidMount() {
@@ -50,22 +49,15 @@ export default class UserInfoDetail extends BaseComponent {
         this.setState({
             getMemberInfo: memberInfo,
             getMemberId: memberInfo.mbId,
-            modifyNickName: [{title: '昵称', content: memberInfo.mbName, type: 'input'}],
-            sectionSexData: [{title: '性别', content: memberInfo.mbSex, type: 'select'}],
-            sectionIdentityData: [{title: '选择身份', content: memberInfo.identityTitle, type: 'select'}]
+            modifyNickName: [{ title: '昵称', content: memberInfo.mbName, type: 'input' }],
+            sectionSexData: [{ title: '性别', content: memberInfo.mbSex, type: 'select' }],
+            sectionIdentityData: [{ title: '选择身份', content: memberInfo.identityTitle, type: 'select' }]
         })
     }
 
     async getAllIdentity() {
-        let tokens = await storage.get("userTokens");
-        let url = api.base_uri + "v1/app/member/getAllIdentity";
-        await fetch(url, {
-            method: 'get',
-            headers: {
-                "Content-Type": "application/json",
-                token: tokens.token
-            }
-        }).then(resp => resp.json())
+        let url = NetInterface.gk_getAllIdentity;
+        HttpTool.GET_JP(url)
             .then(result => {
                 if (result.code == 0) {
                     this.setState({
@@ -90,24 +82,17 @@ export default class UserInfoDetail extends BaseComponent {
         console.log("--------------body---------" + JSON.stringify(body))
 
         let tokens = await storage.get("userTokens");
-        let url = api.base_uri + "v1/app/member/updateMemberInfo";
-        await fetch(url, {
-            method: 'post',
-            body: JSON.stringify(body),
-            headers: {
-                "Content-Type": "application/json",
-                token: tokens.token,
-            }
-        }).then(resp => resp.json())
+        let url = NetInterface.gk_updateMemberInfo;
+        HttpTool.POST_JP(url, body)
             .then(async result => {
                 if (result.code == 0) {
                     let memberInfo = result.member;
                     this.setState({
                         getMemberInfo: memberInfo,
                         getMemberId: memberInfo.mbId,
-                        modifyNickName: [{title: '昵称', content: memberInfo.mbName, type: 'input'}],
-                        sectionSexData: [{title: '性别', content: memberInfo.mbSex, type: 'select'}],
-                        sectionIdentityData: [{title: '选择身份', content: memberInfo.identityTitle, type: 'select'}]
+                        modifyNickName: [{ title: '昵称', content: memberInfo.mbName, type: 'input' }],
+                        sectionSexData: [{ title: '性别', content: memberInfo.mbSex, type: 'select' }],
+                        sectionIdentityData: [{ title: '选择身份', content: memberInfo.identityTitle, type: 'select' }]
                     })
                     await storage.save("memberInfo", "", result.member);
                     DeviceEventEmitter.emit(AppDef.kNotify_UpdateUserInfoSuccess);
@@ -125,46 +110,13 @@ export default class UserInfoDetail extends BaseComponent {
         const resetAction = StackActions.reset({
             index: 0,
             actions: [
-                NavigationActions.navigate({routeName: "LoginPage"})
+                NavigationActions.navigate({ routeName: "LoginPage" })
             ]
         });
         this.props.navigation.dispatch(resetAction);
     }
 
-     async UploadImg(photos){
-         this.mainView._showLoading("正在上传...")
-         let uploadUrl = api.base_uri+'app/v1/mbFile/upload?token=1&type=6';
-         let tokens = await storage.get("userTokens");
-         let formData = new FormData();
-         photos.forEach((photo) => {
-             let file = { uri:  photo.uri, type: 'multipart/form-data', name: 'image.png'};
-             formData.append('file', file);
-         })
-             fetch(uploadUrl, {
-                 method: "post",
-                 body: formData,
-                 headers: {
-                     'Content-Type': 'multipart/form-data',
-                     token: tokens.token
-                 }
-             })
-                 .then(resp => resp.json())
-                 .then(res => {
-                     this.mainView._closeLoading();
-                     if (res.code == 0) {
-                            let memberInfo = this.state.getMemberInfo;
-                            memberInfo.mbHeadUrl = res.url;
-                            this.updateMemberInfo();
-                        }
-                        this.setState({
-                            getImageUrl: res.url
-                        })
-                 })
-                 .catch(error => {
-                     console.log(error)
-                 })
-    }
-
+    
     handlePromiseSelectPhoto() {
         SYImagePicker.showImagePicker({
             imageCount: 1,
@@ -174,7 +126,22 @@ export default class UserInfoDetail extends BaseComponent {
         }, (err, photos) => {
             console.log('开启', err, photos);
             if (!err) {
-                this.UploadImg(photos);
+                this.mainView._showLoading("正在上传...")
+                HttpTool.UploadImg(photos)
+                    .then(res => {
+                        this.mainView._closeLoading();
+                        if (res.code == 0) {
+                            let memberInfo = this.state.getMemberInfo;
+                            memberInfo.mbHeadUrl = res.url;
+                            this.updateMemberInfo();
+                        }
+                        this.setState({
+                            getImageUrl: res.url
+                        })
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
             } else {
                 console.log(err)
             }
@@ -204,7 +171,7 @@ export default class UserInfoDetail extends BaseComponent {
             let name = '';
             let type = 'Default';
             if (item.title == '性别') {
-                list = [{title: '男'}, {title: '女'}];
+                list = [{ title: '男' }, { title: '女' }];
                 name = 'sex';
             } else {
                 this.state.identityList.forEach(item => {
@@ -224,7 +191,7 @@ export default class UserInfoDetail extends BaseComponent {
     }
 
     _renderHeader() {
-        let userIcon = this.state.getMemberInfo.mbHeadUrl ? {uri: this.state.getMemberInfo.mbHeadUrl} : require('../../img/kf_mine/defalutHead.png');
+        let userIcon = this.state.getMemberInfo.mbHeadUrl ? { uri: this.state.getMemberInfo.mbHeadUrl } : require('../../img/kf_mine/defalutHead.png');
         return (
             <TouchableOpacity onPress={() => {
                 this.handlePromiseSelectPhoto()
@@ -237,9 +204,9 @@ export default class UserInfoDetail extends BaseComponent {
                     alignItems: 'center'
                 }}>
                     <Image source={userIcon}
-                           style={{width: size(80), height: size(80), marginLeft: size(40), borderRadius: size(40)}}/>
+                        style={{ width: size(80), height: size(80), marginLeft: size(40), borderRadius: size(40) }} />
                     <Image source={require('../../img/kf_mine/mine_arrow.png')}
-                           style={{width: size(14), height: size(23), marginRight: size(40)}}/>
+                        style={{ width: size(14), height: size(23), marginRight: size(40) }} />
                 </View>
             </TouchableOpacity>
         )
@@ -323,7 +290,7 @@ export default class UserInfoDetail extends BaseComponent {
 
     _renderFooter() {
         return (
-            <View style={{marginLeft: size(40), marginRight: size(40), marginTop: size(80),}}>
+            <View style={{ marginLeft: size(40), marginRight: size(40), marginTop: size(80), }}>
                 <TouchableOpacity onPress={() => {
                     this.logout()
                 }}>
@@ -336,7 +303,7 @@ export default class UserInfoDetail extends BaseComponent {
                             width: '100%',
                             borderRadius: size(45)
                         }}>
-                        <Text style={{color: AppDef.White, fontSize: size(32)}}>
+                        <Text style={{ color: AppDef.White, fontSize: size(32) }}>
                             退出登录
                         </Text>
                     </View>
@@ -350,15 +317,15 @@ export default class UserInfoDetail extends BaseComponent {
             <ContainerView ref={r => this.mainView = r} selectDialogAction={(result) => {
                 this.handleSelectionAction(result)
             }}>
-                <NavBar title='' navigation={this.props.navigation}/>
+                <NavBar title='' navigation={this.props.navigation} />
                 {this._renderHeader()}
-                <Line height={size(14)}/>
+                <Line height={size(14)} />
                 {this._renderNickName()}
                 {this._renderSectionSex()}
                 {this._renderSectionIdentity()}
-                <Line height={size(14)}/>
+                <Line height={size(14)} />
                 {this._renderModifyPassword()}
-                <Line height={size(14)}/>
+                <Line height={size(14)} />
                 {this._renderFooter()}
 
             </ContainerView>

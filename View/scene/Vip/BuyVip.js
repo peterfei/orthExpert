@@ -9,10 +9,9 @@ import Loading from "../../common/Loading";
 import { storage } from "../../common/storage";
 import memberBackground from '../../img/vip/memberBackground.png'
 import member_center_details from '../../img/vip/member_center_details.png'
-import api from "../../api";
 
 import { NativeModules } from 'react-native'
-const Wxpay= NativeModules.Wxpay
+const Wxpay = NativeModules.Wxpay
 import Toast, { DURATION } from "react-native-easy-toast";
 
 
@@ -27,10 +26,10 @@ export default class BuyVip extends BaseComponent {
             memberInfo: { mbName: null },
             memberCenterDetailsHeight: 10,
             isUse: false, // 是否是会员
-            PayData:'',
+            PayData: '',
             priceId: "",
             comboId: "",
-            productID:  "",
+            productID: "",
             OrderNo: "",
         }
     }
@@ -49,15 +48,10 @@ export default class BuyVip extends BaseComponent {
         let isUse = await FuncUtils.checkPerm('yes', 'GKHY')//检查是否有权限
         let memberInfo = await storage.get("memberInfo")
         let tokens = await storage.get("userTokens");
-        let url = api.base_uri + "/v1/app/orthope/combo/getComboInfo?token=" + tokens.token + "&app_version=1.0.0&plat=android&business=orthope&comboCode=ORTHOPE_VIP";
+        let url = NetInterface.gk_getComboInfo + "?app_version=1.0.0&plat=android&business=orthope&comboCode=ORTHOPE_VIP";
         // alert(url)
         // debugger
-        await fetch(url, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).then(resp => resp.json())
+        HttpTool.GET_JP(url)
             .then(result => {
                 this.setState({
                     packageDetail: result.comboPrices,
@@ -75,14 +69,8 @@ export default class BuyVip extends BaseComponent {
             "remark": "测试",
             "business": "orthope"
         }
-        let url = api.base_uri +"/v1/app/orthope/order/newAddOrder?token="+tokens.token
-       let responseData =  await fetch(url, {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body)
-        }).then(resp => resp.json())
+        let url = NetInterface.gk_newAddOrder
+        let responseData =HttpTool.POST_JP(url,body)
             .then(result => {
                 return new Promise((resolve, reject) => {
                     // alert(`result is ${JSON.stringify(result)}`)
@@ -97,12 +85,12 @@ export default class BuyVip extends BaseComponent {
                     }
                 });
             })
-            this.setState({
-                OrderNo: responseData.ordNo
-            });
+        this.setState({
+            OrderNo: responseData.ordNo
+        });
     }
 
-    async payment(priceId,comboId) {
+    async payment(priceId, comboId) {
         try {
             this.Loading.show("正在支付...");
             let isSupported = await Wxpay.isSupported();
@@ -110,7 +98,7 @@ export default class BuyVip extends BaseComponent {
             console.log("---------------if support wechat--------" + isSupported);
 
             // 生成OrderId
-            await this.getOrderId(priceId,comboId);
+            await this.getOrderId(priceId, comboId);
             console.log("****getOrderId****");
             // 取微信支付配置
             const data = await this.tenPay();
@@ -173,16 +161,9 @@ export default class BuyVip extends BaseComponent {
         // debugger
         const orderNo = this.state.OrderNo;
         let tokens = await storage.get("userTokens");
-        const url = api.base_uri + "/v1/app/pay/wxGetPreyId?ordNo=" + orderNo + "&business=orthope";
+        const url = NetInterface.gk_wxGetPreyId + "?ordNo=" + orderNo + "&business=orthope";
         // debugger;
-        let responseData = await fetch(url, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                token: tokens.token
-            }
-        })
-            .then(resp => resp.json())
+        HttpTool.GET_JP(url)
             .then(result => {
                 // debugger
                 return new Promise((resolve, reject) => {
@@ -254,22 +235,22 @@ export default class BuyVip extends BaseComponent {
         })
     }
     gotoPay() {
-        let title=this.props.navigation.state.params!==undefined?this.props.navigation.state.params.title:null
+        let title = this.props.navigation.state.params !== undefined ? this.props.navigation.state.params.title : null
         // Wxpay.registerApp(api.APPID);
         // this.payment(this.state.packageDetail[this.state.packageSelected].priceId,this.state.packageDetail[this.state.packageSelected].comboId)
         this.props.navigation.navigate("Pay", {
             combo: this.state.packageDetail[this.state.packageSelected],
-            goOutPay_key:this.props.navigation.state.key,
-            title:title
+            goOutPay_key: this.props.navigation.state.key,
+            title: title
         });
         //this.newAddOrder(this.state.packageDetail[this.state.packageSelected].priceId,this.state.packageDetail[this.state.packageSelected].comboId)
-   }
+    }
 
     renderPackageDetail() {
         let packageList = []
         // debugger
-        if(this.state.packageDetail!=undefined){
-            if(this.state.packageDetail.length>0){
+        if (this.state.packageDetail != undefined) {
+            if (this.state.packageDetail.length > 0) {
                 this.state.packageDetail.forEach((item, index) => {
                     let packageItem = (
                         <TouchableOpacity
@@ -291,8 +272,8 @@ export default class BuyVip extends BaseComponent {
                 })
             }
         }
-        
-        
+
+
 
         return (
             <View style={styles.packageDetail}>
@@ -302,7 +283,7 @@ export default class BuyVip extends BaseComponent {
     }
 
     render() {
-        let userIcon = this.state.memberInfo.mbHeadUrl ? {uri: this.state.memberInfo.mbHeadUrl} : require('../../img/kf_mine/defalutHead.png');
+        let userIcon = this.state.memberInfo.mbHeadUrl ? { uri: this.state.memberInfo.mbHeadUrl } : require('../../img/kf_mine/defalutHead.png');
         return (
             <ContainerView>
                 <NavBar title='我的VIP会员' hideback={false} navigation={this.props.navigation} />
@@ -315,7 +296,7 @@ export default class BuyVip extends BaseComponent {
                                 <View style={styles.memberImageTop}>
                                     <View style={styles.memberImage}>
                                         <Image style={{ width: 48, height: 48, borderRadius: 24 }}
-                                            source={userIcon}/>
+                                            source={userIcon} />
                                     </View>
                                     <View style={styles.memberInfoDetail}>
                                         <View style={styles.memberInfoDetailTop}>
@@ -323,7 +304,7 @@ export default class BuyVip extends BaseComponent {
                                             {
                                                 this.state.isUse ? (
                                                     <Image style={{ width: 15, height: 15, marginLeft: 15 }}
-                                                        source={require('../../img/vip/member_vip.png')}/>
+                                                        source={require('../../img/vip/member_vip.png')} />
                                                 ) : null
                                             }
                                         </View>

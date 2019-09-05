@@ -114,7 +114,13 @@ const Gk = {
   gk_msgList:"/app/orthope/v1/msg/msgList",
   gk_pushMsg:'/app/orthope/v1/msg/pushMsg',
   gk_getMessageOfApp:"v1/app/msg/getMessageOfApp",
-  
+  gk_getHelpList:"/app/orthope/v1/helpcenter/getHelpList",
+  gk_getAllIdentity:"v1/app/member/getAllIdentity",
+  gk_updateMemberInfo:"v1/app/member/updateMemberInfo",
+  gk_upload:"app/v1/mbFile/upload",
+  gk_getComboInfo:"/v1/app/orthope/combo/getComboInfo",
+  gk_newAddOrder:"/v1/app/orthope/order/newAddOrder",
+  gk_wxGetPreyId:"/v1/app/pay/wxGetPreyId",
 }
 
 export default {

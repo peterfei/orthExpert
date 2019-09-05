@@ -11,28 +11,37 @@ import {
     Platform, TouchableHighlight,ScrollView
 } from "react-native";
 import { color } from "../../widget";
-import {AppDef, deviceWidth, HttpTool, NetInterface, screen, system, Line} from "../../common";
+import {AppDef, deviceWidth, HttpTool, NetInterface, screen, system, Line, NullData} from "../../common";
 import { size } from "../../common/ScreenUtil";
 import { storage } from "../../common/storage";
 import StarRating from "react-native-star-rating";
 import api from "../../api";
 import CardCell from './CardCell';
 import Device from "react-native-device-info";
+import RefreshListView, {RefreshState} from "react-native-refresh-list-view";
+
+var that = null;
 
 export default class MyRecoveryItem extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            CardCellData: '',
+            CardCellData: [],
+            isRefreshing: false,
+            refreshState: RefreshState.Idle,
         }
+
+        this.page = 1;
+        this.limit = 10;
+        that = this;
     }
 
     componentDidMount() {
-        this.getData();
+        this.requestData();
 
         this.listener = DeviceEventEmitter.addListener('UpdateMyCustom', () => {
-            this.getData();
+            this.requestData();
         })
     }
 
@@ -40,55 +49,95 @@ export default class MyRecoveryItem extends Component {
         this.listener.remove();
     }
 
-    async getData() {
+    async requestData() {
         let auth = await storage.get("auth")
         let loginType = auth.loginType||'tell';
-        const url = NetInterface.myCreatePlanList+ "?patNo=" + this.props.patNo + "&page=1&limit=100&business=kfxl&loginType=" + loginType;
+        const url = NetInterface.myCreatePlanList+ "?patNo=" + this.props.patNo + "&page=" + this.page + "&limit=" + this.limit + "&business=kfxl&loginType=" + loginType;
         console.log(JSON.stringify(url));
         HttpTool.GET_JP(url)
           .then(result => {
-              this.setState({
-                  CardCellData: result.page.list == null ? [] : result.page.list
-              })
+
+              if (result.code == 0) {
+                  if (result.page.list.length > 0) {
+                      let newData = result.page.list;
+                      let oldData = this.state.CardCellData;
+                      let data = this.page == 1 ? newData : [...oldData, ...newData];
+                      this.setState({
+                          CardCellData: data,
+                          refreshState: RefreshState.Idle
+                      })
+                  } else {
+                      this.setState({
+                          refreshState: RefreshState.NoMoreData
+                      })
+                  }
+              } else {
+
+              }
           })
           .catch(err => {
               console.log(JSON.stringify(err))
           })
     }
 
-    render() {
+    onHeaderRefresh = () => {
+        this.page = 1;
+        this.setState({
+            refreshState: RefreshState.HeaderRefreshing,
+        }, () => {
+            this.requestData()
+        });
+    };
+
+    onFooterRefresh = () => {
+        this.page = this.page + 1;
+        this.setState({
+            refreshState: RefreshState.FooterRefreshing
+        }, () => {
+            this.requestData()
+        });
+    };
+
+    _renderCards(item) {
         return (
-            <View style={styles.container}>
-                <ScrollView style={{width:'100%'}}>
-                    {this.showKeyList()}
-                    <View style={{height: size(30),width:'100%'}}></View>
-                    <Line height={size(100)} color={'white'}/>
-                </ScrollView>
-            </View>
-        )
+          <CardCell cellRow={item.item} selectCard={(row) => {that.selectCard(row)}}/>
+        );
     }
 
-    showKeyList() {
-        let arr = [];
-        if(this.state.CardCellData !==''&&this.state.CardCellData !==[]){
-            if(this.state.CardCellData ==''||this.state.CardCellData ==[]){
-                return <View style={{width:'100%',height:500,justifyContent:'center',alignItems:'center'}}><Text>暂无数据</Text></View>
-            }else{
-
-                this.state.CardCellData.forEach((item, value) => {
-                    arr.push(
-                        <CardCell cellRow={item} selectCard={(row) => {
-                            this.selectCard(row)
-                        }}/>
-                    )
-                });
-                return arr;
-            }
-        }
-    }
+    keyExtractor = (item: any, index: number) => {
+        return index;
+    };
 
     selectCard(data) {
         this.props.navigation.navigate('kfPlanDetail', { 'planId': data.planId })
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+
+                {
+                    this.state.CardCellData.length > 0
+                      ?
+                      <RefreshListView
+                        style={{flex: 1, backgroundColor: 'white'}}
+                        data={this.state.CardCellData}
+                        renderItem={this._renderCards}
+                        keyExtractor={this.keyExtractor}
+                        refreshState={this.state.refreshState}
+                        onHeaderRefresh={this.onHeaderRefresh}
+                        onFooterRefresh={this.onFooterRefresh}
+                        footerRefreshingText="玩命加载中..."
+                        footerFailureText="加载失败啦~~"
+                        footerNoMoreDataText="--我是有底线的--"
+                        footerEmptyDataText="-还没有数据哦,下拉刷新试试-"
+                      />
+                      :
+                      <NullData/>
+                }
+                <Line height={size(100)} color={'white'}/>
+            </View>
+        )
     }
 }
 const styles = StyleSheet.create({
