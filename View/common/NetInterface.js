@@ -74,6 +74,7 @@ const PlanModuleInterface = {
 //小人相关
 const Sick = {
   getSick: 'v1/app/pathology/getSick',
+  getSickArea: 'v1/app/pathology/getPathologyAndArea',
   getSickChildPathology: 'v1/app/pathology/getSickChildPathology',
   planListWithSick: '/app/kfxl/v1/scheme/getSchemesByPatNo'
 }
