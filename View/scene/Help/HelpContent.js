@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import api from "../../api";
 import {
     StyleSheet,
     View,
@@ -9,7 +8,7 @@ import {
 
 } from 'react-native';
 import {size} from "../../common/ScreenUtil";
-import {screen, system} from "../../common";
+import {screen, system,NetInterface,HttpTool} from "../../common";
 import {storage} from "../../common/storage";
 import TitleBar from '../../scene/Home/TitleBar';
 
@@ -37,16 +36,10 @@ export default class HelpContent extends Component<Props> {
 
 
     async openHtmlSource(type, name) {
-        let tokens = await storage.get("userTokens");
         let url =
-            api.base_uri + "v2/app/help/getListByAppSearch?token=" + tokens.token + "&type=" + type + "&tag=" + name
+            NetInterface.gk_getListByAppSearch + "?type=" + type + "&tag=" + name
 
-        let response = await fetch(url, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).then(resp => resp.json())
+        let response = await HttpTool.GET_JP(url)
             .then(result => {
                 this.setState({
                     listDetail: result.listDetail

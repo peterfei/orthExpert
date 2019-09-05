@@ -12,7 +12,7 @@ import {
 } from "react-native"
 import {inject, observer} from "mobx-react/native"
 import UserStore from "../../mobx/User"
-import {screen, system} from "../../common";
+import {screen, system, NetInterface,HttpTool} from "../../common";
 
 import {NavigationActions,StackActions} from "react-navigation";
 import NetInfoDecorator from "../../common/NetInfoDecorator";
@@ -20,7 +20,6 @@ import Toast, {DURATION} from "react-native-easy-toast";
 import {storage} from "../../common/storage";
 import DeviceInfo from "react-native-device-info";
 import Loading from "../../common/Loading";
-import api from "../../api";
 import {NativeModules} from "react-native";
 import {size, setSpText} from "../../common/ScreenUtil";
 import CountDownButton from '../Register/countDownButton.js'
@@ -34,7 +33,7 @@ export default class LoginPageForm extends Component {
 
     componentDidMount() {
         try {
-            WxEntry.registerApp(api.APPID);
+            WxEntry.registerApp('wxa452dfe169d3c11c');
         } catch (e) {
         }
 
@@ -197,14 +196,9 @@ export default class LoginPageForm extends Component {
             storage.clearMapForKey("userTokens");
             storage.clearMapForKey("memberInfo");
 
-            let url = api.base_uri + "/v1/app/member/codeLogin?tellAndEmail=" + this.state.username + "&code=" + this.state.verify_code + "&business=orthope";
+            let url = NetInterface.gk_codeLogin + "?tellAndEmail=" + this.state.username + "&code=" + this.state.verify_code + "&business=orthope";
 
-            await fetch(url, {
-                method: "get",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-            }).then(resp => resp.json())
+            HttpTool.GET_JP(url)
                 .then(resp => {
                     if (resp.code == 0) {
                         //进入登录页面就清掉缓存
@@ -314,14 +308,8 @@ export default class LoginPageForm extends Component {
 
     //判断用户是否绑定手机号
     async isBindTellNumber(token) {
-        let url = api.base_uri + "/v1/app/member/isBoundTellNumber";
-        let status = await fetch(url, {
-            method: 'get',
-            headers: {
-                "Content-Type": "application/json",
-                token: token
-            }
-        }).then(resp => resp.json())
+        let url = NetInterface.gk_isBoundTellNumber
+        let status = HttpTool.GET_JP(url)
             .then(result => {
                 if (result.result == "yes") {
                     return new Promise((resolve, reject) => {
@@ -341,16 +329,10 @@ export default class LoginPageForm extends Component {
         if (weixininfo.unionid != undefined) {
             this.Loading.show("正在登录");
             const url =
-                api.base_uri +
-                "v1/app/member/isFirstWeixin?unionid=" +
+                NetInterface.gk_isFirstWeixin +
+                "?unionid=" +
                 weixininfo.unionid;
-            fetch(url, {
-                method: "get",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(resp => resp.json())
+                HttpTool.GET_JP(url)
                 .then(async result => {
                     this.Loading.close();
 
@@ -457,16 +439,10 @@ export default class LoginPageForm extends Component {
         } else {
             this.Loading.show('发送中...');
             const url =
-                api.base_uri +
-                "/v1/app/member/getCodeCheck?tellAndEmail=" + this.state.username;
+                NetInterface.gk_getCodeCheck +
+                "?tellAndEmail=" + this.state.username;
             try {
-                let responseData = await fetch(url, {
-                    method: "get",
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                })
-                    .then(resp => resp.json())
+                let responseData = HttpTool.GET_JP(url)
                     .then(result => {
                         this.Loading.close();
                         if (result.code == 0) {

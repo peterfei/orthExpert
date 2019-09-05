@@ -11,9 +11,8 @@ import {
   DeviceEventEmitter,
   ScrollView
 } from "react-native";
-import { screen, system } from "../../common";
+import { screen, system, NetInterface,HttpTool } from "../../common";
 import { color } from "../../widget";
-import api from "../../api";
 import { NavigationActions,StackActions } from "react-navigation";
 import { storage } from "../../common/storage";
 import { RadioGroup, RadioButton } from "react-native-flexi-radio-button";
@@ -54,18 +53,10 @@ export default class EditMember extends Component {
       mbId: this.state.mbId
     };
     console.log(data);
-    const url = api.base_uri + "/v1/app/member/updateMemberInfo";
+    const url = NetInterface.gk_updateMemberInfo
     let curr = this;
     try {
-      let responseData = await fetch(url, {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-          token: this.state.token
-        },
-        body: JSON.stringify(data)
-      })
-        .then(resp => resp.json())
+      let responseData = HttpTool.POST_JP(url,data)
         .then(result => {
           console.log(result);
           if (result.code == 0) {
@@ -118,14 +109,8 @@ export default class EditMember extends Component {
   }
 
   getAllIdentity = async () => {
-    const url = api.base_uri + "/v1/app/member/getAllIdentity?state=enabled";
-    await fetch(url, {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(resp => resp.json())
+    const url = NetInterface.gk_getAllIdentity + "?state=enabled";
+    HttpTool.GET_JP(url)
       .then(result => {
         console.log(result.List);
         for (let index = 0; index < result.List.length; index++) {

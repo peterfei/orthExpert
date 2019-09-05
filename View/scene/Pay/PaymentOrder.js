@@ -12,12 +12,11 @@ import {
     View,
     Text
 } from "react-native";
-import {screen, system} from "../../common";
+import {screen, system,HttpTool,NetInterface,AppDef} from "../../common";
 import Loading from "../../common/Loading";
 
 import {color, NavigationItem, Separator, SpacingView} from "../../widget";
 
-import api, {encryptionWithStr} from "../../api";
 
 import {Wxpay} from "../../common";
 import Toast, {DURATION} from "react-native-easy-toast";
@@ -78,7 +77,7 @@ export default class PaymentOrder extends Component {
             prices: this.props.navigation.state.params.prices
         });
         console.log("---------------");
-        Wxpay.registerApp(api.APPID);
+        Wxpay.registerApp(AppDef.WXEntryAppID);
         this.requestCouponList();
         this.getPayMethod();
         this.couponListener = DeviceEventEmitter.addListener('AcceptSelectedCoupons', (obj) => {
@@ -95,19 +94,11 @@ export default class PaymentOrder extends Component {
     }
 
     async requestCouponList() {
-        let tokens = await storage.get("userTokens");
         let type = this.props.navigation.state.params.infos.comboSource;
-        const url = api.base_uri + "/v1/app/membercoupon/myCombocouponList?state=usable&couponType=" + type;
+        const url = NetInterface.gk_myCombocouponList + "?state=usable&couponType=" + type;
         // this.Loading.show('加载中...');
         try {
-            await fetch(url, {
-                method: "get",
-                headers: {
-                    "Content-Type": "application/json",
-                    token: tokens.token
-                }
-            })
-                .then(resp => resp.json())
+            aHttpTool.GET_JP(url)
                 .then(result => {
                     this.Loading.close();
                     if (result.code == 0 && result.msg == 'success') {
@@ -129,14 +120,8 @@ export default class PaymentOrder extends Component {
 
     async getPayMethod() {
         const url =
-            api.base_uri + "/v1/app/msg/config?key=pay_method_" + Platform.OS;
-        await fetch(url, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-            .then(resp => resp.json())
+            NetInterface.gk_config + "?key=pay_method_" + Platform.OS;
+            HttpTool.GET_JP(url)
             .then(result => {
                 console.log(result);
                 let list = result.config.split(',');
@@ -167,14 +152,8 @@ export default class PaymentOrder extends Component {
     //判断用户是否绑定手机号
     async isBindTellNumber() {
         let tokens = await storage.get("userTokens");
-        let url = api.base_uri + "/v1/app/member/isBoundTellNumber?path=paymentOrder";
-        await fetch(url, {
-            method: 'get',
-            headers: {
-                "Content-Type": "application/json",
-                token: tokens.token
-            }
-        }).then(resp => resp.json())
+        let url = NetInterface.gk_isBoundTellNumber + "?path=paymentOrder";
+        HttpTool.GET_JP(url)
             .then(result => {
                 if (result.result == "no") {
                     this.refs.toast.show("您未绑定手机号，请先绑定手机号~");
@@ -202,7 +181,7 @@ export default class PaymentOrder extends Component {
     async getOrderId() {
         //如果没有订单号就获取订单号  (继续支付会有订单号 点击了一次立即支付也会有订单号)
         let tokens = await storage.get("userTokens");
-        const url = api.base_uri + "/v1/app/order/newAddOrder";
+        const url = NetInterface.newAddOrder + "/v1/app/order/newAddOrder";
 
         // alert(JSON.stringify({
         //     comboId: this.state.prices.comboId || this.state.prices[0].comboId,
@@ -213,23 +192,16 @@ export default class PaymentOrder extends Component {
         //     business: "anatomy",
         //     couponIds: this.state.couponIds
         // }))
-        let responseData = await fetch(url, {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json",
-                token: tokens.token
-            },
-            body: JSON.stringify({
-                comboId: this.state.prices.comboId || this.state.prices[0].comboId,
-                priceId: this.state.prices.priceId || this.state.prices[0].priceId,
-                ordRes: Platform.OS,
-                lang: "ch",
-                remark: this.state.remark,
-                business: "anatomy",
-                couponIds: this.state.couponIds
-            })
-        })
-            .then(resp => resp.json())
+        let body={
+            comboId: this.state.prices.comboId || this.state.prices[0].comboId,
+            priceId: this.state.prices.priceId || this.state.prices[0].priceId,
+            ordRes: Platform.OS,
+            lang: "ch",
+            remark: this.state.remark,
+            business: "anatomy",
+            couponIds: this.state.couponIds
+        }
+        let responseData =HttpTool.POST_JP(url,body)
             .then(result => {
 
 
@@ -291,15 +263,8 @@ export default class PaymentOrder extends Component {
     async wxPayConfig() {
         const orderNo = this.state.OrderNo;
         let tokens = await storage.get("userTokens");
-        const url = api.base_uri + "/v1/app/pay/wxGetPreyId?ordNo=" + orderNo;
-        let responseData = await fetch(url, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                token: tokens.token
-            }
-        })
-            .then(resp => resp.json())
+        const url = NetInterface.gk_wxGetPreyId + "?ordNo=" + orderNo;
+        let responseData = HttpTool.GET_JP(url)
             .then(result => {
                 return new Promise((resolve, reject) => {
                     if (result && result.result) {
@@ -325,18 +290,11 @@ export default class PaymentOrder extends Component {
             const orderNo = this.state.OrderNo;
             let tokens = await storage.get("userTokens");
             const url =
-                api.base_uri +
-                "/v1/app/pay/alipayGetPreyId?ordNo=" +
+                NetInterface.gk_alipayGetPreyId +
+                "?ordNo=" +
                 orderNo +
                 "&business=anatomy";
-            let responseData = await fetch(url, {
-                method: "get",
-                headers: {
-                    "Content-Type": "application/json",
-                    token: tokens.token
-                }
-            })
-                .then(resp => resp.json())
+            let responseData = HttpTool.GET_JP(url)
                 .then(result => {
                     return new Promise((resolve, reject) => {
                         if (result && result.msg) {
@@ -390,19 +348,8 @@ export default class PaymentOrder extends Component {
                             // NOTE for v3.0: User can cancel the payment which will be available as error object here.
                             if (response && response.productIdentifier) {
                                 let tokens = await storage.get("userTokens");
-                                const url = api.base_uri + "/v1/app/pay/applyPayNotify";
-                                let responseData = await fetch(url, {
-                                    method: "POST",
-                                    body: JSON.stringify({
-                                        ordNo: this.state.OrderNo,
-                                        transactionReceipt: response.transactionReceipt
-                                    }),
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                        token: tokens.token
-                                    }
-                                })
-                                    .then(resp => resp.json())
+                                const url = NetInterface.gk_applyPayNotify
+                                let responseData = HttpTool.POST_JP(url,{ordNo: this.state.OrderNo,transactionReceipt: response.transactionReceipt})
                                     .then(result => {
 
 

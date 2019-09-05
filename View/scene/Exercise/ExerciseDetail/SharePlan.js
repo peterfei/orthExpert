@@ -12,11 +12,11 @@ import {
     Platform,
     Dimensions
 } from "react-native";
+import {NetInterface,HttpTool} from "../../../common"
 import {size} from "../../../common/Tool/ScreenUtil";
 import UShare from "../../../share/share";
 import SharePlatform from "../../../share/SharePlatform";
 import Toast from "react-native-easy-toast";
-import api from "../../../api";
 import {storage} from "../../../common/storage";
 import Loading from "../../../common/Loading";
 
@@ -144,21 +144,12 @@ export default class SharePlan extends React.Component {
 
     async share() {
         //获取二维码base64
-        let url = api.base_uri + 'v1/app/basic/getShareQR?planId=' + this.state.planId;
-        let tokens = await storage.get("userTokens");
+        let url = NetInterface.gk_getShareQR + '?planId=' + this.state.planId;
         let memberInfo = await storage.get("memberInfo");
         let mbName = encodeURI(memberInfo.mbName);
         try {
             this.Loading.show('请稍等...')
-            await fetch(url, {
-                method: "get",
-                headers: {
-                    "Content-Type": "application/json",
-                    token: tokens.token,
-                    accept: "*/*"
-                }
-            })
-                .then(resp => resp.json())
+            HttpTool.GET_JP(url)
                 .then(result => {
                     this.Loading.close()
                     if (result.code == 0) {

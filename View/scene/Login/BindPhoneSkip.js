@@ -9,7 +9,6 @@ import {
     DeviceEventEmitter
 } from "react-native";
 import {size, setSpText} from "../../common/ScreenUtil";
-import api from "../../api";
 import CountDownButton from '../Register/countDownButton.js'
 import Toast, {DURATION} from "react-native-easy-toast";
 import {storage} from "../../common/storage";
@@ -18,6 +17,7 @@ import {NavigationActions,StackActions} from "react-navigation";
 import Loading from "../../common/Loading";
 import NavBar from "../../common/components/NavBar"
 import ETTLightStatus from "../../common/ETTLightStatus";
+import { NetInterface,HttpTool } from '../../common';
 
 export default class BindPhoneSkip extends Component {
 
@@ -54,16 +54,10 @@ export default class BindPhoneSkip extends Component {
     async handleCodeToMessage(code, uuid) {
         // alert(1)
         this.Loading.show('发送中...');
-        const url = api.base_uri + "/v1/app/member/getCodeAndCheckCapt?tellAndEmail=" +
+        const url = NetInterface.gk_getCodeAndCheckCapt + "?tellAndEmail=" +
             this.state.username + "&uuid=" + uuid + "&captchaCode=" + code;
         try {
-            let responseData = await fetch(url, {
-                method: "get",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(resp => resp.json())
+            let responseData = HttpTool.GET_JP(url)
                 .then(result => {
                     this.Loading.close();
                     // alert(JSON.stringify(result));
@@ -116,17 +110,10 @@ export default class BindPhoneSkip extends Component {
             await storage.save("WXUnionId", "", this.state.weixininfoLogin.unionid);
 
             let unionid = this.state.weixininfoLogin.unionid;
-            let tokens = this.state.loginData.token;
-            let url = api.base_uri + "/v1/app/member/boundTellNumberAndPassword?unionid=" +
+            let url = NetInterface.gk_boundTellNumberAndPassword + "?unionid=" +
                 unionid + "&tell=" + this.state.username + "&password=" + this.state.password + "&code=" + this.state.verify_code;
             try {
-                let responseData = await fetch(url, {
-                    method: "post",
-                    headers: {
-                        "Content-Type": "application/json",
-                        token: tokens
-                    },
-                }).then(resp => resp.json())
+                let responseData =HttpTool.POST_JP(url)
                     .then(result => {
 
                         if (result.code == 0) {

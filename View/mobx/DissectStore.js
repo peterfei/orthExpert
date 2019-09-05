@@ -1,6 +1,6 @@
 import { observable, computed, action, runInAction } from "mobx";
 import { RefreshState } from "react-native-refresh-list-view";
-import api from "../api";
+import {NetInterface,HttpTool} from "../common";
 import { get } from "../common/httpTool";
 
 class DissectStore {
@@ -16,15 +16,8 @@ class DissectStore {
   @action
   getTypeList = async () => {
     try {
-      const url = api.base_uri + "/v1/app/struct/funTypeList";
-      let responseData = await fetch(url, {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-          token: this.token
-        }
-      })
-        .then(resp => resp.json())
+      const url = NetInterface.gk_funTypeList
+      let responseData = HttpTool.GET_JP(url)
         .then(
           result => {
             return result;
@@ -50,7 +43,7 @@ class DissectStore {
   fetchDissectLists = async () => {
     try {
       const url =
-        api.dissect +
+        "http://rykj-service.vesal.cn/Rykj_VesalService.asmx/Ry_Total_CommonBLL_List?callSource=2&typeId=" +
         this.typeID +
         "&loginCode=" +
         this.loginCode +
