@@ -268,7 +268,7 @@ export default class SickDetail extends BaseComponent {
           scrollBounce
           volume={0.8}
           inlineOnly
-          style={{ width: screen.width, height: screen.height }}
+          style={{width: screen.width, height: screen.height }}
           url={this.state.playVideoUrl}
           ref={(ref) => {
             this.video = ref
@@ -277,6 +277,7 @@ export default class SickDetail extends BaseComponent {
             this.playVideoError(msg)
           }}
         />
+        <View style={{height:size(23),backgroundColor:'black',width:screen.width}}></View>
         <MyTouchableOpacity style={{
           position: 'absolute',
           height: size(60),
