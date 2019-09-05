@@ -24,7 +24,6 @@ import { screen, system } from "../../common";
 
 import { NavigationActions, StackActions } from "react-navigation";
 import { storage } from "../../common/storage";
-import api from "../../api";
 import ReplyScreen from "../../scene/Search/ReplyScreen"
 import SystemScreen from "../../scene/Search/SystemScreen";
 import TitleBar from '../../scene/Home/TitleBar'

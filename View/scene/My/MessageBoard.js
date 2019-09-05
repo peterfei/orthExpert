@@ -11,9 +11,8 @@ import {
   Platform
 } from "react-native";
 import StarRating from "react-native-star-rating";
-import { screen, system } from "../../common";
+import { screen, system,NetInterface, HttpTool } from "../../common";
 import _ from "lodash";
-import api from "../../api";
 import { color } from "../../widget";
 import showMessages from "./showMessages";
 import { storage } from "../../common/storage";
@@ -82,20 +81,11 @@ export default class MessageBoard extends Component {
     console.log(`
       \n传入的请求数据:${JSON.stringify(data)}\n
     `);
-    const url = api.base_uri + "/app/orthope/v1/msg/msgList?business=orthope";
+    const url = NetInterface.gk_msgList + "?business=orthope";
     console.log(`
       \n当前请求的url:${url}
     `);
-    let tokens = await storage.get("userTokens", "");
-    let responseData = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        token: tokens.token
-      },
-     // body: JSON.stringify(data)
-    })
-      .then(resp => resp.json())
+    let responseData = HttpTool.GET_JP(url)
       .then(
         result => {
           //alert(JSON.stringify(result));

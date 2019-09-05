@@ -11,13 +11,12 @@ import {
   Platform
 } from "react-native";
 import StarRating from "react-native-star-rating";
-import { screen, system } from "../../common";
+import { screen, system,NetInterface, HttpTool } from "../../common";
 import { RadioGroup, RadioButton } from "react-native-flexi-radio-button";
 import Toast, { DURATION } from "react-native-easy-toast";
 import Loading from "../../common/Loading";
 import DeviceInfo from "react-native-device-info";
 import { storage } from "../../common/storage";
-import api from "../../api";
 import { color } from "../../widget";
 import { NavigationActions,StackActions } from "react-navigation";
 import TitleBar from '../../scene/Home/TitleBar';
@@ -178,27 +177,11 @@ export default class showMessages extends Component {
     if (this.state.content != "") {
       curr.Loading.show("正在提交...");
       // 提交数据
-      let url = api.base_uri + "/app/orthope/v1/msg/pushMsg";
-      console.info("url is " + url);
       let deviceInfo = "手机型号:" + DeviceInfo.getModel() + ",品牌:" + DeviceInfo.getBrand() + ",手机版本:" + DeviceInfo.getSystemVersion() + ",维萨里软件版本:" + DeviceInfo.getVersion();
-
-      let responseData = fetch(url, {
-        method: "post",
-        body: JSON.stringify({
-          content: this.state.content,
-          msgType: this.state.onSelectedValue,
-          msgGrade: this.state.starCount,
-          plat: Platform.OS,
-          contact: this.state.phone,
-          deviceInfo: deviceInfo,
-          business:'orthope'
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          token: tokens.token
-        }
-      })
-        .then(resp => resp.json())
+      let url = NetInterface.gk_pushMsg+"?content="+this.state.content+"&msgType="+ this.state.onSelectedValue+"&msgGrade="+
+                this.state.starCount+"&plat="+Platform.OS+"&contact="+this.state.phone+"&deviceInfo="+deviceInfo+"&business=orthope";
+      console.info("url is " + url);
+      let responseData =HttpTool.GET_JP(url)
         .then(
           result => {
             // debugger;
