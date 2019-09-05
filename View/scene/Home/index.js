@@ -70,11 +70,33 @@ class Custom extends BaseComponent {
   _immediateUpdate() {
     this.setState({immediateUpdate: true})
     CodePush.sync(
-        {deploymentKey: CODE_PUSH_KEY, updateDialog: {}, installMode: CodePush.InstallMode.IMMEDIATE},
+        {deploymentKey: CODE_PUSH_KEY, updateDialog: {
+          appendReleaseDescription: true, //是否显示更新description，默认为false
+          descriptionPrefix: "更新内容：", //更新说明的前缀。 默认是” Description:
+          mandatoryContinueButtonLabel: "立即更新", //强制更新的按钮文字，默认为continue
+          mandatoryUpdateMessage: "发现新版本，请确认更新", //- 强制更新时，更新通知. Defaults to “An update is available that must be installed.”.
+          optionalIgnoreButtonLabel: "稍后", //非强制更新时，取消按钮文字,默认是ignore
+          optionalInstallButtonLabel: "后台更新", //非强制更新时，确认文字. Defaults to “Install”
+          optionalUpdateMessage: "发现新版本，是否更新？", //非强制更新时，更新通知. Defaults to “An update is available. Would you like to install it?”.
+          title: "更新提示"
+        }, installMode: CodePush.InstallMode.IMMEDIATE},
         this.codePushStatusDidChange.bind(this),
         this.codePushDownloadDidProgress.bind(this)
     )
   }
+
+  syncImmediate() {
+    CodePush.checkForUpdate(CODE_PUSH_KEY).then((update) => {
+      console.log('-------' + update)
+      if (!update) {
+        Toast.showLongSuccess('已是最新版本！')
+      } else {
+        this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory})
+      }
+    })
+  }
+
+
 
 
   codePushDownloadDidProgress(progress) {
@@ -202,8 +224,14 @@ class Custom extends BaseComponent {
 
   componentWillUnmount() {
     
-    AppState.removeEventListener("change", this._handleAppStateChange);
+    // AppState.removeEventListener("change", this._handleAppStateChange);
   }
+
+  componentWillMount = () => {
+    CodePush.disallowRestart()
+    this.syncImmediate()
+  };
+  
 
   _handleAppStateChange = nextAppState => {
     if (nextAppState != null && nextAppState === "active") {
@@ -222,8 +250,9 @@ class Custom extends BaseComponent {
     
   };
   async componentDidMount() {
+    CodePush.allowRestart()
     SplashScreen.hide();
-    AppState.addEventListener("change", this._handleAppStateChange);
+    // AppState.addEventListener("change", this._handleAppStateChange);
     this.getSickData()
   }
 
