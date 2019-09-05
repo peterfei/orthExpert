@@ -286,11 +286,12 @@ export default class SickDetail extends BaseComponent {
   }
 
   _renderImages() {
+
     let arr = [];
     if (this.state.areaSickList[0].img_url) {
       this.state.areaSickList.forEach((item, index) => {
         arr.push(
-          <View style={{ width: size(510), height: size(850), backgroundColor: index % 2 == 0 ? 'orange' : 'blue' }}>
+          <View style={{ width: size(510), height: size(850) }}>
             <Image
               style={{ width: size(510), height: size(850) }}
               source={{ uri: item.img_url }}
@@ -300,7 +301,7 @@ export default class SickDetail extends BaseComponent {
       })
     }else if(this.state.details){
       arr.push(
-        <View style={{ width: size(510), height: size(850), backgroundColor: 'orange' }}>
+        <View style={{ width: size(510), height: size(850) }}>
           <Image
             style={{ width: size(510), height: size(850) }}
             source={{ uri: this.state.details.pathology.img_url }}
