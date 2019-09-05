@@ -44,8 +44,9 @@ import kfSickPlanList from './View/scene/Plan/SickPlanList';
 import kfCreatePlan from './View/scene/Plan/CreatePlan';
 import kfModifyData from './View/scene/My/ModifyData';
 import ActivationCode from './View/scene/My/ActivationCode';
-import ModifyPassword from './View/scene/My/ModifyPassword'
-
+import ModifyPassword from './View/scene/My/ModifyPassword';
+import AboutUs from './View/scene/About/AboutUs';
+import AboutUsDetails from './View/scene/About/AboutUsDetails';
 
 /**消息通知页面 */
 import MessageNotice from './View/scene/Search/MessageNotice';
@@ -89,7 +90,9 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
     ActivationCode: { screen: ActivationCode },
     ModifyPassword: { screen: ModifyPassword },
     BonesScene: { screen: BonesScene },
-    Search: { screen: Search }
+    Search: { screen: Search },
+    AboutUs: { screen: AboutUs },
+    AboutUsDetails:{screen:AboutUsDetails}
   },
   {
     initialRouteName: 'NewHome',     //设置初始路由为Home
