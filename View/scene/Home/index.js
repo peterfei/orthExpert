@@ -6,6 +6,7 @@ import {deviceWidth} from "../../common/ScreenUtil";
 import SplashScreen from "react-native-splash-screen";
 import {storage} from "../../common/storage";
 import {NavigationActions, StackActions} from "react-navigation";
+import CodePush from "react-native-code-push"; // 引入code-push
 
 const DefaultColor = 'rgba(68, 180, 233, 0.5)';
 const DefaultLineColor = 'rgba(68, 180, 233, 1)';
@@ -59,7 +60,7 @@ export default class Custom extends BaseComponent {
   }
 
   async componentDidMount() {
-
+    CodePush.sync();
     SplashScreen.hide();
     this.getSickData()
   }
