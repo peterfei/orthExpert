@@ -115,14 +115,10 @@ export default class Custom extends BaseComponent {
   }
 
   async getAreaPathology(item) {  //获取区域下疾病
-    let url = api.base_uri + "v1/app/pathology/getPathologyAndArea?patAreaNo=" + item.pat_area_no + "&business=orthope";
+    const url = NetInterface.getSickArea + '?patAreaNo=' + item.pat_area_no + "&business=orthope";
+    // let url = api.base_uri + "v1/app/pathology/getPathologyAndArea?patAreaNo=" + item.pat_area_no + "&business=orthope";
     this.mainView._showLoading('加载中');
-    await fetch(url, {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(resp => resp.json())
+    HttpTool.GET_JP(url)
       .then(result => {
         this.mainView._closeLoading();
         let sickList = result.pathologyList;
