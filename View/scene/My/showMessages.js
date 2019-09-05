@@ -178,10 +178,18 @@ export default class showMessages extends Component {
       curr.Loading.show("正在提交...");
       // 提交数据
       let deviceInfo = "手机型号:" + DeviceInfo.getModel() + ",品牌:" + DeviceInfo.getBrand() + ",手机版本:" + DeviceInfo.getSystemVersion() + ",维萨里软件版本:" + DeviceInfo.getVersion();
-      let url = NetInterface.gk_pushMsg+"?content="+this.state.content+"&msgType="+ this.state.onSelectedValue+"&msgGrade="+
-                this.state.starCount+"&plat="+Platform.OS+"&contact="+this.state.phone+"&deviceInfo="+deviceInfo+"&business=orthope";
+      let body={
+        content: this.state.content,
+        msgType: this.state.onSelectedValue,
+        msgGrade: this.state.starCount,
+        plat: Platform.OS,
+        contact: this.state.phone,
+        deviceInfo: deviceInfo,
+        business:'orthope'
+      }
+      let url = NetInterface.gk_pushMsg;
       console.info("url is " + url);
-      let responseData =HttpTool.GET_JP(url)
+      let responseData =HttpTool.POST_JP(url,body)
         .then(
           result => {
             // debugger;

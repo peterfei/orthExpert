@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import api from "../../api";
 import {
     StyleSheet,
     View,
@@ -9,7 +8,7 @@ import {
     RefreshControl
 } from 'react-native';
 import {size} from "../../common/ScreenUtil";
-import {screen, system} from "../../common";
+import {screen, system,NetInterface, HttpTool} from "../../common";
 import {storage} from "../../common/storage";
 import Loading from "../../common/Loading";
 import Toast from "react-native-easy-toast";
@@ -43,15 +42,8 @@ export default class help extends Component<Props> {
     getHelpList = async () => {
         this.Loading.show("查询中...");
         let tokens = await storage.get("userTokens");
-        let url = api.base_uri + "/app/orthope/v1/helpcenter/getHelpList?business=orthope";
-        await fetch(url, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                token: tokens.token
-            }
-        })
-            .then(resp => resp.json())
+        let url = NetInterface.gk_getHelpList + "?business=orthope";
+        HttpTool.GET_JP(url)
             .then(result => {
                 this.Loading.close();
                 // alert(JSON.stringify(result));
