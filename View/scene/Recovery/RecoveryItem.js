@@ -42,7 +42,7 @@ export default class RecoveryItem extends Component {
               })
           })
           .catch(err => {
-              alert(JSON.stringify(result))
+              // alert(JSON.stringify(result))
               console.log(JSON.stringify(err));
           })
 
