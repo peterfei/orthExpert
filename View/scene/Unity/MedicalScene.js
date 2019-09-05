@@ -1273,7 +1273,7 @@ export default class MedicalScene extends Component {
                             width: '70%',
                             alignItems: 'center'
                         }}>
-                            <Text style={{height: size(60), lineHeight: size(60)}}>是否要退出到维萨里平台?</Text>
+                            <Text style={{height: size(60), lineHeight: size(60)}}>是否要退出到维萨里骨科平台?</Text>
                             <MyTouchableOpacity style={[styles.shareBtnStyle, {marginTop: size(20)}]} onPress={() => {
                                 this.handleBack(1)
                             }}>

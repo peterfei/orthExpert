@@ -213,24 +213,17 @@ class Custom extends BaseComponent {
           // this.mainView._toast('已是最新版本！')
           this.setState({modalVisible: false})
         } else {
-          // alert(111)
           this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory})
-          // this.syncImmediate()
         }
       })
 
-      // this.flage = false;
     } else if (nextAppState != null && nextAppState === "background") {
-      // this.flage = true;
     }
     
   };
   async componentDidMount() {
     SplashScreen.hide();
     AppState.addEventListener("change", this._handleAppStateChange);
-    // this.syncImmediate()
-    // CodePush.sync();
-    
     this.getSickData()
   }
 
@@ -358,7 +351,7 @@ class Custom extends BaseComponent {
             this.props.navigation.navigate('Search');
           }}>
             <Image source={require('../../img/home/search_icon.png')} style={styles.searchIcon}/>
-            <Text style={styles.searchText}>请输入疾病名称</Text>
+            <Text style={styles.searchText}>请输入疾病名称.</Text>
           </TouchableOpacity>
         </View>
 
