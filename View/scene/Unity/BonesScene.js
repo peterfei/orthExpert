@@ -676,7 +676,8 @@ export default class BonesScene extends Component {
                 backgroundColor: 'rgba(0,0,0,0.8)',
             }}>
                 <Text style={[styles.dbTitleStyle, { marginLeft: size(20) }]}>{title}</Text>
-                <MyTouchableOpacity
+                <View style={{ flex: 1}}></View>
+                {/* <MyTouchableOpacity
                     onPress={() => {
                         this.fayin(title + "。" + enTitle)
                     }}
@@ -685,7 +686,7 @@ export default class BonesScene extends Component {
                         style={{ width: size(30), height: size(30), marginRight: size(10) }}
                         source={require('../../img/unity/laba.png')} />
                     <Text style={{ color: "#bababa", }}>{enTitle}</Text>
-                </MyTouchableOpacity>
+                </MyTouchableOpacity> */}
                 <MyTouchableOpacity style={{ marginRight: size(20), alignItems: 'center' }} onPress={() => {
                     this.commentAction()
                 }}>

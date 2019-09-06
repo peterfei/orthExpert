@@ -6,7 +6,10 @@ import {
     SportItemAnimations,
     HistorySearchSchema,
     GetRecentlyUseSchema,
-
+    ResRelationSchema,
+    ResWebSchema,
+    MarkNailSchema,
+    MarkNounSchema
 } from './Schemas'
 
 /*
@@ -22,7 +25,10 @@ export default [{
         SportItemAnimations,
         HistorySearchSchema,
         GetRecentlyUseSchema,
-
+        ResRelationSchema,
+        ResWebSchema,
+        MarkNailSchema,
+        MarkNounSchema
     ],
     path: 'orth.realm',
     schemaVersion: 1,
@@ -33,6 +39,10 @@ export default [{
     schema: [
         SportItemAnimations,
         AnimationSchema,
+        ResRelationSchema,
+        ResWebSchema,
+        MarkNailSchema,
+        MarkNounSchema
     ],
     path: RNFS.DocumentDirectoryPath + '/sportSystem220.realm',
     schemaVersion: 56,

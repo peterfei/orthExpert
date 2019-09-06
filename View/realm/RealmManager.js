@@ -195,7 +195,57 @@ const queryRecentlyUse = () => {
     return _query;
 };
 
+/**
+ * 根据子模型查找关系资源
+ * @param smName
+ * @returns {*}
+ */
+const queryRelationBySmName = smName => {
 
+    let result;
+    try {
+
+
+        if (smName != '' && smName != undefined) {
+            let _query = realmSystem.objects('ResRelation').filtered(`sm_name="${smName}"`)
+            if (_query && _query.length > 0) {
+                let ids = _query[0].rw_ids;
+
+                let require = getRequire('rw_id', ids);
+                require = "(" + require + ") and del=0";
+                result = realmSystem.objects("ResWeb").filtered(require);
+            }
+        }
+    } catch (error) {
+        alert(error);
+    }
+    // alert("path:" + realmSystem.path + " result:" + JSON.stringify(result))
+    return result;
+};
+
+/**
+ * 根据结构名词查找全部钉子列表
+ * @param markNounNo
+ * @returns {*}
+ */
+const queryMarkNailByNoun = markNounNo => {
+    let result;
+    try {
+        if (markNounNo != '' && markNounNo != undefined) {
+
+            let _query = realmSystem.objects('MarkNoun').filtered(`mark_noun_no="${markNounNo}"`)
+            if (_query && _query.length > 0) {
+                let name = _query[0].nail_model_name;
+                result = realmSystem.objects("MarkNail").filtered(`nail_model_name="${name}"`);
+            }
+
+        }
+    } catch (error) {
+        alert(error);
+    }
+
+    return result;
+};
 
 
 export {
@@ -255,10 +305,10 @@ export {
     // insertResWeb,
     // queryResWeb,
     // queryResRelation,
-    // queryRelationBySmName,
+    queryRelationBySmName,
     // insertMarkNoun,
     // queryMarkNoun,
-    // queryMarkNailByNoun,
+    queryMarkNailByNoun,
     // getTabVersionByNameSystem,
     // insertTabVersionSystem,
     // insertTriggerPifu,

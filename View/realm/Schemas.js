@@ -106,7 +106,60 @@ const GetRecentlyUseSchema = {
     }
 }
 
+const ResRelationSchema = {
+    name: 'ResRelation',
+    primaryKey: 'id',
+    properties: {
+        sm_name: "string",
+        id: {type: 'int', default: 0},
+        rw_ids: "string"
+    }
+}
 
+const ResWebSchema = {
+    name: 'ResWeb',
+    primaryKey: 'rw_id',
+    properties: {
+        icon_url: "string",
+        level: {type: 'int', default: 0},
+        del: {type: 'int', default: 0},
+        rw_id: {type: 'int', default: 0},
+        type: "string",
+        title: "string",
+        content: "string",
+        secondSort: {type: 'int', default: 0},
+        res_fy_icon_url: "string",
+        fy_state: "string",
+        charge_id: "string",
+        select_icon_url: "string",
+        secondFyName: "string",
+        secondFyId: {type: 'int', default: 0},
+        desc: "string"
+    }
+}
+
+const MarkNounSchema = {
+    name: 'MarkNoun',
+    primaryKey: 'mark_noun_no',
+    properties: {
+        mark_noun_no: "string",
+        nail_model_name: "string"
+    }
+}
+
+const MarkNailSchema = {
+    name: 'MarkNail',
+    primaryKey: 'nail_id',
+    properties: {
+        nail_name: "string",
+        is_update: {type: 'int', default: 0},
+        nail_no: "string",
+        nail_id: {type: 'int', default: 0},
+        camera_params: "string",
+        nail_model_name: {type: "string", indexed: true},
+        info: "string"
+    }
+}
 
 export {
     RelationListSchema,
@@ -115,4 +168,8 @@ export {
     SportItemAnimations,
     HistorySearchSchema,
     GetRecentlyUseSchema,
+    ResRelationSchema,
+    ResWebSchema,
+    MarkNailSchema,
+    MarkNounSchema
 }
