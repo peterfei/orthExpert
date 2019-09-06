@@ -106,9 +106,6 @@ class Custom extends BaseComponent {
     })
   }
 
-
-
-
   codePushDownloadDidProgress(progress) {
     if (this.state.immediateUpdate) {
       this.currProgress = parseFloat(progress.receivedBytes / progress.totalBytes).toFixed(2)
@@ -239,7 +236,6 @@ class Custom extends BaseComponent {
     this.syncImmediate()
     
   };
-  
 
   _handleAppStateChange = nextAppState => {
     if (nextAppState != null && nextAppState === "active") {
@@ -257,6 +253,7 @@ class Custom extends BaseComponent {
     }
     
   };
+
   async componentDidMount() {
     CodePush.allowRestart()
     SplashScreen.hide();
@@ -459,7 +456,6 @@ class Custom extends BaseComponent {
     );
   }
 }
-
 
 const styles = StyleSheet.create({
   container: {

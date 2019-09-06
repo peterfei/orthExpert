@@ -8,7 +8,6 @@
 
 import React, { Component } from 'react';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
-
 // import HomeScreen from "./View/scene/Home/HomeScreen";
 import NewHome from './View/scene/Home/index';
 import SickDetail from './View/scene/Home/SickDetail';

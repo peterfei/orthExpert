@@ -137,7 +137,7 @@ export default class SystemScreen extends Component<Props> {
                     {this.state._timer ? whetherloadingornodata : (
                         <Image
                             style={styles.loadIcon}
-                            source={require("../../img/tabbar/loadbg.png")}
+                            source={require("../../img/tabbar/loadbg.gif")}
                         />
                     )}
                 </View>
