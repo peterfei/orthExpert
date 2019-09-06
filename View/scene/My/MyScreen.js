@@ -64,6 +64,11 @@ export default class MyScreen extends Component {
         route: 'Help',
       },
       {
+        title: '关于我们',
+        imgPath: require('../../img/kf_mine/about.png'),
+        route: 'AboutUs'
+      },
+      {
         title: '激活码兑换',
         imgPath: require('../../img/kf_mine/mine_jhm.png'),
         route: 'ActivationCode'
