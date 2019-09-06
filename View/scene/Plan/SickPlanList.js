@@ -120,11 +120,11 @@ export default class SickPlanList extends BaseComponent {
     return (
       <View style={styles.backGround}>
         <View style={styles.topTitle}>
-          <TouchableHighlight style={styles.back}
+          <TouchableOpacity style={styles.back}
                               onPress={() => this.props.navigation.goBack()}>
             <Image style={styles.backImg}
                    source={require('../../img/public/left.png')} />
-          </TouchableHighlight>
+          </TouchableOpacity>
           <Text style={styles.title}>{this.state.sick.pat_name + '方案'}</Text>
         </View>
       </View>

@@ -340,11 +340,11 @@ export default class MemberComplete extends Component {
                                     {/* <Text style={styles.littleTitle}>请输入您的身份：</Text> */}
                                     {/*选择身份*/}
                                     <View>
-                                        <TouchableHighlight style={[styles.input]} onPress={this.show.bind(this)}>
+                                        <TouchableOpacity style={[styles.input]} onPress={this.show.bind(this)}>
                                             <Text style={{ fontSize: 15 }}>
                                                 {initVal}
                                             </Text>
-                                        </TouchableHighlight>
+                                        </TouchableOpacity>
 
                                     </View>
                                     <SelectDialog

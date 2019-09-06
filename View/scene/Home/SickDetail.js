@@ -157,7 +157,7 @@ export default class SickDetail extends BaseComponent {
       "struct_code": this.state.details.pathology.load_app_id,
       "app_id": `${this.state.details.pathology.load_app_id}_GK`,
       "showModelList": this.state.details.pathology.open_model,
-      "greenModelList":this.state.details.pathology.highlight_model
+      "greenModelList": this.state.details.pathology.highlight_model
     }
     if (this.state.selectBtnIndex === index) {
       this.setState({
@@ -199,6 +199,7 @@ export default class SickDetail extends BaseComponent {
           this.props.navigation.navigate('BonesScene', { info: msg });
           this.setState({
             selectBtnIndex: -1,
+            playVideoUrl: ''
           })
           return
         }
@@ -269,7 +270,7 @@ export default class SickDetail extends BaseComponent {
           scrollBounce
           volume={0.8}
           inlineOnly
-          style={{width: screen.width, height: screen.height }}
+          style={{ width: screen.width, height: screen.height*2}}
           url={this.state.playVideoUrl}
           ref={(ref) => {
             this.video = ref
@@ -283,8 +284,8 @@ export default class SickDetail extends BaseComponent {
           position: 'absolute',
           height: size(60),
           width: size(60),
-          left: 10,
-          top: 27,
+          right: 20,
+          top: -20,
           flexDirection: 'row',
           alignItems: 'center',
           zIndex: 9999999999,
@@ -311,18 +312,18 @@ export default class SickDetail extends BaseComponent {
           position: 'absolute', bottom: 0,
           backgroundColor: 'white',
           height: size(250),
-          width:screen.width,
+          width: screen.width,
           borderTopLeftRadius: 15, borderTopRightRadius: 15
         }}>
-          <View style={{margin:10}}>
-            <TouchableOpacity onPress={()=>{this.closeVideo()}}>
-            <Image style={{width:size(23),height:size(23)}}
-              source={require('../../img/kf_main/kf_plan_close.png')} />
+          <View style={{ margin: 10 }}>
+            <TouchableOpacity onPress={() => { this.closeVideo() }}>
+              <Image style={{ width: size(23), height: size(23) }}
+                source={require('../../img/kf_main/kf_plan_close.png')} />
             </TouchableOpacity>
-            <Text style={{position:'absolute',left:screen.width*0.5-size(50),width:size(100)}}>成因</Text>
+            <Text style={{ position: 'absolute', left: screen.width * 0.5 - size(50), width: size(100) }}>成因</Text>
           </View>
-          <ScrollView style={{padding:10}}>
-            <Text style={{marginBottom:15}}>{this.state.playVideoUrl}</Text>
+          <ScrollView style={{ padding: 10 }}>
+            <Text style={{ marginBottom: 15 }}>{this.state.playVideoUrl}</Text>
           </ScrollView>
         </View>
       </View>
@@ -335,9 +336,10 @@ export default class SickDetail extends BaseComponent {
     if (this.state.areaSickList[0].img_url) {
       this.state.areaSickList.forEach((item, index) => {
         arr.push(
-          <View style={{ width: deviceWidth - size(240), height: size(850)
-                            // , backgroundColor: index%2 == 0? 'orange' : 'red' 
-                          }}>
+          <View style={{
+            width: deviceWidth - size(240), height: size(850)
+            // , backgroundColor: index%2 == 0? 'orange' : 'red' 
+          }}>
             <Image
               resizeMode={'contain'}
               style={{ width: deviceWidth - size(240), height: size(850) }}
@@ -350,7 +352,7 @@ export default class SickDetail extends BaseComponent {
       arr.push(
         <View style={{ width: deviceWidth - size(240), height: size(850) }}>
           <Image
-          resizeMode={'contain'}
+            resizeMode={'contain'}
             style={{ width: deviceWidth - size(240), height: size(850) }}
             source={{ uri: this.state.details.pathology.img_url }}
           />
@@ -373,7 +375,7 @@ export default class SickDetail extends BaseComponent {
           }
         }}>
           <Image
-            
+
             style={{ height: size(53), width: size(29) }}
             source={periousImg}
           />
@@ -409,21 +411,21 @@ export default class SickDetail extends BaseComponent {
 
 
   //判断是否开始使用
-  async  startIsUse(index){
-    // this.selectBtn(index)
-    // return
-      FuncUtils.checkKfPerm()
-          .then(res => {
-              if(res.code  == 0 && res.result == 'yes'){
-                  this.props.navigation.navigate('BuyVip')
-              }else {
-                  this.selectBtn(index)
-              }
-          })
-          .catch(err => {
-            this.mainView._toast(JSON.stringify(err))
-          })
-    }
+  async  startIsUse(index) {
+    this.selectBtn(index)
+    return
+    FuncUtils.checkKfPerm()
+      .then(res => {
+        if (res.code == 0 && res.result == 'yes') {
+          this.props.navigation.navigate('BuyVip')
+        } else {
+          this.selectBtn(index)
+        }
+      })
+      .catch(err => {
+        this.mainView._toast(JSON.stringify(err))
+      })
+  }
 
   _renderBottom() {
     let arr = [];
@@ -439,16 +441,16 @@ export default class SickDetail extends BaseComponent {
           // this.selectBtn(index)
           this.startIsUse(index)
         }}>
-          <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44),opacity:this.state.selectBtnIndex === index ? 0.8: 1 }} />
-          <Text style={{ fontSize: size(24), color: color, marginTop: size(8),opacity:this.state.selectBtnIndex === index ? 0.8: 1 }}>{item.secondFyName}</Text>
+          <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }} />
+          <Text style={{ fontSize: size(24), color: color, marginTop: size(8), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }}>{item.secondFyName}</Text>
         </TouchableOpacity>
       )
     })
 
     return (
-      <View style={{ height: size(104), }}>
-        <Line color={'rgba(213, 213, 213, 1)'} />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+      <View style={{ height: size(120)}}>
+        <Line color={'rgba(213, 213, 213, 0.8)'} />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center',position:'absolute',bottom:0,width:screen.width }}>
           {arr}
         </View>
       </View>

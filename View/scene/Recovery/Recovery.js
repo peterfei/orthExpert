@@ -79,11 +79,11 @@ export default class Recovery extends Component {
         return (
             <View style={styles.backGround}>
                 <View style={styles.topTitle}>
-                    <TouchableHighlight style={styles.back}
+                    <TouchableOpacity style={styles.back}
                         onPress={() => this.props.navigation.goBack()}>
                         <Image style={styles.backImg}
                             source={require('../../img/public/left.png')} />
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                     <Text style={styles.title}>康复方案</Text>
                 </View>
             </View>
