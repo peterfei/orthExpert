@@ -25,6 +25,7 @@
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
       android:allowBackup="false"
+      android:resizeableActivity="true"
       >
       <activity
         android:name=".MainActivity"
@@ -66,6 +67,17 @@
             android:name="com.vesal.orthexpert.wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop"/>
+
+        <!-- 适配全面屏 Android O vivo&oppo-->
+        <meta-data android:name ="android.max_aspect" android:value ="2.1" />
+        <!-- 适配刘海屏、水滴屏 Android O 小米 -->
+        <meta-data android:name="notch.config" android:value="portrait|landscape"/>
+        <!-- 适配刘海屏、水滴屏 Android O 华为 -->
+        <meta-data android:name="android.notch_support" android:value="true"/>
+
+        <!--适配刘海屏、水滴屏 Android P -->
+        <meta-data android:name="android.vendor.full_screen" android:value="true"/>
+
     </application>
 
 </manifest>
