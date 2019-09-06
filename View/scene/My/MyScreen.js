@@ -175,10 +175,24 @@ export default class MyScreen extends Component {
       return require('../../img/kf_mine/defalutHead.png')
     }
   }
+
+    //计算日期相减天数
+    DateMinus(time){
+        if(time != ''){
+            let myDate = new Date();
+            let year =  myDate.getFullYear();
+            let futureYear = time.substring(0, 4);
+            let timeDiff = Math.floor(futureYear - year);
+            return timeDiff;
+        }
+    }
+
   _renderHeader() {
-    // alert(JSON.stringify(this.state.combo))
-    let _endTime = this.state.combo==undefined?'':this.state.combo.endTime
-    // if(combo)
+      let _endTime = this.state.combo == undefined || this.state.combo.endTime == undefined ? '' : this.state.combo.endTime.substring(0, 10)
+      let time = this.DateMinus(_endTime);
+      let timeDiff = time > 50 ? '永久使用' : _endTime + '到期';
+      let isShowRenewal = time > 50 ? false : true;
+
     return (
       <ImageBackground source={require('../../img/kf_mine/mine_topback.png')} style={styles.topImgBack}>
 
@@ -217,15 +231,15 @@ export default class MyScreen extends Component {
                     : null
                 }
               </View>
-              <Text style={{ fontSize: size(18), color: AppDef.White, }} allowFontScaling={false}>
-                {this.state.isUse ?_endTime.substring(0, 10) + "到期" : ""}
+              <Text style={{ fontSize: size(22), color: AppDef.White, }} allowFontScaling={false}>
+                {this.state.isUse ? timeDiff : ""}
               </Text>
             </View>
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
               <Text style={{ fontSize: size(24), color: AppDef.White, }} allowFontScaling={false}>当前职业: {this.state.memberInfo.identityTitle}</Text>
               {
-                this.state.isUse
+                this.state.isUse && isShowRenewal
                   ?
                   <TouchableOpacity activeOpacity={1} onPress={() => {
                     this.props.navigation.navigate('BuyVip')
