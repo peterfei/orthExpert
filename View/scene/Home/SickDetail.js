@@ -74,13 +74,13 @@ export default class SickDetail extends BaseComponent {
           let pathology = result.pathology;
           let menus = JSON.parse(pathology.menus);
           let kf = {
-            res_fy_icon_url: require('../../img/home/kangfu_d.png'),
+            res_fy_icon_url: require('../../img/home/kangfu_s.png'),
             select_icon_url: require('../../img/home/kangfu_s.png'),
             secondFyName: '康复',
             type: 'static'
           }
           let model = {
-            res_fy_icon_url: require('../../img/home/model_d.png'),
+            res_fy_icon_url: require('../../img/home/model_s.png'),
             select_icon_url: require('../../img/home/model_s.png'),
             secondFyName: '3D模型',
             type: 'static'
@@ -113,13 +113,13 @@ export default class SickDetail extends BaseComponent {
       selectImgIndex: index,
       sick: sick
     }, () => {
-      this._scrollView.scrollTo({ x: this.state.selectImgIndex * size(510), y: 0, animated: true });
+      this._scrollView.scrollTo({ x: this.state.selectImgIndex * (deviceWidth - size(240)), y: 0, animated: true });
       this.requestSickData();
     })
   }
 
   onScrollAnimationEnd(e) {
-    let i = Math.floor(e.nativeEvent.contentOffset.x / size(508));
+    let i = Math.floor(e.nativeEvent.contentOffset.x / (deviceWidth - size(238)));
     let sick = this.state.areaSickList[i];
     this.setState({
       selectImgIndex: i,
@@ -334,9 +334,12 @@ export default class SickDetail extends BaseComponent {
     if (this.state.areaSickList[0].img_url) {
       this.state.areaSickList.forEach((item, index) => {
         arr.push(
-          <View style={{ width: size(510), height: size(850) }}>
+          <View style={{ width: deviceWidth - size(240), height: size(850)
+                            // , backgroundColor: index%2 == 0? 'orange' : 'red' 
+                          }}>
             <Image
-              style={{ width: size(510), height: size(850) }}
+              resizeMode={'contain'}
+              style={{ width: deviceWidth - size(240), height: size(850) }}
               source={{ uri: item.img_url }}
             />
           </View>
@@ -344,9 +347,10 @@ export default class SickDetail extends BaseComponent {
       })
     } else if (this.state.details) {
       arr.push(
-        <View style={{ width: size(510), height: size(850) }}>
+        <View style={{ width: deviceWidth - size(240), height: size(850) }}>
           <Image
-            style={{ width: size(510), height: size(850) }}
+          resizeMode={'contain'}
+            style={{ width: deviceWidth - size(240), height: size(850) }}
             source={{ uri: this.state.details.pathology.img_url }}
           />
         </View>
@@ -358,7 +362,7 @@ export default class SickDetail extends BaseComponent {
 
     let periousImg = isFirst ? { uri: '' } : require('../../img/home/img_l.png');
     let nextImg = isLast ? { uri: '' } : require('../../img/home/img_r.png');
-
+    // alert(arr)
     return (
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 
@@ -368,6 +372,7 @@ export default class SickDetail extends BaseComponent {
           }
         }}>
           <Image
+            
             style={{ height: size(53), width: size(29) }}
             source={periousImg}
           />
@@ -379,7 +384,7 @@ export default class SickDetail extends BaseComponent {
           pagingEnabled={true}
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={this.onScrollAnimationEnd.bind(this)}
-          style={{ width: size(510), height: size(850) }}
+          style={{ width: deviceWidth - size(240), height: size(850) }}
         >
           {arr}
         </ScrollView>
@@ -390,6 +395,7 @@ export default class SickDetail extends BaseComponent {
           }
         }}>
           <Image
+            resizeMode={'contain'}
             style={{ height: size(53), width: size(29) }}
             source={nextImg}
           />
@@ -422,8 +428,8 @@ export default class SickDetail extends BaseComponent {
     let arr = [];
     this.state.menus.forEach((item, index) => {
       let isSelect = this.state.selectBtnIndex === index ? true : false;
-      let color = isSelect ? AppDef.Blue : 'rgba(212, 212, 212, 1)';
-      let img = isSelect ? { uri: item.select_icon_url } : { uri: item.res_fy_icon_url };
+      let color = isSelect ? AppDef.Blue : AppDef.Blue;
+      let img = isSelect ? { uri: item.select_icon_url } : { uri: item.select_icon_url };
       if (item.secondFyName == '康复' || item.secondFyName == '3D模型') {
         img = isSelect ? item.select_icon_url : item.res_fy_icon_url;
       }
@@ -432,8 +438,8 @@ export default class SickDetail extends BaseComponent {
           // this.selectBtn(index)
           this.startIsUse(index)
         }}>
-          <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44) }} />
-          <Text style={{ fontSize: size(24), color: color, marginTop: size(8) }}>{item.secondFyName}</Text>
+          <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44),opacity:this.state.selectBtnIndex === index ? 0.8: 1 }} />
+          <Text style={{ fontSize: size(24), color: color, marginTop: size(8),opacity:this.state.selectBtnIndex === index ? 0.8: 1 }}>{item.secondFyName}</Text>
         </TouchableOpacity>
       )
     })
@@ -467,5 +473,6 @@ const styles = StyleSheet.create({
     height: size(80),
     justifyContent: 'center',
     alignItems: 'center',
+    // backgroundColor: 'blue'
   }
 });

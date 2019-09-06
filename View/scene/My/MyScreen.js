@@ -9,7 +9,8 @@
 import React, { Component } from 'react';
 import {
   Platform, StyleSheet, Text, View, Image, Linking, StatusBar, TouchableOpacity,
-  Dimensions, TouchableHighlight, TextInput, RefreshControl, ImageBackground, ScrollView, TouchableWithoutFeedback, DeviceEventEmitter, Button
+  Dimensions, TouchableHighlight, TextInput, RefreshControl, ImageBackground, ScrollView, TouchableWithoutFeedback, DeviceEventEmitter, Button,
+  NavigationActions,
 } from 'react-native';
 import { storage } from "../../common/storage";
 import { ContainerView, BaseComponent, NavBar, ListCell, Line, MineBuuton, AppDef, isIPhoneXPaddTop, size, FuncUtils, deviceWidth } from '../../common';
@@ -27,7 +28,9 @@ export default class MyScreen extends Component {
       isUse: false,//vip是否可以使用
       vipTitle: "开通会员",
       memberInfo: {},
-        combo:{}
+        combo:{
+          // endTime:""
+        }
     }
     this.listData = [
       {
@@ -89,8 +92,36 @@ export default class MyScreen extends Component {
       // },
     ]
   }
+  async checkLoginStatus() {
+    let tokens = await storage.get("userTokens");
+    
+    let status = false;
+    if (!(tokens == -1 || tokens == -2)) { // 有token
+      if (tokens.member.isYouke == "yes") { // 游客
+        
+        status = false;
+      } else {
+        status = true;
+      }
+    } else {
+      status = false;
+    }
 
+    if (!status) {
+      this.gotoLogin();
+    }
+  }
+  
+  gotoLogin() {
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: "LoginPage" })]
+    });
+    this.props.navigation.dispatch(resetAction);
+  }
+  
   async componentDidMount() {
+      this.checkLoginStatus()
       let memberInfo = await storage.get("memberInfo");
       FuncUtils.checkKfPerm()
           .then(res => {
@@ -140,6 +171,9 @@ export default class MyScreen extends Component {
     }
   }
   _renderHeader() {
+    // alert(JSON.stringify(this.state.combo))
+    let _endTime = this.state.combo==undefined?'':this.state.combo.endTime
+    // if(combo)
     return (
       <ImageBackground source={require('../../img/kf_mine/mine_topback.png')} style={styles.topImgBack}>
 
@@ -178,7 +212,9 @@ export default class MyScreen extends Component {
                     : null
                 }
               </View>
-              <Text style={{ fontSize: size(18), color: AppDef.White, }} allowFontScaling={false}>{this.state.isUse ? this.state.combo.endTime.substring(0, 10) + "到期" : ""}</Text>
+              <Text style={{ fontSize: size(18), color: AppDef.White, }} allowFontScaling={false}>
+                {this.state.isUse ?_endTime.substring(0, 10) + "到期" : ""}
+              </Text>
             </View>
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>

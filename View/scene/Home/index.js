@@ -43,9 +43,11 @@ class Custom extends BaseComponent {
 
   async checkLoginStatus() {
     let tokens = await storage.get("userTokens");
+    
     let status = false;
     if (!(tokens == -1 || tokens == -2)) { // 有token
       if (tokens.member.isYouke == "yes") { // 游客
+        
         status = false;
       } else {
         status = true;
@@ -83,15 +85,23 @@ class Custom extends BaseComponent {
         this.codePushStatusDidChange.bind(this),
         this.codePushDownloadDidProgress.bind(this)
     )
+    
   }
 
   syncImmediate() {
+    // this.setState({modalVisible: true})
+    //     setTimeout(()=>{
+    //       this.setState({modalVisible: false})
+    //     },8000)
     CodePush.checkForUpdate(CODE_PUSH_KEY).then((update) => {
-      console.log('-------' + update)
+      // console.log('-------' + update)
       if (!update) {
-        Toast.showLongSuccess('已是最新版本！')
+        this.mainView._toast('目前已是最新版本！')
       } else {
         this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory})
+        setTimeout(()=>{
+          this.setState({modalVisible: false})
+        },8000)
       }
     })
   }
@@ -107,6 +117,7 @@ class Custom extends BaseComponent {
       } else {
         this.refs.progressBar.progress = this.currProgress
       }
+      
     }
   }
 
@@ -149,16 +160,18 @@ class Custom extends BaseComponent {
             animationType={"none"}
             transparent={true}
             visible={this.state.modalVisible}
-            onRequestClose={() => alert("Modal has been closed.")}>
+            onRequestClose={() => {
+              this.setState({modalVisible:false})
+            }}>
           <View style={styles.modal}>
             <View style={styles.modalContainer}>
               {
                    !this.state.immediateUpdate ?
                    <View>
-                     {/* <Image style={{width: deviceWidth - 60}} source={require('../../../assets/images/me/updateBg.png')} resizeMode={'stretch'}/> */}
-                     <View style={{backgroundColor: "white"}}>
-                       <View style={{marginHorizontal: 15}}>
-                         <Text style={{marginVertical: 20, fontSize: 17, color: "#000", fontWeight: 'bold'}}>更新内容</Text>
+                     <Image resizeMode={'stretch'} style={{width: deviceWidth - 40,height:deviceHeight/1.5}} source={require('../../img/home/update_backgroundImg.png')}  />
+                     <View style={{backgroundColor: "white",marginTop:-150}}>
+                       <View style={{marginHorizontal: 30,marginTop:-100}}>
+                         <Text style={{marginVertical: 0, fontSize: 17, color: "#000", fontWeight: 'bold'}}>更新内容</Text>
                          <Text style={{lineHeight: 20}}>{this.state.updateInfo.description}</Text>
                        </View>
                        <View style={{alignItems: "center", marginTop: 20}}>
@@ -166,7 +179,7 @@ class Custom extends BaseComponent {
                        </View>
                        {
                          !this.state.isMandatory ?
-                             <View style={{flexDirection: "row", height: 50, alignItems: "center", marginTop: 20, borderTopColor: "#E6E6E6", borderTopWidth: 1 }}>
+                             <View style={{flexDirection: "row", height: 50, alignItems: "center", marginTop: 120, borderTopColor: "#E6E6E6", borderTopWidth: 1 }}>
                                <TouchableOpacity
                                    onPress={() => this.setState({modalVisible: false})}>
                                  <View style={{flexDirection: "row", alignItems: "center", width: (deviceWidth - 60) / 2, height: 50, borderRightColor: "#E6E6E6", borderRightWidth: 1, alignItems: "center", justifyContent: "center"}}>
@@ -197,8 +210,8 @@ class Custom extends BaseComponent {
                      </View>
                    </View> :
                    <View>
-                     {/* <Image style={{width: deviceWidth - 60}} source={require('../../../assets/images/me/updateBg.png')} resizeMode={'stretch'}/> */}
-                     <View style={{backgroundColor: "white", paddingVertical: 20, backgroundColor: "white", alignItems: "center"}}>
+                     <Image resizeMode={'stretch'} style={{width: deviceWidth - 80,height:deviceHeight/1.8}} source={require('../../img/home/update_backgroundImg.png')}  />
+                     <View style={{backgroundColor: "white", paddingVertical: 0, backgroundColor: "white", alignItems: "center",marginTop:-180}}>
                        <Progress
                            ref="progressBar"
                            progressColor={'#89C0FF'}
@@ -230,6 +243,7 @@ class Custom extends BaseComponent {
   componentWillMount = () => {
     CodePush.disallowRestart()
     this.syncImmediate()
+    
   };
   
 
