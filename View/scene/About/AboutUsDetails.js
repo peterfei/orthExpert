@@ -24,17 +24,16 @@ export default class problemDetails extends Component<Props> {
     }
 
     render() {
-        // let detail = this.props.navigation.state.params.obj.content;
         return (
             <View style={styles.container}>
                 <TitleBar title={this.state.title} navigate={this.props.navigation}/>
                 <View style={{flex: 1}}>
-                    {/* <WebView
+                    <WebView
 
                         style={styles.WebViewStyle}
                         startInLoadingState={true}
-                        source={{uri: detail}}
-                    /> */}
+                        source={{uri: 'http://vesal.site//mianzeshengming/orthopaedicsDisclaimer.html'}}
+                    />
                 </View>
             </View>
         );
