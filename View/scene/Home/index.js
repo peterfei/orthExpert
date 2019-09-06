@@ -1,5 +1,5 @@
 import React from "react";
-import {Image, StyleSheet, Text, TouchableOpacity, View, StatusBar, Platform,AppState,Modal,} from "react-native";
+import {Image, StyleSheet, Text, TouchableOpacity, View, StatusBar, Platform,AppState,Modal,ImageBackground,ScrollView} from "react-native";
 import {AppDef, BaseComponent, ContainerView, FuncUtils, HttpTool, NavBar, NetInterface, size, isIPhoneXPaddTop, ImageMapper} from '../../common';
 import api from "../../api";
 import {deviceWidth,deviceHeight} from "../../common/ScreenUtil";
@@ -168,58 +168,52 @@ class Custom extends BaseComponent {
               {
                    !this.state.immediateUpdate ?
                    <View>
-                     <Image resizeMode={'stretch'} style={{width: deviceWidth - 40,height:deviceHeight/1.5}} source={require('../../img/home/update_backgroundImg.png')}  />
-                     <View style={{backgroundColor: "white",marginTop:-150}}>
-                       <View style={{marginHorizontal: 30,marginTop:-100}}>
-                         <Text style={{marginVertical: 0, fontSize: 17, color: "#000", fontWeight: 'bold'}}>更新内容</Text>
-                         <Text style={{lineHeight: 20}}>{this.state.updateInfo.description}</Text>
+                     <ImageBackground style={{width: size(550),height:size(732)}} source={require('../../img/home/update_backgroundImg.png')}>
+                     <View>
+                       <Text style={{color:"#5E5E5E", fontWeight: "bold", fontSize:size(42), marginTop:size(280), marginLeft:size(40)}}>更新内容</Text>
+                       <View style={{marginTop:size(15),height:size(220),marginLeft:size(40),marginRight:size(40)}}>
+                         <ScrollView style={{flex: 1}}   showsVerticalScrollIndicator={false}>
+                           <Text style={{fontSize:size(28),lineHeight:size(30),color:'#282828'}}>{this.state.updateInfo.description}</Text>
+                         </ScrollView>
                        </View>
-                       <View style={{alignItems: "center", marginTop: 20}}>
-                         <Text style={{fontSize: 14, color:"gray"}}>wifi情况下更新不到30秒</Text>
-                       </View>
+                       <Text style={{color:'#282828',textAlign:'center',fontSize:size(22),marginBottom:size(10)}}>wifi情况下更新不到30秒</Text>
                        {
                          !this.state.isMandatory ?
-                             <View style={{flexDirection: "row", height: 50, alignItems: "center", marginTop: 120, borderTopColor: "#E6E6E6", borderTopWidth: 1 }}>
-                               <TouchableOpacity
-                                   onPress={() => this.setState({modalVisible: false})}>
-                                 <View style={{flexDirection: "row", alignItems: "center", width: (deviceWidth - 60) / 2, height: 50, borderRightColor: "#E6E6E6", borderRightWidth: 1, alignItems: "center", justifyContent: "center"}}>
-                                   {/* <Icon name={'oneIcon|reject_o'} size={20} color={'#B6B6B6'}/> */}
-                                   <Text style={{fontSize: 17, fontWeight: 'bold', color:"gray", marginLeft: 10}}>残忍拒绝</Text>
-                                 </View>
+                             <View style={{flexDirection:'row',justifyContent:'space-around'}}>
+                               <TouchableOpacity style={{width: size(230), height: size(80),
+                                   backgroundColor: "#f4f4f4",justifyContent:'center',alignItems:'center',borderRadius:size(10)}}
+                                                 onPress={() => this.setState({modalVisible: false})}>
+                                 <Text style={{color:'#000'}}>残忍拒绝</Text>
                                </TouchableOpacity>
                                <TouchableOpacity
-                                   style={{flexDirection: "row", alignItems: "center", width: (deviceWidth - 60) / 2, height: 50, alignItems: "center", justifyContent: "center"}}
                                    onPress={() => this._immediateUpdate()}
-                               >
-                                 <View style={{backgroundColor: '#3496FA', flex: 1, height: 40, alignItems: "center", justifyContent: "center", margin: 10, borderRadius: 20}}>
-                                   <Text style={{fontSize: 17, color: "white", fontWeight: 'bold'}}>极速下载</Text>
-                                 </View>
-                               </TouchableOpacity>
-                             </View> :
-                             <View style={{flexDirection: "row", height: 60, alignItems: "center", marginTop: 20, borderTopColor: "#E6E6E6", borderTopWidth: 1, width: deviceWidth - 60}}>
-                               <TouchableOpacity
-                                   style={{flexDirection: "row", alignItems: "center", width: (deviceWidth - 60), height: 50, alignItems: "center", justifyContent: "center"}}
-                                   onPress={() => this._immediateUpdate()}
-                               >
-                                 <View style={{backgroundColor: '#3496FA', flex: 1, height: 40, alignItems: "center", justifyContent: "center", borderRadius: 20, marginHorizontal: 40}}>
-                                   <Text style={{fontSize: 17, color: "white", fontWeight: 'bold'}}>立即更新</Text>
-                                 </View>
+                                   style={{width: size(230), height: size(80),
+                                       backgroundColor: "#489ef6",justifyContent:'center',alignItems:'center',borderRadius:size(10)}}>
+                                 <Text style={{color: '#fff'}}>极速下载</Text>
                                </TouchableOpacity>
                              </View>
+                             :
+                               <TouchableOpacity onPress={() => this._immediateUpdate()}>
+                                 <View style={{height: 40,marginRight:size(75), justifyContent:'center',
+                                     alignItems:'center',backgroundColor:'#3496FA',marginLeft:size(75),borderRadius:size(10)}}>
+                                   <Text style={{color: '#fff',fontSize: 17,fontWeight: 'bold'}}>立即更新</Text>
+                                 </View>
+                               </TouchableOpacity>
                        }
                      </View>
+                     </ImageBackground>
                    </View> :
                    <View>
-                     <Image resizeMode={'stretch'} style={{width: deviceWidth - 80,height:deviceHeight/1.8}} source={require('../../img/home/update_backgroundImg.png')}  />
-                     <View style={{backgroundColor: "white", paddingVertical: 0, backgroundColor: "white", alignItems: "center",marginTop:-180}}>
+                     <ImageBackground style={{width: size(550),height:size(732)}} source={require('../../img/home/update_backgroundImg.png')}  />
+                     <View style={{justifyContent:'center',alignItems:'center'}}>
                        <Progress
                            ref="progressBar"
                            progressColor={'#89C0FF'}
                            style={{
-                             marginTop: 20,
+                             marginTop:size(-500),
                              height: 10,
-                             width: deviceWidth - 100,
-                             backgroundColor: "blue",
+                             width: size(400),
+                             backgroundColor: "#3496FA",
                              borderRadius: 10,
                            }}
                        />
