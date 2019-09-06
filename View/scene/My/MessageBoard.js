@@ -31,7 +31,6 @@ export default class MessageBoard extends Component {
   componentDidMount() {
   }
   onShowMessage = () => {
-    console.log(`=============`);
     this.props.navigation.navigate("showMessages");
   };
   constructor(props) {
@@ -78,13 +77,9 @@ export default class MessageBoard extends Component {
       page: this.state.currentPage,
       limit: this.state.pageLimit
     };
-    console.log(`
-      \n传入的请求数据:${JSON.stringify(data)}\n
-    `);
+
     const url = NetInterface.gk_msgList + "?business=orthope";
-    console.log(`
-      \n当前请求的url:${url}
-    `);
+
     let responseData = HttpTool.GET_JP(url)
       .then(
         result => {
@@ -96,12 +91,11 @@ export default class MessageBoard extends Component {
               totalPage: result.page.totalPage,
               pageLimit: result.page.pageSize,
               currentPage: result.page.currPage,
-              refreshState: RefreshState.Idle
+              refreshState: RefreshState.Idle,
             });
           }
         },
         error => {
-          console.log(`\n连接网络失败`);
         }
       );
     return responseData;
@@ -109,12 +103,10 @@ export default class MessageBoard extends Component {
   requestNextPageData = async () => {
     this.setState({ refreshState: RefreshState.FooterRefreshing });
     if (this.state.totalPage == 1) {
-      console.log("=====只有一页=====");
     } else {
       // if(this.state.currentPage)
       if (this.state.currentPage != this.state.totalPage) {
         let nextPage = this.state.currentPage++;
-        // const resp = await this.requestFirstPageData();
         this.requestFirstPageData();
         alert(JSON.stringify(resp));
         // debugger;
@@ -122,11 +114,6 @@ export default class MessageBoard extends Component {
         //   refreshState: RefreshState.FooterRefreshing,
         //   currentPage: nextPage
         // });
-
-        console.log(`
-      \n====================
-       ${this.state.dataList}
-      `);
         // debugger;
         let newDatas = resp.list;
         newDatas = [...this.state.dataList, ...newDatas];
@@ -167,11 +154,15 @@ export default class MessageBoard extends Component {
         borderBottomWidth: 1,
         borderBottomColor: '#EAEAEA', marginRight: 10
       }}>
-
-
         <View style={{ flexDirection: "row", justifyContent: "space-around" }} >
           <View style={{ margin: 8, flex: 3 }}>
-            <Text style={{ fontSize: 14, color: "#8E8E8E" }}>来自{rowData.item.mb_province}用户 {rowData.item.mbName} </Text>
+              {
+                rowData.item.msg_type == "private"
+                ?
+                    <Text style={{ fontSize: 14, color: "#8E8E8E" }}>来自未知用户 </Text>
+                :
+                    <Text style={{ fontSize: 14, color: "#8E8E8E" }}>来自 {rowData.item.mb_province}用户 {rowData.item.mbName}</Text>
+              }
           </View>
           <View style={{ marginTop: 8, marginRight: 5, flex: 1 }}>
            {/* <StarRating style={{ marginRight: 5 }}
@@ -255,12 +246,6 @@ export default class MessageBoard extends Component {
                </View>
 
             </View>
-
-
-
-
-
-
           </TouchableOpacity>
 
         </View >
