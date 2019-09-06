@@ -311,6 +311,7 @@ export default class SickDetail extends BaseComponent {
           position: 'absolute', bottom: 0,
           backgroundColor: 'white',
           height: size(250),
+          width:screen.width,
           borderTopLeftRadius: 15, borderTopRightRadius: 15
         }}>
           <View style={{margin:10}}>
