@@ -95,6 +95,8 @@ export default class LoginPageForm extends Component {
         console.log("设备的UUID==>" + device.DeviceID)
         curr.Loading.show("游客登录中..")
         let resp = await this.store.loginWithTourist()
+        // alert(JSON.stringify(resp))
+        // return
         if (resp.code == 0) {
             curr.Loading.close()
             this.store.props = this.props
