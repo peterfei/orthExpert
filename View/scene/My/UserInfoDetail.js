@@ -38,20 +38,32 @@ export default class UserInfoDetail extends BaseComponent {
             getImageUrl: '',
             modifyNickName: [{ title: '昵称', content: '', type: 'input', }],
             sectionSexData: [{ title: '性别', content: '', type: 'select', }],
-            sectionIdentityData: [{ title: '选择身份', content: '', type: 'select', }]
-        };
+            sectionIdentityData: [{ title: '选择身份', content: '', type: 'select', }],
+            isPhoneUser: false,
+    };
         this.modifyPassword = [{ title: '修改密码', content: 'ModifyPassword', type: 'page' }];
     }
 
     async componentDidMount() {
         let memberInfo = await storage.get("memberInfo");
+        let isEmail = memberInfo.mbEmail != null && memberInfo.mbEmail != undefined && memberInfo.mbEmail.length > 0;
+        let isPhoneUser = (memberInfo.mbTell != null && memberInfo.mbTell != undefined && memberInfo.mbTell.length > 0) ||isEmail? true : false;
+        let mbSex = memberInfo.mbSex;
+        if (mbSex == 'man' || mbSex == '男') {
+            mbSex = '男';
+        } else if (mbSex == 'woman' || mbSex == '女') {
+            mbSex = '女';
+        } else {
+            mbSex = '保密';
+        }
         this.getAllIdentity();
         this.setState({
             getMemberInfo: memberInfo,
             getMemberId: memberInfo.mbId,
             modifyNickName: [{ title: '昵称', content: memberInfo.mbName, type: 'input' }],
             sectionSexData: [{ title: '性别', content: memberInfo.mbSex, type: 'select' }],
-            sectionIdentityData: [{ title: '选择身份', content: memberInfo.identityTitle, type: 'select' }]
+            sectionIdentityData: [{ title: '选择身份', content: memberInfo.identityTitle, type: 'select' }],
+            isPhoneUser:isPhoneUser
         })
     }
 
@@ -79,7 +91,6 @@ export default class UserInfoDetail extends BaseComponent {
             mbHeadUrl: memberInfo.mbHeadUrl,
             mbId: this.state.getMemberId
         };
-        console.log("--------------body---------" + JSON.stringify(body))
 
         let tokens = await storage.get("userTokens");
         let url = NetInterface.gk_updateMemberInfo;
@@ -124,7 +135,6 @@ export default class UserInfoDetail extends BaseComponent {
             compress: true,
             enableBase64: true
         }, (err, photos) => {
-            console.log('开启', err, photos);
             if (!err) {
                 this.mainView._showLoading("正在上传...")
                 HttpTool.UploadImg(photos)
@@ -324,8 +334,8 @@ export default class UserInfoDetail extends BaseComponent {
                 {this._renderSectionSex()}
                 {this._renderSectionIdentity()}
                 <Line height={size(14)} />
-                {this._renderModifyPassword()}
-                <Line height={size(14)} />
+                {this.state.isPhoneUser ? this._renderModifyPassword() :null}
+                {this.state.isPhoneUser ? <Line height={size(14)}/> :null}
                 {this._renderFooter()}
 
             </ContainerView>

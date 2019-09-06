@@ -1,21 +1,12 @@
 import React, { Component } from "react";
 import {
     View,
-    Text,
-    TouchableOpacity,
     StyleSheet,
-    Image,
-    TextInput,
-    Button, Alert,
-    DeviceEventEmitter,
-    Platform, TouchableHighlight,ScrollView
+     Alert,
+    ScrollView
 } from "react-native";
-import { color } from "../../widget";
-import {screen, system, HttpTool, NetInterface, Line} from "../../common";
+import {screen, HttpTool, NetInterface, Line,NullData} from "../../common";
 import { size } from "../../common/ScreenUtil";
-import { storage } from "../../common/storage";
-import StarRating from "react-native-star-rating";
-import api from "../../api";
 import CardCell from './CardCell';
 
 export default class RecoveryItem extends Component {
@@ -30,25 +21,20 @@ export default class RecoveryItem extends Component {
     componentDidMount() {
         this.getSchemesByPatNo()
     }
+
     getSchemesByPatNo() {
-        // let url = api.base_url_sport+"app/kfxl/v1/scheme/getSchemesByPatNo?patNo=" + this.props.patNo + "&page=1&limit=10&planType=sysTpl";
         const url = NetInterface.planListWithSick + '?patNo=' + this.props.navigation.state.params.sick.pat_no + '&page=1&limit=10&planType=sysTpl';
-        // alert(url)
-      // 确认为使用GET
         HttpTool.GET(url)
           .then(result => {
-              // alert(JSON.stringify(result))
               this.setState({
                   CardCellData: result.page.list
               })
           })
           .catch(err => {
-              // alert(JSON.stringify(result))
               console.log(JSON.stringify(err));
           })
-
-
     }
+
     render() {
         return (
             <View style={styles.container}>
@@ -60,27 +46,29 @@ export default class RecoveryItem extends Component {
             </View>
         )
     }
+
     showKeyList() {
         let arr = [];
         if(this.state.CardCellData !==''&&this.state.CardCellData !==[]){
-        if(this.state.CardCellData ==''||this.state.CardCellData ==[]){
-            return <View style={{width:'100%',height:500,justifyContent:'center',alignItems:'center'}}><Text>暂无数据</Text></View>
-        }else{
-
-            this.state.CardCellData.forEach((item, value) => {
-                arr.push(
-                    <CardCell cellRow={item} selectCard={(row) => {
-                        this.selectCard(row)
-                    }}/>
-                )
-            });
-            return arr;
+            if(this.state.CardCellData ==''||this.state.CardCellData ==[]){
+                return <NullData/>
+            }else{
+                this.state.CardCellData.forEach((item, value) => {
+                    arr.push(
+                        <CardCell cellRow={item} selectCard={(row) => {
+                            this.selectCard(row)
+                        }}/>
+                    )
+                });
+                return arr;
+            }
         }
     }
-    }
+
     selectCard(data) {
         this.props.navigation.navigate('kfPlanDetail', { 'planId': data.planId })
     }
+
     button() {
         Alert.alert(
             '立即下载运动康复训练APP', '定制计划',
@@ -101,6 +89,7 @@ export default class RecoveryItem extends Component {
         );
     }
 }
+
 const styles = StyleSheet.create({
     container: {
         width: '100%',
