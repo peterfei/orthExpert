@@ -109,23 +109,22 @@ export default class SickDetail extends BaseComponent {
     let touchX = Math.abs(state.dx);
     let isNextMove = false;
     if (state.dx < 0) { // 左滑
-      isNextMove = false;
-    } else { // 右滑
       isNextMove = true;
+    } else { // 右滑
+      isNextMove = false;
     }
 
 
 
     let i;
-    if (touchX < ((deviceWidth - size(240)) / 4)) { // 移动的距离小于scroll的1/4
+    if (touchX < size(80)) { // 移动的距离小于scroll的1/4
       i = this.state.selectImgIndex;
       // alert('弹回');
     } else {
-      // alert('移动');
-      if (isNextMove) {
-        i = this.state.selectImgIndex == this.state.areaSickList.length - 1 ? this.state.selectImgIndex : this.state.selectImgIndex+1;
-      } else {
-        i = this.state.selectImgIndex == 0 ? this.state.selectImgIndex : this.state.selectImgIndex+1;
+      if (isNextMove) { // 下一张
+          i = this.state.selectImgIndex == this.state.areaSickList.length - 1 ? this.state.selectImgIndex : this.state.selectImgIndex+1;
+      } else { // 上一张
+        i = this.state.selectImgIndex == 0 ? this.state.selectImgIndex : this.state.selectImgIndex-1;
       }
     }
     // alert(`x == ${touchX}`);
@@ -565,7 +564,6 @@ const styles = StyleSheet.create({
     width: size(120),
     height: size(120),
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'blue'
+    alignItems: 'center'
   }
 });
