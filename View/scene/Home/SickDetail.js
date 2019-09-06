@@ -5,7 +5,17 @@
  */
 
 import React from "react";
-import { ScrollView, StyleSheet, View, Image, TouchableOpacity, Text, ImageBackground, DeviceEventEmitter } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  Text,
+  ImageBackground,
+  DeviceEventEmitter,
+  PanResponder
+} from "react-native";
 import {
   BaseComponent,
   ContainerView,
@@ -19,7 +29,6 @@ import Video from 'react-native-af-video-player';
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
 
 export default class SickDetail extends BaseComponent {
-
 
   constructor(props) {
     super(props);
@@ -45,6 +54,91 @@ export default class SickDetail extends BaseComponent {
         FuncUtils.checkKfPerm()
       }
     )
+  }
+
+  componentWillMount() {
+    this.panResponder = PanResponder.create({
+
+      /***************** 要求成为响应者 *****************/
+      // 移动手势是否可以成为响应者
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      // 拦截子组件的单击手势传递,是否拦截
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      // 拦截子组件的移动手势传递,是否拦截
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+      /***************** 响应者事件回调处理 *****************/
+      // 移动手势监听回调
+      onPanResponderMove: (e, gestureState) => {
+        console.log('onPanResponderMove==>' + '移动手势申请成功,开始处理手势' + `${gestureState}`)
+        console.log('开始移动');
+      },
+      // 手势动作结束回调
+      onPanResponderEnd: (evt, gestureState) => {
+        console.log('onPanResponderEnd==>' + '手势操作完成了,用户离开')
+        console.log('停止移动');
+      },
+      // 手势释放, 响应者释放回调
+      onPanResponderRelease: (e, gestureState) => {
+        // 用户放开了所有的触摸点，且此时视图已经成为了响应者。
+        // 一般来说这意味着一个手势操作已经成功完成。
+        console.log('onPanResponderRelease==>' + '放开了触摸,手势结束')
+        console.log('收拾放开');
+        this._onPanResponderRelease(gestureState);
+      },
+      // 手势申请失败,未成为响应者的回调
+      onResponderReject: (e) => {
+        // 申请失败,其他组件未释放响应者
+        console.log('onResponderReject==>' + '响应者申请失败')
+      },
+
+      // 当前手势被强制取消的回调
+      onPanResponderTerminate: (e) => {
+        // 另一个组件已经成为了新的响应者，所以当前手势将被取消
+        console.log('onPanResponderTerminate==>' + '由于某些原因(系统等)，所以当前手势将被取消')
+      },
+      onShouldBlockNativeResponder: (evt, gestureState) => {
+        // 返回一个布尔值，决定当前组件是否应该阻止原生组件成为JS响应者
+        // 默认返回true。目前暂时只支持android。
+        return true;
+      },
+    })
+  }
+
+  // 手势结束
+  _onPanResponderRelease(state) {
+    let touchX = Math.abs(state.dx);
+    let isNextMove = false;
+    if (state.dx < 0) { // 左滑
+      isNextMove = false;
+    } else { // 右滑
+      isNextMove = true;
+    }
+
+
+
+    let i;
+    if (touchX < ((deviceWidth - size(240)) / 4)) { // 移动的距离小于scroll的1/4
+      i = this.state.selectImgIndex;
+      // alert('弹回');
+    } else {
+      // alert('移动');
+      if (isNextMove) {
+        i = this.state.selectImgIndex == this.state.areaSickList.length - 1 ? this.state.selectImgIndex : this.state.selectImgIndex+1;
+      } else {
+        i = this.state.selectImgIndex == 0 ? this.state.selectImgIndex : this.state.selectImgIndex+1;
+      }
+    }
+    // alert(`x == ${touchX}`);
+
+    // alert(i)
+    this._scrollView.scrollTo({ x: i * (deviceWidth - size(240)), y: 0, animated: true });
+    let sick = this.state.areaSickList[i];
+    this.setState({
+      selectImgIndex: i,
+      sick: sick
+    }, () => {
+      this.requestSickData();
+    })
   }
 
   componentWillUnmount() {
@@ -119,14 +213,14 @@ export default class SickDetail extends BaseComponent {
   }
 
   onScrollAnimationEnd(e) {
-    let i = Math.floor(e.nativeEvent.contentOffset.x / (deviceWidth - size(238)));
-    let sick = this.state.areaSickList[i];
-    this.setState({
-      selectImgIndex: i,
-      sick: sick
-    }, () => {
-      this.requestSickData();
-    })
+    // let i = Math.floor(e.nativeEvent.contentOffset.x / (deviceWidth - size(238)));
+    // let sick = this.state.areaSickList[i];
+    // this.setState({
+    //   selectImgIndex: i,
+    //   sick: sick
+    // }, () => {
+    //   this.requestSickData();
+    // })
   }
 
   closeVideo() {
@@ -236,7 +330,7 @@ export default class SickDetail extends BaseComponent {
     videoList.forEach((item, index) => {
 
       arr.push(
-        <TouchableOpacity style={{ marginBottom: size(30) }} onPress={() => {
+        <TouchableOpacity style={{ marginBottom: size(30), }} onPress={() => {
           this.setState({
             playVideoUrl: item.url,
             showSourceType: 'video'
@@ -244,7 +338,7 @@ export default class SickDetail extends BaseComponent {
         }}>
           <ImageBackground
             source={{ uri: item.img }}
-            style={{ width: width - 1, height: size(210), marginRight: size(25), marginBottom: size(20), justifyContent: 'center', alignItems: 'center' }}>
+            style={{ width: width - 1, height: size(210), borderRadius: size(10), overflow: 'hidden', marginRight: size(25), marginBottom: size(20), justifyContent: 'center', alignItems: 'center' }}>
             <Image source={require('../../img/home/video.png')} style={{ width: size(78), height: size(78) }} />
           </ImageBackground>
           <Text style={{ color: AppDef.Black, fontSize: size(24), width: width, }}>{item.name}</Text>
@@ -336,7 +430,7 @@ export default class SickDetail extends BaseComponent {
       this.state.areaSickList.forEach((item, index) => {
         arr.push(
           <View style={{ width: deviceWidth - size(240), height: size(850)
-                            // , backgroundColor: index%2 == 0? 'orange' : 'red' 
+                            // , backgroundColor: index%2 == 0? 'orange' : 'red'
                           }}>
             <Image
               resizeMode={'contain'}
@@ -365,7 +459,7 @@ export default class SickDetail extends BaseComponent {
     let nextImg = isLast ? { uri: '' } : require('../../img/home/img_r.png');
     // alert(arr)
     return (
-      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+      <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
 
         <TouchableOpacity style={styles.arrowStyle} onPress={() => {
           if (!isFirst) {
@@ -381,9 +475,11 @@ export default class SickDetail extends BaseComponent {
 
         <ScrollView
           ref={r => this._scrollView = r}
+          {...this.panResponder.panHandlers}
           horizontal={true}
           pagingEnabled={true}
           showsHorizontalScrollIndicator={false}
+          automaticallyAdjustContentInsets={false}
           onMomentumScrollEnd={this.onScrollAnimationEnd.bind(this)}
           style={{ width: deviceWidth - size(240), height: size(850) }}
         >
@@ -405,8 +501,6 @@ export default class SickDetail extends BaseComponent {
       </View>
     )
   }
-
-
 
   //判断是否开始使用
   async  startIsUse(index){
@@ -468,12 +562,10 @@ export default class SickDetail extends BaseComponent {
 
 const styles = StyleSheet.create({
   arrowStyle: {
-    marginLeft: size(20),
-    marginRight: size(20),
-    width: size(80),
-    height: size(80),
+    width: size(120),
+    height: size(120),
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: 'blue'
+    backgroundColor: 'blue'
   }
 });
