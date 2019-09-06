@@ -45,15 +45,15 @@ export default class help extends Component<Props> {
                            source={require('../../img/about/iphone.png')} />
                            <Text style={{color:'black'}}>客服电话： 029-68579950</Text>
                     </View>
-                    <View style={styles.rowBody}>
-                        <Image style={styles.icon}
-                           source={require('../../img/about/weixin.png')} />
-                           <Text style={{color:'black'}}>微信公众号：搜索“维萨里健身”</Text>
-                    </View>
+                    {/*<View style={styles.rowBody}>*/}
+                    {/*    <Image style={styles.icon}*/}
+                    {/*       source={require('../../img/about/weixin.png')} />*/}
+                    {/*       <Text style={{color:'black'}}>微信公众号：搜索“维萨里健身”</Text>*/}
+                    {/*</View>*/}
                     <View style={styles.rowBody}>
                         <Image style={styles.icon}
                            source={require('../../img/about/mzsm.png')} />
-                           <Text onPress={()=>{this.props.navigation.navigate('AboutUsDetails')}} style={{color:'#44B4E9'}}>免责声明</Text>
+                           <Text onPress={()=>{this.props.navigation.navigate('AboutUsDetails')}} style={{color:'#44B4E9'}}>查看免责声明</Text>
                     </View>
                 </View>
             </View>

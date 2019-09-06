@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
     titleViewSty: {
         flexDirection: "row",
         width: screen.width * 0.93,
+        paddingTop:size(20)
         // backgroundColor:'yellow'
     },
     imgSty: {
@@ -179,7 +180,8 @@ const styles = StyleSheet.create({
     },
     messageTxtSty: {
         color: "#434549",
-        fontSize: size(27)
+        fontSize: size(27),
+        marginBottom: size(10)
     },
     loadIcon: {
         width: screen.width * 0.5,

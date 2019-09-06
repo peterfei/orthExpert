@@ -704,26 +704,7 @@ export default class ConfirmPayScreen extends Component {
                                 </View>
                             </View>
                         </View>
-                        <View
-                            style={styles.paymentContainer}
-                            style={this.state.alipayState ? styles.show : styles.hide}>
-                            <View margin-5>
-                                <Image
-                                    style={styles.avatar}
-                                    source={require("../../img/payment/alipay.png")}
-                                />
-                            </View>
-                            <View flex marginL-10>
-                                <View>
-                                    <Text style={{fontSize: size(28)}} text60 black10>
-                                        支付宝支付
-                                    </Text>
-                                </View>
-                                <View text40 black10 margin-2>
-                                    <Text style={{fontSize: size(26)}}>支付宝钱包支付</Text>
-                                </View>
-                            </View>
-                        </View>
+
                         <View
                             style={styles.paymentContainer}
                             style={this.state.applyState ? styles.show : styles.hide}>
