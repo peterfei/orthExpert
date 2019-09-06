@@ -48,6 +48,7 @@ export default class MyOrder extends Component {
                         style={styles.container}
                         renderTabBar={() => <DefaultTabBar />}
                         tabBarUnderlineStyle={styles.lineStyle}
+                        tabBarTextStyle={{marginTop:10}}
                         tabBarActiveTextColor={color.main}>
 
                         <View style={styles.textStyle} tabLabel="全部订单">

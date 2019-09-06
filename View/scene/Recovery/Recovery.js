@@ -36,6 +36,7 @@ export default class Recovery extends Component {
                     style={styles.containert}
                     renderTabBar={() => <DefaultTabBar />}
                     tabBarUnderlineStyle={styles.lineStyle}
+                    tabBarTextStyle={{marginTop:10}}
                     tabBarActiveTextColor={color.main}>
 
                     <View style={styles.textStyle} tabLabel="推荐训练">
