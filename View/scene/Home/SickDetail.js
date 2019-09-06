@@ -362,7 +362,7 @@ export default class SickDetail extends BaseComponent {
           scrollBounce
           volume={0.8}
           inlineOnly
-          style={{width: screen.width, height: screen.height }}
+          style={{width: screen.width, height: screen.height + size(148) }}
           url={this.state.playVideoUrl}
           ref={(ref) => {
             this.video = ref
