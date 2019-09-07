@@ -272,7 +272,7 @@ export default class SickDetail extends BaseComponent {
         this.setState({
           showSourceType: 'video',
           selectBtnIndex: index,
-          playVideoUrl: menuBtn.content
+          playVideoUrl: menuBtn.content==undefined?'':menuBtn.content
         })
       }
 
@@ -280,7 +280,7 @@ export default class SickDetail extends BaseComponent {
         this.setState({
           showSourceType: 'text',
           selectBtnIndex: index,
-          playVideoUrl: menuBtn.content
+          playVideoUrl: menuBtn.content==undefined?'':menuBtn.content
         })
       }
 
@@ -325,26 +325,31 @@ export default class SickDetail extends BaseComponent {
   _renderVideoList() {
     let arr = [];
     let menuBtn = this.state.menus[this.state.selectBtnIndex];
-    let videoList = JSON.parse(menuBtn.content);
-    let width = (screen.width - size(75)) / 2;
-    videoList.forEach((item, index) => {
+    try{
+      let videoList = JSON.parse(menuBtn.content);
+      let width = (screen.width - size(75)) / 2;
+      videoList.forEach((item, index) => {
 
-      arr.push(
-        <TouchableOpacity style={{ marginBottom: size(30), }} onPress={() => {
-          this.setState({
-            playVideoUrl: item.url,
-            showSourceType: 'video'
-          })
-        }}>
-          <ImageBackground
-            source={{ uri: item.img }}
-            style={{ width: width - 1, height: size(210), borderRadius: size(10), overflow: 'hidden', marginRight: size(25), marginBottom: size(20), justifyContent: 'center', alignItems: 'center' }}>
-            <Image source={require('../../img/home/video.png')} style={{ width: size(78), height: size(78) }} />
-          </ImageBackground>
-          <Text style={{ color: AppDef.Black, fontSize: size(24), width: width, }}>{item.name}</Text>
-        </TouchableOpacity>
-      )
-    })
+        arr.push(
+          <TouchableOpacity style={{ marginBottom: size(30), }} onPress={() => {
+            this.setState({
+              playVideoUrl: item.url,
+              showSourceType: 'video'
+            })
+          }}>
+            <ImageBackground
+              source={{ uri: item.img }}
+              style={{ width: width - 1, height: size(210), borderRadius: size(10), overflow: 'hidden', marginRight: size(25), marginBottom: size(20), justifyContent: 'center', alignItems: 'center' }}>
+              <Image source={require('../../img/home/video.png')} style={{ width: size(78), height: size(78) }} />
+            </ImageBackground>
+            <Text style={{ color: AppDef.Black, fontSize: size(24), width: width, }}>{item.name}</Text>
+          </TouchableOpacity>
+        )
+      })
+    }catch(e){
+
+    }
+    
 
     return (
       <ScrollView style={{ flex: 1 }}>
