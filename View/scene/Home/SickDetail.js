@@ -291,6 +291,7 @@ export default class SickDetail extends BaseComponent {
         } else {
           this.props.navigation.navigate('BonesScene', { info: msg });
           this.setState({
+            showSourceType:'img',
             selectBtnIndex: -1,
             playVideoUrl: ''
           })
@@ -509,8 +510,8 @@ export default class SickDetail extends BaseComponent {
 
   //判断是否开始使用
   async  startIsUse(index) {
-    this.selectBtn(index)
-    return
+    // this.selectBtn(index)
+    // return
     FuncUtils.checkKfPerm()
       .then(res => {
         if (res.code == 0 && res.result == 'yes') {
