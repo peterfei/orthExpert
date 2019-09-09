@@ -10,6 +10,8 @@ import android.view.KeyEvent;
 import com.umeng.socialize.UMShareAPI;
 import com.vesal.orthexpert.module.*;
 import org.devio.rn.splashscreen.SplashScreen; // import this
+import com.umeng.analytics.MobclickAgent;
+
 
 public class MainActivity extends ReactActivity {
     private long firstClick;
@@ -37,21 +39,21 @@ public class MainActivity extends ReactActivity {
         PushAgent.getInstance(this).onAppStart();
         ShareModule.initActivity(this);
         SplashScreen.show(this);
-        // MobclickAgent.setSessionContinueMillis(1000);
+        MobclickAgent.setSessionContinueMillis(1000);
         // MobclickAgent.setScenarioType(this, EScenarioType.E_DUM_NORMAL);
-        // MobclickAgent.openActivityDurationTrack(false);
+        MobclickAgent.openActivityDurationTrack(false);
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        // MobclickAgent.onResume(this);
+        MobclickAgent.onResume(this);
     }
     @Override
     protected void onPause() {
         super.onPause();
-        // MobclickAgent.onPause(this);
+        MobclickAgent.onPause(this);
     }
 
     @Override
