@@ -234,23 +234,37 @@ export default class BonesScene extends Component {
     }
 
     androidBackAction = () => {
-        if (this.state.showComment) {
-            this.setState({
-                showComment: false
-            })
-            return true;
-        } else if (this.state.isShowSearch) {
-            this.setState({
-                isShowSearch: false
-            })
-            return true;
-        } else if (this.state.currentShowSource != '') {
-            this.closeSourceView();
-            return true;
-        } else {
-            this.clickBack();
+        if (this.state.unityReady){
+            if (this.state.showComment) {
+                this.setState({
+                    showComment: false
+                })
+                return true;
+            } else if (this.state.isShowSearch) {
+                this.setState({
+                    isShowSearch: false
+                })
+                return true;
+            } else if (this.state.currentShowSource != '') {
+                this.closeSourceView();
+                return true;
+            } else if (this.state.isSick) {
+                this.sendMsgToUnity('backMedical', '', '');
+                this.setState({
+                    isSick: false,
+                    showSelectBar: false
+                })
+                return true;
+            } else {
+                this.clickBack();
+                return true;
+            }
+        }else{
+          //  alert("请等待下载完成!")
+            this.refs.toast.show("请稍等...");
             return true;
         }
+
     }
 
     // 从realm中读取详细信息
@@ -334,8 +348,8 @@ export default class BonesScene extends Component {
             this.props.navigation.goBack();
         } else if (event.name == 'back') {//返回
             // alert(1111)
-            this.back()
-            UnityModule.pause()
+            // this.back()
+            // UnityModule.pause()
         } else if (event.name == 'model') {//点击模型  选中骨骼
             let name = hexToStr(event.data.Chinese);
             // this.refs.toast.show(name);
@@ -467,6 +481,8 @@ export default class BonesScene extends Component {
             showComment: !this.state.showComment
         })
     }
+
+    
 
     clickItem() {
         this.closeSearch();
