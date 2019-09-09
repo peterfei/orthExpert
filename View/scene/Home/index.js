@@ -96,7 +96,7 @@ class Custom extends BaseComponent {
     CodePush.checkForUpdate(CODE_PUSH_KEY).then((update) => {
       // console.log('-------' + update)
       if (!update) {
-        this.mainView._toast('目前已是最新版本！')
+        // this.mainView._toast('目前已是最新版本！')
       } else {
         this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory})
         setTimeout(()=>{
