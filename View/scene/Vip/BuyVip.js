@@ -55,8 +55,8 @@ export default class BuyVip extends BaseComponent {
         let memberInfo = await storage.get("memberInfo");
         let combo = await FuncUtils.getComboByCode(AppDef.ORTHOPE_VIP)
 
-        let isUse = await FuncUtils.checkPerm("yes", AppDef.ORTHOPE_VIP)
-        alert(isUse)
+        let isUse = await FuncUtils.checkComboisExpire(AppDef.ORTHOPE_VIP)
+
         HttpTool.GET_JP(url)
             .then(result => {
                 this.setState({
