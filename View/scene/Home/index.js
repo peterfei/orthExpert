@@ -226,17 +226,13 @@ class Custom extends BaseComponent {
     )
   }
 
-  
-
   componentWillMount = () => {
     CodePush.disallowRestart()
     this.syncImmediate()
-    
   };
 
   _handleAppStateChange = nextAppState => {
     if (nextAppState != null && nextAppState === "active") {
-      
       CodePush.checkForUpdate(CODE_PUSH_KEY).then((update) => {
         if (!update) {
           // this.mainView._toast('已是最新版本！')
@@ -248,7 +244,6 @@ class Custom extends BaseComponent {
 
     } else if (nextAppState != null && nextAppState === "background") {
     }
-    
   };
 
   async componentDidMount() {
@@ -262,8 +257,9 @@ class Custom extends BaseComponent {
       // AppState.removeEventListener("change", this._handleAppStateChange);
       // Reallow restarts, and optionally trigger
       // a restart if one was currently pending.
-      codePush.allowRestart();
+      CodePush.allowRestart();
   }
+
   getSickData() {
     const url = NetInterface.getSick;
     this.mainView._showLoading('加载中');
