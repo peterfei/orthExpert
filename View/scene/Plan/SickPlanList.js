@@ -107,7 +107,7 @@ export default class SickPlanList extends BaseComponent {
         'currArea': this.props.navigation.state.params.currArea,
         'b_key': this.props.navigation.state.key});}}>
         <View style={{width: deviceWidth - size(50), height: size(80), marginLeft: size(25), marginTop: size(40),
-          borderColor: AppDef.Blue, borderWidth: size(0.5), borderRadius: size(20),
+          borderColor: AppDef.Blue, borderWidth: size(0.5), borderRadius: size(20),zIndex:99999,
           flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
           <Image source={require('../../img/kf_main/kf_plan_add.png')} style={{width: size(32), height: size(32)}}/>
           <Text style={{color: AppDef.Black, fontSize: size(28), fontWeight: '400', marginLeft: size(25)}}>创建新方案模板</Text>

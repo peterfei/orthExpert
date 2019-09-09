@@ -88,7 +88,7 @@ export default class MessageNotice extends PureComponent {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5FCFF',
+        backgroundColor: 'white',
     },
     titleBar: {
         height: size(148),

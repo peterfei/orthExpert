@@ -244,8 +244,8 @@ export default class MyScreen extends Component {
                   <TouchableOpacity activeOpacity={1} onPress={() => {
                     this.props.navigation.navigate('BuyVip')
                   }}>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', width: size(130), height: size(30), borderColor: AppDef.White, borderWidth: size(0.5), borderRadius: size(10) }}>
-                      <Text style={{ fontSize: size(18), color: AppDef.White }} allowFontScaling={false}>立即续费</Text>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', width: size(140), height: size(40), borderColor: AppDef.White, borderWidth: size(0.5), borderRadius: size(10) }}>
+                      <Text style={{ fontSize: size(25), color: AppDef.White }} allowFontScaling={false}>立即续费</Text>
                     </View>
                   </TouchableOpacity>
                   :
