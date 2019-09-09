@@ -40,7 +40,7 @@ export default class SickDetail extends BaseComponent {
       areaSickList: props.navigation.state.params.areaSickList,  // 从上个页面查出来的所有疾病
       menus: [],           // 当前疾病的所有按钮数据
       selectBtnIndex: -1,  // 当前底部选中的按钮
-      selectImgIndex: 0,   // 当前页面显示的疾病对应的图片
+      selectImgIndex: selectIndex,   // 当前页面显示的疾病对应的图片
       showSourceType: 'img', // 当前显示的内容类型  img 图片  video播放视频  videoList 视频列表
       playVideoUrl: '',    // 当前播放的视频的url
       details: '',  //当前疾病所有数据
@@ -49,6 +49,7 @@ export default class SickDetail extends BaseComponent {
 
   componentDidMount() {
     this.requestSickData();
+    this.defaultLocation()
     this.emitter = DeviceEventEmitter.addListener('updatePermission',
       () => {
         FuncUtils.checkKfPerm()
@@ -122,9 +123,9 @@ export default class SickDetail extends BaseComponent {
       // alert('弹回');
     } else {
       if (isNextMove) { // 下一张
-          i = this.state.selectImgIndex == this.state.areaSickList.length - 1 ? this.state.selectImgIndex : this.state.selectImgIndex+1;
+        i = this.state.selectImgIndex == this.state.areaSickList.length - 1 ? this.state.selectImgIndex : this.state.selectImgIndex + 1;
       } else { // 上一张
-        i = this.state.selectImgIndex == 0 ? this.state.selectImgIndex : this.state.selectImgIndex-1;
+        i = this.state.selectImgIndex == 0 ? this.state.selectImgIndex : this.state.selectImgIndex - 1;
       }
     }
     // alert(`x == ${touchX}`);
@@ -211,6 +212,12 @@ export default class SickDetail extends BaseComponent {
     })
   }
 
+  defaultLocation() {
+    this.fristTime = setTimeout(() => {
+      this._scrollView.scrollTo({ x: this.state.selectImgIndex * (deviceWidth - size(240)), y: 0, animated: false })
+    }, 0)
+  }
+
   onScrollAnimationEnd(e) {
     // let i = Math.floor(e.nativeEvent.contentOffset.x / (deviceWidth - size(238)));
     // let sick = this.state.areaSickList[i];
@@ -227,7 +234,7 @@ export default class SickDetail extends BaseComponent {
       selectBtnIndex: -1,
       showSourceType: 'img',
       playVideoUrl: ''
-    })
+    }, () => { this.defaultLocation() })
   }
 
   selectBtn(index) {
@@ -257,7 +264,7 @@ export default class SickDetail extends BaseComponent {
         selectBtnIndex: -1,
         showSourceType: 'img',
         playVideoUrl: ''
-      })
+      }, () => { this.defaultLocation() })
     } else {
 
       let menuBtn = this.state.menus[index];
@@ -272,7 +279,7 @@ export default class SickDetail extends BaseComponent {
         this.setState({
           showSourceType: 'video',
           selectBtnIndex: index,
-          playVideoUrl: menuBtn.content==undefined?'':menuBtn.content
+          playVideoUrl: menuBtn.content == undefined ? '' : menuBtn.content
         })
       }
 
@@ -280,7 +287,7 @@ export default class SickDetail extends BaseComponent {
         this.setState({
           showSourceType: 'text',
           selectBtnIndex: index,
-          playVideoUrl: menuBtn.content==undefined?'':menuBtn.content
+          playVideoUrl: menuBtn.content == undefined ? '' : menuBtn.content
         })
       }
 
@@ -291,7 +298,7 @@ export default class SickDetail extends BaseComponent {
         } else {
           this.props.navigation.navigate('BonesScene', { info: msg });
           this.setState({
-            showSourceType:'img',
+            showSourceType: 'img',
             selectBtnIndex: -1,
             playVideoUrl: ''
           })
@@ -326,7 +333,7 @@ export default class SickDetail extends BaseComponent {
   _renderVideoList() {
     let arr = [];
     let menuBtn = this.state.menus[this.state.selectBtnIndex];
-    try{
+    try {
       let videoList = JSON.parse(menuBtn.content);
       let width = (screen.width - size(75)) / 2;
       videoList.forEach((item, index) => {
@@ -347,10 +354,10 @@ export default class SickDetail extends BaseComponent {
           </TouchableOpacity>
         )
       })
-    }catch(e){
+    } catch (e) {
 
     }
-    
+
 
     return (
       <ScrollView style={{ flex: 1 }}>
@@ -369,7 +376,7 @@ export default class SickDetail extends BaseComponent {
           scrollBounce
           volume={0.8}
           inlineOnly
-          style={{width: screen.width, height: screen.height + size(148) }}
+          style={{ width: screen.width, height: screen.height + size(148) }}
           url={this.state.playVideoUrl}
           ref={(ref) => {
             this.video = ref
@@ -378,7 +385,7 @@ export default class SickDetail extends BaseComponent {
             this.playVideoError(msg)
           }}
         />
-        <View style={{height:size(23),backgroundColor:'black',width:screen.width}}></View>
+        <View style={{ height: size(23), backgroundColor: 'black', width: screen.width }}></View>
         <MyTouchableOpacity style={{
           position: 'absolute',
           height: size(60),
@@ -435,9 +442,10 @@ export default class SickDetail extends BaseComponent {
     if (this.state.areaSickList[0].img_url) {
       this.state.areaSickList.forEach((item, index) => {
         arr.push(
-          <View style={{ width: deviceWidth - size(240), height: size(850)
-                            // , backgroundColor: index%2 == 0? 'orange' : 'red'
-                          }}>
+          <View style={{
+            width: deviceWidth - size(240), height: size(850)
+            // , backgroundColor: index%2 == 0? 'orange' : 'red'
+          }}>
             <Image
               resizeMode={'contain'}
               style={{ width: deviceWidth - size(240), height: size(850) }}
@@ -510,8 +518,8 @@ export default class SickDetail extends BaseComponent {
 
   //判断是否开始使用
   async  startIsUse(index) {
-    // this.selectBtn(index)
-    // return
+    this.selectBtn(index)
+    return
     FuncUtils.checkKfPerm()
       .then(res => {
         if (res.code == 0 && res.result == 'yes') {
@@ -546,9 +554,9 @@ export default class SickDetail extends BaseComponent {
     })
 
     return (
-      <View style={{ height: size(120)}}>
+      <View style={{ height: size(120) }}>
         <Line color={'rgba(213, 213, 213, 0.8)'} />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center',position:'absolute',bottom:0,width:screen.width }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', position: 'absolute', bottom: 0, width: screen.width }}>
           {arr}
         </View>
       </View>
