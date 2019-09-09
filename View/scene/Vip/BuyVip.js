@@ -1,18 +1,19 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackground } from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackground} from "react-native";
 
-import { screen, ContainerView, BaseComponent, NavBar, AppDef, HttpTool, NetInterface, FuncUtils } from '../../common';
-import { size } from '../../common/Tool/ScreenUtil';
+import {screen, ContainerView, BaseComponent, NavBar, AppDef, HttpTool, NetInterface, FuncUtils} from '../../common';
+import {size} from '../../common/Tool/ScreenUtil';
 import DateUtil from "../../common/DateUtils";
 import Loading from "../../common/Loading";
-import { storage } from "../../common/storage";
+import {storage} from "../../common/storage";
 import memberBackground from '../../img/vip/memberBackground.png'
 import member_center_details from '../../img/vip/member_center_details.png'
 
-import { NativeModules } from 'react-native'
+import {NativeModules} from 'react-native'
+
 const Wxpay = NativeModules.Wxpay
-import Toast, { DURATION } from "react-native-easy-toast";
+import Toast, {DURATION} from "react-native-easy-toast";
 
 
 export default class BuyVip extends BaseComponent {
@@ -23,7 +24,7 @@ export default class BuyVip extends BaseComponent {
             packageDetail: [],
             packageSelected: 0,
             packageList: [],
-            memberInfo: { mbName: null },
+            memberInfo: {mbName: null},
             memberCenterDetailsHeight: 10,
             isUse: false, // 是否是会员
             PayData: '',
@@ -45,12 +46,17 @@ export default class BuyVip extends BaseComponent {
     async init() {
 
         // this.Loading.show()
-        let isUse = await FuncUtils.checkPerm('yes', 'GKHY')//检查是否有权限
-        let memberInfo = await storage.get("memberInfo")
+        // let isUse = await FuncUtils.checkPerm('yes', 'GKHY')//检查是否有权限
         let tokens = await storage.get("userTokens");
         let url = NetInterface.gk_getComboInfo + "?app_version=1.0.0&plat=android&business=orthope&comboCode=ORTHOPE_VIP";
         // alert(url)
         // debugger
+
+        let memberInfo = await storage.get("memberInfo");
+        let combo = await FuncUtils.getComboByCode(AppDef.ORTHOPE_VIP)
+
+        let isUse = await FuncUtils.checkPerm("yes", AppDef.ORTHOPE_VIP)
+        alert(isUse)
         HttpTool.GET_JP(url)
             .then(result => {
                 this.setState({
@@ -60,6 +66,7 @@ export default class BuyVip extends BaseComponent {
                 })
             })
     }
+
     async getOrderId(priceId, comboId) {
         let tokens = await storage.get("userTokens");
         let body = {
@@ -70,7 +77,7 @@ export default class BuyVip extends BaseComponent {
             "business": "orthope"
         }
         let url = NetInterface.gk_newAddOrder
-        let responseData =HttpTool.POST_JP(url,body)
+        let responseData = HttpTool.POST_JP(url, body)
             .then(result => {
                 return new Promise((resolve, reject) => {
                     // alert(`result is ${JSON.stringify(result)}`)
@@ -234,6 +241,7 @@ export default class BuyVip extends BaseComponent {
             packageSelected: index
         })
     }
+
     gotoPay() {
         let title = this.props.navigation.state.params !== undefined ? this.props.navigation.state.params.title : null
         // Wxpay.registerApp(api.APPID);
@@ -274,7 +282,6 @@ export default class BuyVip extends BaseComponent {
         }
 
 
-
         return (
             <View style={styles.packageDetail}>
                 {packageList}
@@ -283,10 +290,10 @@ export default class BuyVip extends BaseComponent {
     }
 
     render() {
-        let userIcon = this.state.memberInfo.mbHeadUrl ? { uri: this.state.memberInfo.mbHeadUrl } : require('../../img/kf_mine/defalutHead.png');
+        let userIcon = this.state.memberInfo.mbHeadUrl ? {uri: this.state.memberInfo.mbHeadUrl} : require('../../img/kf_mine/defalutHead.png');
         return (
             <ContainerView>
-                <NavBar title='我的VIP会员' hideback={false} navigation={this.props.navigation} />
+                <NavBar title='我的VIP会员' hideback={false} navigation={this.props.navigation}/>
                 <ScrollView
                     overScrollMode='never'
                 >
@@ -295,21 +302,25 @@ export default class BuyVip extends BaseComponent {
                             <ImageBackground source={memberBackground} style={styles.memberInfo}>
                                 <View style={styles.memberImageTop}>
                                     <View style={styles.memberImage}>
-                                        <Image style={{ width: 48, height: 48, borderRadius: 24 }}
-                                            source={userIcon} />
+                                        <Image style={{width: 48, height: 48, borderRadius: 24}}
+                                               source={userIcon}/>
                                     </View>
                                     <View style={styles.memberInfoDetail}>
                                         <View style={styles.memberInfoDetailTop}>
-                                            <Text style={{ fontSize: size(28), color: '#262626', }}>{this.state.memberInfo.mbName}</Text>
+                                            <Text style={{
+                                                fontSize: size(28),
+                                                color: '#262626',
+                                            }}>{this.state.memberInfo.mbName}</Text>
                                             {
                                                 this.state.isUse ? (
-                                                    <Image style={{ width: 15, height: 15, marginLeft: 15 }}
-                                                        source={require('../../img/vip/member_vip.png')} />
+                                                    <Image style={{width: 15, height: 15, marginLeft: 15}}
+                                                           source={require('../../img/vip/member_vip.png')}/>
                                                 ) : null
                                             }
                                         </View>
                                         <View style={styles.memberInfoDetailBot}>
-                                            <Text style={styles.memberInfoDetailBotText}>{this.state.isUse ? '恭喜你，你已经是我们的专属会员' : '开通专属会员'}</Text>
+                                            <Text
+                                                style={styles.memberInfoDetailBotText}>{this.state.isUse ? '恭喜你，你已经是我们的专属会员' : '开通专属会员'}</Text>
                                         </View>
                                     </View>
                                 </View>
@@ -338,7 +349,7 @@ export default class BuyVip extends BaseComponent {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <View style={styles.mid} />
+                        <View style={styles.mid}/>
                         <ImageBackground source={member_center_details} style={styles.bot}>
 
                         </ImageBackground>
@@ -346,7 +357,7 @@ export default class BuyVip extends BaseComponent {
                 </ScrollView>
                 <Loading ref={r => {
                     this.Loading = r
-                }} hide={true} />
+                }} hide={true}/>
                 <Toast
                     ref="toast"
                     position="top"
