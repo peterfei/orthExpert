@@ -226,10 +226,7 @@ class Custom extends BaseComponent {
     )
   }
 
-  componentWillUnmount() {
-    
-    // AppState.removeEventListener("change", this._handleAppStateChange);
-  }
+  
 
   componentWillMount = () => {
     CodePush.disallowRestart()
@@ -261,6 +258,12 @@ class Custom extends BaseComponent {
     this.getSickData()
   }
 
+  componentWillUnmount() {
+      // AppState.removeEventListener("change", this._handleAppStateChange);
+      // Reallow restarts, and optionally trigger
+      // a restart if one was currently pending.
+      codePush.allowRestart();
+  }
   getSickData() {
     const url = NetInterface.getSick;
     this.mainView._showLoading('加载中');
