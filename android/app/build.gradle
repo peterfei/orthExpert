@@ -183,6 +183,7 @@ dependencies {
     // implementation files('libs/SSDKU3D.jar')
     // implementation fileTree(dir: '../../UnityExport/libs', include: ['*.jar'])
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'com.umeng.analytics:analytics:6.1.4'
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'com.android.support:multidex:1.0.3'
