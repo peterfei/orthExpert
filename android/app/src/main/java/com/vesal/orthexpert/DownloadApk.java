@@ -40,13 +40,13 @@ public class DownloadApk extends ReactContextBaseJavaModule {
     public void downloading(String url, String description) {
         try{
             myActivity = getCurrentActivity();
-        Uri uri = Uri.parse("market://details?id=com.ruanyikeji.vesal.vesal");
+        Uri uri = Uri.parse("market://details?id=com.vesal.orthexpert");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         myActivity.startActivity(intent);
         }catch(Exception e){
             e.printStackTrace();
-            Uri uri = Uri.parse("http://app.mi.com/details?id=com.ruanyikeji.vesal.vesal");
+            Uri uri = Uri.parse("http://app.mi.com/details?id=com.vesal.orthexpert");
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             myActivity.startActivity(intent);

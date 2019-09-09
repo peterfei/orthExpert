@@ -39,7 +39,8 @@ export default class AppUpdate extends Component{
                 "/v1/app/member/getAppVersion?version=" +
                 currVersion +
                 "&plat=" +
-                Platform.OS; //拉取服务器最新版本
+                Platform.OS+
+                '&business=orthope'; //拉取服务器最新版本
             await fetch(url, {
                 method: "get",
                 headers: {
@@ -74,7 +75,7 @@ export default class AppUpdate extends Component{
     toAppStore(){
         NativeModules.DownloadApk.downloading(
             this.state.url,
-            "vesal.apk"
+            "guke.apk"
         );
     }
 
