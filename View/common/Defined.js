@@ -59,6 +59,7 @@ const NotificationDefined = {
 const ComBoCodeDefined = {
   KFXL_VIP: 'KFXL_VIP',
   DINGZHI_VIP: 'DINGZHI_VIP',
+  ORTHOPE_VIP: 'ORTHOPE_VIP'
 }
 
 export default {
