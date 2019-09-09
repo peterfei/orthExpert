@@ -122,6 +122,7 @@ const Gk = {
   gk_getComboInfo:"/v1/app/orthope/combo/getComboInfo",
   gk_newAddOrder:"/v1/app/orthope/order/newAddOrder",
   gk_wxGetPreyId:"/v1/app/pay/wxGetPreyId",
+  gk_getShareQR: 'v1/app/basic/getShareQR', // 计划二维码分享
 }
 
 export default {

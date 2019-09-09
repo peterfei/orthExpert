@@ -53,7 +53,7 @@ export default class SharingPlan extends Component {
     async componentDidMount() {
         let memberInfo = await storage.get("memberInfo")
         let planInfo = this.props.navigation.state.params.planInfo;
-        let url = NetInterface.getShareQR + `?planId= ${planInfo.plan_id}`
+        let url = NetInterface.gk_getShareQR + `?planId= ${planInfo.plan_id}`
         HttpTool.GET_JP(url)
             .then(res => {
                 alert(JSON.stringify(res))
