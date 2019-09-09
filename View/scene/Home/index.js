@@ -238,7 +238,9 @@ class Custom extends BaseComponent {
     if (nextAppState != null && nextAppState === "active") {
       
       CodePush.checkForUpdate(CODE_PUSH_KEY).then((update) => {
+        // alert(`update is ${update}`)
         if (!update) {
+          // alert(111)
           // this.mainView._toast('已是最新版本！')
           this.setState({modalVisible: false})
         } else {
@@ -254,15 +256,15 @@ class Custom extends BaseComponent {
   async componentDidMount() {
     CodePush.allowRestart()
     SplashScreen.hide();
-    // AppState.addEventListener("change", this._handleAppStateChange);
+    AppState.addEventListener("change", this._handleAppStateChange);
     this.getSickData()
   }
 
   componentWillUnmount() {
-      // AppState.removeEventListener("change", this._handleAppStateChange);
+      AppState.removeEventListener("change", this._handleAppStateChange);
       // Reallow restarts, and optionally trigger
       // a restart if one was currently pending.
-      codePush.allowRestart();
+      CodePush.allowRestart();
   }
   getSickData() {
     const url = NetInterface.getSick;
