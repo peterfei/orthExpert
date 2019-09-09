@@ -22,6 +22,7 @@ import {
 } from '../../common';
 import {storage} from "../../common/storage";
 import {captureScreen} from "react-native-view-shot";
+import Device from "react-native-device-info";
 
 // 调用原生分享
 const UShare = NativeModules.sharemodule
@@ -52,11 +53,13 @@ export default class SharingPlan extends Component {
 
     async componentDidMount() {
         let memberInfo = await storage.get("memberInfo")
+        let auth = await storage.get('auth')
+        let userName = auth.userName||Device.getUniqueID()
+        let loginType = auth.loginType||'tell';
         let planInfo = this.props.navigation.state.params.planInfo;
-        let url = NetInterface.gk_getShareQR + `?planId= ${planInfo.plan_id}`
-        HttpTool.GET_JP(url)
+        let url = NetInterface.gk_getShareQR + `?planId= ${planInfo.plan_id}&userName=${userName}&loginType=${loginType}`
+        HttpTool.GET(url)
             .then(res => {
-                alert(JSON.stringify(res))
                 this.setState({
                     base64: res.base64
                 })
