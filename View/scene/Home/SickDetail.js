@@ -49,6 +49,7 @@ export default class SickDetail extends BaseComponent {
 
   componentDidMount() {
     this.requestSickData();
+    this.mainView._showLoading('加载中...');
     this.defaultLocation()
     this.emitter = DeviceEventEmitter.addListener('updatePermission',
       () => {
@@ -159,7 +160,7 @@ export default class SickDetail extends BaseComponent {
     let memberInfo = await storage.get("memberInfo");
     let sick = this.state.sick;
     let url = NetInterface.gk_getPathologyRes + "?patNo=" + sick.pat_no + "&business=orthope&mbId=" + memberInfo.mbId
-    this.mainView._showLoading('加载中...');
+    
     HttpTool.GET_JP(url)
       .then(result => {
         // alert(JSON.stringify(result))
