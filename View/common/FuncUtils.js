@@ -1,7 +1,7 @@
-import {Alert,NativeModules} from 'react-native';
+import {Alert, NativeModules} from 'react-native';
 import {HttpTool, NetInterface} from "./index";
 import {storage} from "./storage";
-import {NavigationActions,StackActions} from "react-navigation";
+import {NavigationActions, StackActions} from "react-navigation";
 
 
 //检测app 版本是否是最新版本
@@ -29,10 +29,10 @@ export async function CheckAppVersion(item) {
  * 更新会员的权限
  * @param token
  */
-export async function  getMemberAllCombo(){
+export async function getMemberAllCombo() {
 
     const url = NetInterface.memberComboList;
-   await HttpTool.GET(url)
+    await HttpTool.GET(url)
         .then(res => {
 
             if (res.code == 0) {
@@ -43,20 +43,21 @@ export async function  getMemberAllCombo(){
             console.log(error)
         })
 }
+
 /**
  * 从缓存获取某个套餐的权限信息
  * @param token
  */
-export async function  getComboByCode(comboCode){
-    let result = null ;
-   let comboList  = await storage.get("memberCombo");
+export async function getComboByCode(comboCode) {
+    let result = null;
+    let comboList = await storage.get("memberCombo");
 
-    if (comboList!=-1&&comboList!=-2){
+    if (comboList != -1 && comboList != -2) {
 
         for (let ind in comboList) {
-            let item  = comboList[ind];
+            let item = comboList[ind];
 
-            if (item.combo_code == comboCode){
+            if (item.combo_code == comboCode) {
                 result = item;
 
                 break;
@@ -64,18 +65,34 @@ export async function  getComboByCode(comboCode){
         }
     }
 
-   return  result;
+    return result;
 
 }
+
 export function validatePwd(s) {
-    var patrn=/^(\w){6,20}$/;
+    var patrn = /^(\w){6,20}$/;
     if (!patrn.exec(s)) {
         return false
     }
     return true
 }
 
-export async function  checkPerm(isFree, comboCode) {
+export async function checkComboisExpire(comboCode) {
+    let isUse = false
+    let url = NetInterface.checkComboisExpire + `?comboCode=${comboCode}`
+    await HttpTool.GET_JP(url)
+        .then(res => {
+            if (res.code === 0 && res.result === 'no') {
+                isUse = true
+            } else {
+                isUse = false
+            }
+        })
+
+    return isUse
+}
+
+export async function checkPerm(isFree, comboCode) {
     //isFree 是否收费 yes no
 
     let isUse = false;//false false 不能使用 true 可以使用
@@ -83,8 +100,8 @@ export async function  checkPerm(isFree, comboCode) {
     if (isFree == 'no') {
         isUse = true;
     } else {
-        let perm =await getComboByCode(comboCode);
-        if (perm!=null) {
+        let perm = await getComboByCode(comboCode);
+        if (perm != null) {
             let currTime = new Date();
             let flag = new Date(perm.end_time.substring(0, 10)).getTime() + 1000 * 60 * 60 * 24 >= currTime.getTime();
             if (flag) {
@@ -95,8 +112,8 @@ export async function  checkPerm(isFree, comboCode) {
     //如果真的不可用 那就去服务器查一下吧
     if (!isUse) {
 
-        const url = NetInterface.checkProductIsUse+"?comboCode="+comboCode;
-       await HttpTool.GET(url)
+        const url = NetInterface.checkProductIsUse + "?comboCode=" + comboCode;
+        await HttpTool.GET(url)
             .then(res => {
 
                 if (res.code == 0) {
@@ -119,11 +136,11 @@ export async function  checkPerm(isFree, comboCode) {
 /**
  *     检查骨科vip  使用权限
  */
-export function checkKfPerm(){
+export function checkKfPerm() {
     const url = NetInterface.checkComboisExpire + '?comboCode=ORTHOPE_VIP';
     return new Promise((reslove, reject) => {
         HttpTool.GET_JP(url)
-            .then(result =>{
+            .then(result => {
                 reslove(result)
             })
             .catch(error => {
@@ -136,17 +153,18 @@ export function checkKfPerm(){
 export function CheckIsPhoneEmail(poneInput) {
     let rs = false;
     let myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
-    let email =  new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+    let email = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
     if (myreg.test(poneInput)) {
-        rs  = true;
+        rs = true;
     }
-    if (!rs){
-        if (email.test(poneInput)){
-            rs  = true;
+    if (!rs) {
+        if (email.test(poneInput)) {
+            rs = true;
         }
     }
     return rs;
 }
+
 /**
  * 将日期转 刚刚 1小时前等
  * @param dateStr
@@ -173,17 +191,13 @@ export function getDate(dateStr) {
         var minC = diffValue / minute;
         if (monthC >= 1) {
             result = "" + parseInt(monthC) + "月前";
-        }
-        else if (weekC >= 1) {
+        } else if (weekC >= 1) {
             result = "" + parseInt(weekC) + "周前";
-        }
-        else if (dayC >= 1) {
+        } else if (dayC >= 1) {
             result = "" + parseInt(dayC) + "天前";
-        }
-        else if (hourC >= 1) {
+        } else if (hourC >= 1) {
             result = "" + parseInt(hourC) + "小时前";
-        }
-        else if (minC >= 1) {
+        } else if (minC >= 1) {
             result = "" + parseInt(minC) + "分钟前";
         } else
             result = "刚刚";
@@ -193,8 +207,6 @@ export function getDate(dateStr) {
     }
 
 }
-
-
 
 
 /**
@@ -250,12 +262,11 @@ function findNames(targetList, field) {
 }
 
 
-
 // 下划线转驼峰
 export const replaceUnderLine = (val, char = '_') => {
     const arr = val.split('')
     const index = arr.indexOf(char)
-    arr.splice(index, 2, arr[index+1].toUpperCase())
+    arr.splice(index, 2, arr[index + 1].toUpperCase())
     val = arr.join('')
     if (val.indexOf(char) != -1) {
         val = replaceUnderLine(val);
@@ -263,8 +274,8 @@ export const replaceUnderLine = (val, char = '_') => {
     return val
 }
 
-export const  filterUnderLine = (obj, char = '_') => {
-    const arr =  Object.keys(obj).filter(item => item.indexOf(char) !== -1)
+export const filterUnderLine = (obj, char = '_') => {
+    const arr = Object.keys(obj).filter(item => item.indexOf(char) !== -1)
     arr.forEach(item => {
         const before = obj[item]
         const key = replaceUnderLine(item)
@@ -278,7 +289,7 @@ export const  filterUnderLine = (obj, char = '_') => {
 /**
  * 退出登录
  */
-export async function  logout(that) {
+export async function logout(that) {
     await storage.clearMapForKey("userTokens");
     await storage.clearMapForKey("memberInfo");
     await storage.clearMapForKey("memberCombo");

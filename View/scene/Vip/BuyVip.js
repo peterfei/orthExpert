@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackground} from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image,Platform, ImageBackground} from "react-native";
 
 import {screen, ContainerView, BaseComponent, NavBar, AppDef, HttpTool, NetInterface, FuncUtils} from '../../common';
 import {size} from '../../common/Tool/ScreenUtil';
@@ -9,7 +9,7 @@ import Loading from "../../common/Loading";
 import {storage} from "../../common/storage";
 import memberBackground from '../../img/vip/memberBackground.png'
 import member_center_details from '../../img/vip/member_center_details.png'
-
+import DeviceInfo from "react-native-device-info";
 import {NativeModules} from 'react-native'
 
 const Wxpay = NativeModules.Wxpay
@@ -44,19 +44,19 @@ export default class BuyVip extends BaseComponent {
     }
 
     async init() {
-
+        const currVersion = DeviceInfo.getVersion();
         // this.Loading.show()
         // let isUse = await FuncUtils.checkPerm('yes', 'GKHY')//检查是否有权限
         let tokens = await storage.get("userTokens");
-        let url = NetInterface.gk_getComboInfo + "?app_version=1.0.0&plat=android&business=orthope&comboCode=ORTHOPE_VIP";
+        let url = NetInterface.gk_getComboInfo + "?version=" + currVersion + "&plat=" + Platform.OS+"&business=orthope&comboCode=ORTHOPE_VIP";
         // alert(url)
         // debugger
 
         let memberInfo = await storage.get("memberInfo");
         let combo = await FuncUtils.getComboByCode(AppDef.ORTHOPE_VIP)
 
-        let isUse = await FuncUtils.checkPerm("yes", AppDef.ORTHOPE_VIP)
-        alert(isUse)
+        let isUse = await FuncUtils.checkComboisExpire(AppDef.ORTHOPE_VIP)
+
         HttpTool.GET_JP(url)
             .then(result => {
                 this.setState({
