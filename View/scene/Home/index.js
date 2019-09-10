@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View, StatusBar, Platform, AppState, Modal, ImageBackground, ScrollView } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View, StatusBar, Platform, AppState, Modal, ImageBackground, ScrollView,NativeModules } from "react-native";
 import { AppDef, BaseComponent, ContainerView, FuncUtils, HttpTool, NavBar, NetInterface, size, isIPhoneXPaddTop, ImageMapper } from '../../common';
 import api from "../../api";
 import { deviceWidth, deviceHeight } from "../../common/ScreenUtil";
@@ -15,7 +15,7 @@ const SelectColor = 'rgba(231, 176, 176, 0.5)';
 const SelectLineColor = 'rgba(231, 176, 176, 1)';
 const statusBarHeight = StatusBar.currentHeight;
 const CODE_PUSH_KEY = 'q4YE8sCIJ4Xepd6gaJA1qWTza76x4ksvOXqog'
-
+const UMPushModule =  NativeModules.UMPushModule
 class Custom extends BaseComponent {
 
   constructor(props) {
@@ -261,6 +261,19 @@ class Custom extends BaseComponent {
     SplashScreen.hide();
     AppState.addEventListener("change", this._handleAppStateChange);
     this.getSickData()
+    /**
+     * 友盟SetAlias
+     */
+    let memberInfo = await storage.get("memberInfo","")
+    // alert(`memberInfo is ${JSON.stringify(memberInfo)}`)
+    let tag = 'orthope' + memberInfo.mbId;
+    await UMPushModule.addAlias(tag,"orthope",(code) =>{
+      if (code == 200){
+        console.log(`===========绑定友盟别名${tag}成功!!! ===========`);
+      }
+    })
+    
+
   }
 
   componentWillUnmount() {

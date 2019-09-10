@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { DeviceEventEmitter, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { DeviceEventEmitter, Image, StyleSheet, Text, TouchableOpacity, View,NativeModules} from "react-native";
 import {
     AppDef,
     BaseComponent,
@@ -22,6 +22,7 @@ import {
 import { storage } from "../../common/storage";
 import SYImagePicker from 'react-native-syan-image-picker'
 import { NavigationActions, StackActions } from "react-navigation";
+const UMPushModule =  NativeModules.UMPushModule
 
 export default class UserInfoDetail extends BaseComponent {
 
@@ -112,6 +113,17 @@ export default class UserInfoDetail extends BaseComponent {
     }
 
     async logout() {
+        /**
+         * 友盟SetAlias
+         */
+        let memberInfo = await storage.get("memberInfo","")
+        // alert(`memberInfo is ${JSON.stringify(memberInfo)}`)
+        let tag = 'orthope' + memberInfo.mbId;
+        await UMPushModule.deleteAlias(tag,"orthope",(code) =>{
+        if (code == 200){
+            console.log(`===========解绑友盟别名${tag}成功!!! ===========`);
+        }
+        })
         await storage.clearMapForKey("userTokens");
         // await  storage.clearMapForKey("mystructList");
         // await storage.clearMapForKey("versionByInitMyStruct");
