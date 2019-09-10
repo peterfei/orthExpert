@@ -1,11 +1,11 @@
 import React from "react";
-import {Image, StyleSheet, Text, TouchableOpacity, View, StatusBar, Platform,AppState,Modal,ImageBackground,ScrollView} from "react-native";
-import {AppDef, BaseComponent, ContainerView, FuncUtils, HttpTool, NavBar, NetInterface, size, isIPhoneXPaddTop, ImageMapper} from '../../common';
+import { Image, StyleSheet, Text, TouchableOpacity, View, StatusBar, Platform, AppState, Modal, ImageBackground, ScrollView } from "react-native";
+import { AppDef, BaseComponent, ContainerView, FuncUtils, HttpTool, NavBar, NetInterface, size, isIPhoneXPaddTop, ImageMapper } from '../../common';
 import api from "../../api";
-import {deviceWidth,deviceHeight} from "../../common/ScreenUtil";
+import { deviceWidth, deviceHeight } from "../../common/ScreenUtil";
 import SplashScreen from "react-native-splash-screen";
-import {storage} from "../../common/storage";
-import {NavigationActions, StackActions} from "react-navigation";
+import { storage } from "../../common/storage";
+import { NavigationActions, StackActions } from "react-navigation";
 import CodePush from "react-native-code-push"; // 引入code-push
 import Progress from '../../common/ProgressBar'
 import Icon from '../../common/Icon'
@@ -29,7 +29,7 @@ class Custom extends BaseComponent {
       zhengmian: false,
       selectId: '',
       MAPPING: this.MAPPING,
-      title:'方案', //props.navigation.state.params.title,
+      title: '方案', //props.navigation.state.params.title,
       sickData: [],
       areaSickList: [],
       modalVisible: false,
@@ -43,11 +43,11 @@ class Custom extends BaseComponent {
 
   async checkLoginStatus() {
     let tokens = await storage.get("userTokens");
-    
+
     let status = false;
     if (!(tokens == -1 || tokens == -2)) { // 有token
       if (tokens.member.isYouke == "yes") { // 游客
-        
+
         status = false;
       } else {
         status = true;
@@ -60,7 +60,7 @@ class Custom extends BaseComponent {
       this.gotoLogin();
     }
   }
-  
+
   gotoLogin() {
     const resetAction = StackActions.reset({
       index: 0,
@@ -70,9 +70,10 @@ class Custom extends BaseComponent {
   }
 
   _immediateUpdate() {
-    this.setState({immediateUpdate: true})
+    this.setState({ immediateUpdate: true })
     CodePush.sync(
-        {deploymentKey: CODE_PUSH_KEY, updateDialog: {
+      {
+        deploymentKey: CODE_PUSH_KEY, updateDialog: {
           appendReleaseDescription: true, //是否显示更新description，默认为false
           descriptionPrefix: "更新内容：", //更新说明的前缀。 默认是” Description:
           mandatoryContinueButtonLabel: "立即更新", //强制更新的按钮文字，默认为continue
@@ -81,11 +82,12 @@ class Custom extends BaseComponent {
           optionalInstallButtonLabel: "后台更新", //非强制更新时，确认文字. Defaults to “Install”
           optionalUpdateMessage: "发现新版本，是否更新？", //非强制更新时，更新通知. Defaults to “An update is available. Would you like to install it?”.
           title: "更新提示"
-        }, installMode: CodePush.InstallMode.IMMEDIATE},
-        this.codePushStatusDidChange.bind(this),
-        this.codePushDownloadDidProgress.bind(this)
+        }, installMode: CodePush.InstallMode.IMMEDIATE
+      },
+      this.codePushStatusDidChange.bind(this),
+      this.codePushDownloadDidProgress.bind(this)
     )
-    
+
   }
 
   syncImmediate() {
@@ -98,10 +100,10 @@ class Custom extends BaseComponent {
       if (!update) {
         // this.mainView._toast('目前已是最新版本！')
       } else {
-        this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory})
-        setTimeout(()=>{
-          this.setState({modalVisible: false})
-        },8000)
+        this.setState({ modalVisible: true, updateInfo: update, isMandatory: update.isMandatory })
+        setTimeout(() => {
+          this.setState({ modalVisible: false })
+        }, 8000)
       }
     })
   }
@@ -109,18 +111,18 @@ class Custom extends BaseComponent {
   codePushDownloadDidProgress(progress) {
     if (this.state.immediateUpdate) {
       this.currProgress = parseFloat(progress.receivedBytes / progress.totalBytes).toFixed(2)
-      if(this.currProgress >= 1) {
-        this.setState({modalVisible: false})
+      if (this.currProgress >= 1) {
+        this.setState({ modalVisible: false })
       } else {
         this.refs.progressBar.progress = this.currProgress
       }
-      
+
     }
   }
 
   codePushStatusDidChange(syncStatus) {
     if (this.state.immediateUpdate) {
-      switch(syncStatus) {
+      switch (syncStatus) {
         case CodePush.SyncStatus.CHECKING_FOR_UPDATE:
           this.syncMessage = 'Checking for update'
           break;
@@ -145,7 +147,7 @@ class Custom extends BaseComponent {
         case CodePush.SyncStatus.UNKNOWN_ERROR:
           this.syncMessage = 'An unknown error occurred'
           Toast.showError('更新出错，请重启应用！')
-          this.setState({modalVisible: false})
+          this.setState({ modalVisible: false })
           break;
       }
     }
@@ -153,76 +155,82 @@ class Custom extends BaseComponent {
 
   renderModal() {
     return (
-        <Modal
-            animationType={"none"}
-            transparent={true}
-            visible={this.state.modalVisible}
-            onRequestClose={() => {
-              this.setState({modalVisible:false})
-            }}>
-          <View style={styles.modal}>
-            <View style={styles.modalContainer}>
-              {
-                   !this.state.immediateUpdate ?
-                   <View>
-                     <ImageBackground style={{width: size(550),height:size(732)}} source={require('../../img/home/update_backgroundImg.png')}>
-                     <View>
-                       <Text style={{color:"#5E5E5E", fontWeight: "bold", fontSize:size(42), marginTop:size(280), marginLeft:size(40)}}>更新内容</Text>
-                       <View style={{marginTop:size(15),height:size(220),marginLeft:size(40),marginRight:size(40)}}>
-                         <ScrollView style={{flex: 1}}   showsVerticalScrollIndicator={false}>
-                           <Text style={{fontSize:size(28),lineHeight:size(30),color:'#282828'}}>{this.state.updateInfo.description}</Text>
-                         </ScrollView>
-                       </View>
-                       <Text style={{color:'#282828',textAlign:'center',fontSize:size(22),marginBottom:size(10)}}>wifi情况下更新不到30秒</Text>
-                       {
-                         !this.state.isMandatory ?
-                             <View style={{flexDirection:'row',justifyContent:'space-around'}}>
-                               <TouchableOpacity style={{width: size(230), height: size(80),
-                                   backgroundColor: "#f4f4f4",justifyContent:'center',alignItems:'center',borderRadius:size(10)}}
-                                                 onPress={() => this.setState({modalVisible: false})}>
-                                 <Text style={{color:'#000'}}>残忍拒绝</Text>
-                               </TouchableOpacity>
-                               <TouchableOpacity
-                                   onPress={() => this._immediateUpdate()}
-                                   style={{width: size(230), height: size(80),
-                                       backgroundColor: "#489ef6",justifyContent:'center',alignItems:'center',borderRadius:size(10)}}>
-                                 <Text style={{color: '#fff'}}>极速下载</Text>
-                               </TouchableOpacity>
-                             </View>
-                             :
-                               <TouchableOpacity onPress={() => this._immediateUpdate()}>
-                                 <View style={{height: 40,marginRight:size(75), justifyContent:'center',
-                                     alignItems:'center',backgroundColor:'#3496FA',marginLeft:size(75),borderRadius:size(10)}}>
-                                   <Text style={{color: '#fff',fontSize: 17,fontWeight: 'bold'}}>立即更新</Text>
-                                 </View>
-                               </TouchableOpacity>
-                       }
-                     </View>
-                     </ImageBackground>
-                   </View> :
-                   <View>
-                     <ImageBackground style={{width: size(550),height:size(732)}} source={require('../../img/home/update_backgroundImg.png')}  />
-                     <View style={{justifyContent:'center',alignItems:'center'}}>
-                       <Progress
-                           ref="progressBar"
-                           progressColor={'#89C0FF'}
-                           style={{
-                             marginTop:size(-500),
-                             height: 10,
-                             width: size(400),
-                             backgroundColor: "#3496FA",
-                             borderRadius: 10,
-                           }}
-                       />
-                       <View style={{alignItems: "center", marginVertical: 20}}>
-                         <Text style={{fontSize: 14, color:"gray"}}>版本正在努力更新中，请等待</Text>
-                       </View>
-                     </View>
-                   </View>
-              }
-            </View>
+      <Modal
+        animationType={"none"}
+        transparent={true}
+        visible={this.state.modalVisible}
+        onRequestClose={() => {
+          this.setState({ modalVisible: false })
+        }}>
+        <View style={styles.modal}>
+          <View style={styles.modalContainer}>
+            {
+              !this.state.immediateUpdate ?
+                <View>
+                  <ImageBackground style={{ width: size(550), height: size(732) }} source={require('../../img/home/update_backgroundImg.png')}>
+                    <View>
+                      <Text style={{ color: "#5E5E5E", fontWeight: "bold", fontSize: size(42), marginTop: size(280), marginLeft: size(40) }}>更新内容</Text>
+                      <View style={{ marginTop: size(15), height: size(220), marginLeft: size(40), marginRight: size(40) }}>
+                        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+                          <Text style={{ fontSize: size(28), lineHeight: size(30), color: '#282828' }}>{this.state.updateInfo.description}</Text>
+                        </ScrollView>
+                      </View>
+                      <Text style={{ color: '#282828', textAlign: 'center', fontSize: size(22), marginBottom: size(10) }}>wifi情况下更新不到30秒</Text>
+                      {
+                        !this.state.isMandatory ?
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                            <TouchableOpacity style={{
+                              width: size(230), height: size(80),
+                              backgroundColor: "#f4f4f4", justifyContent: 'center', alignItems: 'center', borderRadius: size(10)
+                            }}
+                              onPress={() => this.setState({ modalVisible: false })}>
+                              <Text style={{ color: '#000' }}>残忍拒绝</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={() => this._immediateUpdate()}
+                              style={{
+                                width: size(230), height: size(80),
+                                backgroundColor: "#489ef6", justifyContent: 'center', alignItems: 'center', borderRadius: size(10)
+                              }}>
+                              <Text style={{ color: '#fff' }}>极速下载</Text>
+                            </TouchableOpacity>
+                          </View>
+                          :
+                          <TouchableOpacity onPress={() => this._immediateUpdate()}>
+                            <View style={{
+                              height: 40, marginRight: size(75), justifyContent: 'center',
+                              alignItems: 'center', backgroundColor: '#3496FA', marginLeft: size(75), borderRadius: size(10)
+                            }}>
+                              <Text style={{ color: '#fff', fontSize: 17, fontWeight: 'bold' }}>立即更新</Text>
+                            </View>
+                          </TouchableOpacity>
+                      }
+                    </View>
+                  </ImageBackground>
+                </View> :
+                <View>
+                  <ImageBackground style={{ width: size(550), height: size(732) }} source={require('../../img/home/update_backgroundImg.png')} />
+                  <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <Progress
+                      ref="progressBar"
+                      progressColor={'#89C0FF'}
+                      style={{
+                        marginTop: size(-500),
+                        height: 10,
+                        width: size(400),
+                        backgroundColor: "#3496FA",
+                        borderRadius: 10,
+                      }}
+                    />
+                    <View style={{ alignItems: "center", marginVertical: 20 }}>
+                      <Text style={{ fontSize: 14, color: "gray" }}>版本正在努力更新中，请等待</Text>
+                    </View>
+                  </View>
+                </View>
+            }
           </View>
-        </Modal>
+        </View>
+      </Modal>
     )
   }
 
@@ -238,9 +246,9 @@ class Custom extends BaseComponent {
         if (!update) {
           // alert(111)
           // this.mainView._toast('已是最新版本！')
-          this.setState({modalVisible: false})
+          this.setState({ modalVisible: false })
         } else {
-          this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory})
+          this.setState({ modalVisible: true, updateInfo: update, isMandatory: update.isMandatory })
         }
       })
 
@@ -256,10 +264,10 @@ class Custom extends BaseComponent {
   }
 
   componentWillUnmount() {
-      AppState.removeEventListener("change", this._handleAppStateChange);
-      // Reallow restarts, and optionally trigger
-      // a restart if one was currently pending.
-      CodePush.allowRestart();
+    AppState.removeEventListener("change", this._handleAppStateChange);
+    // Reallow restarts, and optionally trigger
+    // a restart if one was currently pending.
+    CodePush.allowRestart();
   }
 
   async getSickData() {
@@ -279,12 +287,12 @@ class Custom extends BaseComponent {
       })
       .catch(error => {
         this.mainView._closeLoading();
-        
+
         // alert(JSON.stringify(_sick_data))
         this.setState({
           sickData: _sick_data
         })
-        
+
         // this.mainView._toast(JSON.stringify(error));
       })
   }
@@ -323,6 +331,7 @@ class Custom extends BaseComponent {
     const url = NetInterface.getSickArea + '?patAreaNo=' + item.pat_area_no + "&business=orthope";
     // let url = api.base_uri + "v1/app/pathology/getPathologyAndArea?patAreaNo=" + item.pat_area_no + "&business=orthope";
     this.mainView._showLoading('加载中');
+    let _sick_List = await storage.get(item.pat_name, 'sickList')
     HttpTool.GET_JP(url)
       .then(result => {
         this.mainView._closeLoading();
@@ -330,9 +339,10 @@ class Custom extends BaseComponent {
         sickList.forEach(item => {
           item['title'] = item.pat_name;
         })
+        storage.save(item.pat_name, 'sickList', sickList)
         this.setState({
-          areaSickList:sickList,
-          currArea:item
+          areaSickList: sickList,
+          currArea: item
         })
         if (sickList.length <= 0) {
           this.mainView._toast('此部位暂无疾病内容.');
@@ -342,14 +352,26 @@ class Custom extends BaseComponent {
       })
       .catch(error => {
         this.mainView._closeLoading();
-        this.mainView._toast('暂无网络,请连接网络后重试.')
+        if (_sick_List == -1) {
+          this.mainView._toast('暂无网络,请连接网络后重试.')
+        } else {
+          this.setState({
+            areaSickList: _sick_List,
+            currArea: item
+          })
+          if (_sick_List.length <= 0) {
+            this.mainView._toast('此部位暂无疾病内容.');
+          } else {
+            this.mainView._showSelectDialog('sick', _sick_List, 'Default', item.pat_name);
+          }
+        }
         // this.mainView._toast(JSON.stringify(error));
       })
   }
 
   recieveSelectResult(result) {
     let sick = result.value;
-    this.props.navigation.navigate('SickDetail', {sick: sick, areaSickList: this.state.areaSickList, currArea: this.state.currArea});
+    this.props.navigation.navigate('SickDetail', { sick: sick, areaSickList: this.state.areaSickList, currArea: this.state.currArea });
   }
 
   getImgMap(value) {
@@ -382,28 +404,28 @@ class Custom extends BaseComponent {
   _renderNav() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={[styles.messageView, {marginLeft: size(30)}]} onPress={() => {
+        <TouchableOpacity style={[styles.messageView, { marginLeft: size(30) }]} onPress={() => {
           this.checkLoginStatus();
           this.props.navigation.navigate('MyScreen')
         }}>
-          <Image source={require('../../img/home/sick_l.png')} style={styles.messageLeftIcon}/>
+          <Image source={require('../../img/home/sick_l.png')} style={styles.messageLeftIcon} />
         </TouchableOpacity>
-        <StatusBar translucent={true}  backgroundColor='rgba(0, 0, 0, 0)' barStyle="light-content" />
-        <View style={{flex: 1, backgroundColor: 'white', height: size(60), marginLeft: size(20), marginRight: size(20), borderRadius: size(30), overflow: 'hidden'}}>
+        <StatusBar translucent={true} backgroundColor='rgba(0, 0, 0, 0)' barStyle="light-content" />
+        <View style={{ flex: 1, backgroundColor: 'white', height: size(60), marginLeft: size(20), marginRight: size(20), borderRadius: size(30), overflow: 'hidden' }}>
           <TouchableOpacity style={styles.searchBar} onPress={() => {
             this.checkLoginStatus();
             this.props.navigation.navigate('Search');
           }}>
-            <Image source={require('../../img/home/search_icon.png')} style={styles.searchIcon}/>
+            <Image source={require('../../img/home/search_icon.png')} style={styles.searchIcon} />
             <Text style={styles.searchText}>请输入疾病名称.</Text>
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={[styles.messageView, {marginRight: size(30)}]} onPress={() => {
+        <TouchableOpacity style={[styles.messageView, { marginRight: size(30) }]} onPress={() => {
           this.checkLoginStatus();
           this.props.navigation.navigate('MessageNotice');
         }}>
-          <Image source={require('../../img/home/sick_r.png')} style={styles.messageRightIcon}/>
+          <Image source={require('../../img/home/sick_r.png')} style={styles.messageRightIcon} />
         </TouchableOpacity>
       </View>
     )
@@ -414,7 +436,7 @@ class Custom extends BaseComponent {
     let arr = [];
     for (let i = 0; i < tabArr.length; i++) {
       arr.push(
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ImageMapper
             imgHeight={size(989)}
             imgWidth={size(616)}
@@ -439,13 +461,13 @@ class Custom extends BaseComponent {
               this.fanzhuan()
             }}>
               <Image source={require('../../img/kf_main/fanzhuan_l.png')}
-                     style={{width: size(84), height: size(74), marginLeft: size(110)}}/>
+                style={{ width: size(84), height: size(74), marginLeft: size(110) }} />
             </TouchableOpacity>
             <TouchableOpacity activeOpacity={1} onPress={() => {
               this.fanzhuan()
             }}>
               <Image source={require('../../img/kf_main/fanzhuan_r.png')}
-                     style={{width: size(84), height: size(74), marginRight: size(110)}}/>
+                style={{ width: size(84), height: size(74), marginRight: size(110) }} />
             </TouchableOpacity>
           </View>
         </View>
@@ -469,8 +491,8 @@ class Custom extends BaseComponent {
 
 const styles = StyleSheet.create({
   container: {
-    height: Platform.OS === 'android' ? size(148) :  size(88) + isIPhoneXPaddTop(0),
-    paddingTop: isIPhoneXPaddTop(0) +  ( Platform.OS === 'android' ? statusBarHeight : 0),
+    height: Platform.OS === 'android' ? size(148) : size(88) + isIPhoneXPaddTop(0),
+    paddingTop: isIPhoneXPaddTop(0) + (Platform.OS === 'android' ? statusBarHeight : 0),
     flexDirection: "row",
     alignItems: 'center',
     width: '100%',
@@ -490,7 +512,7 @@ const styles = StyleSheet.create({
     height: size(280)
   },
   searchText: {
-    fontSize:size(24),
+    fontSize: size(24),
     color: 'rgba(222, 222, 222, 1)',
     marginLeft: size(20),
   },
@@ -517,7 +539,7 @@ const styles = StyleSheet.create({
   },
 
   modal: {
-    height:deviceHeight,
+    height: deviceHeight,
     width: deviceWidth,
     alignItems: 'center',
     justifyContent: 'center',
@@ -531,4 +553,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default  CodePush(Custom)
+export default CodePush(Custom)

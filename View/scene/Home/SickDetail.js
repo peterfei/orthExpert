@@ -159,8 +159,8 @@ export default class SickDetail extends BaseComponent {
   async requestSickData() {
     let memberInfo = await storage.get("memberInfo");
     let sick = this.state.sick;
+    let _details = await storage.get(sick.pat_no, 'details')
     let url = NetInterface.gk_getPathologyRes + "?patNo=" + sick.pat_no + "&business=orthope&mbId=" + memberInfo.mbId
-    
     HttpTool.GET_JP(url)
       .then(result => {
         // alert(JSON.stringify(result))
@@ -187,12 +187,37 @@ export default class SickDetail extends BaseComponent {
             selectBtnIndex: -1,
             details: result
           })
+          storage.save(sick.pat_no, 'details', result)
           // alert(JSON.stringify(menus));
         }
       })
       .catch(err => {
         this.mainView._closeLoading();
-        this.mainView._toast(JSON.stringify(err));
+        if (_details == -1) {
+          this.mainView._toast('暂无网络,请连接网络后重试.')
+        } else {
+          let pathology = _details.pathology;
+          let menus = JSON.parse(pathology.menus);
+          let kf = {
+            res_fy_icon_url: require('../../img/home/kangfu_s.png'),
+            select_icon_url: require('../../img/home/kangfu_s.png'),
+            secondFyName: '康复',
+            type: 'static'
+          }
+          let model = {
+            res_fy_icon_url: require('../../img/home/model_s.png'),
+            select_icon_url: require('../../img/home/model_s.png'),
+            secondFyName: '3D模型',
+            type: 'static'
+          }
+          menus.push(kf);
+          menus.push(model);
+          this.setState({
+            menus: menus,
+            selectBtnIndex: -1,
+            details: _details
+          })
+        }
       })
   }
 
