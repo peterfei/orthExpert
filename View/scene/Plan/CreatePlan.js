@@ -225,6 +225,13 @@ export default class CreatePlan extends BaseComponent {
       }
   }
 
+  recieveData(result) {
+    // alert(JSON.stringify(result));
+    this.setState({
+      amList: [...this.state.amList, ...result]
+    })
+  }
+
   editPlanInfo() {
     this.EditView.show(this.state.planInfo);
   }
@@ -377,7 +384,8 @@ export default class CreatePlan extends BaseComponent {
   _renderAddButton() {
     return (
       <TouchableOpacity onPress={() => {
-        this.ChooseMotionView.show();
+        // this.ChooseMotionView.show();
+        this.props.navigation.navigate('kfAddAction',{sick:this.state.sick, currArea: this.state.currArea, recieveData: this.recieveData.bind(this)})
       }}>
         <View style={{width: deviceWidth - size(50), height: size(80), marginLeft: size(25), marginTop: size(40), marginBottom: size(30),
           borderColor: AppDef.Blue, borderWidth: size(0.5), borderRadius: size(20),

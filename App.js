@@ -19,6 +19,7 @@ import showMessages from "./View/scene/My/showMessages";
 import Help from "./View/scene/Help/help";
 import problemDetails from "./View/scene/Help/problemDetails";
 import kfMineUserInfo from "./View/scene/My/UserInfoDetail";//EditMember
+import kfAddAction from './View/scene/Plan/AddAction';
 
 import Search from './View/scene/Home/search';
 import MemberComplete from "./View/scene/Register/MemberComplete";
@@ -95,7 +96,8 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
     BonesScene: { screen: BonesScene },
     Search: { screen: Search },
     AboutUs: { screen: AboutUs },
-    AboutUsDetails:{screen:AboutUsDetails}
+    AboutUsDetails:{screen:AboutUsDetails},
+    kfAddAction:{screen:kfAddAction}
   },
   {
     initialRouteName: 'NewHome',     //设置初始路由为Home
