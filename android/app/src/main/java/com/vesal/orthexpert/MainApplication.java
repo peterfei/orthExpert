@@ -54,7 +54,7 @@ import com.umeng.message.entity.UMessage;
 import com.umeng.message.common.UmLog;
 import com.umeng.socialize.PlatformConfig;
 import com.xiaomi.mipush.sdk.MiPushClient;
-
+import org.android.agoo.huawei.HuaWeiRegister;
 import com.vesal.orthexpert.module.SharePackage;
 
 // import com.umeng.message.common.UmLog;
@@ -125,6 +125,8 @@ public class MainApplication extends Application implements ReactApplication {
               "4cc540e80284d655e1e14e5a40cae979");
       initUpush();
       MiPushClient.registerPush(this, "2882303761518112786", "5981811265786");
+      //华为通道
+      HuaWeiRegister.register(this);
 
   }
   {

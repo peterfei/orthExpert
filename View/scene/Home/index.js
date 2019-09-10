@@ -271,13 +271,23 @@ class Custom extends BaseComponent {
   }
 
   async getSickData() {
-    const url = NetInterface.getSick;
-    this.mainView._showLoading('加载中');
+    let tokens = await storage.get("userTokens");
     let _sick_data = await storage.get('sickData', 'sickData')
-    HttpTool.GET_JP(url)
+    const url = 'http://res.vesal.site/commom/sick/GetSick.json';
+    this.mainView._showLoading('加载中');
+    await fetch(url, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "*/*",
+        token: tokens.token
+      }
+    })
+      .then((resp) => resp.json())
       .then(res => {
         this.mainView._closeLoading();
         if (res.code == 0) {
+          console.log(JSON.stringify(res));
           let sickData = FuncUtils.groupBy(res.sickList, "label_a");
           this.setState({
             sickData: sickData
@@ -285,16 +295,38 @@ class Custom extends BaseComponent {
           storage.save('sickData', 'sickData', sickData)
         }
       })
-      .catch(error => {
-        this.mainView._closeLoading();
-
-        // alert(JSON.stringify(_sick_data))
+      .catch(err => {
         this.setState({
           sickData: _sick_data
         })
-
-        // this.mainView._toast(JSON.stringify(error));
+        this.mainView._closeLoading();
+        // this.mainView._toast(JSON.stringify(err));
       })
+    //
+    // const url = NetInterface.getSick;
+    // this.mainView._showLoading('加载中');
+    // let _sick_data = await storage.get('sickData', 'sickData')
+    // HttpTool.GET_JP(url)
+    //   .then(res => {
+    //     this.mainView._closeLoading();
+    //     if (res.code == 0) {
+    //       let sickData = FuncUtils.groupBy(res.sickList, "label_a");
+    //       this.setState({
+    //         sickData: sickData
+    //       })
+    //       storage.save('sickData', 'sickData', sickData)
+    //     }
+    //   })
+    //   .catch(error => {
+    //     this.mainView._closeLoading();
+    //
+    //     // alert(JSON.stringify(_sick_data))
+    //     this.setState({
+    //       sickData: _sick_data
+    //     })
+    //
+    //     // this.mainView._toast(JSON.stringify(error));
+    //   })
   }
 
   fanzhuan() {
