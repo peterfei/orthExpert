@@ -358,7 +358,7 @@ class Custom extends BaseComponent {
 
       let item = Object.assign({}, value[i]);
       item['shape'] = "circle";
-      item['radius'] = size(58);
+      item['radius'] = size(78);
       item['prefill'] = DefaultColor;
       item['lineColor'] = DefaultLineColor;
       item['x1'] = size(item.x1);
@@ -416,8 +416,8 @@ class Custom extends BaseComponent {
       arr.push(
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <ImageMapper
-            imgHeight={size(787)}
-            imgWidth={size(475)}
+            imgHeight={size(989)}
+            imgWidth={size(616)}
             imgSource={this.state.zhengmian ? require('../../img/kf_main/human_zheng.png') : require('../../img/kf_main/human_fan.png')}
             imgMap={this.getImgMap(tabArr[i].value)}
             onPress={(item, idx, event) => {
