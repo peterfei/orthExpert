@@ -226,17 +226,13 @@ class Custom extends BaseComponent {
     )
   }
 
-  
-
   componentWillMount = () => {
     CodePush.disallowRestart()
     this.syncImmediate()
-    
   };
 
   _handleAppStateChange = nextAppState => {
     if (nextAppState != null && nextAppState === "active") {
-      
       CodePush.checkForUpdate(CODE_PUSH_KEY).then((update) => {
         // alert(`update is ${update}`)
         if (!update) {
@@ -250,7 +246,6 @@ class Custom extends BaseComponent {
 
     } else if (nextAppState != null && nextAppState === "background") {
     }
-    
   };
 
   async componentDidMount() {
@@ -266,6 +261,7 @@ class Custom extends BaseComponent {
       // a restart if one was currently pending.
       CodePush.allowRestart();
   }
+
   getSickData() {
     const url = NetInterface.getSick;
     this.mainView._showLoading('加载中');

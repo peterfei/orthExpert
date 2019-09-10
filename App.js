@@ -47,9 +47,13 @@ import ModifyPassword from './View/scene/My/ModifyPassword';
 import AboutUs from './View/scene/About/AboutUs';
 import AboutUsDetails from './View/scene/About/AboutUsDetails';
 
+import  AppUpdate from './View/common/components/APPUpdate';
+import ErrorBoundary from './View/ErrorBoundary'
+
 /**消息通知页面 */
 import MessageNotice from './View/scene/Search/MessageNotice';
 import MessageDetails from './View/scene/Search/MessageDetails';
+import {View} from "react-native";
 
 const RootStack = createAppContainer(createStackNavigator( //跟路由
   {//定义模块
@@ -112,6 +116,11 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
 
 export default class App extends Component {
   render() {                            //将Navigation作为根路径导出
-    return <RootStack />;
+    return (
+        <ErrorBoundary>
+            <AppUpdate/>
+            <RootStack/>
+        </ErrorBoundary>
+    )
   }
 }

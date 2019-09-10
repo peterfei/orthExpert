@@ -29,7 +29,8 @@ export default class ErrorBoundary extends Component {
             white
             background-orange30
             label='返回主页'
-            onPress={this.pops.navigation.navigate('NewHome')} />
+            onPress={this.props.navigation.navigate('NewHome')}
+          />
         </View>
       )
     }
