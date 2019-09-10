@@ -262,9 +262,10 @@ class Custom extends BaseComponent {
       CodePush.allowRestart();
   }
 
-  getSickData() {
+  async getSickData() {
     const url = NetInterface.getSick;
     this.mainView._showLoading('加载中');
+    let _sick_data = await storage.get('sickData', 'sickData')
     HttpTool.GET_JP(url)
       .then(res => {
         this.mainView._closeLoading();
@@ -273,11 +274,18 @@ class Custom extends BaseComponent {
           this.setState({
             sickData: sickData
           })
+          storage.save('sickData', 'sickData', sickData)
         }
       })
       .catch(error => {
         this.mainView._closeLoading();
-        this.mainView._toast(JSON.stringify(error));
+        
+        // alert(JSON.stringify(_sick_data))
+        this.setState({
+          sickData: _sick_data
+        })
+        
+        // this.mainView._toast(JSON.stringify(error));
       })
   }
 
@@ -334,7 +342,8 @@ class Custom extends BaseComponent {
       })
       .catch(error => {
         this.mainView._closeLoading();
-        this.mainView._toast(JSON.stringify(error));
+        this.mainView._toast('暂无网络,请连接网络后重试.')
+        // this.mainView._toast(JSON.stringify(error));
       })
   }
 
