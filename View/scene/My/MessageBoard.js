@@ -144,7 +144,7 @@ export default class MessageBoard extends Component {
     this.setState({
       refreshState: RefreshState.FooterRefreshing
     })
-    // this.requestFirstPageData();
+    this.requestFirstPageData();
   }
 
   renderCell = (rowData: any) => {
@@ -256,7 +256,7 @@ export default class MessageBoard extends Component {
                            renderItem={this.renderCell}
                            refreshState={this.state.refreshState}
                            onHeaderRefresh={() => {this.loadNewData()}}
-                           onFooterRefresh={() => {this.loadMoreData()}}
+                          //  onFooterRefresh={() => {this.loadMoreData()}}
                            removeClippedSubviews={false}
                            footerRefreshingText="玩命加载中.."
                            footerFailureText="我擦嘞，居然失败了.."
