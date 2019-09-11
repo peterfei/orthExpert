@@ -144,7 +144,7 @@ export default class MessageBoard extends Component {
     this.setState({
       refreshState: RefreshState.FooterRefreshing
     })
-    this.requestFirstPageData();
+    // this.requestFirstPageData();
   }
 
   renderCell = (rowData: any) => {

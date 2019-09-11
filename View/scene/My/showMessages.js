@@ -202,7 +202,7 @@ export default class showMessages extends Component {
                   index: 0,
                   actions: [
                     NavigationActions.navigate({
-                      routeName: "HomeScreen"
+                      routeName: "NewHome"
                     })
                   ]
                 });
