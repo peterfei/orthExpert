@@ -126,14 +126,7 @@ export default class App extends Component {
           BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
 
       }
-      this.emitter = DeviceEventEmitter.addListener('backExitApp',
-          (params) => {
-            if (params){
-                current = params.value;
-            }
-
-          }
-      )
+      
   }
 
   componentWillUnmount() {
@@ -150,7 +143,7 @@ export default class App extends Component {
   }
     //定义返回事件
     onBackAndroid =()=> {
-      if (current == true) {//如果是在首页
+      // if (current == true) {//如果是在首页
           if (lastBackPressed && lastBackPressed + 1000 >= Date.now()) {
             // alert(1111)
               //在2秒内按过back返回，可以退出应用
@@ -166,7 +159,7 @@ export default class App extends Component {
           }
 
 
-      }
+      // }
 
 
 
