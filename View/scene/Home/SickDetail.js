@@ -14,7 +14,7 @@ import {
   Text,
   ImageBackground,
   DeviceEventEmitter,
-  PanResponder
+  PanResponder,Platform,StatusBar
 } from "react-native";
 import {
   BaseComponent,
@@ -394,7 +394,7 @@ export default class SickDetail extends BaseComponent {
       let fileNames = url.split('/');
       let newFileNames = fileNames.slice(-3);
       let newFileName = newFileNames.join('_');
-      let cacheFileName = RNFS.TemporaryDirectoryPath + newFileName;
+      let cacheFileName = RNFS.TemporaryDirectoryPath +"_" +newFileName ;
 
       RNFS.exists(cacheFileName)
           .then(res => {
@@ -494,12 +494,13 @@ export default class SickDetail extends BaseComponent {
   _renderVideo() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        
         <Video
           autoPlay
           scrollBounce
           volume={0.8}
           inlineOnly
-          style={{ width: screen.width, height: screen.height + size(148) }}
+          style={{ width: screen.width, height: screen.height+size(56) }}
           url={this.state.playVideoUrl}
           ref={(ref) => {
             this.video = ref
@@ -705,6 +706,7 @@ export default class SickDetail extends BaseComponent {
   render() {
     return (
       <ContainerView ref={r => this.mainView = r}>
+        
         <NavBar title={this.state.sick.pat_name} navigation={this.props.navigation} />
         {this._renderContent()}
         {this._renderBottom()}
