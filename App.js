@@ -128,9 +128,9 @@ export default class App extends Component {
       }
       this.emitter = DeviceEventEmitter.addListener('backExitApp',
           (params) => {
-          if (params){
-              current = params.value;
-          }
+            if (params){
+                current = params.value;
+            }
 
           }
       )
@@ -138,24 +138,21 @@ export default class App extends Component {
 
   componentWillUnmount() {
 
-  //去除事件
+      //去除事件
       if(Platform.OS === 'android'){
           BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
 
       }
-      
+      if (this.emitter) {
+          this.emitter.remove()
+      }
 
   }
     //定义返回事件
-
     onBackAndroid =()=> {
-
-
-
       if (current == true) {//如果是在首页
-
-
           if (lastBackPressed && lastBackPressed + 1000 >= Date.now()) {
+            // alert(1111)
               //在2秒内按过back返回，可以退出应用
               // BackHandler.exitApp();
               WxEntry.wxExitApp();
