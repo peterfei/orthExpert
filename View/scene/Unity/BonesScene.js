@@ -11,7 +11,7 @@ import {
     Modal,
     ImageBackground,
     TouchableOpacity,
-    Alert, DeviceEventEmitter
+    Alert, DeviceEventEmitter,AppState
 } from "react-native";
 import { screen, ScreenUtil } from "../../common/index";
 import UnityLoading from './Components/UnityLoading';
@@ -135,8 +135,31 @@ export default class BonesScene extends Component {
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.androidBackAction);
-
+        AppState.removeEventListener("change", this._handleAppStateChange);
     }
+
+     _handleAppStateChange =async  nextAppState => {
+        if (nextAppState != null && nextAppState === "active") {
+            if( (await (UnityModule.isReady())) ){
+                this.setState({
+                    isUnityReady:false
+                })
+                setTimeout(function(){
+                        this.setState({
+                            isUnityReady:true
+                        })
+                    }.bind(this),500)
+                // let changeInfo = this.changeInfo(this.state.info)
+                // this.sendMsgToUnity("app", changeInfo, 'json');
+                // this.checkSearch();
+            }  
+
+        } else if (nextAppState != null && nextAppState === "background") {
+            this.setState({
+                isUnityReady:false
+            })
+        }
+    };
 
     changeInfo(info) {
 
@@ -170,6 +193,12 @@ export default class BonesScene extends Component {
             this.setState({
                 isUnityReady:true
             })
+
+            // setTimeout(function(){
+            //     this.setState({
+            //         isUnityReady:true
+            //     })
+            // }.bind(this),500)
             // let changeInfo = this.changeInfo(this.state.info)
             // this.sendMsgToUnity("app", changeInfo, 'json');
             // this.checkSearch();
@@ -196,6 +225,7 @@ export default class BonesScene extends Component {
             });
         } catch (e) {
         }
+        AppState.addEventListener("change", this._handleAppStateChange);
     }
 
 
@@ -1230,21 +1260,24 @@ export default class BonesScene extends Component {
         return (
             <View style={{ width: '100%', height: '100%', }}>
 
-
-                <UnityView
-                    ref={(ref) => this.unity = ref}
-                    onUnityMessage={this.onUnityMessage.bind(this)}
-                    style={{
-                        position: 'absolute',
-                        height: this.state.unityHeight,
-                        width: this.state.unityWidth,
-                        top: 0,
-                        bottom: size(0.01),
-                        left: 0,
-                        right: 0,
-
-                    }}
-                />
+                {
+                    
+                        <UnityView
+                            ref={(ref) => this.unity = ref}
+                            onUnityMessage={this.onUnityMessage.bind(this)}
+                            style={{
+                                position: 'absolute',
+                                height: this.state.isUnityReady?this.state.unityHeight:1,
+                                width: this.state.isUnityReady?this.state.unityWidth:1,
+                                top: 0,
+                                bottom: size(0.01),
+                                left: 0,
+                                right: 0,
+                                zIndex:-999
+                            }}
+                        />
+                }
+                
                 {
                 !this.state.unityReady? <View style={{
                     backgroundColor: "rgba(0,0,0,0.1)", width: '100%', height: '100%',
@@ -1299,7 +1332,8 @@ export default class BonesScene extends Component {
                 {this.state.showTip ?
                     <View style={{
                         position: 'absolute', bottom: 0, left: 0, right: 0, top: 0,
-                        backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'center', alignItems: 'center'
+                        backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'center', alignItems: 'center',
+                        zIndex:999
                     }}>
                         <View style={{
                             backgroundColor: 'white',
