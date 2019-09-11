@@ -32,7 +32,7 @@ export default class Pay extends BaseComponent {
 
     getPayMethod() {
 
-        const url = NetInterface.config + "?key=pay_method_" + Platform.OS;
+        const url = NetInterface.config + "?key=pay_method_" + Platform.OS+"_orthope";
         this.mainView._showLoading('加载中');
 
         HttpTool.GET_JP(url)
@@ -50,7 +50,7 @@ export default class Pay extends BaseComponent {
                         arr.push(obj)
                     }
 
-                    if (list.indexOf('weChatPay') != -1) {
+                    if (list.indexOf('alipay') != -1) {
                         let obj = {
                             title: '支付宝支付',
                             subTitle: '支付宝钱包支付',
