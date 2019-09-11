@@ -355,7 +355,8 @@ export default class SickDetail extends BaseComponent {
         let index = newpro.indexOf('.');
 
         newpro = newpro.substr(0,index);
-        this.mainView._showLoading('下载中' + newpro + '%')
+
+        // this.mainView._toast('下载中' + newpro + '%')
       }
     };
     try {
@@ -368,7 +369,7 @@ export default class SickDetail extends BaseComponent {
           playVideoUrl: cacheFileName
         }, () => {
           // alert(111)
-          this.mainView._closeLoading();
+          // this.mainView._closeLoading();
           this.setState({
             showSourceType: 'video'
           })
@@ -640,8 +641,8 @@ export default class SickDetail extends BaseComponent {
 
   //判断是否开始使用
   async  startIsUse(index) {
-    // this.selectBtn(index)
-    // return
+    this.selectBtn(index)
+    return
     FuncUtils.checkKfPerm()
       .then(res => {
         if (res.code == 0 && res.result == 'yes') {
