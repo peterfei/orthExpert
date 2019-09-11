@@ -16,6 +16,8 @@ const SelectLineColor = 'rgba(231, 176, 176, 1)';
 const statusBarHeight = StatusBar.currentHeight;
 const CODE_PUSH_KEY = 'q4YE8sCIJ4Xepd6gaJA1qWTza76x4ksvOXqog'
 const UMPushModule =  NativeModules.UMPushModule
+import UnityView,{ UnityModule } from 'react-native-unity-view';
+
 class Custom extends BaseComponent {
 
   constructor(props) {
@@ -237,6 +239,7 @@ class Custom extends BaseComponent {
   componentWillMount = () => {
     CodePush.disallowRestart()
     this.syncImmediate()
+    UnityModule.createUnity();
   };
 
   _handleAppStateChange = nextAppState => {
