@@ -129,7 +129,7 @@ export default class PaymentOrder extends Component {
 
     async getPayMethod() {
         const url =
-            api.base_uri + "/v1/app/msg/config?key=pay_method_" + Platform.OS;
+            api.base_uri + "/v1/app/msg/config?key=pay_method_" + Platform.OS+"_orthope";
         await fetch(url, {
             method: "get",
             headers: {
@@ -149,7 +149,7 @@ export default class PaymentOrder extends Component {
                     arr.push(obj)
                 }
 
-                if (list.indexOf('weChatPay') != -1) {
+                if (list.indexOf('alipay') != -1) {
                     let obj = {
                         title: '支付宝支付',
                         subTitle: '支付宝钱包支付',

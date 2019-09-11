@@ -14,7 +14,7 @@ import {
   Text,
   ImageBackground,
   DeviceEventEmitter,
-  PanResponder
+  PanResponder,Platform,StatusBar
 } from "react-native";
 import {
   BaseComponent,
@@ -355,7 +355,8 @@ export default class SickDetail extends BaseComponent {
         let index = newpro.indexOf('.');
 
         newpro = newpro.substr(0,index);
-        this.mainView._showLoading('下载中' + newpro + '%')
+
+        // this.mainView._toast('下载中' + newpro + '%')
       }
     };
     try {
@@ -368,7 +369,7 @@ export default class SickDetail extends BaseComponent {
           playVideoUrl: cacheFileName
         }, () => {
           // alert(111)
-          this.mainView._closeLoading();
+          // this.mainView._closeLoading();
           this.setState({
             showSourceType: 'video'
           })
@@ -393,7 +394,7 @@ export default class SickDetail extends BaseComponent {
       let fileNames = url.split('/');
       let newFileNames = fileNames.slice(-3);
       let newFileName = newFileNames.join('_');
-      let cacheFileName = RNFS.TemporaryDirectoryPath + newFileName;
+      let cacheFileName = RNFS.TemporaryDirectoryPath +"_" +newFileName ;
 
       RNFS.exists(cacheFileName)
           .then(res => {
@@ -493,12 +494,13 @@ export default class SickDetail extends BaseComponent {
   _renderVideo() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        
         <Video
           autoPlay
           scrollBounce
           volume={0.8}
           inlineOnly
-          style={{ width: screen.width, height: screen.height + size(148) }}
+          style={{ width: screen.width, height: screen.height+size(56) }}
           url={this.state.playVideoUrl}
           ref={(ref) => {
             this.video = ref
@@ -640,8 +642,8 @@ export default class SickDetail extends BaseComponent {
 
   //判断是否开始使用
   async  startIsUse(index) {
-    this.selectBtn(index)
-    return
+    // this.selectBtn(index)
+    // return
     FuncUtils.checkKfPerm()
       .then(res => {
         if (res.code == 0 && res.result == 'yes') {
@@ -664,15 +666,31 @@ export default class SickDetail extends BaseComponent {
       if (item.secondFyName == '康复' || item.secondFyName == '3D模型') {
         img = isSelect ? item.select_icon_url : item.res_fy_icon_url;
       }
-      arr.push(
-        <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104) }} onPress={() => {
-          // this.selectBtn(index)
-          this.startIsUse(index)
-        }}>
-          <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }} />
-          <Text style={{ fontSize: size(24), color: color, marginTop: size(8), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }}>{item.secondFyName}</Text>
-        </TouchableOpacity>
-      )
+      if (item.type=='zhiliao'){
+        let list = JSON.parse(item.content);
+        if (list&&list.length>0){
+          arr.push(
+              <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104) }} onPress={() => {
+                // this.selectBtn(index)
+                this.startIsUse(index)
+              }}>
+                <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }} />
+                <Text style={{ fontSize: size(24), color: color, marginTop: size(8), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }}>{item.secondFyName}</Text>
+              </TouchableOpacity>
+          )
+        }
+      }else{
+        arr.push(
+            <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104) }} onPress={() => {
+              // this.selectBtn(index)
+              this.startIsUse(index)
+            }}>
+              <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }} />
+              <Text style={{ fontSize: size(24), color: color, marginTop: size(8), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }}>{item.secondFyName}</Text>
+            </TouchableOpacity>
+        )
+      }
+
     })
 
     return (
@@ -688,6 +706,7 @@ export default class SickDetail extends BaseComponent {
   render() {
     return (
       <ContainerView ref={r => this.mainView = r}>
+        
         <NavBar title={this.state.sick.pat_name} navigation={this.props.navigation} />
         {this._renderContent()}
         {this._renderBottom()}

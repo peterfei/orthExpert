@@ -588,7 +588,7 @@ async function in_app_pay(that, infos) {
                                       const resetAction = StackActions.reset({
                                           index: 0,
                                           actions: [
-                                              NavigationActions.navigate({routeName: "HomeScreen"})
+                                              NavigationActions.navigate({routeName: "NewHome"})
                                           ]
                                       })
                                       // that.props.navigation.pop() && that.props.navigation.pop();

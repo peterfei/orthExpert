@@ -108,7 +108,7 @@ export default class MessageBoard extends Component {
       if (this.state.currentPage != this.state.totalPage) {
         let nextPage = this.state.currentPage++;
         this.requestFirstPageData();
-        alert(JSON.stringify(resp));
+        // alert(JSON.stringify(resp));
         // debugger;
         // this.setState({
         //   refreshState: RefreshState.FooterRefreshing,
@@ -256,7 +256,7 @@ export default class MessageBoard extends Component {
                            renderItem={this.renderCell}
                            refreshState={this.state.refreshState}
                            onHeaderRefresh={() => {this.loadNewData()}}
-                           onFooterRefresh={() => {this.loadMoreData()}}
+                          //  onFooterRefresh={() => {this.loadMoreData()}}
                            removeClippedSubviews={false}
                            footerRefreshingText="玩命加载中.."
                            footerFailureText="我擦嘞，居然失败了.."
