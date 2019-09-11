@@ -27,6 +27,7 @@ import {
 import { storage } from "../../common/storage";
 import Video from 'react-native-af-video-player';
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
+import RNFS from "react-native-fs"
 
 export default class SickDetail extends BaseComponent {
 
@@ -44,6 +45,7 @@ export default class SickDetail extends BaseComponent {
       showSourceType: 'img', // 当前显示的内容类型  img 图片  video播放视频  videoList 视频列表
       playVideoUrl: '',    // 当前播放的视频的url
       details: '',  //当前疾病所有数据
+      videoUrl: ''
     }
   }
 
@@ -334,12 +336,84 @@ export default class SickDetail extends BaseComponent {
     }
   }
 
+  dowloadVideoFile(cacheUrl, cacheFileName) {
+
+    // 视频
+    const options = {
+      fromUrl: cacheUrl,
+      toFile: cacheFileName,
+      background: true,
+      begin: (res) => {
+        console.log('begin', res);
+        console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
+      },
+      progress: (res) => {
+
+        let pro = res.bytesWritten / res.contentLength;
+        console.log(`=====当前下载进度 ${pro} =====`);
+        let newpro = parseFloat(pro) * 100+ '';
+        let index = newpro.indexOf('.');
+
+        newpro = newpro.substr(0,index);
+        this.mainView._showLoading('下载中' + newpro + '%')
+      }
+    };
+    try {
+      const ret = RNFS.downloadFile(options);
+      ret.promise.then(res => {
+        console.log('success', res);
+        console.log('file://' + cacheFileName)
+        // ios 读取视频地址不需要加 file:// 安卓可能需要加
+        this.setState({
+          playVideoUrl: cacheFileName
+        }, () => {
+          // alert(111)
+          this.mainView._closeLoading();
+          this.setState({
+            showSourceType: 'video'
+          })
+        })
+      }).catch(err => {
+        console.log('err', err);
+      });
+    }
+    catch (e) {
+      console.log(error);
+    }
+  }
+
   _renderContent() {
     if (this.state.showSourceType == 'videoList') { // 视频列表
       return (
         this._renderVideoList()
       )
     } else if (this.state.showSourceType == 'video') { // 视频播放
+      let url = this.state.playVideoUrl;
+      if (url.length < 0) return;
+      let fileNames = url.split('/');
+      let newFileNames = fileNames.slice(-3);
+      let newFileName = newFileNames.join('_');
+      let cacheFileName = RNFS.TemporaryDirectoryPath + newFileName;
+
+      RNFS.exists(cacheFileName)
+          .then(res => {
+            if (res) {
+              this.setState({
+                // showSourceType: 'video',
+                playVideoUrl: cacheFileName
+              })
+            } else {
+              this.dowloadVideoFile(url, cacheFileName)
+            }
+
+          })
+          .catch(err => {
+            this.dowloadVideoFile(url, cacheFileName)
+            this.setState({
+              // showSourceType: 'video',
+              playVideoUrl: cacheFileName
+            })
+          })
       return (
         this._renderVideo()
       )
@@ -366,10 +440,32 @@ export default class SickDetail extends BaseComponent {
 
         arr.push(
           <TouchableOpacity style={{ marginBottom: size(30), }} onPress={() => {
-            this.setState({
-              playVideoUrl: item.url,
-              showSourceType: 'video'
-            })
+            let url = item.url;
+            if (url.length < 0) return;
+            let fileNames = url.split('/');
+            let newFileNames = fileNames.slice(-3);
+            let newFileName = newFileNames.join('_');
+            let cacheFileName = RNFS.TemporaryDirectoryPath + newFileName;
+
+            RNFS.exists(cacheFileName)
+                .then(res => {
+                  if (res) {
+                    this.setState({
+                      showSourceType: 'video',
+                      playVideoUrl: cacheFileName
+                    })
+                  } else {
+                    this.dowloadVideoFile(url, cacheFileName)
+                  }
+
+                })
+                .catch(err => {
+                  this.dowloadVideoFile(url, cacheFileName)
+                  this.setState({
+                    showSourceType: 'video',
+                    playVideoUrl: cacheFileName
+                  })
+                })
           }}>
             <ImageBackground
               source={{ uri: item.img }}
@@ -544,8 +640,8 @@ export default class SickDetail extends BaseComponent {
 
   //判断是否开始使用
   async  startIsUse(index) {
-    this.selectBtn(index)
-    return
+    // this.selectBtn(index)
+    // return
     FuncUtils.checkKfPerm()
       .then(res => {
         if (res.code == 0 && res.result == 'yes') {
