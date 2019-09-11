@@ -641,8 +641,8 @@ export default class SickDetail extends BaseComponent {
 
   //判断是否开始使用
   async  startIsUse(index) {
-    this.selectBtn(index)
-    return
+    // this.selectBtn(index)
+    // return
     FuncUtils.checkKfPerm()
       .then(res => {
         if (res.code == 0 && res.result == 'yes') {
