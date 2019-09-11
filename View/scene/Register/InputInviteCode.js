@@ -71,7 +71,7 @@ export default class InputInviteCode extends Component {
                             index: 0,
                             actions: [
                                 NavigationActions.navigate({
-                                    routeName: "HomeScreen"
+                                    routeName: "NewHome"
                                 })
                             ]
                         });
@@ -89,7 +89,7 @@ export default class InputInviteCode extends Component {
             index: 0,
             actions: [
                 NavigationActions.navigate({
-                    routeName: "HomeScreen"
+                    routeName: "NewHome"
                 })
             ]
         });

@@ -839,7 +839,7 @@ export default class BonesScene extends Component {
                     index: 0,
                     actions: [
                         NavigationActions.navigate({
-                            routeName: "HomeScreen",
+                            index: 0,
                             action: NavigationActions.navigate({
                                 routeName: 'Shop',
                                 params: {
