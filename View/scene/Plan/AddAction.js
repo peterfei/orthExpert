@@ -140,7 +140,7 @@ export default class AddAction extends BaseComponent {
     }
 
     getEquipmentByBody(){
-        const netInterface = NetInterface.getPlanGetEquip + "?areaNos=" + this.state.areaNos;
+        const netInterface = "app/kfxl/v1/animation/getPlanGetEquip?areaNos=" + this.state.areaNos;
         HttpTool.GET(netInterface)
             .then(res => {
                 if(res.code == 0 ){
