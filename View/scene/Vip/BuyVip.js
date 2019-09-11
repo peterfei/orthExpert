@@ -48,7 +48,7 @@ export default class BuyVip extends BaseComponent {
         // this.Loading.show()
         // let isUse = await FuncUtils.checkPerm('yes', 'GKHY')//检查是否有权限
         let tokens = await storage.get("userTokens");
-        let url = NetInterface.gk_getComboInfo + "?version=" + currVersion + "&plat=" + Platform.OS+"&business=orthope&comboCode=ORTHOPE_VIP";
+        let url = NetInterface.gk_getComboInfo + "?app_version=" + currVersion + "&plat=" + Platform.OS+"&business=orthope&comboCode=ORTHOPE_VIP";
         // alert(url)
         // debugger
 
