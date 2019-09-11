@@ -52,4 +52,9 @@ class WxpayModule extends ReactContextBaseJavaModule {
     promise.resolve(isSupported);
   }
 
+  @ReactMethod
+  public void wxExitApp() {
+    System.out.println("调用退出APP");
+    System.exit(0);
+  }
 }

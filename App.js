@@ -54,7 +54,7 @@ import ErrorBoundary from './View/ErrorBoundary'
 /**消息通知页面 */
 import MessageNotice from './View/scene/Search/MessageNotice';
 import MessageDetails from './View/scene/Search/MessageDetails';
-import {View} from "react-native";
+import {View,Platform,BackHandler,BackAndroid,DeviceEventEmitter,NativeModules,ToastAndroid} from "react-native";
 
 const RootStack = createAppContainer(createStackNavigator( //跟路由
   {//定义模块
@@ -115,8 +115,65 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
     }
   }
 ))
-
+var WxEntry = NativeModules.Wxentry;
+let lastBackPressed ;
+let current = false;
 export default class App extends Component {
+
+    componentWillMount() {
+      // SplashScreen.hide();
+      if(Platform.OS === 'android'){
+          BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+
+      }
+      this.emitter = DeviceEventEmitter.addListener('backExitApp',
+          (params) => {
+          if (params){
+              current = params.value;
+          }
+
+          }
+      )
+  }
+
+  componentWillUnmount() {
+
+  //去除事件
+      if(Platform.OS === 'android'){
+          BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+
+      }
+      
+
+  }
+    //定义返回事件
+
+    onBackAndroid =()=> {
+
+
+
+      if (current == true) {//如果是在首页
+
+
+          if (lastBackPressed && lastBackPressed + 1000 >= Date.now()) {
+              //在2秒内按过back返回，可以退出应用
+              // BackHandler.exitApp();
+              WxEntry.wxExitApp();
+            // alert(1)
+              return false;
+          }else{
+
+              lastBackPressed = Date.now();
+              ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT);
+              return true;
+          }
+
+
+      }
+
+
+
+  }
   render() {                            //将Navigation作为根路径导出
     return (
         <ErrorBoundary>
