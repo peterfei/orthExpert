@@ -4,7 +4,7 @@ import {NetInfo} from 'react-native';
 
 //dev 开发   prod 产品
 
-let active = "dev";
+let active = "prod";
 
 let base_url_jiepou ;
 let base_url_sport ;

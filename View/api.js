@@ -30,8 +30,8 @@ export default {
 
     // base_uri: "http://118.24.119.234:8083/vesal-jiepao-test/",
     // base_uri: "http://114.115.210.145:8083/vesal-jiepao-test/",
-    // base_uri: "http://api.vesal.cn:8000/vesal-jiepao-prod/",
-    base_uri: "http://118.24.119.234:8003/vesal-jiepao-test/",
+    base_uri: "http://api.vesal.cn:8000/vesal-jiepao-prod/",
+    // base_uri: "http://118.24.119.234:8003/vesal-jiepao-test/",
     base_url_sport: "http://114.115.210.145:8085/vesal-sport-test/",
 
     // menuInfo: [
