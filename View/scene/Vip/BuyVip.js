@@ -32,6 +32,9 @@ export default class BuyVip extends BaseComponent {
             comboId: "",
             productID: "",
             OrderNo: "",
+            memberComboEndTime: '',
+            comboInfo: {},
+            combo: {}
         }
     }
 
@@ -40,6 +43,25 @@ export default class BuyVip extends BaseComponent {
     }
 
     async componentDidMount() {
+        let memberInfo = await storage.get("memberInfo");
+        FuncUtils.checkKfPerm()
+            .then(res => {
+                if (res.code == 0 && res.result == 'yes') {
+                    this.setState({
+                        memberInfo: memberInfo,
+                        isUse: false,
+                    })
+                } else {
+                    this.setState({
+                        memberInfo: memberInfo,
+                        isUse: true,
+                        combo: res.memberCombo
+                    })
+                }
+            })
+            .catch(err => {
+                this.mainView._toast(JSON.stringify(err))
+            })
         this.init()
     }
 
@@ -54,7 +76,6 @@ export default class BuyVip extends BaseComponent {
 
         let memberInfo = await storage.get("memberInfo");
         let combo = await FuncUtils.getComboByCode(AppDef.ORTHOPE_VIP)
-
         let isUse = await FuncUtils.checkComboisExpire(AppDef.ORTHOPE_VIP)
 
         HttpTool.GET_JP(url)
@@ -62,6 +83,7 @@ export default class BuyVip extends BaseComponent {
                 this.setState({
                     packageDetail: result.comboPrices,
                     memberInfo: memberInfo,
+                    comboInfo: result.combo,
                     isUse: isUse,
                 })
             })
@@ -327,12 +349,12 @@ export default class BuyVip extends BaseComponent {
 
                                 <View style={styles.memberImageBot}>
                                     <View style={styles.memberImageBotRight}>
-                                        <Text style={styles.memberImageBotRightText}>VIP专属会员</Text>
+                                        <Text style={styles.memberImageBotRightText}>{this.state.comboInfo.comboName}</Text>
                                     </View>
                                     {
                                         this.state.isUse ? (
                                             <View style={styles.memberImageBotLeft}>
-                                                <Text style={styles.memberImageBotLeftText}>2019.08.26到期</Text>
+                                                <Text style={styles.memberImageBotLeftText}>{this.state.combo.endTime.substring(0, 10)}到期</Text>
                                             </View>
                                         ) : null
                                     }
@@ -340,7 +362,7 @@ export default class BuyVip extends BaseComponent {
                                 </View>
                             </ImageBackground>
                             <View style={styles.packageName}>
-                                <Text style={styles.packageNameText}>VIP会员套餐</Text>
+                                <Text style={styles.packageNameText}>会员套餐</Text>
                             </View>
                             {this.renderPackageDetail()}
                             <View style={styles.joinMember}>
@@ -515,7 +537,8 @@ const styles = StyleSheet.create({
     },
 
     packageDetailItemChoose: {
-        flex: 1,
+        height: size(156),
+        width: size(231),
         borderWidth: 1,
         borderColor: '#E2E2E2',
         margin: 2.5,
@@ -524,7 +547,8 @@ const styles = StyleSheet.create({
     },
 
     packageDetailItem: {
-        flex: 1,
+        height: size(156),
+        width: size(231),
         borderWidth: 1,
         borderColor: '#E2E2E2',
         margin: 2.5,
