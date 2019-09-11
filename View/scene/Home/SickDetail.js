@@ -665,15 +665,31 @@ export default class SickDetail extends BaseComponent {
       if (item.secondFyName == '康复' || item.secondFyName == '3D模型') {
         img = isSelect ? item.select_icon_url : item.res_fy_icon_url;
       }
-      arr.push(
-        <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104) }} onPress={() => {
-          // this.selectBtn(index)
-          this.startIsUse(index)
-        }}>
-          <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }} />
-          <Text style={{ fontSize: size(24), color: color, marginTop: size(8), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }}>{item.secondFyName}</Text>
-        </TouchableOpacity>
-      )
+      if (item.type=='zhiliao'){
+        let list = JSON.parse(item.content);
+        if (list&&list.length>0){
+          arr.push(
+              <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104) }} onPress={() => {
+                // this.selectBtn(index)
+                this.startIsUse(index)
+              }}>
+                <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }} />
+                <Text style={{ fontSize: size(24), color: color, marginTop: size(8), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }}>{item.secondFyName}</Text>
+              </TouchableOpacity>
+          )
+        }
+      }else{
+        arr.push(
+            <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: size(104), height: size(104) }} onPress={() => {
+              // this.selectBtn(index)
+              this.startIsUse(index)
+            }}>
+              <Image resizeMode={'contain'} source={img} style={{ width: size(44), height: size(44), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }} />
+              <Text style={{ fontSize: size(24), color: color, marginTop: size(8), opacity: this.state.selectBtnIndex === index ? 0.8 : 1 }}>{item.secondFyName}</Text>
+            </TouchableOpacity>
+        )
+      }
+
     })
 
     return (
