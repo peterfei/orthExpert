@@ -108,7 +108,7 @@ export default class MessageBoard extends Component {
       if (this.state.currentPage != this.state.totalPage) {
         let nextPage = this.state.currentPage++;
         this.requestFirstPageData();
-        alert(JSON.stringify(resp));
+        // alert(JSON.stringify(resp));
         // debugger;
         // this.setState({
         //   refreshState: RefreshState.FooterRefreshing,
