@@ -9,7 +9,7 @@ import {
     Text,
     TouchableOpacity,
     View,
-    Platform
+    Platform, Dimensions
 } from "react-native";
 import {
     ContainerView,
@@ -22,7 +22,6 @@ import {
 } from '../../common';
 import {storage} from "../../common/storage";
 import {captureScreen} from "react-native-view-shot";
-import Device from "react-native-device-info";
 
 // 调用原生分享
 const UShare = NativeModules.sharemodule
@@ -44,7 +43,7 @@ export default class SharingPlan extends Component {
         this.state = {
             planInfo: {},
             memberInfo: {},
-            amList: [],
+            resAmList: [],
             showImage: false,
             showMenu: true,
             base64: ''
@@ -52,6 +51,7 @@ export default class SharingPlan extends Component {
     }
 
     async componentDidMount() {
+        this.mainView._showLoading('加载中...')
         let memberInfo = await storage.get("memberInfo")
         let auth = await storage.get('auth')
         let userName = auth.userName||Device.getUniqueID()
@@ -60,6 +60,7 @@ export default class SharingPlan extends Component {
         let url = NetInterface.gk_getShareQR + `?planId= ${planInfo.plan_id}&userName=${userName}&loginType=${loginType}`
         HttpTool.GET(url)
             .then(res => {
+                this.mainView._closeLoading()
                 this.setState({
                     base64: res.base64
                 })
@@ -68,7 +69,7 @@ export default class SharingPlan extends Component {
         let resAmList = this.props.navigation.state.params.amList
         this.setState({
             planInfo: planInfo,
-            amList: resAmList.splice(0, 3),
+            resAmList: resAmList.slice(0,3),
             memberInfo: memberInfo
         })
     }
@@ -86,6 +87,12 @@ export default class SharingPlan extends Component {
 
         return (
             <ImageBackground style={styles.bannerImg} source={uri}>
+                {this.state.showMenu
+                    ? <TouchableOpacity onPress={() => {this.props.navigation.goBack()}} style={[styles.bannerImgText, {width: size(50), height: size(35), top: size(78)}]}>
+                        <Image style={styles.bannerImgBack} source={require('../../img/home/home_share_fanhui.png')} />
+                    </TouchableOpacity>
+                    : null
+                }
                 <Text style={[styles.bannerImgText, styles.bannerImgSharer]}>{this.state.memberInfo.mbName} 为你推送了：</Text>
                 <Text style={[styles.bannerImgText, styles.bannerImgPlanName]}>{this.state.planInfo.plan_name}</Text>
                 <Text style={[styles.bannerImgText, styles.bannerImgPlanDetails]}>{this.state.planInfo.label_a}</Text>
@@ -97,7 +104,7 @@ export default class SharingPlan extends Component {
         return (
             <View style={styles.amList}>
                 <FlatList
-                    data={this.state.amList}
+                    data={this.state.resAmList}
                     keyExtractor={(item, index) => index}
                     renderItem={this._renderSchemeItem}
                     horizontal={true}
@@ -132,8 +139,7 @@ export default class SharingPlan extends Component {
         return (
             <View style={styles.bottoms}>
                 <Text style={styles.bottomsTip}>没有运动康复训练？</Text>
-                <Text style={styles.bottomsTip1}>1.医用商城搜索“运动康复训练”即可下载</Text>
-                <Text style={styles.bottomsTip2}></Text>
+                <Text style={styles.bottomsTip1}>1.应用商店搜索<Text style={{color: '#72B7EC'}}>“运动康复训练”</Text>即可下载</Text>
             </View>
         )
     }
@@ -146,12 +152,11 @@ export default class SharingPlan extends Component {
                 left: 0,
                 right: 0,
                 height: size(240),
-                backgroundColor: "#f4f4f4", borderTopLeftRadius: size(10), borderTopRightRadius: size(10),
-                borderTopColor: "#c8c8c8", borderTopWidth: size(1)
+                backgroundColor: "rgba(0,0,0,0)"
             }}>
                 <View style={{
+                    flex: 1,
                     flexDirection: "row",
-                    marginTop: size(20),
                     alignItems: "center",
                     justifyContent: "center"
                 }}>
@@ -175,26 +180,14 @@ export default class SharingPlan extends Component {
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity
-                    style={{alignItems: "center", width: '100%', height: size(150), justifyContent: "center"}}
-                    onPress={() => {
-                        this.props.navigation.goBack()
-                    }}>
-                    <Text>取&nbsp;消&nbsp;分&nbsp;享</Text>
-                </TouchableOpacity>
+                {/*<TouchableOpacity*/}
+                {/*    style={{alignItems: "center", width: '100%', height: size(150), justifyContent: "center"}}*/}
+                {/*    onPress={() => {*/}
+                {/*        this.props.navigation.goBack()*/}
+                {/*    }}>*/}
+                {/*    <Text>取&nbsp;消&nbsp;分&nbsp;享</Text>*/}
+                {/*</TouchableOpacity>*/}
             </View>
-        )
-    }
-
-    _renderSeparator() {
-        return (
-            <View style={styles.separator}></View>
-        )
-    }
-
-    _renderBottomBlank() {
-        return (
-            <View style={{height: size(240)}} />
         )
     }
 
@@ -209,23 +202,23 @@ export default class SharingPlan extends Component {
                 width: deviceWidth,
                 height: deviceHeight
             }).then(
-              uri => {
-                  let Imageuri = '';
-                  if (Platform.OS == 'ios') {
-                      Imageuri = uri;
-                  } else {
-                      Imageuri = (uri.toLowerCase()).includes('file://') ? uri : 'file://' + uri;
-                  }
+                uri => {
+                    let Imageuri = '';
+                    if (Platform.OS == 'ios') {
+                        Imageuri = uri;
+                    } else {
+                        Imageuri = (uri.toLowerCase()).includes('file://') ? uri : 'file://' + uri;
+                    }
 
-                  this.setState({
-                      Imageuri: Imageuri,
-                      showImage: true,
-                      showMenu: true
-                  }, () => {
-                      this.startShare(Imageuri, type);
-                  })
-              },
-              error => console.log("Oops, snapshot failed==" + error)
+                    this.setState({
+                        Imageuri: Imageuri,
+                        showImage: true,
+                        showMenu: true
+                    }, () => {
+                        this.startShare(Imageuri, type);
+                    })
+                },
+                error => console.log("Oops, snapshot failed==" + error)
             );
         })
 
@@ -255,22 +248,19 @@ export default class SharingPlan extends Component {
     render() {
         return (
             <ContainerView ref={r => this.mainView = r}>
-                <ScrollView
-                  ref='full'
-                  showsVerticalScrollIndicator={false}
-                  style={{flex: 1}}
-                >
+                <View style={{flex: 1}}>
                     {this._renderHeader()}
-                    {this._renderSeparator()}
-                    <ImageBackground source={require('../../img/home/planShareBackground.png')}
-                                     style={styles.bot}>
-                        {this._renderSchemeList()}
-                        {this._renderShareQRCode()}
-                        {this._renderBottom()}
-                    </ImageBackground>
+                    {this._renderSchemeList()}
+                    {this._renderShareQRCode()}
+                    {this._renderBottom()}
+                    <ImageBackground source={require('../../img/home/planShareBottom.png')} style={styles.bot} />
+                    {/*<ImageBackground source={require('../../img/home/planShareBackground.png')}*/}
+                    {/*                 style={styles.bot} resizeMode={'cover'}>*/}
+                    {/*    */}
+                    {/*</ImageBackground>*/}
                     {/*{this.state.showMenu ? this._renderBottomBlank() : null}*/}
-                </ScrollView>
-                {this.state.showMenu ? this._renderBotShare() : null}
+                    {this.state.showMenu ? this._renderBotShare() : null}
+                </View>
             </ContainerView>
         )
     }
@@ -280,8 +270,9 @@ export default class SharingPlan extends Component {
 const styles = StyleSheet.create({
     scrollViewContainer: {},
     bannerImg: {
+        flex: 0.252,
         width: '100%',
-        height: size(300) + isIPhoneXPaddTop(0),
+        height: size(350) + isIPhoneXPaddTop(0),
     },
     bannerImgText: {
         position: 'absolute',
@@ -289,16 +280,20 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontWeight: 'bold'
     },
+    bannerImgBack: {
+        width: size(36),
+        height: size(28)
+    },
     bannerImgSharer: {
-        top: size(76),
+        top: size(146),
         fontSize: size(28),
     },
     bannerImgPlanName: {
-        top: size(143),
+        top: size(203),
         fontSize: size(38),
     },
     bannerImgPlanDetails: {
-        top: size(204),
+        top: size(264),
         fontSize: size(20),
         right: size(40)
     },
@@ -307,11 +302,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(244,244,244,1)'
     },
     amList: {
-        height: size(200),
+        flex: 0.161,
+        height: size(224),
         marginLeft: size(4),
         marginRight: size(4),
         flexDirection: 'row',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-around',
         alignItems: 'center'
     },
     amItem: {
@@ -335,16 +331,20 @@ const styles = StyleSheet.create({
         marginTop: size(22)
     },
     bot: {
-        height: size(950)
+        flex: 0.18,
+        height: size(300),
+        width: deviceWidth
     },
     qrCodeBackground: {
-        height: size(421),
-        marginTop: size(38),
+        flex: 0.322,
+        height: size(493),
+        // marginTop: size(38),
         alignItems: 'center',
     },
     qrCode: {
+        flex: 0.461,
         position: 'absolute',
-        top: size(56),
+        top: size(96),
         borderColor: '#979797',
         borderWidth: size(1),
         borderRadius: size(10),
@@ -353,21 +353,24 @@ const styles = StyleSheet.create({
     },
     qrCodeTips: {
         position: 'absolute',
-        bottom: size(20),
+        bottom: size(30),
         fontWeight: 'bold',
 
     },
     bottoms: {
-        marginTop: size(40),
+        flex: 0.057,
+        height: size(80),
+        marginTop: size(30),
         paddingLeft: size(40),
     },
     bottomsTip: {
+        marginTop: size(10),
         fontSize: size(33),
         fontWeight: 'bold',
         color: 'rgba(90,89,89,1)',
     },
     bottomsTip1: {
-        marginTop: size(35),
+        marginTop: size(19),
         fontSize: size(27),
         fontWeight: 'bold',
         color: 'rgba(90,89,89,1)'
