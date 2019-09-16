@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     },
     qrCodeTips: {
         position: 'absolute',
-        bottom: size(30),
+        top: size(400),
         fontWeight: 'bold',
 
     },
