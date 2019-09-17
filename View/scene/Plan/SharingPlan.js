@@ -75,13 +75,9 @@ export default class SharingPlan extends Component {
     }
 
     _renderHeader() {
-        let planName = ''
-        let desc = ''
         let uri = {uri: ''}
 
         if (this.state.planInfo) {
-            planName = this.state.planInfo.plan_name;
-            desc = this.state.planInfo.description;
             uri = {uri: this.state.planInfo.icon2_url};
         }
 
@@ -101,25 +97,23 @@ export default class SharingPlan extends Component {
     }
 
     _renderSchemeList() {
+        let list = []
+        this.state.resAmList.forEach(item => {
+            list.push(this._renderSchemeItem(item))
+        })
         return (
             <View style={styles.amList}>
-                <FlatList
-                    data={this.state.resAmList}
-                    keyExtractor={(item, index) => index}
-                    renderItem={this._renderSchemeItem}
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                />
+                {list}
             </View>
         )
     }
 
-    _renderSchemeItem = ({item}) => {
+    _renderSchemeItem = (item) => {
         return (
             <View style={styles.amItem}>
                 <ImageBackground style={styles.amItemImage} source={{uri: item.icon_url}}/>
                 <View>
-                    <Text style={styles.amItemText}>{item.am_ch_name}</Text>
+                    <Text numberOfLines={1} style={styles.amItemText}>{item.am_ch_name}</Text>
                 </View>
             </View>
         )
@@ -151,7 +145,7 @@ export default class SharingPlan extends Component {
                 bottom: size(0.00001),
                 left: 0,
                 right: 0,
-                height: size(240),
+                height: size(180),
                 backgroundColor: "rgba(0,0,0,0)"
             }}>
                 <View style={{
@@ -169,6 +163,7 @@ export default class SharingPlan extends Component {
                                style={{width: size(60), height: size(60)}}/>
                         <Text>微信好友</Text>
                     </TouchableOpacity>
+
                     <TouchableOpacity
                         onPress={() => {
                             this.toPlatform('pyq')
@@ -270,9 +265,9 @@ export default class SharingPlan extends Component {
 const styles = StyleSheet.create({
     scrollViewContainer: {},
     bannerImg: {
-        flex: 0.252,
+        // flex: 0.252,
         width: '100%',
-        height: size(350) + isIPhoneXPaddTop(0),
+        minHeight: size(350) + isIPhoneXPaddTop(0),
     },
     bannerImgText: {
         position: 'absolute',
@@ -285,15 +280,15 @@ const styles = StyleSheet.create({
         height: size(28)
     },
     bannerImgSharer: {
-        top: size(146),
+        top: size(166),
         fontSize: size(28),
     },
     bannerImgPlanName: {
-        top: size(203),
+        top: size(223),
         fontSize: size(38),
     },
     bannerImgPlanDetails: {
-        top: size(264),
+        top: size(284),
         fontSize: size(20),
         right: size(40)
     },
@@ -302,7 +297,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(244,244,244,1)'
     },
     amList: {
-        flex: 0.161,
+        // flex: 0.161,
         height: size(224),
         marginLeft: size(4),
         marginRight: size(4),
@@ -311,8 +306,6 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     amItem: {
-        marginTop: size(30),
-        width: size(170),
         marginLeft: size(38),
         marginRight: size(38),
         alignItems: 'center'
@@ -325,24 +318,23 @@ const styles = StyleSheet.create({
         fontSize: size(24),
         fontWeight: 'bold',
         marginTop: size(10),
+        width: size(170),
         color: 'rgba(104,104,104,1)',
     },
     amItemBotText: {
         marginTop: size(22)
     },
     bot: {
-        flex: 0.18,
-        height: size(300),
+        flex: 1,
+        // height: size(250),
         width: deviceWidth
     },
     qrCodeBackground: {
-        flex: 0.322,
-        height: size(493),
-        // marginTop: size(38),
+        height: size(488),
         alignItems: 'center',
     },
     qrCode: {
-        flex: 0.461,
+        // flex: 0.461,
         position: 'absolute',
         top: size(96),
         borderColor: '#979797',
@@ -358,9 +350,7 @@ const styles = StyleSheet.create({
 
     },
     bottoms: {
-        flex: 0.057,
         height: size(80),
-        marginTop: size(30),
         paddingLeft: size(40),
     },
     bottomsTip: {

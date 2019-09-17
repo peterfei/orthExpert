@@ -365,15 +365,11 @@ export default class SickDetail extends BaseComponent {
         console.log('success', res);
         console.log('file://' + cacheFileName)
         // ios 读取视频地址不需要加 file:// 安卓可能需要加
-        this.setState({
-          playVideoUrl: cacheFileName
-        }, () => {
-          // alert(111)
-          // this.mainView._closeLoading();
-          this.setState({
-            showSourceType: 'video'
-          })
-        })
+        // this.mainView._closeLoading();
+        // this.setState({
+        //   playVideoUrl: cacheFileName,
+        //   showSourceType: 'video'
+        // })
       }).catch(err => {
         console.log('err', err);
       });
@@ -389,32 +385,6 @@ export default class SickDetail extends BaseComponent {
         this._renderVideoList()
       )
     } else if (this.state.showSourceType == 'video') { // 视频播放
-      let url = this.state.playVideoUrl;
-      if (url.length < 0) return;
-      let fileNames = url.split('/');
-      let newFileNames = fileNames.slice(-3);
-      let newFileName = newFileNames.join('_');
-      let cacheFileName = RNFS.TemporaryDirectoryPath +"_" +newFileName ;
-
-      RNFS.exists(cacheFileName)
-          .then(res => {
-            if (res) {
-              this.setState({
-                // showSourceType: 'video',
-                playVideoUrl: cacheFileName
-              })
-            } else {
-              this.dowloadVideoFile(url, cacheFileName)
-            }
-
-          })
-          .catch(err => {
-            this.dowloadVideoFile(url, cacheFileName)
-            this.setState({
-              // showSourceType: 'video',
-              playVideoUrl: cacheFileName
-            })
-          })
       return (
         this._renderVideo()
       )
@@ -447,7 +417,6 @@ export default class SickDetail extends BaseComponent {
             let newFileNames = fileNames.slice(-3);
             let newFileName = newFileNames.join('_');
             let cacheFileName = RNFS.TemporaryDirectoryPath + newFileName;
-
             RNFS.exists(cacheFileName)
                 .then(res => {
                   if (res) {
@@ -456,16 +425,16 @@ export default class SickDetail extends BaseComponent {
                       playVideoUrl: cacheFileName
                     })
                   } else {
+                    this.setState({
+                      showSourceType: 'video',
+                      playVideoUrl: url
+                    })
                     this.dowloadVideoFile(url, cacheFileName)
                   }
 
                 })
                 .catch(err => {
                   this.dowloadVideoFile(url, cacheFileName)
-                  this.setState({
-                    showSourceType: 'video',
-                    playVideoUrl: cacheFileName
-                  })
                 })
           }}>
             <ImageBackground
@@ -492,6 +461,27 @@ export default class SickDetail extends BaseComponent {
   }
 
   _renderVideo() {
+    let url = this.state.playVideoUrl;
+    if (url.length < 0) return;
+    let fileNames = url.split('/');
+    let newFileNames = fileNames.slice(-3);
+    let newFileName = newFileNames.join('_');
+    let cacheFileName = RNFS.TemporaryDirectoryPath + newFileName ;
+
+    RNFS.exists(cacheFileName)
+        .then(res => {
+          if (res) {
+            this.setState({
+              playVideoUrl: cacheFileName
+            })
+          } else {
+            this.dowloadVideoFile(url, cacheFileName)
+          }
+
+        })
+        .catch(err => {
+          this.dowloadVideoFile(url, cacheFileName)
+        })
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         
