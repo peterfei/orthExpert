@@ -5,24 +5,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  TextInput,
-  Button,
-  DeviceEventEmitter,
-  Platform
 } from "react-native";
-import StarRating from "react-native-star-rating";
-import { screen, system,NetInterface, HttpTool } from "../../common";
-import _ from "lodash";
-import { color } from "../../widget";
+import {screen, system, NetInterface, HttpTool, NullData} from "../../common";
 import showMessages from "./showMessages";
-import { storage } from "../../common/storage";
 import { NavigationActions,StackActions } from "react-navigation";
 import RefreshListView, { RefreshState } from "react-native-refresh-list-view";
 import { size } from "../../common/ScreenUtil";
 
 import {getDate} from "../Unity/LCE"
-
-const that = this;
 
 export default class MessageBoard extends Component {
   static navigationOptions = {
@@ -251,17 +241,24 @@ export default class MessageBoard extends Component {
         </View >
 
         <View style={styles.container}>
-          <RefreshListView style={{ marginBottom: size(60) }}
-                           data={this.state.dataList}
-                           renderItem={this.renderCell}
-                           refreshState={this.state.refreshState}
-                           onHeaderRefresh={() => {this.loadNewData()}}
-                          //  onFooterRefresh={() => {this.loadMoreData()}}
-                           removeClippedSubviews={false}
-                           footerRefreshingText="玩命加载中.."
-                           footerFailureText="我擦嘞，居然失败了.."
-                           footerNoMoreDataText="--我是有底线的--"
-          />
+          {
+            this.state.dataList.length > 0
+              ?
+                <RefreshListView style={{ marginBottom: size(60) }}
+                                 data={this.state.dataList}
+                                 renderItem={this.renderCell}
+                                 refreshState={this.state.refreshState}
+                                 onHeaderRefresh={() => {this.loadNewData()}}
+                    //  onFooterRefresh={() => {this.loadMoreData()}}
+                                 removeClippedSubviews={false}
+                                 footerRefreshingText="玩命加载中.."
+                                 footerFailureText="我擦嘞，居然失败了.."
+                                 footerNoMoreDataText="--我是有底线的--"
+                />
+                :
+                <NullData/>
+          }
+
         </View>
 
       </View>

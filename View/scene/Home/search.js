@@ -154,7 +154,7 @@ export default class SearchComponent extends BaseComponent {
             <Image style={styles.icon}
               source={require('../../img/public/left.png')} />
           </TouchableOpacity>
-          <View style={{ width: "85%" }}>
+          <View style={{ width: "85%",justifyContent:'center' }}>
             <TextInput
               style={[styles.input, { width: "100%" }]}
               placeholder="请输入病症名称"
