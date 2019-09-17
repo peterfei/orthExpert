@@ -79,7 +79,6 @@ export default class ModifyPassword extends BaseComponent {
         this.mainView._showLoading('正在修改密码...');
         let tokens = await storage.get("userTokens");
         let url =  api.base_uri+ 'v1/app/member/updateTellPassword' + "?tell=" + this.state.username + "&code=" + this.state.verify_code + "&password=" + this.state.password;
-        alert(JSON.stringify(this.props.navigation.state))
 
         await  fetch(url,{
             method: "post",
@@ -225,7 +224,7 @@ const styles = StyleSheet.create({
         width: size(16), height: size(26)
     },
     retrievePassImage: {
-        width: size(225), height: size(53), marginTop: size(50)
+        width: size(225), height: size(53), marginTop: size(50),resizeMode:'center'
     },
     phoneNumber: {
         height: size(80),
