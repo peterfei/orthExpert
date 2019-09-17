@@ -30,13 +30,8 @@ export default class UserInfoDetail extends BaseComponent {
         super(props);
         this.state = {
             getMemberInfo: {},
-            photos: [],
-            sexContent: '',
-            identityContent: '',
             getMemberId: '',
             identityList: [],
-            identityId: '',
-            getImageUrl: '',
             modifyNickName: [{ title: '昵称', content: '', type: 'input', }],
             sectionSexData: [{ title: '性别', content: '', type: 'select', }],
             sectionIdentityData: [{ title: '选择身份', content: '', type: 'select', }],
@@ -45,11 +40,11 @@ export default class UserInfoDetail extends BaseComponent {
         this.modifyPassword = [{ title: '修改密码', content: 'ModifyPassword', type: 'page' }];
     }
 
-    async componentDidMount() {
-        let memberInfo = await storage.get("memberInfo");
-        let isEmail = memberInfo.mbEmail != null && memberInfo.mbEmail != undefined && memberInfo.mbEmail.length > 0;
-        let isPhoneUser = (memberInfo.mbTell != null && memberInfo.mbTell != undefined && memberInfo.mbTell.length > 0) ||isEmail? true : false;
-        let mbSex = memberInfo.mbSex;
+    componentDidMount() {
+        this.getMemberInfo()
+    }
+
+    handleSexField(mbSex){
         if (mbSex == 'man' || mbSex == '男') {
             mbSex = '男';
         } else if (mbSex == 'woman' || mbSex == '女') {
@@ -57,12 +52,21 @@ export default class UserInfoDetail extends BaseComponent {
         } else {
             mbSex = '保密';
         }
+        return mbSex
+    }
+
+    async getMemberInfo(){
+        let memberInfo = await storage.get("memberInfo");
+        let isEmail = memberInfo.mbEmail != null && memberInfo.mbEmail != undefined && memberInfo.mbEmail.length > 0;
+        let isPhoneUser = (memberInfo.mbTell != null && memberInfo.mbTell != undefined && memberInfo.mbTell.length > 0) ||isEmail? true : false;
+        let mbSex = this.handleSexField(memberInfo.mbSex);
+
         this.getAllIdentity();
         this.setState({
             getMemberInfo: memberInfo,
             getMemberId: memberInfo.mbId,
             modifyNickName: [{ title: '昵称', content: memberInfo.mbName, type: 'input' }],
-            sectionSexData: [{ title: '性别', content: memberInfo.mbSex, type: 'select' }],
+            sectionSexData: [{ title: '性别', content: mbSex, type: 'select' }],
             sectionIdentityData: [{ title: '选择身份', content: memberInfo.identityTitle, type: 'select' }],
             isPhoneUser:isPhoneUser
         })
@@ -76,13 +80,11 @@ export default class UserInfoDetail extends BaseComponent {
                     this.setState({
                         identityList: result.List
                     })
-                } else {
-                    console.log(result.msg)
                 }
             })
     }
 
-    async updateMemberInfo() {
+    async updateMemberInfo(field) {
         let memberInfo = this.state.getMemberInfo;
         let body = {
             mbName: memberInfo.mbName,
@@ -93,19 +95,33 @@ export default class UserInfoDetail extends BaseComponent {
             mbId: this.state.getMemberId
         };
 
-        let tokens = await storage.get("userTokens");
+        // let tokens = await storage.get("userTokens");
         let url = NetInterface.gk_updateMemberInfo;
         HttpTool.POST_JP(url, body)
             .then(async result => {
                 if (result.code == 0) {
                     let memberInfo = result.member;
-                    this.setState({
-                        getMemberInfo: memberInfo,
-                        getMemberId: memberInfo.mbId,
-                        modifyNickName: [{ title: '昵称', content: memberInfo.mbName, type: 'input' }],
-                        sectionSexData: [{ title: '性别', content: memberInfo.mbSex, type: 'select' }],
-                        sectionIdentityData: [{ title: '选择身份', content: memberInfo.identityTitle, type: 'select' }]
-                    })
+                    let mbSex = this.handleSexField(memberInfo.mbSex)
+
+                    if(field === 'mbHeadUrl'){
+                        this.setState({
+                            getMemberInfo: memberInfo,
+                        })
+                    }
+                    if(field === 'mbSexOrMbIdentity'){
+                        this.setState({
+                            getMemberInfo: memberInfo,
+                            sectionSexData: [{ title: '性别', content: mbSex, type: 'select' }],
+                            sectionIdentityData: [{ title: '选择身份', content: memberInfo.identityTitle, type: 'select' }]
+                        })
+                    }
+                    if(field === 'mbName'){
+                        this.setState({
+                            getMemberInfo: memberInfo,
+                            modifyNickName: [{ title: '昵称', content: memberInfo.mbName, type: 'input' }],
+                        })
+                    }
+
                     await storage.save("memberInfo", "", result.member);
                     DeviceEventEmitter.emit(AppDef.kNotify_UpdateUserInfoSuccess);
                 }
@@ -155,17 +171,9 @@ export default class UserInfoDetail extends BaseComponent {
                         if (res.code == 0) {
                             let memberInfo = this.state.getMemberInfo;
                             memberInfo.mbHeadUrl = res.url;
-                            this.updateMemberInfo();
+                            this.updateMemberInfo('mbHeadUrl');
                         }
-                        this.setState({
-                            getImageUrl: res.url
-                        })
                     })
-                    .catch(error => {
-                        console.log(error)
-                    })
-            } else {
-                console.log(err)
             }
         })
     };
@@ -178,7 +186,7 @@ export default class UserInfoDetail extends BaseComponent {
             memberInfo.identityTitle = result.value.title;
             memberInfo.mbIdentity = result.value.identityId;
         }
-        this.updateMemberInfo();
+        this.updateMemberInfo('mbSexOrMbIdentity');
         this.mainView._closeSelectDialog();
     }
 
@@ -209,7 +217,7 @@ export default class UserInfoDetail extends BaseComponent {
     recieveName(name) {
         let memberInfo = this.state.getMemberInfo;
         memberInfo.mbName = name;
-        this.updateMemberInfo();
+        this.updateMemberInfo('mbName');
     }
 
     _renderHeader() {
@@ -339,15 +347,15 @@ export default class UserInfoDetail extends BaseComponent {
             <ContainerView ref={r => this.mainView = r} selectDialogAction={(result) => {
                 this.handleSelectionAction(result)
             }}>
-                <NavBar title='' navigation={this.props.navigation} />
+                <NavBar title='个人资料' navigation={this.props.navigation} />
                 {this._renderHeader()}
                 <Line height={size(14)} />
                 {this._renderNickName()}
                 {this._renderSectionSex()}
                 {this._renderSectionIdentity()}
                 <Line height={size(14)} />
-                {this.state.isPhoneUser ? this._renderModifyPassword() :null}
-                {this.state.isPhoneUser ? <Line height={size(14)}/> :null}
+                {this.state.isPhoneUser && this._renderModifyPassword() }
+                {this.state.isPhoneUser && <Line height={size(14)}/>}
                 {this._renderFooter()}
 
             </ContainerView>
