@@ -56,6 +56,8 @@ import MessageNotice from './View/scene/Search/MessageNotice';
 import MessageDetails from './View/scene/Search/MessageDetails';
 import {View,Platform,BackHandler,BackAndroid,DeviceEventEmitter,NativeModules,ToastAndroid} from "react-native";
 
+import StackViewStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
+
 const RootStack = createAppContainer(createStackNavigator( //跟路由
   {//定义模块
     // HomeScreen: { screen: HomeScreen },
@@ -102,6 +104,9 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
   {
     initialRouteName: 'NewHome',     //设置初始路由为Home
     mode: 'card',
+    transitionConfig:()=>({
+      screenInterpolator: StackViewStyleInterpolator.forHorizontal,
+    }),
     navigationOptions: {
       header: null,
       headerStyle: {
