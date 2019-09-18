@@ -501,36 +501,40 @@ export default class SickDetail extends BaseComponent {
           this.dowloadVideoFile(url, cacheFileName)
         })
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{
+        position: 'absolute', bottom: 0,top:0,
+        justifyContent: 'center', alignItems: 'center' }}>
         
         <Video
           autoPlay
           scrollBounce
           volume={0.8}
           inlineOnly
-          style={{ width: screen.width }}
+          style={{ width: screen.width,height:'100%' }}
           url={this.state.playVideoUrl}
           ref={(ref) => {
             this.video = ref
           }}
           onError={(msg) => {
-            this.playVideoError(msg)
+           // Alert.alert(msg)
+            //this.playVideoError(msg)
           }}
         />
         <View style={{ height: size(23), backgroundColor: 'black', width: screen.width }}></View>
         <MyTouchableOpacity style={{
           position: 'absolute',
-          height: size(60),
-          width: size(60),
-          right: 20,
-          top: -20,
+         height:size(200),
+          top:size(50),
+          right:size(50),
+          zIndex:99999,
           flexDirection: 'row',
           alignItems: 'center',
-          zIndex: 9999999999,
+
+
         }} onPress={() => { this.closeVideo() }}>
           <Image source={require('../../img/unity/close.png')} style={{
-            width: 25,
-            height: 25,
+            width: size(80),
+            height: size(80),
             resizeMode: 'contain'
           }} />
         </MyTouchableOpacity>
