@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   Text,
   ImageBackground,
+  BackHandler,
   DeviceEventEmitter,
   PanResponder,Platform,StatusBar
 } from "react-native";
@@ -61,6 +62,11 @@ export default class SickDetail extends BaseComponent {
   }
 
   componentWillMount() {
+
+    if (Platform.OS === 'android') {
+      BackHandler.addEventListener("hardwareBackPress", this.goBack);
+    }
+
     this.panResponder = PanResponder.create({
 
       /***************** 要求成为响应者 *****************/
@@ -108,6 +114,14 @@ export default class SickDetail extends BaseComponent {
     })
   }
 
+  goBack =()=>  {
+    if (this.state.playVideoUrl!=''){
+      this.closeVideo();
+      return  true;
+    }
+
+  }
+
   // 手势结束
   _onPanResponderRelease(state) {
     let touchX = Math.abs(state.dx);
@@ -146,6 +160,9 @@ export default class SickDetail extends BaseComponent {
 
   componentWillUnmount() {
     this.emitter.remove()
+    if (Platform.OS === 'android') {
+      BackHandler.removeEventListener("hardwareBackPress", this.goBack);
+    }
   }
 
   findSickIndex() {
@@ -163,6 +180,7 @@ export default class SickDetail extends BaseComponent {
     let sick = this.state.sick;
     let _details = await storage.get(sick.pat_no, 'details')
     let url = NetInterface.gk_getPathologyRes + "?patNo=" + sick.pat_no + "&business=orthope&mbId=" + memberInfo.mbId
+
     HttpTool.GET_JP(url)
       .then(result => {
         // alert(JSON.stringify(result))

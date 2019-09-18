@@ -16,7 +16,7 @@ import {
 import { screen, ScreenUtil } from "../../common/index";
 import UnityLoading from './Components/UnityLoading';
 import Toast from "react-native-easy-toast";
-import UnityView,{ UnityModule } from 'react-native-unity-view';
+import UnityView from 'react-native-unity-view';
 import { size, deviceWidth, deviceHeight } from "../../common/ScreenUtil";
 import ActionSheet from "react-native-actionsheet";
 import UShare from "../../share/share";
@@ -61,28 +61,7 @@ const BaseScript =
     } ())
     `
 
-const gifArr = [
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0001.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0002.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0003.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0004.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0005.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0006.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0007.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0008.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0009.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0010.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0011.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0012.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0013.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0014.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0015.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0016.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0017.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0018.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0019.jpg'),
-    require('../../img/unity/yuyin_dynamic/yuyin_dynamic-0020.jpg'),
-]
+
 
 export default class BonesScene extends Component {
 
@@ -134,31 +113,27 @@ export default class BonesScene extends Component {
 
 
     componentWillUnmount() {
+
         BackHandler.removeEventListener('hardwareBackPress', this.androidBackAction);
         AppState.removeEventListener("change", this._handleAppStateChange);
     }
 
      _handleAppStateChange =async  nextAppState => {
-        if (nextAppState != null && nextAppState === "active") {
-            if( (await (UnityModule.isReady())) ){
-                this.setState({
-                    isUnityReady:false
-                })
-                setTimeout(function(){
-                        this.setState({
-                            isUnityReady:true
-                        })
-                    }.bind(this),500)
-                // let changeInfo = this.changeInfo(this.state.info)
-                // this.sendMsgToUnity("app", changeInfo, 'json');
-                // this.checkSearch();
-            }  
-
-        } else if (nextAppState != null && nextAppState === "background") {
-            this.setState({
-                isUnityReady:false
-            })
-        }
+        // if (nextAppState != null && nextAppState === "active") {
+        //     this.setState({
+        //         isUnityReady:false
+        //     })
+        //     setTimeout(function(){
+        //         this.setState({
+        //             isUnityReady:true
+        //         })
+        //     }.bind(this),500)
+        //
+        // } else if (nextAppState != null && nextAppState === "background") {
+        //     this.setState({
+        //         isUnityReady:false
+        //     })
+        // }
     };
 
     changeInfo(info) {
@@ -185,29 +160,14 @@ export default class BonesScene extends Component {
      * ui渲染完后的操作
      */
     async componentDidMount() {
-        
+
         let info = this.state.info;
 
         let changeInfo = this.changeInfo(info)
-        if( (await (UnityModule.isReady())) ){
-            this.setState({
-                isUnityReady:true
-            })
+        this.setState({
+            isUnityReady:true
+        })
 
-            // setTimeout(function(){
-            //     this.setState({
-            //         isUnityReady:true
-            //     })
-            // }.bind(this),500)
-            // let changeInfo = this.changeInfo(this.state.info)
-            // this.sendMsgToUnity("app", changeInfo, 'json');
-            // this.checkSearch();
-        }else{
-            // alert(11111111)
-            setTimeout(function(){
-                this.sendMsgToUnity("app", changeInfo, 'json');
-            }.bind(this),500)
-        }
         this.sendMsgToUnity("app", changeInfo, 'json');//发消息给unity
 
         let isConnect = await checkConnect(info.struct_id);
@@ -1255,54 +1215,37 @@ export default class BonesScene extends Component {
             </View>
         );
     }
-
+    _renderBGView(){
+        return  <View style={{
+            backgroundColor: "rgba(0,0,0,0.1)", width: '100%', height: '100%',
+            position: 'relative',
+            bottom: 0,
+            left: 0,
+            right: 0
+        }}>
+        </View>;
+    }
     render() {
         return (
             <View style={{ width: '100%', height: '100%', }}>
-
-                {
-                    
-                        <UnityView
-                            ref={(ref) => this.unity = ref}
-                            onUnityMessage={this.onUnityMessage.bind(this)}
-                            style={{
-                                position: 'absolute',
-                                height: this.state.isUnityReady?this.state.unityHeight:1,
-                                width: this.state.isUnityReady?this.state.unityWidth:1,
-                                top: 0,
-                                bottom: size(0.01),
-                                left: 0,
-                                right: 0,
-                                zIndex:-999
-                            }}
-                        />
-                }
-                
-                {
-                !this.state.unityReady? <View style={{
-                    backgroundColor: "rgba(0,0,0,0.1)", width: '100%', height: '100%',
-                    position: 'relative',
-                    bottom: 0,
-                    left: 0,
-                    right: 0
-                }}>
-                </View>:null
-
-                }
+                <UnityView
+                    ref={(ref) => this.unity = ref}
+                    onUnityMessage={this.onUnityMessage.bind(this)}
+                    style={{
+                        position: "absolute",
+                        height: '100%',
+                        width: '100%',
+                        top: size(0.01),
+                        bottom: 0,
+                    }}
+                />
                
                 {this.state.unityReady ?
                     <View style={[styles.rnView, { left: this.state.showRnView ? 0 : deviceWidth * 0.99 }]}>
                         {/****  选中骨骼后的底部条 || 默认展示的底部条  *****/}
                         {this.state.showSelectBar && !this.state.branshIsOpen ? this._renderSelectBar() : this._renderDefaultBar()}
                     </View>
-                    : <View style={{
-                        width: size(10),
-                        position: 'absolute',
-                        bottom: 0,
-                        height: size(10),
-                        backgroundColor: "#FFF",
-                        left: 0,
-                    }} />}
+                    : this._renderBGView()}
 
                 {/****  评论  *****/}
                 {this.state.showComment && !this.state.branshIsOpen ? this._renderCommentView() : null}

@@ -237,7 +237,7 @@ export default class MyScreen extends Component {
             </View>
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
-              <Text style={{ fontSize: size(24), color: AppDef.White, }} allowFontScaling={false}>当前职业: {this.state.memberInfo.identityTitle}</Text>
+              <Text style={{ fontSize: size(24), color: AppDef.White, }} allowFontScaling={false}>  {this.state.memberInfo.identityTitle}</Text>
               {
                 this.state.isUse && isShowRenewal
                   ?
