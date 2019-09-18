@@ -141,7 +141,7 @@ export default class OrderDetail extends Component {
                             _this.props.navigation.goBack();
                             DeviceEventEmitter.emit("reloadOrder",{});
                         }.bind(this),
-                        2000
+                        0
                     );
                     //返回并刷新
 

@@ -465,7 +465,7 @@ class Custom extends BaseComponent {
             this.props.navigation.navigate('Search');
           }}>
             <Image source={require('../../img/home/search_icon.png')} style={styles.searchIcon} />
-            <Text style={styles.searchText}>请输入疾病名称.</Text>
+            <Text style={styles.searchText}>请输入疾病名称</Text>
           </TouchableOpacity>
         </View>
 

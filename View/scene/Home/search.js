@@ -157,7 +157,7 @@ export default class SearchComponent extends BaseComponent {
           <View style={{ width: "85%",justifyContent:'center' }}>
             <TextInput
               style={[styles.input, { width: "100%" }]}
-              placeholder="请输入病症名称"
+              placeholder="请输入疾病名称"
               placeholderTextColor='#757575'
               autoFocus={true}
               onChangeText={(value) => this.queryKey(value)} />
