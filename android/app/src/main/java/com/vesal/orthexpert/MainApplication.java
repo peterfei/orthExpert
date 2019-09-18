@@ -51,7 +51,7 @@ import com.umeng.message.UTrack;
 import com.umeng.message.UmengMessageHandler;
 import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.entity.UMessage;
-import com.umeng.message.common.UmLog;
+//import com.umeng.message.common.UmLog;
 import com.umeng.socialize.PlatformConfig;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import org.android.agoo.huawei.HuaWeiRegister;
@@ -232,12 +232,12 @@ public class MainApplication extends Application implements ReactApplication {
         @Override
         public void onSuccess(String deviceToken) {
 
-            UmLog.i(TAG, "device token: " + deviceToken);
+           // UmLog.i(TAG, "device token: " + deviceToken);
         }
 
         @Override
         public void onFailure(String s, String s1) {
-            UmLog.i(TAG, "register failed: " + s + " " + s1);
+         //   UmLog.i(TAG, "register failed: " + s + " " + s1);
         }
     });
   }

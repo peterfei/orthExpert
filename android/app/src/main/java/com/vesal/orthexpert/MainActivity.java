@@ -4,13 +4,15 @@ import com.facebook.react.ReactActivity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import com.umeng.message.PushAgent;
+
 import android.widget.Toast;
 import android.view.KeyEvent;
 import com.umeng.socialize.UMShareAPI;
+import com.umeng.message.PushAgent;
+import com.umeng.analytics.MobclickAgent;
 import com.vesal.orthexpert.module.*;
 import org.devio.rn.splashscreen.SplashScreen; // import this
-import com.umeng.analytics.MobclickAgent;
+
 
 
 public class MainActivity extends ReactActivity {
@@ -27,6 +29,7 @@ public class MainActivity extends ReactActivity {
         intent.putExtra("newConfig", newConfig);
         this.sendBroadcast(intent);
     }
+
     @Override
     protected String getMainComponentName() {
         return "orthExpert";

@@ -138,6 +138,60 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+
+
+    productFlavors {
+//
+//        background {
+//
+//            manifestPlaceholders = [UMENG_CHANNEL: "background"]
+//        }
+//        huawei {
+//            manifestPlaceholders = [UMENG_CHANNEL: "huawei"]
+//        }
+//
+//        flavors_360 {
+//
+//            manifestPlaceholders = [UMENG_CHANNEL: "360"]
+//        }
+        yingyongbao {
+
+            manifestPlaceholders = [UMENG_CHANNEL: "yingyongbao"]
+        }
+//        kangfu {
+//
+//            manifestPlaceholders = [UMENG_CHANNEL: "background"]
+//        }
+//        flavors_MEIZU {
+//
+//            manifestPlaceholders = [UMENG_CHANNEL: "MEIZU"]
+//        }
+//        xiaomi {
+//
+//            manifestPlaceholders = [UMENG_CHANNEL: "xiaomi"]
+//        }
+//        ali {
+//
+//            manifestPlaceholders = [UMENG_CHANNEL: "ali"]
+//        }
+//        flavors_OPPO {
+//
+//            manifestPlaceholders = [UMENG_CHANNEL: "OPPO"]
+//        }
+//        qita {
+//
+//            manifestPlaceholders = [UMENG_CHANNEL: "qita"]
+//        }
+//        flavors_VIVE {
+//
+//            manifestPlaceholders = [UMENG_CHANNEL: "VIVE"]
+//        }
+//        flavors_default {
+//            manifestPlaceholders = [UMENG_CHANNEL: "defalut"]
+//        }
+
+    }
+
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
