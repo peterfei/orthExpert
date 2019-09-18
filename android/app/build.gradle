@@ -119,6 +119,7 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
         multiDexEnabled true
+        flavorDimensions "default"
     }
     dexOptions {
         incremental true
