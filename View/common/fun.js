@@ -20,7 +20,7 @@ import _ from "lodash"
 import {NavigationActions,StackActions} from "react-navigation"
 
 const {InAppUtils} = NativeModules
-import api, {encryptionWithStr} from "../api"
+import api from "../api"
 
 /**
 * 检测证书是否使用
