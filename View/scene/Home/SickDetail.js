@@ -417,6 +417,7 @@ export default class SickDetail extends BaseComponent {
         try {
 
               ret = RNFS.downloadFile(options);
+              jobId = ret.jobId;
             //alert("任务ID:"+ret.jobId)
             ret.promise.then(res => {
                 console.log('success', res);

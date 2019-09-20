@@ -124,7 +124,7 @@ export default class SharingPlan extends Component {
             <ImageBackground source={require('../../img/home/planQRCodeBackground.png')}
                              style={styles.qrCodeBackground}>
                 <Image source={{uri: this.state.base64}} style={styles.qrCode}/>
-                <Text style={styles.qrCodeTips}>打开【运动康复训练】扫一扫，即刻加入计划</Text>
+                <Text style={styles.qrCodeTips}>打开【运动康复训练】扫一扫，即可参与方案训练</Text>
             </ImageBackground>
         )
     }

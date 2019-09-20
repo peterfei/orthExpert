@@ -54,6 +54,7 @@ export default class MyRecoveryItem extends Component {
         let loginType = auth.loginType||'tell';
         const url = NetInterface.myCreatePlanList+ "?patNo=" + this.props.patNo + "&page=" + this.page + "&limit=" + this.limit + "&business=kfxl&loginType=" + loginType;
         console.log(JSON.stringify(url));
+
         HttpTool.GET_JP(url)
           .then(result => {
 

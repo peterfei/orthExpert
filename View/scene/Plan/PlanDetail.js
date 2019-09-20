@@ -225,26 +225,27 @@ export default class PlanDetail extends BaseComponent {
   }
 
   gotoAmDetail(data) {
+    return  ;
     //TODO 处理不需要下载的器械
     // this.props.navigation.navigate("RenTi", {
     //   animation: data,
     //   equipList:this.state.equipNoList
     // })
     Alert.alert(
-      '立即下载运动康复训练APP', '定制计划',
+      '温馨提示', '请在应用商店搜索[运动康复训练],下载后即可参加训练',
       [
-        { text: "稍后再说" },
-        {
-          text: "立即下载"
-          //,
-          // onPress: function () {
-          //     const downloadUrl = item.url;
-          //     NativeModules.DownloadApk.downloading(
-          //         downloadUrl,
-          //         "vesal.apk"
-          //     );
-          // }
-        }
+        { text: "我知道了" },
+        // {
+        //   text: "立即下载"
+        //   //,
+        //   // onPress: function () {
+        //   //     const downloadUrl = item.url;
+        //   //     NativeModules.DownloadApk.downloading(
+        //   //         downloadUrl,
+        //   //         "vesal.apk"
+        //   //     );
+        //   // }
+        // }
       ]
     );
   }
