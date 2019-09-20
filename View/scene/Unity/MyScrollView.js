@@ -129,7 +129,7 @@ export default class MyScrollView extends Component {
             let {x, y, width, height} = event.nativeEvent.layout;
             console.log('通过onLayout得到的宽度：' + width);
             console.log('通过onLayout得到的高度：' + height);
-            alert(`x : ${x}, y : ${y}, width : ${width}, height : ${height}, `)
+
         }
     }
 

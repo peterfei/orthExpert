@@ -79,7 +79,7 @@ export default class SearchTrigger extends Component {
         let arr = [];
         this.props.clickItem();
         this.parseJson(menuObj.children, arr)
-        alert(JSON.stringify(arr))
+
         // this.props.sendMsgToUnity("modelList", menuObj.code, '');
     }
 

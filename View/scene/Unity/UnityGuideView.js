@@ -35,7 +35,7 @@ export default class UnityGuideView extends Component {
         if (this.props.btnAction != null) {
             this.props.btnAction();
         } else {
-            alert('跳转视频111');
+
         }
     }
 

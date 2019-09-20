@@ -590,18 +590,18 @@ export default class BonesScene extends Component {
                         <Image style={styles.btnImgStyle} source={require('../../img/unity/yijian.png')} />
                         <Text style={styles.btnTextStyle}>评论</Text>
                     </MyTouchableOpacity>
-                    <MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {
-                        this.cundang()
-                    }}>
-                        <Image style={styles.btnImgStyle} source={require('../../img/unity/cundang.png')} />
-                        <Text style={styles.btnTextStyle}>存档</Text>
-                    </MyTouchableOpacity>
-                    <MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {
-                        this.setFrist()
-                    }}>
-                        <Image style={styles.btnImgStyle} source={require('../../img/unity/frist-set.png')} />
-                        <Text style={styles.btnTextStyle}>设为首页</Text>
-                    </MyTouchableOpacity>
+                    {/*<MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {*/}
+                    {/*    this.cundang()*/}
+                    {/*}}>*/}
+                    {/*    <Image style={styles.btnImgStyle} source={require('../../img/unity/cundang.png')} />*/}
+                    {/*    <Text style={styles.btnTextStyle}>存档</Text>*/}
+                    {/*</MyTouchableOpacity>*/}
+                    {/*<MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {*/}
+                    {/*    this.setFrist()*/}
+                    {/*}}>*/}
+                    {/*    <Image style={styles.btnImgStyle} source={require('../../img/unity/frist-set.png')} />*/}
+                    {/*    <Text style={styles.btnTextStyle}>设为首页</Text>*/}
+                    {/*</MyTouchableOpacity>*/}
                 </View>
             </View>
         );
@@ -701,18 +701,18 @@ export default class BonesScene extends Component {
                         style={{ width: size(30), height: size(30) }} />
                     <Text style={{ fontSize: size(18), color: "#FFF" }}>评论</Text>
                 </MyTouchableOpacity>
-                <MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {
-                    this.cundang()
-                }}>
-                    <Image style={styles.btnImgStyle} source={require('../../img/unity/cundang.png')} />
-                    <Text style={styles.btnTextStyle}>存档</Text>
-                </MyTouchableOpacity>
-                <MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {
-                    this.setFrist()
-                }}>
-                    <Image style={styles.btnImgStyle} source={require('../../img/unity/frist-set.png')} />
-                    <Text style={styles.btnTextStyle}>设为首页</Text>
-                </MyTouchableOpacity>
+                {/*<MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {*/}
+                {/*    this.cundang()*/}
+                {/*}}>*/}
+                {/*    <Image style={styles.btnImgStyle} source={require('../../img/unity/cundang.png')} />*/}
+                {/*    <Text style={styles.btnTextStyle}>存档</Text>*/}
+                {/*</MyTouchableOpacity>*/}
+                {/*<MyTouchableOpacity activeOpacity={0.7} style={styles.btnStyle} onPress={() => {*/}
+                {/*    this.setFrist()*/}
+                {/*}}>*/}
+                {/*    <Image style={styles.btnImgStyle} source={require('../../img/unity/frist-set.png')} />*/}
+                {/*    <Text style={styles.btnTextStyle}>设为首页</Text>*/}
+                {/*</MyTouchableOpacity>*/}
             </View>
         )
     }

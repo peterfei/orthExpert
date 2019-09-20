@@ -84,7 +84,7 @@ class DetailCell extends PureComponent<Props> {
     }
 
     downloadSoft(url) {
-        alert(url);
+
     }
 
     async checkVersion() {
