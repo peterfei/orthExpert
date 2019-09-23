@@ -1,6 +1,17 @@
 import React, {Component} from 'react';
 
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image,Platform, ImageBackground} from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    ScrollView,
+    Image,
+    Platform,
+    ImageBackground,
+    DeviceEventEmitter,
+    Alert
+} from "react-native";
 
 import {screen, ContainerView, BaseComponent, NavBar, AppDef, HttpTool, NetInterface, FuncUtils} from '../../common';
 import {size} from '../../common/Tool/ScreenUtil';
@@ -12,7 +23,8 @@ import member_center_details from '../../img/vip/member_center_details.png'
 import DeviceInfo from "react-native-device-info";
 import {NativeModules} from 'react-native'
 
-const Wxpay = NativeModules.Wxpay
+const Wxpay = NativeModules.Wxpay;
+const InAppUtils = NativeModules.InAppUtils;
 import Toast, {DURATION} from "react-native-easy-toast";
 
 
@@ -34,15 +46,14 @@ export default class BuyVip extends BaseComponent {
             OrderNo: "",
             memberComboEndTime: '',
             comboInfo: {},
-            combo: {}
+            combo: {},
+            reviewStatus: false
         }
     }
 
-    componentWillUpdate() {
-        this.Loading.close()
-    }
-
     async componentDidMount() {
+
+
         let memberInfo = await storage.get("memberInfo");
         FuncUtils.checkKfPerm()
             .then(res => {
@@ -62,7 +73,24 @@ export default class BuyVip extends BaseComponent {
             .catch(err => {
                 this.mainView._toast(JSON.stringify(err))
             })
+        this.checkReviewStatus();
         this.init()
+    }
+
+    checkReviewStatus() {
+        FuncUtils.checkReviewStatus()
+          .then(result => {
+              // alert(result);
+              this.setState({
+                  reviewStatus: result
+              })
+          })
+          .catch(err => {
+              console.log(JSON.stringify(err));
+              this.setState({
+                  reviewStatus: false
+              })
+          })
     }
 
     async init() {
@@ -71,7 +99,6 @@ export default class BuyVip extends BaseComponent {
         // let isUse = await FuncUtils.checkPerm('yes', 'GKHY')//检查是否有权限
         let tokens = await storage.get("userTokens");
         let url = NetInterface.gk_getComboInfo + "?app_version=" + currVersion + "&plat=" + Platform.OS+"&business=orthope&comboCode=ORTHOPE_VIP";
-        // alert(url)
         // debugger
 
         let memberInfo = await storage.get("memberInfo");
@@ -89,174 +116,38 @@ export default class BuyVip extends BaseComponent {
             })
     }
 
-    async getOrderId(priceId, comboId) {
-        let tokens = await storage.get("userTokens");
+    async getOrderId() {
+        let product = this.state.packageDetail[this.state.packageSelected];
         let body = {
-            "priceId": priceId,
-            "comboId": comboId,
-            "ordRes": "android",
-            "remark": "测试",
+            "priceId": product.priceId,
+            "comboId": product.comboId,
+            "ordRes": Platform.OS,
+            "remark": "",
             "business": "orthope"
         }
-        let url = NetInterface.gk_newAddOrder
-        let responseData = HttpTool.POST_JP(url, body)
+        let url = NetInterface.gk_newAddOrder;
+        HttpTool.POST_JP(url, body)
             .then(result => {
-                return new Promise((resolve, reject) => {
-                    // alert(`result is ${JSON.stringify(result)}`)
-                    // debugger;
-                    if (result && result.order) {
-                        // alert(`=====\n生成的订单号为:${JSON.stringify(result)}`);
-                        //storage.save('containsStructCombo', id, result.page);
-
-                        resolve && resolve(result.order);
-                    } else {
-                        reject && reject(new Error("data parse error"));
-                    }
-                });
+                // alert(`result${result}`);
+                if (result && result.order) {
+                    this.setState({
+                        OrderNo: result.order.ordNo
+                    })
+                } else {
+                    this.setState({
+                        OrderNo: ''
+                    })
+                }
             })
-        this.setState({
-            OrderNo: responseData.ordNo
-        });
+          .catch(err => {
+              // alert(`err${err}`);
+              console.log(JSON.stringify(err));
+              this.setState({
+                  OrderNo: ''
+              })
+          })
     }
 
-    async payment(priceId, comboId) {
-        try {
-            this.Loading.show("正在支付...");
-            let isSupported = await Wxpay.isSupported();
-            // alert(`isSupported is ${isSupported}`)
-            console.log("---------------if support wechat--------" + isSupported);
-
-            // 生成OrderId
-            await this.getOrderId(priceId, comboId);
-            console.log("****getOrderId****");
-            // 取微信支付配置
-            const data = await this.tenPay();
-
-            // debugger
-            console.log(
-                "-------**data from wechat pay response is **------" +
-                JSON.stringify(data)
-            );
-            if (!isSupported) {
-                // 判断是否支持微信支付
-                this.Loading.close();
-                this.refs.toast.show("找不到微信应用，请安装最新版微信");
-                return;
-            }
-            console.log("++++++++++++++++++++++++++++++");
-            /*
-                             *{"Ry_result":"88888","Data":[{"appid":"wx6c7109324ebb9409","partnerid":"1480276662","prepayid":"wx0415254561686926b8cfdcec1274015844","package":"Sign=WXPay","noncestr":"E7FKHAE3M2NO7LEVK29O","timestamp":"1525418746","sign":"6299ADC68A23F4DC0F364245FC2997A3"}]}
-                             */
-            let ret = await Wxpay.pay(data);
-            console.log("==========================" + JSON.stringify(ret));
-            // debugger
-            // alert("-----ret-----" + JSON.stringify(ret) );
-            // alert(ret.errCode)
-            if (ret.errCode === 0) {
-                this.refs.toast.show("支付成功");
-
-                this.Loading.close();
-                //微课刷新列表方法
-                // DeviceEventEmitter.emit("courseHeaderRefresh")
-                // DeviceEventEmitter.emit("HomeRefresh")
-
-
-                // setTimeout(
-                //     function () {
-                //         const resetAction = NavigationActions.reset({
-                //             index: 0,
-                //             actions: [NavigationActions.navigate({routeName: "Tab"})]
-                //         });
-                //         // initLicence();
-                //         // this.props.navigation.pop() && this.props.navigation.pop();
-                //         this.props.navigation.dispatch(resetAction);
-                //     }.bind(this),
-                //     1000
-                // );
-            } else {
-                alert("支付失败");
-                this.Loading.close();
-                // console.log("=====支付失败=====" + JSON.stringify(ret));
-                this.refs.toast.show("支付失败,请重新支付");
-                // await AsyncStorage.setItem("wx_data", JSON.stringify(data));
-            }
-        } catch (error) {
-            this.Loading.close();
-            console.log("------error payment-------" + error);
-        }
-    }
-
-    async tenPay() {
-        // debugger
-        const orderNo = this.state.OrderNo;
-        let tokens = await storage.get("userTokens");
-        const url = NetInterface.gk_wxGetPreyId + "?ordNo=" + orderNo + "&business=orthope";
-        // debugger;
-        HttpTool.GET_JP(url)
-            .then(result => {
-                // debugger
-                return new Promise((resolve, reject) => {
-                    // debugger;
-                    if (result && result.result) {
-                        //storage.save('containsStructCombo', id, result.page);
-
-                        resolve && resolve(result.result);
-                    } else {
-                        reject && reject(new Error("data parse error"));
-                    }
-                });
-            });
-        // debugger
-        return responseData;
-    }
-
-    // getOrderId = async () => {
-    //     //如果没有订单号就获取订单号  (继续支付会有订单号 点击了一次立即支付也会有订单号)
-    //     if (
-    //         this.state.OrderNo == null ||
-    //         this.state.OrderNo == "" ||
-    //         this.state.OrderNo == undefined
-    //     ) {
-    //         // alert(`================\n 进入getOrderId`);
-    //         let tokens = await storage.get("userTokens");
-    //         // alert(`================\n tokens is ${JSON.stringify(tokens)}`);
-    //         const url = api.base_uri + "/v1/app/order/addOrder";
-    //         // alert(`================\n url is ${url}`);
-    //         // debugger;
-    //         let responseData = await fetch(url, {
-    //             method: "post",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //                 token: tokens.token
-    //             },
-    //             body: JSON.stringify({
-    //                 comboId: this.state.comboId,  //FIXME
-    //                 ordRes: "android",
-    //                 lang: "ch",
-    //                 remark: 'guke',
-    //                 priceId: this.state.priceId   //FIXME
-    //             })
-    //         })
-    //             .then(resp => resp.json())
-    //             .then(result => {
-    //                 return new Promise((resolve, reject) => {
-    //                     // alert(`result is ${JSON.stringify(result)}`)
-    //                     // debugger;
-    //                     if (result && result.order) {
-    //                         // alert(`=====\n生成的订单号为:${JSON.stringify(result)}`);
-    //                         //storage.save('containsStructCombo', id, result.page);
-
-    //                         resolve && resolve(result.order);
-    //                     } else {
-    //                         reject && reject(new Error("data parse error"));
-    //                     }
-    //                 });
-    //             });
-    //         this.setState({
-    //             OrderNo: responseData.ordNo
-    //         });
-    //     }
-    // };
     changeSelect(index) {
         console.log(index)
         this.setState({
@@ -265,15 +156,78 @@ export default class BuyVip extends BaseComponent {
     }
 
     gotoPay() {
-        let title = this.props.navigation.state.params !== undefined ? this.props.navigation.state.params.title : null
-        // Wxpay.registerApp(api.APPID);
-        // this.payment(this.state.packageDetail[this.state.packageSelected].priceId,this.state.packageDetail[this.state.packageSelected].comboId)
-        this.props.navigation.navigate("Pay", {
-            combo: this.state.packageDetail[this.state.packageSelected],
-            goOutPay_key: this.props.navigation.state.key,
-            title: title
+
+        if (Platform.OS == 'ios' && this.state.reviewStatus) {
+            let product = this.state.packageDetail[this.state.packageSelected];
+            // alert(JSON.stringify(this.state.packageDetail));
+            this.applePay(product.productId);
+
+        } else {
+            let title = this.props.navigation.state.params !== undefined ? this.props.navigation.state.params.title : null
+            this.props.navigation.navigate("Pay", {
+                combo: this.state.packageDetail[this.state.packageSelected],
+                goOutPay_key: this.props.navigation.state.key,
+                title: title
+            });
+        }
+
+    }
+
+    async applePay(productId) {
+        this.mainView._showLoading('正在支付...');
+        console.info("---------开始苹果支付--------");
+        await this.getOrderId();
+
+        let productsArr = [];
+        productsArr.push(productId);
+        InAppUtils.canMakePayments(async canMakePayments => {
+            if (!canMakePayments) {
+                Alert.alert("提醒", "您的设备暂时不支持内购");
+                this.mainView._closeLoading();
+            } else {
+                InAppUtils.loadProducts(productsArr, async (error, products) => {
+                    console.log(`products${JSON.stringify(products)}`);
+                    let productIdentifier = products[0].identifier;
+                    InAppUtils.purchaseProduct(productIdentifier, async (error, response) => {
+                          if (error) {
+                              this.mainView._closeLoading();
+                              console.log("error" + JSON.stringify(error));
+                              console.log(`支付失败或者取消支付`);
+                          } else {
+                              if (response && response.productIdentifier) {
+                                  let params = {
+                                      ordNo: this.state.OrderNo,
+                                      transactionReceipt: response.transactionReceipt
+                                  }
+                                  HttpTool.POST_JP(NetInterface.validateApplePayNotify, params)
+                                        .then(result => {
+                                            this.mainView._closeLoading();
+                                            // alert(JSON.stringify(result));
+                                            console.log('+_+_+_+_+_+_+_+');
+                                            console.log(JSON.stringify(result));
+                                            console.log('+_+_+_+_+_+_+_+');
+                                            if (result.code == 0) {
+                                                this.mainView._toast("支付成功");
+                                                DeviceEventEmitter.emit("updatePermission");
+                                                this.props.navigation.goBack();
+                                            } else {
+                                                this.mainView._toast(JSON.stringify(result.msg))
+                                            }
+                                        })
+                                        .catch(err => {
+                                            console.log(`支付失败${err}`);
+                                            this.mainView._closeLoading();
+                                        })
+                              } else {
+                                  console.log(`支付失败`);
+                                  this.mainView._closeLoading();
+                              }
+                          }
+                      }
+                    );
+                });
+            }
         });
-        //this.newAddOrder(this.state.packageDetail[this.state.packageSelected].priceId,this.state.packageDetail[this.state.packageSelected].comboId)
     }
 
     renderPackageDetail() {
@@ -314,7 +268,7 @@ export default class BuyVip extends BaseComponent {
     render() {
         let userIcon = this.state.memberInfo.mbHeadUrl ? {uri: this.state.memberInfo.mbHeadUrl} : require('../../img/kf_mine/defalutHead.png');
         return (
-            <ContainerView>
+            <ContainerView ref={r => this.mainView = r}>
                 <NavBar title='我的VIP会员' hideback={false} navigation={this.props.navigation}/>
                 <ScrollView
                     overScrollMode='never'

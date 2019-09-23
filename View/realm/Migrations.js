@@ -45,7 +45,7 @@ export default [{
         MarkNounSchema
     ],
     path: RNFS.DocumentDirectoryPath + '/sportSystem220.realm',
-    schemaVersion: 56,
+    schemaVersion: 57,
     migration: (oldRealm, newRealm) => {
     }
 }

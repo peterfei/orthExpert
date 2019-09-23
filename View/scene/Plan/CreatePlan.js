@@ -173,6 +173,7 @@ export default class CreatePlan extends BaseComponent {
     HttpTool.POST(url, params)
       .then(res => {
         this.mainView._closeLoading();
+        alert(JSON.stringify(res));
         if (res.code == 0 && res.msg == 'success') {
           // alert(JSON.stringify(res));
           this.mainView._toast("创建成功, 请前往-'我的定制'-界面查看");

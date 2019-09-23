@@ -84,9 +84,10 @@ const Pay = {
   addOrder:"v1/app/order/addOrder",//添加订单, 获取订单号
   wxGetPreyId:"v1/app/pay/wxGetPreyId",//获取微信预付单
   useActiveCode: 'app/kfxl/v1/combo/useActiveCode', // 激活码接口
+  checkComboisExpire:'v1/app/orthope/combo/checkComboisExpire',
 
-    checkComboisExpire:'v1/app/orthope/combo/checkComboisExpire'
-
+  // 苹果支付 验证支付凭证
+  validateApplePayNotify: '/v1/app/pay/applyPayNotify',
 }
 
 

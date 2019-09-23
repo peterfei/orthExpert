@@ -266,7 +266,7 @@ export default class PlanDetail extends BaseComponent {
         equipList: this.state.equipNoList
       }
 
-      this.props.navigation.navigate("TrainPlay", { plan: this.state.planInfo, downList: downList })
+      // this.props.navigation.navigate("TrainPlay", { plan: this.state.planInfo, downList: downList })
     } else {
       this.props.navigation.navigate('Member');
     }

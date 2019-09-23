@@ -141,13 +141,20 @@ export default class SearchComponent extends BaseComponent {
         }
     }
 
-    searchChicks(pat_no, pat_name) {
+    searchChicks(pat_no, pat_name, pat_area_no) {
+        // alert(JSON.stringify(this.state.hotData));
+        console.log(JSON.stringify(this.state.hotData));
+        console.log(JSON.stringify(this.state.historyData))
+        let currArea = {
+            pat_area_no: pat_area_no
+        }
         this.Loading.show("查询中...");
         let sick = {'pat_no': pat_no, 'pat_name': pat_name}
-        let data = {"keyName": pat_name, "ketNo": pat_no}
+        let data = {"keyName": pat_name, "ketNo": pat_no, "pat_area_no": pat_area_no}
         this.saveHistory(data, "key")
         this.getHistory()
-        this.props.navigation.navigate('SickDetail', {sick: sick, areaSickList: [sick]});
+        this.props.navigation.navigate('SickDetail', {sick: sick, areaSickList: [sick], currArea: currArea});
+
         this.Loading.close();
     }
 
@@ -157,6 +164,7 @@ export default class SearchComponent extends BaseComponent {
                 keyName: data.keyName,
                 ketNo: data.ketNo + "",
                 type: type,
+                keyPatAreaNo: data.pat_area_no,
                 addTime: new Date().getTime()
             }
             insertHistory(temp)
@@ -237,7 +245,7 @@ export default class SearchComponent extends BaseComponent {
             let historyData = this.state.historyData[i]
             arr.push(
                 <Text style={styles.histortBody}
-                      onPress={() => this.searchChicks(historyData.ketNo, historyData.keyName)}>{this.getKeyName(historyData.keyName)}</Text>
+                      onPress={() => this.searchChicks(historyData.ketNo, historyData.keyName, historyData.keyPatAreaNo)}>{this.getKeyName(historyData.keyName)}</Text>
             )
         }
         return arr
@@ -248,7 +256,7 @@ export default class SearchComponent extends BaseComponent {
         for (let i = 0; i < this.state.hotData.length; i++) {
             arr.push(
                 <Text style={styles.histortBody}
-                      onPress={() => this.searchChicks(this.state.hotData[i].pat_no, this.state.hotData[i].pat_name, this.state.hotData[i].pat_id)}>{this.state.hotData[i].pat_name}</Text>
+                      onPress={() => this.searchChicks(this.state.hotData[i].pat_no, this.state.hotData[i].pat_name, this.state.hotData[i].pat_area_no)}>{this.state.hotData[i].pat_name}</Text>
             )
         }
         return arr
@@ -265,7 +273,7 @@ export default class SearchComponent extends BaseComponent {
             for (let i = 0; i < searchpathologyList.length; i++) {
                 arr.push(
                     <Text style={styles.histortBody}
-                          onPress={() => this.searchChicks(searchpathologyList[i].patNo, searchpathologyList[i].patName)}>{searchpathologyList[i].patName}</Text>
+                          onPress={() => this.searchChicks(searchpathologyList[i].patNo, searchpathologyList[i].patName, searchpathologyList[i].pat_area_no)}>{searchpathologyList[i].patName}</Text>
                 )
             }
             return arr

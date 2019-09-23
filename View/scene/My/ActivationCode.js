@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
         height: size(80),
         justifyContent: 'center',
         alignItems: 'center',
+        zIndex: 9999
     },
     imgNav: {
         width: size(36),
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
         width: size(600),
         height: size(639),
         marginTop: size(182) + (Platform.OS == 'ios' ? 0 : size(148)),
-        alignItems: 'center'
+        alignItems: 'center',
         // marginLeft: size(75)
     },
     codeInput: {

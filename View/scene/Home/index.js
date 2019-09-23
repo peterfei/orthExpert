@@ -14,9 +14,12 @@ const DefaultLineColor = 'rgba(68, 180, 233, 1)';
 const SelectColor = 'rgba(231, 176, 176, 0.5)';
 const SelectLineColor = 'rgba(231, 176, 176, 1)';
 const statusBarHeight = StatusBar.currentHeight;
-const CODE_PUSH_KEY = 'q4YE8sCIJ4Xepd6gaJA1qWTza76x4ksvOXqog'
+const CODE_PUSH_KEY = 'q4YE8sCIJ4Xepd6gaJA1qWTza76x4ksvOXqog';
+const CODE_PUSH_KEY_IOS_DEV = 'URKhKNg8tekCkoPdjzpP04ZB1rRj4ksvOXqog';
+const CODE_PUSH_KEY_IOS_PRO = 'u4LXUxKO40n7npKayrBj1XfH4fbE4ksvOXqog';
 const UMPushModule =  NativeModules.UMPushModule
 // import UnityView,{ UnityModule } from 'react-native-unity-view';
+let codePushOptions = { checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME }//自动更新
 
 class Custom extends BaseComponent {
 
@@ -75,16 +78,9 @@ class Custom extends BaseComponent {
     this.setState({ immediateUpdate: true })
     CodePush.sync(
       {
-        deploymentKey: CODE_PUSH_KEY, updateDialog: {
-          appendReleaseDescription: true, //是否显示更新description，默认为false
-          descriptionPrefix: "更新内容：", //更新说明的前缀。 默认是” Description:
-          mandatoryContinueButtonLabel: "立即更新", //强制更新的按钮文字，默认为continue
-          mandatoryUpdateMessage: "发现新版本，请确认更新", //- 强制更新时，更新通知. Defaults to “An update is available that must be installed.”.
-          optionalIgnoreButtonLabel: "稍后", //非强制更新时，取消按钮文字,默认是ignore
-          optionalInstallButtonLabel: "后台更新", //非强制更新时，确认文字. Defaults to “Install”
-          optionalUpdateMessage: "发现新版本，是否更新？", //非强制更新时，更新通知. Defaults to “An update is available. Would you like to install it?”.
-          title: "更新提示"
-        }, installMode: CodePush.InstallMode.IMMEDIATE
+        // deploymentKey: CODE_PUSH_KEY_IOS_DEV,
+        updateDialog: false,
+        installMode: CodePush.InstallMode.IMMEDIATE
       },
       this.codePushStatusDidChange.bind(this),
       this.codePushDownloadDidProgress.bind(this)
@@ -97,12 +93,12 @@ class Custom extends BaseComponent {
     //     setTimeout(()=>{
     //       this.setState({modalVisible: false})
     //     },8000)
-    CodePush.checkForUpdate(CODE_PUSH_KEY).then((update) => {
+    CodePush.checkForUpdate(CODE_PUSH_KEY_IOS_DEV).then((update) => {
       // console.log('-------' + update)
       if (!update) {
         // this.mainView._toast('目前已是最新版本！')
       } else {
-        this.setState({ modalVisible: true, updateInfo: update, isMandatory: update.isMandatory })
+        this.setState({ modalVisible: false, updateInfo: update, isMandatory: update.isMandatory })
         setTimeout(() => {
           this.setState({ modalVisible: false })
         }, 8000)
@@ -244,14 +240,14 @@ class Custom extends BaseComponent {
 
   _handleAppStateChange = nextAppState => {
     if (nextAppState != null && nextAppState === "active") {
-      CodePush.checkForUpdate(CODE_PUSH_KEY).then((update) => {
+      CodePush.checkForUpdate(CODE_PUSH_KEY_IOS_DEV).then((update) => {
         // alert(`update is ${update}`)
         if (!update) {
           // alert(111)
           // this.mainView._toast('已是最新版本！')
           this.setState({ modalVisible: false })
         } else {
-          this.setState({ modalVisible: true, updateInfo: update, isMandatory: update.isMandatory })
+          this.setState({ modalVisible: false, updateInfo: update, isMandatory: update.isMandatory })
         }
       })
 
@@ -419,6 +415,8 @@ class Custom extends BaseComponent {
 
   recieveSelectResult(result) {
     let sick = result.value;
+    // alert(JSON.stringify(this.state.currArea));
+    // console.log(JSON.stringify(this.state.currArea));
     this.props.navigation.navigate('SickDetail', { sick: sick, areaSickList: this.state.areaSickList, currArea: this.state.currArea });
   }
 
@@ -449,6 +447,7 @@ class Custom extends BaseComponent {
     return result;
   }
 
+  
   _renderNav() {
     return (
       <View style={styles.container}>
@@ -601,4 +600,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default CodePush(Custom)
+export default CodePush(codePushOptions)(Custom)

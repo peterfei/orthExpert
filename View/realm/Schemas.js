@@ -88,6 +88,7 @@ const HistorySearchSchema = {
         keyName: "string",
         ketNo: "string",
         type: "string",
+        keyPatAreaNo: 'string',
         addTime: "int"
     }
 

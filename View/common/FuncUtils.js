@@ -1,7 +1,9 @@
-import {Alert, NativeModules} from 'react-native';
+import {Alert, NativeModules, Platform} from 'react-native';
 import {HttpTool, NetInterface} from "./index";
 import {storage} from "./storage";
 import {NavigationActions, StackActions} from "react-navigation";
+import api from "../api";
+import DeviceInfo from "react-native-device-info";
 
 
 //检测app 版本是否是最新版本
@@ -302,3 +304,21 @@ export async function logout(that) {
     that.props.navigation.dispatch(resetAction);
 }
 
+export function checkReviewStatus() {
+    let url = api.base_url_jiepou + "v1/app/xml/getAppAuditState?version=" + DeviceInfo.getVersion() + "&plat=" + Platform.OS + '&business=orthExpert';
+    return new Promise((resolve, reject) => {
+        fetch(url, {
+            method: "get",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+          .then(resp => resp.json())
+          .then(result => {
+              resolve(result.state);
+          })
+          .catch(err => {
+              reject(false);
+          })
+    })
+}

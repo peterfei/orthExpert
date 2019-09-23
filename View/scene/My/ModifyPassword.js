@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
         width: size(16), height: size(26)
     },
     retrievePassImage: {
-        width: size(225), height: size(53), marginTop: size(50),resizeMode:'center'
+        width: size(225), height: size(53), marginTop: size(50),resizeMode:'contain'
     },
     phoneNumber: {
         height: size(80),

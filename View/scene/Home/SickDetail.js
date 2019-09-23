@@ -575,7 +575,7 @@ export default class SickDetail extends BaseComponent {
             })
         return (
             <View style={{
-                position: 'absolute', bottom: 0, top: 0,
+                position: 'absolute', bottom: 0, left: 0, zIndex: 99999,
                 justifyContent: 'center', alignItems: 'center'
             }}>
 
@@ -835,8 +835,6 @@ export default class SickDetail extends BaseComponent {
             </View>
         )
     }
-
-
 
     renderDownload() {
         return (

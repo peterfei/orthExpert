@@ -126,8 +126,10 @@ export default class MyScreen extends Component {
   }
   
   async componentDidMount() {
-      this.checkLoginStatus()
+      this.checkLoginStatus();
       let memberInfo = await storage.get("memberInfo");
+      // alert(JSON.stringify(memberInfo));
+      console.log(JSON.stringify(memberInfo));
       FuncUtils.checkKfPerm()
           .then(res => {
               if (res.code == 0 && res.result == 'yes') {
@@ -192,6 +194,7 @@ export default class MyScreen extends Component {
       let time = this.DateMinus(_endTime);
       let timeDiff = time > 50 ? '永久使用' : _endTime + '到期';
       let isShowRenewal = time > 50 ? false : true;
+      let header = (this.state.memberInfo.mbHeadUrl != null && this.state.memberInfo.mbHeadUrl.length > 0) ? { uri: this.state.memberInfo.mbHeadUrl } : require('../../img/kf_mine/defalutHead.png');
 
     return (
       <ImageBackground source={require('../../img/kf_mine/mine_topback.png')} style={styles.topImgBack}>
@@ -201,7 +204,7 @@ export default class MyScreen extends Component {
           justifyContent: 'center', alignItems: 'center', height: size(88) + isIPhoneXPaddTop(0) + (Platform.OS === 'android' ? statusBarHeight : 0),
           paddingTop: isIPhoneXPaddTop(0) + (Platform.OS === 'android' ? statusBarHeight : 0)
         }}>
-          <Text style={{ color: AppDef.White, fontWeight: 'bold', fontSize: AppDef.TitleSize }} allowFontScaling={false}>个人中心</Text>
+          <Text style={{ color: AppDef.White, fontWeight: 'bold', fontSize: AppDef.TitleSize}}>个人中心</Text>
 
           <MyTouchableOpacity style={{
             height: size(88) + isIPhoneXPaddTop(0), justifyContent: 'center', alignItems: 'center',
@@ -214,16 +217,14 @@ export default class MyScreen extends Component {
 
         <View style={{ width: '100%', flexDirection: 'row', marginBottom: size(41), marginTop: (Platform.OS === 'android' ? size(40) : 0) }}>
           <TouchableOpacity onPress={() => this.gotoDetail()}>
-            <Image
-              source={this.isShowDefalutHeader()}
-
+            <Image source={header}
               style={{ width: size(100), height: size(100), marginLeft: size(25), borderRadius: size(50) }} />
           </TouchableOpacity>
           <View style={{ marginLeft: size(40), marginRight: size(32), justifyContent: 'center', flex: 1 }}>
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
               <View style={{ flexDirection: 'row' }}>
-                <Text style={{ color: AppDef.White, fontSize: AppDef.SubTitleSize }} allowFontScaling={false}>{this.state.memberInfo.mbName}</Text>
+                <Text style={{ color: AppDef.White, fontSize: AppDef.SubTitleSize }}>{this.state.memberInfo.mbName}</Text>
                 {
                   this.state.isUse
                     ?
@@ -231,13 +232,13 @@ export default class MyScreen extends Component {
                     : null
                 }
               </View>
-              <Text style={{ fontSize: size(22), color: AppDef.White, }} allowFontScaling={false}>
+              <Text style={{ fontSize: size(22), color: AppDef.White, }}>
                 {this.state.isUse ? timeDiff : ""}
               </Text>
             </View>
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
-              <Text style={{ fontSize: size(24), color: AppDef.White, }} allowFontScaling={false}>  {this.state.memberInfo.identityTitle}</Text>
+              <Text style={{ fontSize: size(24), color: AppDef.White, }}>  {this.state.memberInfo.identityTitle}</Text>
               {
                 this.state.isUse && isShowRenewal
                   ?
@@ -245,7 +246,7 @@ export default class MyScreen extends Component {
                     this.props.navigation.navigate('BuyVip')
                   }}>
                     <View style={{ justifyContent: 'center', alignItems: 'center', width: size(140), height: size(40), borderColor: AppDef.White, borderWidth: size(0.5), borderRadius: size(10) }}>
-                      <Text style={{ fontSize: size(25), color: AppDef.White }} allowFontScaling={false}>立即续费</Text>
+                      <Text style={{ fontSize: size(25), color: AppDef.White }}>立即续费</Text>
                     </View>
                   </TouchableOpacity>
                   :

@@ -81,7 +81,7 @@ export default class AddAction extends BaseComponent {
                     })
                     let data = result.sickList;
                     let defaultValueIndex = data.findIndex(item =>{
-                        return item.pat_area_id == this.state.currArea.pat_area_id && item.pat_area_no == this.state.currArea.pat_area_no;
+                        return item.pat_area_no == this.state.currArea.pat_area_no;
                     })
                     let defaultValue = data[defaultValueIndex];
                     this.showChoiceLabel(defaultValue.pat_area_id,defaultValue.pat_area_no)
