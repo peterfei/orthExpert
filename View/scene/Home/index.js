@@ -16,7 +16,15 @@ const SelectLineColor = 'rgba(231, 176, 176, 1)';
 const statusBarHeight = StatusBar.currentHeight;
 const CODE_PUSH_KEY = 'q4YE8sCIJ4Xepd6gaJA1qWTza76x4ksvOXqog';
 const CODE_PUSH_KEY_IOS_DEV = 'URKhKNg8tekCkoPdjzpP04ZB1rRj4ksvOXqog';
+
 const CODE_PUSH_KEY_IOS_PRO = 'u4LXUxKO40n7npKayrBj1XfH4fbE4ksvOXqog';
+
+
+const CODE_PUSH_KEY_ANDROID_DEV = 'q4YE8sCIJ4Xepd6gaJA1qWTza76x4ksvOXqog';
+
+const CODE_PUSH_KEY_ANDROID_Pro = '35BvisTL0ZSPlAmeX0LqsrAJUzbr4ksvOXqog';
+
+
 const UMPushModule =  NativeModules.UMPushModule
 // import UnityView,{ UnityModule } from 'react-native-unity-view';
 let codePushOptions = { checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME }//自动更新
@@ -93,7 +101,9 @@ class Custom extends BaseComponent {
     //     setTimeout(()=>{
     //       this.setState({modalVisible: false})
     //     },8000)
-    CodePush.checkForUpdate(CODE_PUSH_KEY_IOS_DEV).then((update) => {
+    let key = Platform.OS=='ios'?CODE_PUSH_KEY_IOS_DEV:CODE_PUSH_KEY_ANDROID_Pro;
+
+    CodePush.checkForUpdate(key).then((update) => {
       // console.log('-------' + update)
       if (!update) {
         // this.mainView._toast('目前已是最新版本！')
