@@ -90,6 +90,7 @@ export default class SelectIdentity extends Component {
             .then(
                 result => {
                     const userDatas = result;
+                    console.log("userDatas:"+userDatas)
                     storage.save("userTokens", "", result);
                     storage.save("memberInfo", "", result.member);
                     //同步书签
@@ -99,13 +100,10 @@ export default class SelectIdentity extends Component {
                         storage.loadObj("user", userDatas.token);
                         const resetAction = StackActions.reset({
                             index: 0,
-                            actions: [
-                                NavigationActions.navigate({
-                                    routeName: "InputInviteCode"
-                                })
-                            ]
+                            actions: [NavigationActions.navigate({routeName: "NewHome"})]
                         });
                         this.props.navigation.dispatch(resetAction);
+
                     }
                 },
                 error => {

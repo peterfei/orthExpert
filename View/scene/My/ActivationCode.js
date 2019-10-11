@@ -21,6 +21,7 @@ import {
     size
 } from '../../common';
 import DateUtil from "../../common/DateUtils";
+import {NavigationActions, StackActions} from "react-navigation";
 
 const statusBarHeight = StatusBar.currentHeight;
 
@@ -72,9 +73,16 @@ export default class ActivationCode extends BaseComponent {
     }
 
     closeResult() {
-        this.setState({
-            showResult: false
-        })
+
+        const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({routeName: "NewHome"})]
+        });
+        this.props.navigation.dispatch(resetAction);
+
+        // this.setState({
+        //     showResult: false
+        // })
     }
 
     _renderActiveCode(){
