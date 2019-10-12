@@ -320,6 +320,7 @@ const styles = StyleSheet.create({
         marginTop: size(10),
         width: size(170),
         color: 'rgba(104,104,104,1)',
+        textAlign:'center'
     },
     amItemBotText: {
         marginTop: size(22)

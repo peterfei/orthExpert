@@ -10,11 +10,12 @@ import React, { Component } from 'react';
 import {
   Platform, StyleSheet, Text, View, Image, Linking, StatusBar, TouchableOpacity,
   Dimensions, TouchableHighlight, TextInput, RefreshControl, ImageBackground, ScrollView, TouchableWithoutFeedback, DeviceEventEmitter, Button,
-  NavigationActions,
 } from 'react-native';
+import { NavigationActions, StackActions } from "react-navigation";
 import { storage } from "../../common/storage";
 import { ContainerView, BaseComponent, NavBar, ListCell, Line, MineBuuton, AppDef, isIPhoneXPaddTop, size, FuncUtils, deviceWidth } from '../../common';
 import MyTouchableOpacity from "../../common/components/MyTouchableOpacity";
+import api from "../../api";
 
 const statusBarHeight = StatusBar.currentHeight;
 
@@ -127,6 +128,7 @@ export default class MyScreen extends Component {
   
   async componentDidMount() {
       this.checkLoginStatus();
+      this.checkBindPhone();
       let memberInfo = await storage.get("memberInfo");
       // alert(JSON.stringify(memberInfo));
       console.log(JSON.stringify(memberInfo));
@@ -148,6 +150,29 @@ export default class MyScreen extends Component {
           .catch(err => {
               this.mainView._toast(JSON.stringify(err))
           })
+  }
+
+  async checkBindPhone(){
+    let tokens = await storage.get("userTokens");
+    let url = api.base_uri + "/v1/app/member/isBoundTellNumber";
+    await fetch(url, {
+      method: 'get',
+      headers: {
+        "Content-Type": "application/json",
+        token: tokens.token
+      }
+    }).then(resp => resp.json())
+        .then(result => {
+          if (result.result === "no") {
+            this.listData.push(
+                {
+                  title: '绑定手机号',
+                  imgPath: require('../../img/kf_mine/mine_bindPhone.png'),
+                  route: 'BindPhoneSkip',
+                }
+            )
+          }
+        })
   }
 
 

@@ -61,6 +61,37 @@ export default class SelectIdentity extends Component {
                 });
             });
     };
+
+    isBindTellNumber(info, weixininfo) {
+        const netInterface = NetInterface.isBindPhone;
+        HttpTool.GET(netInterface)
+            .then(res => {
+                if (res.msg == 'success' && res.code == 0) {
+                    if (res.result == 'yes') {
+                        const resetAction = NavigationActions.reset({
+                            index: 0,
+                            actions: [NavigationActions.navigate({routeName: "NewHome"})]
+                        });
+                        this.props.navigation.dispatch(resetAction);
+                    } else {
+                        this.props.navigation.navigate("BindPhoneSkip", {
+                            loginData: info,
+                            weixininfoLogin: weixininfo,
+                            isAction:true
+                        })
+                    }
+                }
+            })
+            .catch(err => {
+                console.log('判断是否绑定了手机出错, 暂时不绑定');
+                const resetAction = NavigationActions.reset({
+                    index: 0,
+                    actions: [NavigationActions.navigate({routeName: "NewHome"})]
+                });
+                this.props.navigation.dispatch(resetAction);
+            });
+    }
+
     onRegister = async that => {
         this.Loading.show("正在登录");
         let obj = this.props.navigation.state.params.obj;
@@ -96,15 +127,16 @@ export default class SelectIdentity extends Component {
                     //同步书签
                     this.asynBookMark(result.member);
                     this.Loading.close();
-                    if (userDatas.token != undefined) {
-                        storage.loadObj("user", userDatas.token);
-                        const resetAction = StackActions.reset({
-                            index: 0,
-                            actions: [NavigationActions.navigate({routeName: "NewHome"})]
-                        });
-                        this.props.navigation.dispatch(resetAction);
-
-                    }
+                    // if (userDatas.token != undefined) {
+                    //     storage.loadObj("user", userDatas.token);
+                    //     const resetAction = StackActions.reset({
+                    //         index: 0,
+                    //         actions: [NavigationActions.navigate({routeName: "NewHome"})]
+                    //     });
+                    //     this.props.navigation.dispatch(resetAction);
+                    //
+                    // }
+                    this.isBindTellNumber(result, obj);
                 },
                 error => {
                     this.Loading.close();
@@ -190,7 +222,6 @@ export default class SelectIdentity extends Component {
                             onPress={() => this.onRegister(item)}
                             style={{
                                 flex: 1,
-                                backgroundColor: "red",
                                 marginRight: 5,
                                 height: 50,
                                 backgroundColor: "#00bbe3",
