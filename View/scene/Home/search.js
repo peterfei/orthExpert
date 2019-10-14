@@ -270,10 +270,11 @@ export default class SearchComponent extends BaseComponent {
             )
         } else {
             let arr = []
+
             for (let i = 0; i < searchpathologyList.length; i++) {
                 arr.push(
                     <Text style={styles.histortBody}
-                          onPress={() => this.searchChicks(searchpathologyList[i].patNo, searchpathologyList[i].patName, searchpathologyList[i].pat_area_no)}>{searchpathologyList[i].patName}</Text>
+                          onPress={() => this.searchChicks(searchpathologyList[i].patNo, searchpathologyList[i].patName, searchpathologyList[i].patAreaNo)}>{searchpathologyList[i].patName}</Text>
                 )
             }
             return arr

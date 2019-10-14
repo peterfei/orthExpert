@@ -114,7 +114,6 @@ export default class AddAction extends BaseComponent {
     }
 
     confirmSelectMotions(result) {
-        // alert(JSON.stringify(result))
         if (result.length <= 0) {
             this.mainView._toast('请先选择一个动作进行添加!')
         } else {
@@ -274,7 +273,6 @@ export default class AddAction extends BaseComponent {
     finishChoice(){
         this.mainView._showLoading('正在加载中');
         const url ='app/kfxl/v1/animation/getPlanFilterAnimation?business=kfxl&areaNos='+ this.state.areaNos + '&equipNames=' + this.state.equipName;
-        // alert(url)
         HttpTool.GET(url)
             .then(res => {
                 this.mainView._closeLoading()
