@@ -29,6 +29,9 @@ import {storage} from "../../common/storage";
 import Video from 'react-native-af-video-player';
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
 import RNFS from "react-native-fs"
+
+const statusBarHeight = StatusBar.currentHeight;
+
 let ret = null;
 let jobId = null;
 export default class SickDetail extends BaseComponent {
@@ -584,7 +587,7 @@ export default class SickDetail extends BaseComponent {
                     scrollBounce
                     volume={0.8}
                     inlineOnly
-                    style={{width: deviceWidth, height: deviceHeight}}
+                    style={{width: deviceWidth, height: deviceHeight + size(128) + statusBarHeight}}
                     url={this.state.playVideoUrl}
                     ref={(ref) => {
                         this.video = ref
@@ -601,11 +604,11 @@ export default class SickDetail extends BaseComponent {
                         this.dowloadVideoFile(this.state.onlineUrl, cacheFileName)
                     }}
                 />
-                <View style={{height: size(23), backgroundColor: 'black', width: screen.width}}></View>
+                {/*<View style={{height: size(23), backgroundColor: 'black', width: screen.width}}></View>*/}
                 <MyTouchableOpacity style={{
                     position: 'absolute',
                     height: size(200),
-                    top: size(50),
+                    top: statusBarHeight,
                     right: size(50),
                     zIndex: 99999,
                     flexDirection: 'row',
