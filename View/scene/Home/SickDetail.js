@@ -608,7 +608,7 @@ export default class SickDetail extends BaseComponent {
                 <MyTouchableOpacity style={{
                     position: 'absolute',
                     height: size(200),
-                    top: (Platform.OS === 'android' ? size(128) + statusBarHeight : 0),
+                    top: (Platform.OS === 'android' ? size(128) + statusBarHeight : 0) + size(50),
                     right: size(50),
                     zIndex: 99999,
                     flexDirection: 'row',
