@@ -23,7 +23,7 @@ import {
     NavBar,
     Line,
     size,
-    screen, deviceWidth, AppDef, FuncUtils, NetInterface, HttpTool
+    screen, deviceWidth,deviceHeight, AppDef, FuncUtils, NetInterface, HttpTool
 } from '../../common';
 import {storage} from "../../common/storage";
 import Video from 'react-native-af-video-player';
@@ -584,7 +584,7 @@ export default class SickDetail extends BaseComponent {
                     scrollBounce
                     volume={0.8}
                     inlineOnly
-                    style={{width: screen.width, height: '100%'}}
+                    style={{width: deviceWidth, height: deviceHeight}}
                     url={this.state.playVideoUrl}
                     ref={(ref) => {
                         this.video = ref
@@ -886,7 +886,6 @@ export default class SickDetail extends BaseComponent {
     render() {
         return (
             <ContainerView ref={r => this.mainView = r}>
-
                 <NavBar title={this.state.sick.pat_name} navigation={this.props.navigation}/>
                 {this._renderContent()}
                 {this._renderBottom()}
@@ -903,12 +902,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         color: "#FFF"
-    }, container: {
+    },
+    container: {
         position: 'absolute',
         left: 0,
         top: 0,
-        width: '100%',
-        height: '100%',
+        width: deviceWidth,
+        height: deviceHeight,
         backgroundColor: "rgba(0,0,0,0.8)",
         justifyContent: "center",
         alignItems: 'center',
