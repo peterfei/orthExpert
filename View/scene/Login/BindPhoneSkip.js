@@ -172,7 +172,7 @@ export default class BindPhoneSkip extends Component {
                 />
 
                 <View style={styles.header}>
-                    <Text style={{color: '#2D2D2D', fontSize: setSpText(24)}}>为保障您的信息数据安全 我们建议您绑定常用手机号</Text>
+                    <Text style={{color: '#2D2D2D', fontSize: setSpText(24)}}>为保障您的信息数据安全，我们建议您绑定常用手机号</Text>
                 </View>
                 {/*输入手机号*/}
                 <View style={{
@@ -191,7 +191,7 @@ export default class BindPhoneSkip extends Component {
                         onChangeText={(text) => this.setState({
                             username: text
                         })}
-                        style={{height: size(80), flex: 7}}
+                        style={{height: size(80), flex: 7,fontSize: size(26)}}
                         placeholderTextColor={"#B9B9B9"}
                         placeholder={"请输入您的手机号"}
                     />
@@ -220,7 +220,7 @@ export default class BindPhoneSkip extends Component {
                     <CountDownButton
                         enable={true}
                         style={{flex: 3, height: size(73),}}
-                        textStyle={{color: '#0094e1'}}
+                        textStyle={{color: '#0094e1',fontSize: size(26)}}
                         timerCount={60}
                         timerTitle={'获取验证码'}
                         timerActiveTitle={['请在（', 's）后重试']}
@@ -312,6 +312,7 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         height: '100%',
+        backgroundColor:'#f4f4f4'
     },
     header: {
         height: size(70),

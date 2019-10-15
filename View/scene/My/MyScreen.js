@@ -164,7 +164,7 @@ export default class MyScreen extends Component {
     }).then(resp => resp.json())
         .then(result => {
           if (result.msg === 'success' && result.code === 0 && result.result === "no") {
-            this.listData.push(
+            this.listData.unshift(
                 {
                   title: '绑定手机号',
                   imgPath: require('../../img/kf_mine/mine_bindPhone.png'),
