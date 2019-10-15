@@ -163,7 +163,7 @@ export default class MyScreen extends Component {
       }
     }).then(resp => resp.json())
         .then(result => {
-          if (result.result === "no") {
+          if (result.msg === 'success' && result.code === 0 && result.result === "no") {
             this.listData.push(
                 {
                   title: '绑定手机号',

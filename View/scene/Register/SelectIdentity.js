@@ -55,7 +55,6 @@ export default class SelectIdentity extends Component {
         })
             .then(resp => resp.json())
             .then(result => {
-                console.log(result.List);
                 this.setState({
                     identityList: result.List
                 });
@@ -63,11 +62,18 @@ export default class SelectIdentity extends Component {
     };
 
     isBindTellNumber(info, weixininfo) {
-        const netInterface = NetInterface.isBindPhone;
-        HttpTool.GET(netInterface)
+        let url = api.base_uri + "/v1/app/member/isBoundTellNumber";
+        let tokens = storage.get('userTokens')
+        fetch(url,{
+            method : 'get',
+            headers : {
+                "Content-Type": "application/json",
+                token:tokens.token
+            }
+        })
             .then(res => {
-                if (res.msg == 'success' && res.code == 0) {
-                    if (res.result == 'yes') {
+                if (res.msg === 'success' && res.code === 0) {
+                    if (res.result === 'yes') {
                         const resetAction = NavigationActions.reset({
                             index: 0,
                             actions: [NavigationActions.navigate({routeName: "NewHome"})]
@@ -77,7 +83,6 @@ export default class SelectIdentity extends Component {
                         this.props.navigation.navigate("BindPhoneSkip", {
                             loginData: info,
                             weixininfoLogin: weixininfo,
-                            isAction:true
                         })
                     }
                 }
