@@ -71,8 +71,16 @@ export default class ListCell extends Component {
                     });
                     this.props.navigation.dispatch(resetAction);
                 }else {
-                this.props.navigation.navigate(this.props.route);
-            }
+                    this.props.navigation.navigate(this.props.route);
+                }
+            } else if (this.props.route == 'BindPhoneSkip') {
+                let tokens = await storage.get("userTokens");
+                let WXUnionId = await storage.get('WXUnionId');
+                let obj = {unionid: WXUnionId}
+                this.props.navigation.navigate('BindPhoneSkip', {
+                    loginData: tokens,
+                    weixininfoLogin: obj,
+                })
             } else {
 
                 this.props.navigation.navigate(this.props.route);

@@ -16,12 +16,8 @@ const SelectLineColor = 'rgba(231, 176, 176, 1)';
 const statusBarHeight = StatusBar.currentHeight;
 const CODE_PUSH_KEY = 'q4YE8sCIJ4Xepd6gaJA1qWTza76x4ksvOXqog';
 const CODE_PUSH_KEY_IOS_DEV = 'URKhKNg8tekCkoPdjzpP04ZB1rRj4ksvOXqog';
-
 const CODE_PUSH_KEY_IOS_PRO = 'u4LXUxKO40n7npKayrBj1XfH4fbE4ksvOXqog';
-
-
 const CODE_PUSH_KEY_ANDROID_DEV = 'q4YE8sCIJ4Xepd6gaJA1qWTza76x4ksvOXqog';
-
 const CODE_PUSH_KEY_ANDROID_Pro = '35BvisTL0ZSPlAmeX0LqsrAJUzbr4ksvOXqog';
 
 
@@ -86,7 +82,7 @@ class Custom extends BaseComponent {
     this.setState({ immediateUpdate: true })
     CodePush.sync(
       {
-        // deploymentKey: CODE_PUSH_KEY_IOS_DEV,
+        // deploymentKey: CODE_PUSH_KEY_IOS_PRO,
         updateDialog: false,
         installMode: CodePush.InstallMode.IMMEDIATE
       },
@@ -101,7 +97,7 @@ class Custom extends BaseComponent {
     //     setTimeout(()=>{
     //       this.setState({modalVisible: false})
     //     },8000)
-    let key = Platform.OS=='ios'?CODE_PUSH_KEY_IOS_DEV:CODE_PUSH_KEY_ANDROID_Pro;
+    let key = Platform.OS=='ios'?CODE_PUSH_KEY_IOS_PRO:CODE_PUSH_KEY_ANDROID_Pro;
 
     CodePush.checkForUpdate(key).then((update) => {
       // console.log('-------' + update)
@@ -250,7 +246,8 @@ class Custom extends BaseComponent {
 
   _handleAppStateChange = nextAppState => {
     if (nextAppState != null && nextAppState === "active") {
-      CodePush.checkForUpdate(CODE_PUSH_KEY_IOS_DEV).then((update) => {
+      let key = Platform.OS=='ios'?CODE_PUSH_KEY_IOS_PRO:CODE_PUSH_KEY_ANDROID_Pro;
+      CodePush.checkForUpdate(key).then((update) => {
         // alert(`update is ${update}`)
         if (!update) {
           // alert(111)
@@ -296,7 +293,7 @@ class Custom extends BaseComponent {
     let tokens = await storage.get("userTokens");
     let _sick_data = await storage.get('sickData', 'sickData')
     const url = 'http://res.vesal.site/commom/sick/GetSick.json';
-    this.mainView._showLoading('加载中');
+    // this.mainView._showLoading('加载中');
     await fetch(url, {
       method: "get",
       headers: {
@@ -426,7 +423,7 @@ class Custom extends BaseComponent {
   recieveSelectResult(result) {
     let sick = result.value;
     // alert(JSON.stringify(this.state.currArea));
-    // console.log(JSON.stringify(this.state.currArea));
+    console.log(JSON.stringify(this.state.areaSickList));
     this.props.navigation.navigate('SickDetail', { sick: sick, areaSickList: this.state.areaSickList, currArea: this.state.currArea });
   }
 

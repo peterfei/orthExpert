@@ -12,7 +12,7 @@ import {
 } from "react-native"
 import {inject, observer} from "mobx-react/native"
 import UserStore from "../../mobx/User"
-import {screen, system} from "../../common";
+import {screen, system, FuncUtils} from "../../common";
 
 import {NavigationActions,StackActions} from "react-navigation";
 import NetInfoDecorator from "../../common/NetInfoDecorator";
@@ -39,10 +39,25 @@ export default class LoginPageForm extends Component {
         }
 
         this.bookMarkListener = DeviceEventEmitter.addListener('asynBookMark', (member) => {
-
             this.asynBookMark(member);
         })
+    }
 
+    componentWillMount() {
+        if (Platform.OS == 'ios') {
+            FuncUtils.checkReviewStatus()
+              .then(result => {
+                  this.setState({
+                      reviewStatus: result
+                  })
+              })
+              .catch(err => {
+                  console.log(JSON.stringify(err));
+                  this.setState({
+                      reviewStatus: false
+                  })
+              })
+        }
     }
 
     constructor(props) {
@@ -52,7 +67,7 @@ export default class LoginPageForm extends Component {
             username: "",
             password: "",
             hideYoukeBtn: false,
-            reviewState: false,
+            reviewStatus: false,
             code: '',
             verify_code: '',
             pwdLogin: true
@@ -63,17 +78,6 @@ export default class LoginPageForm extends Component {
     componentWillReceiveProps(nextProps) {
         const {isConnected} = nextProps
         console.log("========isConnected==========" + isConnected)
-    }
-
-
-    async componentWillMount() {
-
-        if (Platform.OS === "ios") {
-            let state = await checkEnvironment(this)
-            this.setState({
-                reviewState: state
-            })
-        }
     }
 
     componentWillUnmount() {
@@ -262,6 +266,7 @@ export default class LoginPageForm extends Component {
     };
 
     async startLogin() {
+
         this.Loading.show("正在登录");
         let response = await WxEntry.sendAuthRequest("snsapi_userinfo", "wechat")
             .then(resp => {
@@ -703,7 +708,7 @@ export default class LoginPageForm extends Component {
                                 width: size(400),
                                 marginTop: size(45)
                             }}>
-                            {!this.state.reviewState ?
+                            {!this.state.reviewStatus ?
                                 (<View style={{alignItems: "center", flex: 1}}>
                                     <TouchableOpacity onPress={this.wechatLogin.bind(this)}>
                                         <Image

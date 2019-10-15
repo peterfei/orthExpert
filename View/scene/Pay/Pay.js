@@ -202,6 +202,7 @@ export default class Pay extends BaseComponent {
                               console.log("error" + JSON.stringify(error));
                               console.log(`支付失败或者取消支付`);
                           } else {
+                              console.log(JSON.stringify(response));
                               if (response && response.productIdentifier) {
                                   let params = {
                                       ordNo: this.state.OrderNo,

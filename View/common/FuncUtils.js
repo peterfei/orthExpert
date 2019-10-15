@@ -305,7 +305,7 @@ export async function logout(that) {
 }
 
 export function checkReviewStatus() {
-    let url = api.base_url_jiepou + "v1/app/xml/getAppAuditState?version=" + DeviceInfo.getVersion() + "&plat=" + Platform.OS + '&business=orthExpert';
+    let url = api.base_url_jiepou + "v1/app/xml/getAppAuditState?version=" + DeviceInfo.getVersion() + "&plat=" + Platform.OS + '&business=orthope';
     return new Promise((resolve, reject) => {
         fetch(url, {
             method: "get",

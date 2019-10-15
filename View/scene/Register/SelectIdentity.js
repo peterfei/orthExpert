@@ -61,17 +61,20 @@ export default class SelectIdentity extends Component {
             });
     };
 
-    isBindTellNumber(info, weixininfo) {
+    async isBindTellNumber(info, weixininfo) {
         let url = api.base_uri + "/v1/app/member/isBoundTellNumber";
-        let tokens = storage.get('userTokens')
-        fetch(url,{
+        let tokens = await storage.get('userTokens')
+        console.log(`${JSON.stringify(tokens)}`);
+        await fetch(url,{
             method : 'get',
             headers : {
                 "Content-Type": "application/json",
                 token:tokens.token
             }
         })
+            .then(resp => resp.json())
             .then(res => {
+              // alert(JSON.stringify(res));
                 if (res.msg === 'success' && res.code === 0) {
                     if (res.result === 'yes') {
                         const resetAction = NavigationActions.reset({
@@ -123,12 +126,12 @@ export default class SelectIdentity extends Component {
             }
         })
             .then(resp => resp.json())
-            .then(
-                result => {
+            .then(async result => {
                     const userDatas = result;
                     console.log("userDatas:"+userDatas)
-                    storage.save("userTokens", "", result);
-                    storage.save("memberInfo", "", result.member);
+                    await storage.save("WXUnionId", "", obj.unionid);
+                    await storage.save("userTokens", "", result);
+                    await storage.save("memberInfo", "", result.member);
                     //同步书签
                     this.asynBookMark(result.member);
                     this.Loading.close();
@@ -141,7 +144,9 @@ export default class SelectIdentity extends Component {
                     //     this.props.navigation.dispatch(resetAction);
                     //
                     // }
-                    this.isBindTellNumber(result, obj);
+                  console.log(JSON.stringify(result))
+                  console.log(JSON.stringify(obj))
+                  this.isBindTellNumber(result, obj);
                 },
                 error => {
                     this.Loading.close();
