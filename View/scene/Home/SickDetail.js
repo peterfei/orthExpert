@@ -30,6 +30,7 @@ import Video from 'react-native-af-video-player';
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
 import RNFS from "react-native-fs"
 import DownloadView from '../../common/components/DownLoadFile';
+import ImageCache from '../../common/components/ImageCache';
 
 const statusBarHeight = StatusBar.currentHeight;
 
@@ -536,6 +537,7 @@ export default class SickDetail extends BaseComponent {
         let arr = [];
         if (this.state.areaSickList[0].img_url) {
             this.state.areaSickList.forEach((item, index) => {
+                console.log(JSON.stringify(item.img_url));
                 arr.push(
                     <View style={{
                         width: deviceWidth - size(240), height: size(850)

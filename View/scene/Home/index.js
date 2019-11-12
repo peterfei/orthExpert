@@ -9,6 +9,7 @@ import { NavigationActions, StackActions } from "react-navigation";
 import CodePush from "react-native-code-push"; // 引入code-push
 import Progress from '../../common/ProgressBar'
 import Icon from '../../common/Icon'
+import ImageCache from '../../common/components/ImageCache';
 const DefaultColor = 'rgba(68, 180, 233, 0.5)';
 const DefaultLineColor = 'rgba(68, 180, 233, 1)';
 const SelectColor = 'rgba(231, 176, 176, 0.5)';

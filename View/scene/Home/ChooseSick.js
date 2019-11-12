@@ -209,7 +209,8 @@ export default class Custom extends BaseComponent {
 
   render() {
     return (
-      <ContainerView ref={r => this.mainView = r} selectDialogAction={(result) => {alert(JSON.stringify(result))
+      <ContainerView ref={r => this.mainView = r} selectDialogAction={(result) => {
+        // alert(JSON.stringify(result))
        // this.recieveSelectResult(result)
       }}>
         {/* <NavBar title={this.state.title} navigation={this.props.navigation}/> */}
