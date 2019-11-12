@@ -13,6 +13,8 @@ import leftImage from '../../img/search/backjt.png';
 import AppDef from '../../common/Defined';
 const statusBarHeight = StatusBar.currentHeight;
 
+
+import blackBackImage from '../../img/login/blackBack.png'
 export default class NavBar extends Component {
   constructor(props) {
     super(props);
@@ -20,7 +22,7 @@ export default class NavBar extends Component {
 
   render() {
     // leftTitle和leftImage 优先判断leftTitle (即 文本按钮和图片按钮优先显示文本按钮)
-    const { hideback, title, leftTitle, leftAction, rightTitle, navigation, rightImage, rightAction, rightBothShow } = this.props;
+    const { hideback, title, leftTitle, leftAction, rightTitle, navigation, rightImage, rightAction, rightBothShow,TextStyle,blackBack } = this.props;
     return (
       <View style={[styles.barView, this.props.style]}>
         <StatusBar translucent={true} backgroundColor='rgba(0, 0, 0, 0)' barStyle="light-content" />
@@ -32,7 +34,10 @@ export default class NavBar extends Component {
                 leftImage
                   ?
                   <TouchableOpacity style={styles.leftNav} onPress={() => {this.props.navigation.pop()}}>
-                    <Image style={styles.imgNav} source={leftImage}/>
+
+                      {
+                          blackBack ?  <Image style={[styles.imgNav,{width:size(32),height:size(32)}]} source={blackBackImage}/> : <Image style={styles.imgNav} source={leftImage}/>
+                      }
                   </TouchableOpacity>
                   :
                   (
@@ -52,7 +57,7 @@ export default class NavBar extends Component {
           {
             title ?
               <View style={{alignItems: 'center'}}>
-                <Text style={styles.title}>{title || ''}</Text>
+                <Text style={[styles.title,TextStyle]}>{title || ''}</Text>
               </View>
               : null
           }

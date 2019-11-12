@@ -58,6 +58,10 @@ import {View,Platform,BackHandler,BackAndroid,DeviceEventEmitter,NativeModules,T
 
 import StackViewStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 
+
+
+import UserService from './View/scene/Login/UserService'
+
 const RootStack = createAppContainer(createStackNavigator( //跟路由
   {//定义模块
     // HomeScreen: { screen: HomeScreen },
@@ -99,7 +103,8 @@ const RootStack = createAppContainer(createStackNavigator( //跟路由
     Search: { screen: Search },
     AboutUs: { screen: AboutUs },
     AboutUsDetails:{screen:AboutUsDetails},
-    kfAddAction:{screen:kfAddAction}
+    kfAddAction:{screen:kfAddAction},
+      UserService: {screen: UserService}
   },
   {
     initialRouteName: 'NewHome',     //设置初始路由为Home

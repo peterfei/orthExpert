@@ -681,7 +681,7 @@ export default class LoginPageForm extends Component {
                             </Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={{alignItems: "center", marginTop: size(200)}}>
+                    <View style={{alignItems: "center", marginTop: size(160)}}>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             <View style={{
                                 width: size(188),
@@ -753,6 +753,9 @@ export default class LoginPageForm extends Component {
                             </View>
                         </View>
                     </View>
+                    <TouchableOpacity style={{alignItems: "center", marginTop: size(40)}} onPress={()=>{this.props.navigation.navigate('UserService')}}>
+                        <Text style={{fontSize:size(24)}}>点击登录即表示你同意遵守<Text style={{color: '#4FA5F4',fontWeight:'bold'}}>{'《用户服务协议》'}</Text></Text>
+                    </TouchableOpacity>
 
                     <Toast
                         ref="toast"
