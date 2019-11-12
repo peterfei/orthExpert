@@ -29,6 +29,7 @@ import {storage} from "../../common/storage";
 import Video from 'react-native-af-video-player';
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
 import RNFS from "react-native-fs"
+import DownloadView from '../../common/components/DownLoadFile';
 
 const statusBarHeight = StatusBar.currentHeight;
 
@@ -50,10 +51,8 @@ export default class SickDetail extends BaseComponent {
             showSourceType: 'img', // 当前显示的内容类型  img 图片  video播放视频  videoList 视频列表
             playVideoUrl: '',    // 当前播放的视频的url
             details: '',  //当前疾病所有数据
-            videoUrl: '',
-            onlineUrl: "",
-            downLoadWin:false,
-            downLoadTitle:""
+            downLoadTitle:"",
+            downloadVideoURL: ''
         }
     }
 
@@ -343,15 +342,7 @@ export default class SickDetail extends BaseComponent {
             }
 
             if (menuBtn.type == 'video') {
-
-
-                this.checkFileCache(menuBtn.content == undefined ? '' : menuBtn.content);
-                // this.setState({
-                //   showSourceType: 'video',
-                //   selectBtnIndex: index,
-                //   playVideoUrl: menuBtn.content == undefined ? '' : menuBtn.content
-                // })
-                //
+                this.downloadView.downLoad(menuBtn.content);
             }
 
             if (menuBtn.type == 'text') {
@@ -383,69 +374,6 @@ export default class SickDetail extends BaseComponent {
         }
     }
 
-    dowloadVideoFile(cacheUrl, cacheFileName) {
-        this.cancelDownLoad()
-        //alert("下载中!")
-        // 视频
-        const options = {
-            fromUrl: cacheUrl,
-            toFile: cacheFileName,
-            background: true,
-            progressDivider:4,
-            begin: (res) => {
-                console.log('begin', res);
-                console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
-                this.setState({
-                    downLoadWin:true
-                })
-
-            },
-            progress: (res) => {
-                let size = (res.contentLength / 1024 / 1024).toFixed(2) + 'M';
-                let currSize = (res.bytesWritten / 1024 / 1024).toFixed(2) + 'M';
-                let pro = res.bytesWritten / res.contentLength;
-                console.log(`=====当前下载进度 ${pro} =====`);
-                let newpro = parseFloat(pro) * 100 + '';
-                let index = newpro.indexOf('.');
-
-                newpro = newpro.substr(0, index);
-                let title = currSize+"/"+size+"("+newpro+"%)"
-                this.setState({
-
-                    downLoadTitle:title
-                })
-               //this.mainView._toast(' 缓存视频中\n' + currSize + "/" + size + '')
-            }
-        };
-        try {
-
-              ret = RNFS.downloadFile(options);
-              jobId = ret.jobId;
-            //alert("任务ID:"+ret.jobId)
-            ret.promise.then(res => {
-                console.log('success', res);
-                console.log('file://' + cacheFileName)
-                this.setState({
-                    showSourceType: 'video',
-                    playVideoUrl: cacheFileName,
-                    downLoadWin:false
-
-                })
-
-                // ios 读取视频地址不需要加 file:// 安卓可能需要加
-
-                // this.setState({
-                //   playVideoUrl: cacheFileName,
-                //   showSourceType: 'video'
-                // })
-            }).catch(err => {
-                console.log('err', err);
-            });
-        } catch (e) {
-            console.log(error);
-        }
-    }
-
     _renderContent() {
         if (this.state.showSourceType == 'videoList') { // 视频列表
             return (
@@ -468,41 +396,6 @@ export default class SickDetail extends BaseComponent {
 
     }
 
-    getCacheName(url) {
-        let fileNames = url.split('/');
-        let newFileNames = fileNames.slice(-3);
-        let newFileName = newFileNames.join('_');
-        let cacheFileName = RNFS.TemporaryDirectoryPath + newFileName;
-        return cacheFileName;
-    }
-
-    checkFileCache(url) {
-        this.setState({
-            onlineUrl: url
-        })
-        if (url.length < 0) return;
-        let cacheFileName = this.getCacheName(url)
-        RNFS.exists(cacheFileName)
-            .then(res => {
-                if (res) {
-
-                    this.setState({
-                        showSourceType: 'video',
-                        playVideoUrl: cacheFileName
-                    })
-                } else {
-
-                    this.dowloadVideoFile(url, cacheFileName)
-                }
-
-            })
-            .catch(err => {
-
-                this.dowloadVideoFile(url, cacheFileName)
-            })
-
-    }
-
     _renderVideoList() {
         let arr = [];
         let menuBtn = this.state.menus[this.state.selectBtnIndex];
@@ -513,7 +406,8 @@ export default class SickDetail extends BaseComponent {
 
                 arr.push(
                     <TouchableOpacity style={{marginBottom: size(30),}} onPress={() => {
-                        this.checkFileCache(item.url)
+                        // this.checkFileCache(item.url)
+                        this.downloadView.downLoad(item.url);
                     }}>
                         <ImageBackground
                             source={{uri: item.img}}
@@ -538,7 +432,6 @@ export default class SickDetail extends BaseComponent {
 
         }
 
-
         return (
             <ScrollView style={{flex: 1}}>
                 <View style={{
@@ -557,38 +450,18 @@ export default class SickDetail extends BaseComponent {
     _renderVideo() {
         let url = this.state.playVideoUrl;
         if (url.length < 0) return;
-       let cacheFileName = this.getCacheName(url)
-
-        RNFS.exists(cacheFileName)
-            .then(res => {
-                if (res) {
-
-                    this.setState({
-                        playVideoUrl: cacheFileName
-                    })
-                } else {
-                  //  alert(3)
-                    this.dowloadVideoFile(url, cacheFileName)
-                }
-
-            })
-            .catch(err => {
-
-                this.dowloadVideoFile(url, cacheFileName)
-            })
         return (
             <View style={{
                 position: 'absolute', bottom: 0, left: 0, zIndex: 99999,
                 justifyContent: 'center', alignItems: 'center'
             }}>
-
                 <Video
                     autoPlay
                     scrollBounce
                     volume={0.8}
                     inlineOnly
                     style={{width: deviceWidth, height: deviceHeight + (Platform.OS === 'android' ? size(128) + statusBarHeight : 0)}}
-                    url={this.state.playVideoUrl}
+                    url={this.state.downloadVideoURL}
                     ref={(ref) => {
                         this.video = ref
                     }}
@@ -598,13 +471,9 @@ export default class SickDetail extends BaseComponent {
                             showSourceType: 'img',
                             playVideoUrl: ''
                         })
-
-                        let cacheFileName = this.getCacheName(url)
-
-                        this.dowloadVideoFile(this.state.onlineUrl, cacheFileName)
+                        this.downloadView.downLoad(url);
                     }}
                 />
-                {/*<View style={{height: size(23), backgroundColor: 'black', width: screen.width}}></View>*/}
                 <MyTouchableOpacity style={{
                     position: 'absolute',
                     height: size(200),
@@ -613,8 +482,6 @@ export default class SickDetail extends BaseComponent {
                     zIndex: 99999,
                     flexDirection: 'row',
                     alignItems: 'center',
-
-
                 }} onPress={() => {
                     this.closeVideo()
                 }}>
@@ -839,50 +706,17 @@ export default class SickDetail extends BaseComponent {
         )
     }
 
-    renderDownload() {
+    _renderDownloadView() {
         return (
-
-            <View style={styles.container}>
-                <View style={{alignItems: "center"}}>
-                    <View  >
-                        <Text style={{color: "#FFF"}}>
-                            请稍等,正在加载资源到本地
-                        </Text>
-                    </View>
-
-                    <View style={{alignItems: "center", height: size(100), justifyContent: "center"}}>
-                        <Text style={{color: "#FFF", fontSize: size(35)}}>
-                            {this.state.downLoadTitle}
-                        </Text>
-                    </View>
-
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.cancelDownLoad()
-                            this.setState({
-                                downLoadWin:false
-                            })
-                        }}
-                        style={{
-                            justifyContent: "center",
-                            alignItems:"center",
-
-                            width:size(240),
-                            height:size(80)
-                        }}
-
-                    >
-                        <Image source={require('../../img/unity/close.png')} style={{
-                            width: size(50),
-                            height: size(50),
-                            resizeMode: 'contain'
-                        }}/>
-                    </TouchableOpacity>
-                </View>
-
-            </View>
-
-
+          <DownloadView
+            ref={r => this.downloadView = r}
+            downloadSuccess={(filePath) => {
+                this.setState({
+                    downloadVideoURL: filePath,
+                    showSourceType: 'video',
+                })
+            }}
+          />
         )
     }
 
@@ -892,7 +726,7 @@ export default class SickDetail extends BaseComponent {
                 <NavBar title={this.state.sick.pat_name} navigation={this.props.navigation}/>
                 {this._renderContent()}
                 {this._renderBottom()}
-                {this.state.downLoadWin?this.renderDownload():null}
+                {this._renderDownloadView()}
             </ContainerView>
         );
     }
