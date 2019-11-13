@@ -30,7 +30,7 @@ import Video from 'react-native-af-video-player';
 import MyTouchableOpacity from '../../common/components/MyTouchableOpacity';
 import RNFS from "react-native-fs"
 import DownloadView from '../../common/components/DownLoadFile';
-import ImageCache from '../../common/components/ImageCache';
+import ProgressiveImage from '../../common/components/ProgressiveImage';
 
 const statusBarHeight = StatusBar.currentHeight;
 
@@ -543,10 +543,16 @@ export default class SickDetail extends BaseComponent {
                         width: deviceWidth - size(240), height: size(850)
                         // , backgroundColor: index%2 == 0? 'orange' : 'red'
                     }}>
-                        <Image
-                            resizeMode={'contain'}
-                            style={{width: deviceWidth - size(240), height: size(850)}}
-                            source={{uri: item.img_url}}
+                        {/*<Image*/}
+                            {/*resizeMode={'contain'}*/}
+                            {/*style={{width: deviceWidth - size(240), height: size(850)}}*/}
+                            {/*source={{uri: item.img_url}}*/}
+                        {/*/>*/}
+                        <ProgressiveImage
+                          thumbnailSource={{ uri: item.img_url }}
+                          source={{ uri: item.img_url }}
+                          style={{ width: deviceWidth - size(240), height: size(850) }}
+                          resizeMode="contain"
                         />
                     </View>
                 )
@@ -554,10 +560,16 @@ export default class SickDetail extends BaseComponent {
         } else if (this.state.details) {
             arr.push(
                 <View style={{width: deviceWidth - size(240), height: size(850)}}>
-                    <Image
-                        resizeMode={'contain'}
-                        style={{width: deviceWidth - size(240), height: size(850)}}
-                        source={{uri: this.state.details.pathology.img_url}}
+                    {/*<Image*/}
+                        {/*resizeMode={'contain'}*/}
+                        {/*style={{width: deviceWidth - size(240), height: size(850)}}*/}
+                        {/*source={{uri: this.state.details.pathology.img_url}}*/}
+                    {/*/>*/}
+                    <ProgressiveImage
+                      thumbnailSource={{ uri: item.img_url }}
+                      source={{ uri: item.img_url }}
+                      style={{ width: deviceWidth - size(240), height: size(850) }}
+                      resizeMode="contain"
                     />
                 </View>
             )
