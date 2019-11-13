@@ -124,7 +124,7 @@ export default class SharingPlan extends Component {
             <ImageBackground source={require('../../img/home/planQRCodeBackground.png')}
                              style={styles.qrCodeBackground}>
                 <Image source={{uri: this.state.base64}} style={styles.qrCode}/>
-                <Text style={styles.qrCodeTips}>打开【运动康复训练】扫一扫，即可参与方案训练</Text>
+                <Text style={styles.qrCodeTips}>打开【微信】扫一扫，'我的方案'中即可参与方案训练</Text>
             </ImageBackground>
         )
     }
@@ -247,7 +247,7 @@ export default class SharingPlan extends Component {
                     {this._renderHeader()}
                     {this._renderSchemeList()}
                     {this._renderShareQRCode()}
-                    {this._renderBottom()}
+
                     <ImageBackground source={require('../../img/home/planShareBottom.png')} style={styles.bot} />
                     {/*<ImageBackground source={require('../../img/home/planShareBackground.png')}*/}
                     {/*                 style={styles.bot} resizeMode={'cover'}>*/}

@@ -363,6 +363,7 @@ export default class HomeScreen extends Component {
       }
     }).then(resp => resp.json())
       .then(result => {
+
         // alert(JSON.stringify(result));
         this.setState({
           getData: result.pathology,
