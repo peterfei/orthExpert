@@ -566,8 +566,8 @@ export default class SickDetail extends BaseComponent {
                         {/*source={{uri: this.state.details.pathology.img_url}}*/}
                     {/*/>*/}
                     <ProgressiveImage
-                      thumbnailSource={{ uri: item.img_url }}
-                      source={{ uri: item.img_url }}
+                      thumbnailSource={{ uri: this.state.details.pathology.img_url }}
+                      source={{ uri: this.state.details.pathology.img_url }}
                       style={{ width: deviceWidth - size(240), height: size(850) }}
                       resizeMode="contain"
                     />
