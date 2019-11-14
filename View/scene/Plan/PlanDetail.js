@@ -225,6 +225,7 @@ export default class PlanDetail extends BaseComponent {
   }
 
   gotoAmDetail(data) {
+    Alert.alert("温馨提示","请在应用商店搜索 '运动康复训练' ,下载安装后,查看3D动作介绍! ")
     return  ;
     //TODO 处理不需要下载的器械
     // this.props.navigation.navigate("RenTi", {

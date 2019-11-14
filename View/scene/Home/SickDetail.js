@@ -41,6 +41,7 @@ export default class SickDetail extends BaseComponent {
     constructor(props) {
         super(props);
         let selectIndex = this.findSickIndex();
+        let downloadWin = false;
         this.state = {
             currArea: props.navigation.state.params.currArea, // 当前疾病所在区域
             selectIndex: selectIndex,        // 当前疾病在  疾病列表 中的下标
@@ -123,7 +124,7 @@ export default class SickDetail extends BaseComponent {
 
     goBack = () => {
 
-        this.cancelDownLoad()
+        //this.downloadView.cancelDown();
 
         if (this.state.playVideoUrl != '') {
             this.closeVideo();
@@ -343,6 +344,7 @@ export default class SickDetail extends BaseComponent {
             }
 
             if (menuBtn.type == 'video') {
+                this.downloadWin = true;
                 this.downloadView.downLoad(menuBtn.content);
             }
 
@@ -408,6 +410,7 @@ export default class SickDetail extends BaseComponent {
                 arr.push(
                     <TouchableOpacity style={{marginBottom: size(30),}} onPress={() => {
                         // this.checkFileCache(item.url)
+                        this.downloadWin = true;
                         this.downloadView.downLoad(item.url);
                     }}>
                         <ImageBackground
@@ -472,6 +475,7 @@ export default class SickDetail extends BaseComponent {
                             showSourceType: 'img',
                             playVideoUrl: ''
                         })
+                        this.downloadWin = true;
                         this.downloadView.downLoad(url);
                     }}
                 />
