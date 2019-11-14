@@ -350,7 +350,7 @@ export default class LoginPageForm extends Component {
             const url =
                 api.base_uri +
                 "v1/app/member/isFirstWeixin?unionid=" +
-                weixininfo.unionid;
+                weixininfo.unionid + "&business=orthope";
             fetch(url, {
                 method: "get",
                 headers: {
