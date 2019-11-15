@@ -71,6 +71,9 @@ export default class ContainerView extends Component {
       this.SelectDialog.show();
     })
   }
+    _showSelectDialogB() {
+        this.SelectDialog.show();
+    }
 
   _closeSelectDialog() {
     this.SelectDialog.close();
