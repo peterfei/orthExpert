@@ -278,7 +278,7 @@ class Custom extends BaseComponent {
         console.log(`===========绑定友盟别名${tag}成功!!! ===========`);
       }
     })
-    
+
 
   }
 
@@ -429,8 +429,8 @@ class Custom extends BaseComponent {
 
   }
   showDialog(){
-
-      this.mainView._showSelectDialogB()
+     // alert("显示弹框了!")
+     // this.mainView._showSelectDialogB()
   }
 
   getImgMap(value) {
@@ -460,7 +460,7 @@ class Custom extends BaseComponent {
     return result;
   }
 
-  
+
   _renderNav() {
     return (
       <View style={styles.container}>

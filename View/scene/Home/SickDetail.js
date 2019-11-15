@@ -125,7 +125,7 @@ export default class SickDetail extends BaseComponent {
     goBack = () => {
 
         //this.downloadView.cancelDown();
-        this.props.navigation.state.params.showDialog();
+       // this.props.navigation.state.params.showDialog();
         if (this.state.playVideoUrl != '') {
             this.closeVideo();
             return true;
@@ -740,7 +740,7 @@ export default class SickDetail extends BaseComponent {
 
     showDialogBack(){
         this.props.navigation.pop()
-        this.props.navigation.state.params.showDialog();
+
     }
     render() {
         return (

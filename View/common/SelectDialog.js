@@ -53,6 +53,7 @@ export default class SelectDialog extends Component {
   }
 
   componentDidMount() {
+
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
