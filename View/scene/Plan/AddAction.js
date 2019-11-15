@@ -258,13 +258,15 @@ export default class AddAction extends BaseComponent {
             let arr = this.state.ChoosePartsArr;
             arr.splice(0, arr.length);
             this.setState({
-                ChoosePartsArr: arr
+                ChoosePartsArr: arr,
+                areaNos:[]
             })
         }else {
             let arr = this.state.ChooseEquipArr;
             arr.splice(0, arr.length);
             this.setState({
-                ChooseEquipArr: arr
+                ChooseEquipArr: arr,
+                equipName:[]
             })
         }
 
@@ -332,6 +334,8 @@ export default class AddAction extends BaseComponent {
                              <TouchableOpacity
                                  style={{width:size(270),height:size(60),backgroundColor:'rgba(2,186,230,1)',borderRadius:size(29),justifyContent:'center',alignItems:'center'}}
                                  onPress={()=> {
+                                     this.finishChoice()
+                                     this.getEquipmentByBody()
                                      this.setState({
                                          selectIndex: -1
                                      })
