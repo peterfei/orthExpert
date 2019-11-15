@@ -125,7 +125,7 @@ export default class SickDetail extends BaseComponent {
     goBack = () => {
 
         //this.downloadView.cancelDown();
-
+        this.props.navigation.state.params.showDialog();
         if (this.state.playVideoUrl != '') {
             this.closeVideo();
             return true;
@@ -738,10 +738,14 @@ export default class SickDetail extends BaseComponent {
         )
     }
 
+    showDialogBack(){
+        this.props.navigation.pop()
+        this.props.navigation.state.params.showDialog();
+    }
     render() {
         return (
             <ContainerView ref={r => this.mainView = r}>
-                <NavBar title={this.state.sick.pat_name} navigation={this.props.navigation}/>
+                <NavBar title={this.state.sick.pat_name} gobackAction={() => {this.showDialogBack()}} navigation={this.props.navigation}/>
                 {this._renderContent()}
                 {this._renderBottom()}
                 {this._renderDownloadView()}

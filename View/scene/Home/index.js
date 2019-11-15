@@ -421,10 +421,16 @@ class Custom extends BaseComponent {
   }
 
   recieveSelectResult(result) {
+
     let sick = result.value;
-    // alert(JSON.stringify(this.state.currArea));
-    console.log(JSON.stringify(this.state.areaSickList));
-    this.props.navigation.navigate('SickDetail', { sick: sick, areaSickList: this.state.areaSickList, currArea: this.state.currArea });
+   this.mainView._closeSelectDialog()
+    this.props.navigation.navigate('SickDetail', { sick: sick, areaSickList: this.state.areaSickList, currArea: this.state.currArea,showDialog:this.showDialog.bind(this)});
+
+
+  }
+  showDialog(){
+
+      this.mainView._showSelectDialogB()
   }
 
   getImgMap(value) {
@@ -537,6 +543,7 @@ class Custom extends BaseComponent {
       }}>
         {this._renderNav()}
         {this._renderSubPage()}
+
         {this.renderModal()}
       </ContainerView>
     );
