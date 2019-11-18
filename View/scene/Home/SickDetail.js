@@ -470,6 +470,7 @@ export default class SickDetail extends BaseComponent {
                         this.video = ref
                     }}
                     onError={(msg) => {
+                    //    alert(JSON.stringify(msg)+":"+this.state.downloadVideoURL)
                         this.setState({
                             selectBtnIndex: -1,
                             showSourceType: 'img',
@@ -547,17 +548,17 @@ export default class SickDetail extends BaseComponent {
                         width: deviceWidth - size(240), height: size(850)
                         // , backgroundColor: index%2 == 0? 'orange' : 'red'
                     }}>
-                        {/*<Image*/}
-                            {/*resizeMode={'contain'}*/}
-                            {/*style={{width: deviceWidth - size(240), height: size(850)}}*/}
-                            {/*source={{uri: item.img_url}}*/}
-                        {/*/>*/}
-                        <ProgressiveImage
-                          thumbnailSource={{ uri: item.img_url }}
-                          source={{ uri: item.img_url }}
-                          style={{ width: deviceWidth - size(240), height: size(850) }}
-                          resizeMode="contain"
+                        <Image
+                            resizeMode={'contain'}
+                            style={{width: deviceWidth - size(240), height: size(850)}}
+                            source={{uri: item.img_url}}
                         />
+                        {/*<ProgressiveImage*/}
+                        {/*  thumbnailSource={{ uri: item.img_url }}*/}
+                        {/*  source={{ uri: item.img_url }}*/}
+                        {/*  style={{ width: deviceWidth - size(240), height: size(850) }}*/}
+                        {/*  resizeMode="contain"*/}
+                        {/*/>*/}
                     </View>
                 )
             })
