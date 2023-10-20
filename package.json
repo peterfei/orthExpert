@@ -15,7 +15,7 @@
     "mobx": "^4.1.1",
     "mobx-react": "^5.0.0",
     "react": "16.6.3",
-    "react-native": "0.57",
+    "react-native": "0.72",
     "react-native-actionsheet": "^2.4.2",
     "react-native-af-video-player": "^0.2.1",
     "react-native-code-push": "^5.7.0",
